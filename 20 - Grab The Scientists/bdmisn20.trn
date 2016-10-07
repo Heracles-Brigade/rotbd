@@ -1,0 +1,147 @@
+[Size]
+MinX=0
+MinZ=101120
+Width=1280
+Depth=1280
+Height=0
+
+[NormalView]
+Time=900
+FogStart=250
+FogEnd=350
+FogBreak=60
+VisibilityRange=350
+Intensity=30
+Ambient=10
+FlatRange=350
+ShadowLuma=0
+FogDirection=0
+TerrainShadowLuma=40
+CarAmbient=30
+
+[Sky]
+SunTexture=sun.0
+SkyHeight = 110
+SkyTexture=
+
+BackdropDistance= 400
+BackdropWidth   = 800
+BackdropHeight  = 100
+
+[Stars]
+Radius		= 1000
+
+Texture00   = earth.map
+Alpha00     = 0
+Size00      = 200
+Azimuth00   = 150
+Elevation00 = 10
+Roll00      = 300
+
+[StarList]
+
+Solid       = 0
+LayerHeight = 15
+Texture     = stars.map
+Radius      = 1000
+
+Start0      = 0
+End0        = 360
+Size0       = 350
+Count0      = 13
+
+Start1      = 0
+End1        = 360
+Size1       = 350
+Count1      = 10 
+
+Start2      = 0
+End2        = 360
+Size2       = 350
+Count2      = 11
+
+[Color]
+Palette=MOON.ACT
+Luma=MOON.LUM
+Translucency=MOON.TBL
+Alpha=MOON.ALB
+
+[World]
+MusicTrack=3
+
+[TextureType0]
+FlatColor= 104
+SolidA0        = mn00sA0.map
+SolidA1        = mn00sA1.map
+SolidA2        = mn00sA2.map
+SolidA3        = mn00sA3.map
+
+Solidb0        = mn00sA0.map
+Solidb1        = mn00sA1.map
+Solidb2        = mn00sA2.map
+Solidb3        = mn00sA3.map
+
+Solidc0        = mn00sA0.map
+Solidc1        = mn00sA1.map
+Solidc2        = mn00sA2.map
+Solidc3        = mn00sA3.map
+
+Solidd0        = mn00sC0.map
+Solidd1        = mn00sC1.map
+Solidd2        = mn00sC2.map
+Solidd3        = mn00sC3.map
+
+CapTo3_A0      = mn03cA0.map
+CapTo3_A1      = mn03cA1.map
+CapTo3_A2      = mn03cA2.map
+CapTo3_A3      = mn03cA3.map
+
+DiagonalTo3_A0 = mn03dA0.map
+DiagonalTo3_A1 = mn03dA1.map
+DiagonalTo3_A2 = mn03dA2.map
+DiagonalTo3_A3 = mn03dA3.map
+
+CapTo4_A0      = mn04cA0.map
+CapTo4_A1      = mn04cA1.map
+CapTo4_A2      = mn04cA2.map
+CapTo4_A3      = mn04cA3.map
+
+DiagonalTo4_A0 = mn04dA0.map
+DiagonalTo4_A1 = mn04dA1.map
+DiagonalTo4_A2 = mn04dA2.map
+DiagonalTo4_A3 = mn04dA3.map
+
+[TextureType3]
+FlatColor= 196
+SolidA0        = mn33sA0.map
+SolidA1        = mn33sA1.map
+SolidA2        = mn33sA2.map
+SolidA3        = mn33sA3.map
+
+[TextureType4]
+FlatColor= 7
+SolidA0        = mn44sA0.map
+SolidA1        = mn44sA1.map
+SolidA2        = mn44sA2.map
+SolidA3        = mn44sA3.map
+SolidB0        = mn44sB0.map
+SolidB1        = mn44sB1.map
+SolidB2        = mn44sB2.map
+SolidB3        = mn44sB3.map
+
+[TextureType5]
+FlatColor= 7
+SolidA0        = mn55sA0.map
+SolidA1        = mn55sA1.map
+SolidA2        = mn55sA2.map
+SolidA3        = mn55sA3.map
+
+[TextureType6]
+FlatColor= 7
+SolidA0        = mn66sA0.map
+SolidA1        = mn66sA1.map
+SolidA2        = mn66sA2.map
+SolidA3        = mn66sA3.map
+
+
+

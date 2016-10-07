@@ -1,0 +1,11 @@
+Cutscene, path ____ Target: _____
+
+NAV.1-painted
+
+Within 50m of command center, Wav/Objective 2. Nav 2 painted.
+
+
+When all 4 Solar Arrays at nav 2 are dead, wave/objective 3. Nav 3 painted.
+
+When all 4 Soalr arrays at nav 3 are dead, cutscene, wave/objective 4/5. CameraPath ____ target: _____
+

@@ -1,0 +1,31 @@
+Wave1/Objective 1. 
+3 svfigh attack, about 20 seconds? probably started from across map.
+
+When recycler deploys, objective 1 green, objective 2 white.
+
+When 2nd scavenger is complete, Objective 2 green, objective 3 white.
+
+
+2 more figh attack, unknown origin/path? ?? Repeated every XX seconds?? ??
+
+
+When scrap is >= 20, clear objectives, objective 4 white.
+
+When factory is complete, objective 4 green, objective 5 white.
+
+2 more svfigh.
+
+When built 3 new tanks and 1 new bomber, objective 5 green, objective 6 white.
+
+When 3 turrets built, objective 6 green.
+
+2 more svfigh.
+
+
+50 seconds? later, Objective 7 white, wave 2. Objectify 2 gun towers and a recycler.
+
+
+When both GT's are destroyed, CameraPath _____ target: avwalk (one heading to recy), Wave 3, objecitve 8 white. Spawn several NDFG units. 3 avwalk, 1 avtank, 2 avtank, all objectified. 1 walk and 1 tank attack player? 2 walk and 1 tank attack recy. Objectify myrecy.
+
+When enemy recy is dead, clear objectives, objective 9.
+
