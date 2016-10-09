@@ -10,13 +10,13 @@ local objective1 = mission.Objective:define('first_objective',{
 --^same as:
 --[[
 objective1.otf = 'p_obj1.otf'
-objective1.time = 20
+objective1.time = 10
 objective1.random_var = 1
 objective1.next = 'second_objective'
 --also same as:
 local objective1 = mission.Objective:define('first_objective'):init({
     otf = 'p_obj1.otf',
-    time = 20,
+    time = 10,
     random_var = 1,
     next = 'second_objective'
 })
