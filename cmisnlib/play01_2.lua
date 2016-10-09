@@ -9,38 +9,38 @@ local objective1 = mission.Objective:define('first_objective'):init({
 }):setListeners({
     start = function(self)
         print(message); --will print 'This is sent to objective1.on("start")'
-        AddObjective(objective.otf,'white',8);
-        objective.random_var = 5; --testing saving
+        AddObjective(self.otf,'white',8);
+        self.random_var = 5; --testing saving
     end,
     update = function(self)
-       objective.time = objective.time - dtime;
-        if(objective.time <= 0) then
-            objective:success();
+       self.time = self.time - dtime;
+        if(self.time <= 0) then
+            self:success();
         end
     end,
     success = function(self)
-        UpdateObjective(objective.otf,'green',8);
+        UpdateObjective(self.otf,'green',8);
         print("Success!");
         --Start objective2
-        mission.Objective:Start(objective.next);
+        mission.Objective:Start(self.next);
         --^Shorthand for version:
-        --mission.Objective:getObjective(objective.next):start();
+        --mission.Objective:getObjective(self.next):start();
     end,
     save = function(self)
         --Runs when the objective is being saved
         --Works just like Save does
         print('Saving objective1!')
-        return objective.objective_otf, objective.time, objective.random_var;
+        return self.objective_otf, self.time, self.random_var;
     end,
     load = function(self)
         --Runs when the objective is being loaded
         --Works just like Load does
-        objective.objective_otf = a;
-        objective.time = b;
-        objective.random_var = c;
-        print("After load, objective.random_var should be 5");
-        if(objective.random_var ~= 5) then
-            error("objective.random_var was not saved properly",objective.random_var);
+        self.objective_otf = a;
+        self.time = b;
+        self.random_var = c;
+        print("After load, self.random_var should be 5");
+        if(self.random_var ~= 5) then
+            error("self.random_var was not saved properly",self.random_var);
         end
     end
 });
@@ -50,42 +50,42 @@ local objective2 = mission.Objective:define('second_objective'):init({
     time = 20,
     otf = "p_obj2.otf"
 }):setListeners({
-    start = function(objective)
+    start = function(self)
         --First thing that runs when the objective starts
-        objective.target = GetRecyclerHandle(1);
-        AddObjective(objective.otf,'white',8);
-        StartCockpitTimer(objective2.time,10,5);
+        self.target = GetRecyclerHandle(1);
+        AddObjective(self.otf,'white',8);
+        StartCockpitTimer(self.time,10,5);
     end,
-    update = function(objective,dtime)
+    update = function(self,dtime)
         --Runs while the objective is still going
-        objective.time = objective.time - dtime;
-        if(not IsAlive(objective.target)) then
-            objective:success();
+        self.time = self.time - dtime;
+        if(not IsAlive(self.target)) then
+            self:success();
         elseif(objective.time < 0) then
-            objective:fail();
+            self:fail();
         end
     end,
-    success = function(objective)
+    success = function(self)
         --Will run once if the objective succeeds
-        UpdateObjective(objective.otf,'green',8);
+        UpdateObjective(self.otf,'green',8);
     end,
-    fail = function(objective)
+    fail = function(self)
         --Will run once if the objective fails 
-        UpdateObjective(objective.otf,'red',8);
+        UpdateObjective(self.otf,'red',8);
     end,
-    finish = function(objective)
+    finish = function(self)
         --Will run once when the objective finishes(succeeds or fails)
         --Remove the cockpit timer
         StopCockpitTimer();
         HideCockpitTimer();
     end,
-    save = function(objective)
-        return objective.otf, objective.time, objective.target;
+    save = function(self)
+        return self.otf, self.time, self.target;
     end,
-    load = function(objective,a,b,c)
-        objective.otf = a;
-        objective.time = b;
-        objective.target = c;
+    load = function(self,a,b,c)
+        self.otf = a;
+        self.time = b;
+        self.target = c;
     end
 });
 
