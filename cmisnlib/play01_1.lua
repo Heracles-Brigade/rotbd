@@ -1,18 +1,49 @@
 local mission = require('cmisnlib');
 
 --Define all objectives
-local objective1 = mission.Objective:define('first_objective');
-local objective2 = mission.Objective:define('second_objective');
+local objective1 = mission.Objective:define('first_objective',{
+    otf = 'p_obj1.otf',
+    time = 20,
+    random_var = 1,
+    next = 'second_objective'
+});
+--^same as:
+--[[
+objective1.otf = 'p_obj1.otf',
+objective1.time = 20,
+objective1.random_var = 1,
+objective1.next = 'second_objective'
+--also same as:
+local objective1 = mission.Objective:define('first_objective'):init({
+    otf = 'p_obj1.otf',
+    time = 20,
+    random_var = 1,
+    next = 'second_objective'
+})
+
+]]
+
+
+local objective2 = mission.Objective:define('second_objective',{
+    time = 20,
+    otf = "p_obj2.otf"
+});
+
+--^same as:
+--[[
+objective2.otf = 'p_obj1.otf',
+objective2.time = 20,
+--also same as:
+local objective2 = mission.Objective:define('second_objective'):init({
+    time = 20,
+    otf = "p_obj2.otf"
+});
+]]
 
 --Objective 1
-objective1.objective_otf = "p_obj1.otf";
-objective1.time = 20;
-objective1.random_var = 1;
-objective1.next = 'second_objective';
-
 objective1:on('start',function(objective,message)
     print(message); --will print 'This is sent to objective1.on("start")'
-    AddObjective(objective.objective_otf,'white',8);
+    AddObjective(objective.otf,'white',8);
     objective.random_var = 5; --testing saving
 end);
 
@@ -25,7 +56,7 @@ objective1:on('update',function(objective,dtime)
 end);
 
 objective1:on('success',function(objective)
-    UpdateObjective(objective.objective_otf,'green',8);
+    UpdateObjective(objective.otf,'green',8);
     print("Success!");
     --Start objective2
     mission.Objective:Start(objective.next);
@@ -54,9 +85,6 @@ objective1:on('load',function(objective,a,b,c)
 end);
 
 --Objective 2
-objective2.time = 20;
-objective2.otf = "p_obj2.otf";
-
 objective2:on('start',function(objective)
     --First thing that runs when the objective starts
     objective.target = GetRecyclerHandle(1);

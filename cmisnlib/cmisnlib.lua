@@ -74,6 +74,9 @@ ObjectiveInstance = {
             self:parentCall('finish',...);
             self:kill();
         end,
+        init = function(self,...)
+            self:parentCall('init',...);
+        end,
         addObject = function(self,...)
             self:parentCall('add_object',...);
         end,  
@@ -114,7 +117,7 @@ setmetatable(ObjectiveInstance,ObjectiveInstance.mt);
 
 --Objective 'class', this is used to define objectives
 Objective = {
-    define = function(cls,name,listener_table)
+    define = function(cls,name,defaults,listener_table)
         local self = setmetatable({
             name = name,
             listeners = {},
@@ -122,10 +125,9 @@ Objective = {
             child = false,
             hasChild = false
         },cls.mt);
+        self:init(defaults or {}):setListeners(listener_table or {});
+        
         cls:addObjective(self);
-        for i,v in pairs(listener_table) do
-            self:on(i,v);
-        end
         return self;
     end,
     Start = function(cls,name)
@@ -145,6 +147,7 @@ Objective = {
     prototype = {
         --possible events for an objective
         events = {
+            'init',
             'start',
             'finish',
             'update',
@@ -156,6 +159,18 @@ Objective = {
             'load',
             'delete_object'
         },
+        init = function(self,vars)
+            for i,v in pairs(vars) do
+                self.child_vars[i] = v;
+            end
+            return self;
+        end,
+        setListeners = function(self,listeners)
+            for i,v in pairs(listeners) do
+                self:on(i,v);
+            end
+            return self;
+        end,
         getInstance = function(self)
             return self.child;
         end,
