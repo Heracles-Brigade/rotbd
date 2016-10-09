@@ -3,7 +3,7 @@ local mission = require('cmisnlib');
 --Define all objectives
 local objective1 = mission.Objective:define('first_objective'):init({
     otf = 'p_obj1.otf',
-    time = 20,
+    time = 10,
     random_var = 1,
     next = 'second_objective'
 }):setListeners({
@@ -12,7 +12,7 @@ local objective1 = mission.Objective:define('first_objective'):init({
         AddObjective(self.otf,'white',8);
         self.random_var = 5; --testing saving
     end,
-    update = function(self)
+    update = function(self,dtime)
        self.time = self.time - dtime;
         if(self.time <= 0) then
             self:success();
@@ -61,7 +61,7 @@ local objective2 = mission.Objective:define('second_objective'):init({
         self.time = self.time - dtime;
         if(not IsAlive(self.target)) then
             self:success();
-        elseif(objective.time < 0) then
+        elseif(self.time < 0) then
             self:fail();
         end
     end,

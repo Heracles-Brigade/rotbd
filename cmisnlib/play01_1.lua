@@ -3,7 +3,7 @@ local mission = require('cmisnlib');
 --Define all objectives
 local objective1 = mission.Objective:define('first_objective',{
     otf = 'p_obj1.otf',
-    time = 20,
+    time = 10,
     random_var = 1,
     next = 'second_objective'
 });
