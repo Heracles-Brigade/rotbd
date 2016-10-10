@@ -1,31 +1,49 @@
+start scrap: 10
+start pilots: 5
+
+spawn enemy base:
+    svrecy(path_0003)
+    sbturr(path_0001-0002) infinite health until objective 7
+    
 Wave1/Objective 1. 
-3 svfigh attack, about 20 seconds? probably started from across map.
+3 svfigh attack, about 20 seconds? probably started from across map(path_0005-0007).
 
 When recycler deploys, objective 1 green, objective 2 white.
 
 When 2nd scavenger is complete, Objective 2 green, objective 3 white.
 
-
-2 more figh attack, unknown origin/path? ?? Repeated every XX seconds?? ??
-
+2 more svfigh attack, (path_000C-000D)
 
 When scrap is >= 20, clear objectives, objective 4 white.
 
 When factory is complete, objective 4 green, objective 5 white.
 
-2 more svfigh.
+2 more svfigh(path_000C-000D).
 
 When built 3 new tanks and 1 new bomber, objective 5 green, objective 6 white.
 
+2 more svfigh(path_000C-000D) does nothing, never commanded by script.
+2 svscav(000A-000B)
+
 When 3 turrets built, objective 6 green.
 
-2 more svfigh.
+2 more svfigh(path_0010-0011).
 
 
-50 seconds? later, Objective 7 white, wave 2. Objectify 2 gun towers and a recycler.
+50 seconds? later, Objective 7 white, wave 2. spawn sbspow(path_000e-000f) and objectify that and a svrecy(path_0003).
 
 
-When both GT's are destroyed, CameraPath _____ target: avwalk (one heading to recy), Wave 3, objecitve 8 white. Spawn several NDFG units. 3 avwalk, 1 avtank, 2 avtank, all objectified. 1 walk and 1 tank attack player? 2 walk and 1 tank attack recy. Objectify myrecy.
+When both GT's are destroyed:
+Unobjectify svrecy
+CameraPath path_0017 target: avwalk(@path_0015) (one heading to recy),
+Wave 3, objecitve 8 white. 
+
+Spawn several NDFG units:
+2 svfigh(path_0008-0009)
+3 avwalk(path_0013-0015), 
+2 avtank(path_0016,0004), 
+all objectified. 1 tank attack player? 2 walk and 1 tank attack recy. Objectify myrecy.
+
 
 When enemy recy is dead, clear objectives, objective 9.
 

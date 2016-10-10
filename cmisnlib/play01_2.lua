@@ -8,7 +8,6 @@ local objective1 = mission.Objective:define('first_objective'):init({
     next = 'second_objective'
 }):setListeners({
     start = function(self)
-        print(message); --will print 'This is sent to objective1.on("start")'
         AddObjective(self.otf,'white',8);
         self.random_var = 5; --testing saving
     end,
@@ -90,7 +89,7 @@ local objective2 = mission.Objective:define('second_objective'):init({
 });
 
 function Start()
-    local instance = objective1:start('This is sent to objective1.on("start")');
+    local instance = objective1:start();
 end
 
 function Update(dtime)
