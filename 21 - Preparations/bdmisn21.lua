@@ -48,6 +48,7 @@ local makeScavs = mission.Objective:define("make_scavs"):init({
     otf = 'bdmisn2102.otf'
 }):setListeners({
     start = function(self)
+        SetObjectiveOff(GetHandle("bzn64label_0005"));
         AddObjective(self.otf,"white");
     end,
     add_object = function(self,handle)
@@ -311,6 +312,7 @@ function Start()
     
     SetObjectiveOn(GetRecyclerHandle(1));
     SetObjectiveOn(GetHandle("bzn64label_0005"));
+    SetObjectiveName(GetHandle("bzn64label_0005"),"Navpoint 4");
     --initial wave
     BuildObject("svrecy",2,"bzn64path_0003");
     globals.sb_turr_1 = BuildObject("sbtowe",2,"bzn64path_0001");
