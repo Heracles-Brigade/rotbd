@@ -63,16 +63,18 @@ ObjectiveInstance = {
             self:parentCall('update',...);
         end,
         success = function(self,...)
+            self:kill(); --<-- killed to prevent feedback loop
             self:parentCall('success',...);
             self:_finish();
         end,
         fail = function(self,...)
+            self:kill(); --<-- killed to prevent feedback loop
             self:parentCall('fail',...);
             self:_finish();
         end,
         _finish = function(self,...)
-            self:parentCall('finish',...);
             self:kill();
+            self:parentCall('finish',...);
         end,
         init = function(self,...)
             self:parentCall('init',...);
