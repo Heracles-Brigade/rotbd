@@ -298,7 +298,7 @@ local makeComm = mission.Objective:define("make_comm"):init({
     end,
     success = function(self)
         UpdateObjective(self.otf,"green");
-            (GetTime() + 5);
+        SucceedMission(GetTime() + 5);
     end
 });
 
@@ -308,6 +308,9 @@ function Start()
     SetScrap(2,0);
     SetPilot(2,0);
     
+    
+    SetObjectiveOn(GetRecyclerHandle(1));
+    SetObjectiveOn(GetHandle("bzn64label_0005"));
     --initial wave
     BuildObject("svrecy",2,"bzn64path_0003");
     globals.sb_turr_1 = BuildObject("sbtowe",2,"bzn64path_0001");
