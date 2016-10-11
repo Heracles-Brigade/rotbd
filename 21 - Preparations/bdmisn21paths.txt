@@ -42,7 +42,7 @@ bznpath_0005-0006:
 
 bzn64path_0010-0011:
     2 svfigh spawns, after building turrets 
-bzn64path_0010-0012:
+bzn64path_0012:
     unknown use
 bz64path_0013-0015
     3 avwalkers spawns, all following path towards your recycler 
