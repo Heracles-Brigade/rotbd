@@ -1,4 +1,6 @@
---Mission script created by Mario/Jarle Trollebø
+--Contributors:
+    --Jarle Trollebø(Mario)
+
 
 local mission = require('cmisnlib');
 local globals = {

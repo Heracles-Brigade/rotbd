@@ -2,7 +2,7 @@ local Objective;
 local Listener;
 local ObjectiveInstance;
 local ObjectiveManager;
---Listener 'class' is ued to keep track of callbacks
+--Listener 'class' is used to keep track of callbacks
 --Dosen't do much
 Listener = {
     new = function(cls,event,callback)
