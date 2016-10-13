@@ -144,6 +144,7 @@ function Update()
 	if M.UpdateObjectives then
 	
 		ClearObjectives();
+		M.UpdateObjectives = false;
 		
 		if not M.CommandInfoed then
 			if not IsAlive(M.Command) then
