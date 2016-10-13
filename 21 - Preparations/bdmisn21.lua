@@ -8,9 +8,9 @@ local globals = {
 };
 
 
---Define all objectives
 
 SetAIControl(2,false);
+
 
 local function createWave(odf,path_list,follow)
     local ret = {};
@@ -25,6 +25,7 @@ local function createWave(odf,path_list,follow)
     return unpack(ret);
 end
 
+--Define all objectives
 local deployRecy = mission.Objective:define("deploy_recycler"):init({
     next = 'make_scavs',
     otf = 'bdmisn2101.otf'
@@ -234,8 +235,9 @@ local nsdfAttack = mission.Objective:define("nsdf_attack"):init({
     start = function(self)
         AddObjective(self.otf,"whtie");
         local a,b,camTarget = createWave("avwalk",{"bzn64path_0013","bzn64path_0014","bzn64path_0015"},"bzn64path_001B");
-        local c = createWave("avtank",{"bzn64path_0016"},"bzn64path_001A");
+        local c = createWave("avtank",{"bzn64path_0016"},"bzn64path_001B");
         local d = createWave("avtank",{"bzn64path_0004"},"bzn64path_0018");
+        local f = createWave("svfigh",{"bzn64path_0008","bzn64path_0009"},"bzn64path_0019");
         self.camTarget = camTarget;
         self.camOn = CameraReady();
         self.targets = {
