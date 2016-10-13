@@ -101,13 +101,7 @@ ObjectiveInstance = {
             return save_data;
         end,
         load = function(self,userData)
-            for i,v in pairs(userData) do
-                local data = {};
-                for i2,v2 in pairs(v) do
-                    table.insert(data,v2);
-                end
-                self:parentCall('load',unpack(data));
-            end
+            self:parentCall('load',unpack(userData[1] or {}));
         end
     }
 };
