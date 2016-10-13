@@ -250,7 +250,7 @@ function Update()
 		M.Reinforcements[5] = BuildObject("svhraz", 2, "spawn_svhraz");
 		-- Send the reinforcements to Nav 4.
 		for i = 1, 5 do
-			Goto(M.Reinforcements[i], M.Nav4, 1);
+			Goto(M.Reinforcements[i], M.Nav[4], 1);
 		end
 	end
 	
@@ -260,54 +260,4 @@ function Update()
 		M.MissionWon = true;
 	end
 	
-end
-
--- BuildAngleObject from BZClassic mod. Looks for an object with a specified label, if not present, it spawns it, at the specified angle in degrees (0 = North), at the specified Height, and optionally Empty. Written by General BlackDragon. -- Needs a SetLabel function to fully work as intended. :(
-function BuildAngleObject(Odf, Team, Path, Label, Angle, HeightOffset, Empty)
-
-	local h = 0;
-	
-	if Label ~= nil then
-		h = GetHandle(Label); -- Check to see if it already exists first.
-	end
-	
-	if not IsValid(h) then -- Nope, build it.
-	
-		local BuildPos = GetPosition(Path);
-		local BuildLoc = IdentityMatrix;
-		
-		if BuildPos ~= nil then 
-
-			if Angle == nil then 
-				Angle = 0;
-			end
-			if HeightOffset == nil then
-				HeightOffset = 0;
-			end
-			
-			if not (HeightOffset == 0) then 
-				BuildPos.y = BuildPos.y + HeightOffset;
-			end
-			
-			if (Angle > 0) then 
-				BuildLoc = BuildPositionRotationMatrix(0, math.rad(Angle), 0, BuildPos.x, BuildPos.y, BuildPos.z);
-				h = BuildObject(Odf, Team, BuildLoc);
-				--print("Angle is: ", Angle, " Path name is: ", Path, " Vector Is: ", BuildLoc.posit.x, ", ", BuildLoc.posit.y, ", ", BuildLoc.posit.z);
-			else
-				h = BuildObject(Odf, Team, BuildPos);
-			end
-			
-			if(Empty) then 
-				RemovePilot(h);
-			end
-			
-			SetLabel(h, Label);
-			
-		else
-			print("ERROR: Path: ", Path, " doesn't exist!");
-		end
-		
-	end
-
-	return h;
 end
