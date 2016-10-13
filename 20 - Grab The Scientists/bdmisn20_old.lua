@@ -144,9 +144,14 @@ function Update()
 	if M.UpdateObjectives then
 	
 		ClearObjectives();
+		M.UpdateObjectives = false;
 		
 		if not M.CommandInfoed then
-			AddObjective("bdmisn201.otf", "WHITE");
+			if not IsAlive(M.Command) then
+				AddObjective("bdmisn201.otf", "RED");
+			else
+				AddObjective("bdmisn201.otf", "WHITE");
+			end
 		else
 			AddObjective("bdmisn201.otf", "GREEN");
 			
@@ -258,12 +263,14 @@ function Update()
 	if (not M.MissionOver) and M.Power1Dead and M.Power2Dead and not IsAlive(M.CommTower) then
 		SucceedMission(GetTime()+5.0, "bdmisn20win.des");
 		M.MissionOver = true;
+		M.UpdateObjectives = true;
 	end
 	
 	-- Lose Conditions
 	if (not M.MissionOver) and not M.CommandInfoed and not IsAlive(M.Command) then
 		FailMission(GetTime()+5.0, "bdmisn20lse.des");
 		M.MissionOver = true;
+		M.UpdateObjectives = true;
 	end
 	
 end
