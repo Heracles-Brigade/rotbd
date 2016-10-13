@@ -24,10 +24,10 @@ pos [1] =
 102268
 team [1] =
 1
-label = bzn64label_0001
+label = player
 isUser [1] =
 1
-obj_addr = 0070EA50
+obj_addr = 00B01D68
 transform [1] =
   right_x [1] =
 0.688214
@@ -59,45 +59,45 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-1137.047
+1320.28
   y [1] =
-4.361481
+2.36415
   z [1] =
-102267.8
+102341
 euler =
  mass [1] =
 1750
  mass_inv [1] =
 0.000666667
  v_mag [1] =
-0.00859161
+0.000713013
  v_mag_inv [1] =
-116.393
+1402.5
  I [1] =
 1500
  k_i [1] =
 1
  v [1] =
   x [1] =
-0.00607377
+0.000492253
   y [1] =
--0.000185894
+5.31491e-005
   z [1] =
-0.00607377
+-0.00051308
  omega [1] =
   x [1] =
-0
+-5.23152e-006
   y [1] =
 0
   z [1] =
-0
+0.000100629
  Accel [1] =
   x [1] =
-0.0126378
+-0.00155531
   y [1] =
-0.0126378
+0.00041113
   z [1] =
-0.0126378
+0.00162111
 seqNo [1] =
 105
 name = 
@@ -108,13 +108,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-2
+0
 healthRatio [1] =
 1
 curHealth [1] =
-2800
+3000
 maxHealth [1] =
-2800
+3000
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -148,7 +148,7 @@ pos [1] =
   x [1] =
 349.947
   y [1] =
-6.236729
+6.32724
   z [1] =
 102181
 team [1] =
@@ -156,30 +156,30 @@ team [1] =
 label = bzn64label_0002
 isUser [1] =
 0
-obj_addr = 0070E5A0
+obj_addr = 00B01968
 transform [1] =
   right_x [1] =
--0.861888
+-0.862623
   right_y [1] =
--0.02131373
+-0.00772537
   right_z [1] =
--0.5066592
+-0.505797
   up_x [1] =
--0.05978542
+-0.0498162
   up_y [1] =
-0.9964236
+0.996325
   up_z [1] =
-0.05978542
+0.0697427
   front_x [1] =
-0.5035729
+0.503399
   front_y [1] =
-0.08181916
+0.0853586
   front_z [1] =
--0.8600798
+-0.859837
   posit_x [1] =
 349.947
   posit_y [1] =
-6.236729
+6.32724
   posit_z [1] =
 102181
 abandoned [1] =
@@ -188,11 +188,11 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-348.8605
+348.93
   y [1] =
-13.35506
+13.4633
   z [1] =
-102180.2
+102180
 euler =
  mass [1] =
 1750
@@ -201,7 +201,7 @@ euler =
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1500
  k_i [1] =
@@ -237,13 +237,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-6
+0
 healthRatio [1] =
 1
 curHealth [1] =
-2500
+5000
 maxHealth [1] =
-2500
+5000
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -252,7 +252,7 @@ maxAmmo [1] =
 50000
 priority [1] =
 1
-what = 0F000000
+what = ef000000
 who [1] =
 0
 where = 00000000
@@ -285,12 +285,12 @@ team [1] =
 label = bzn64label_0003
 isUser [1] =
 0
-obj_addr = 0070E0F0
+obj_addr = 00B01568
 transform [1] =
   right_x [1] =
--0.4717
+-0.471701
   right_y [1] =
-0.00430531
+0.0043053
   right_z [1] =
 -0.881753
   up_x [1] =
@@ -315,16 +315,16 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-238.6714
+238.671
   y [1] =
-3.243883
+3.24388
   z [1] =
 102238
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0.043816
  v_mag_inv [1] =
@@ -349,11 +349,11 @@ euler =
 0
  Accel [1] =
   x [1] =
-5.75557E-07
+5.75557e-007
   y [1] =
-5.75557E-07
+5.75557e-007
   z [1] =
-5.75557E-07
+5.75557e-007
 seqNo [1] =
 25
 name = 
@@ -364,7 +364,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-6
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -404,7 +404,7 @@ pos [1] =
   x [1] =
 133.363
   y [1] =
-9.650742
+9.41711
   z [1] =
 101739
 team [1] =
@@ -412,30 +412,30 @@ team [1] =
 label = bzn64label_0004
 isUser [1] =
 0
-obj_addr = 0070DC40
+obj_addr = 00B01168
 transform [1] =
   right_x [1] =
-0.7361714
+0.734851
   right_y [1] =
--0.2587
+-0.265547
   right_z [1] =
-0.6254076
+0.62409
   up_x [1] =
-0.1834922
+0.192799
   up_y [1] =
-0.9657484
+0.963997
   up_z [1] =
-0.1834922
+0.183159
   front_x [1] =
--0.6514558
+-0.650258
   front_y [1] =
--0.02032429
+-0.0142707
   front_z [1] =
-0.7584258
+0.759591
   posit_x [1] =
 133.363
   posit_y [1] =
-9.650742
+9.41711
   posit_z [1] =
 101739
 abandoned [1] =
@@ -444,11 +444,11 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-135.0782
+135.144
   y [1] =
-16.20056
+15.9507
   z [1] =
-101741.6
+101742
 euler =
  mass [1] =
 1750
@@ -457,7 +457,7 @@ euler =
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1500
  k_i [1] =
@@ -493,13 +493,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-6
+0
 healthRatio [1] =
 1
 curHealth [1] =
-2500
+5000
 maxHealth [1] =
-2500
+5000
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -508,7 +508,7 @@ maxAmmo [1] =
 50000
 priority [1] =
 1
-what = 0F000000
+what = ef000000
 who [1] =
 0
 where = 00000000
@@ -533,7 +533,7 @@ pos [1] =
   x [1] =
 190.013
   y [1] =
-11.02045
+11.0402
   z [1] =
 101808
 team [1] =
@@ -541,30 +541,30 @@ team [1] =
 label = bzn64label_0005
 isUser [1] =
 0
-obj_addr = 0070D790
+obj_addr = 00B00D68
 transform [1] =
   right_x [1] =
-0.6419091
+0.642055
   right_y [1] =
--0.01141079
+-0.016574
   right_z [1] =
--0.7667015
+-0.766485
   up_x [1] =
--0.0299627
+-0.00999505
   up_y [1] =
-0.9987566
+0.999505
   up_z [1] =
--0.03995027
+-0.0299851
   front_x [1] =
-0.7662041
+0.766602
   front_y [1] =
-0.04861689
+0.0269132
   front_z [1] =
-0.6407691
+0.641572
   posit_x [1] =
 190.013
   posit_y [1] =
-11.02045
+11.0402
   posit_z [1] =
 101808
 abandoned [1] =
@@ -573,11 +573,11 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-191.0895
+191.232
   y [1] =
-18.14382
+18.1476
   z [1] =
-101807.3
+101807
 euler =
  mass [1] =
 1750
@@ -586,7 +586,7 @@ euler =
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1500
  k_i [1] =
@@ -622,13 +622,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-6
+0
 healthRatio [1] =
 1
 curHealth [1] =
-2500
+5000
 maxHealth [1] =
-2500
+5000
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -637,7 +637,7 @@ maxAmmo [1] =
 50000
 priority [1] =
 1
-what = 0F000000
+what = ef000000
 who [1] =
 0
 where = 00000000
@@ -670,12 +670,12 @@ team [1] =
 label = bzn64label_0006
 isUser [1] =
 0
-obj_addr = 0070D2E0
+obj_addr = 00B00968
 transform [1] =
   right_x [1] =
 0.980866
   right_y [1] =
-0
+-0
   right_z [1] =
 0.194704
   up_x [1] =
@@ -700,20 +700,20 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-247.606
+247.712
   y [1] =
-1.331326
+1.33133
   z [1] =
-101623.5
+101623
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
-3.55271E-16
+3.55271e-016
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
@@ -722,7 +722,7 @@ euler =
   x [1] =
 0
   y [1] =
-3.55271E-16
+3.55271e-016
   z [1] =
 0
  omega [1] =
@@ -749,7 +749,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-6
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -797,14 +797,14 @@ team [1] =
 label = bzn64label_0007
 isUser [1] =
 0
-obj_addr = 0070CE30
+obj_addr = 00B00568
 transform [1] =
   right_x [1] =
 0.362135
   right_y [1] =
--0.00120708
+-0.00120709
   right_z [1] =
-0.93213
+0.932129
   up_x [1] =
 0.00333325
   up_y [1] =
@@ -827,16 +827,16 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-246.3086
+246.309
   y [1] =
-1.811529
+1.81153
   z [1] =
 101613
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0.019599
  v_mag_inv [1] =
@@ -861,11 +861,11 @@ euler =
 0
  Accel [1] =
   x [1] =
-8.75443E-07
+8.75443e-007
   y [1] =
-8.75443E-07
+8.75443e-007
   z [1] =
-8.75443E-07
+8.75443e-007
 seqNo [1] =
 41
 name = 
@@ -876,7 +876,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-6
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -924,12 +924,12 @@ team [1] =
 label = bzn64label_0008
 isUser [1] =
 0
-obj_addr = 0070C980
+obj_addr = 00B00168
 transform [1] =
   right_x [1] =
-0.390276
+0.390277
   right_y [1] =
-0.0026015
+0.00260153
   right_z [1] =
 -0.920699
   up_x [1] =
@@ -954,16 +954,16 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-311.2894
+310.788
   y [1] =
-1.56714
+1.5638
   z [1] =
-101345.2
+101345
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0.0391922
  v_mag_inv [1] =
@@ -978,7 +978,7 @@ euler =
   y [1] =
 -0.000789121
   z [1] =
--1.401298E-45
+-1.4013e-045
  omega [1] =
   x [1] =
 0
@@ -988,11 +988,11 @@ euler =
 0
  Accel [1] =
   x [1] =
--9.24617E-06
+-9.24617e-006
   y [1] =
--9.24617E-06
+-9.24617e-006
   z [1] =
--9.24617E-06
+-9.24617e-006
 seqNo [1] =
 44
 name = 
@@ -1003,7 +1003,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-6
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -1051,12 +1051,12 @@ team [1] =
 label = bzn64label_0009
 isUser [1] =
 0
-obj_addr = 0070C4D0
+obj_addr = 00AFFD68
 transform [1] =
   right_x [1] =
 0.454284
   right_y [1] =
-0
+-5.90119e-005
   right_z [1] =
 0.890862
   up_x [1] =
@@ -1068,7 +1068,7 @@ transform [1] =
   front_x [1] =
 -0.890841
   front_y [1] =
-0.00745199
+0.00745198
   front_z [1] =
 0.454274
   posit_x [1] =
@@ -1081,16 +1081,16 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-519.7758
+520.261
   y [1] =
-22.17297
+22.1689
   z [1] =
-101554.2
+101554
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0.043816
  v_mag_inv [1] =
@@ -1115,11 +1115,11 @@ euler =
 0
  Accel [1] =
   x [1] =
-3.5651E-06
+3.5651e-006
   y [1] =
-3.5651E-06
+3.5651e-006
   z [1] =
-3.5651E-06
+3.5651e-006
 seqNo [1] =
 46
 name = 
@@ -1130,7 +1130,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-6
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -1170,7 +1170,7 @@ pos [1] =
   x [1] =
 752.404
   y [1] =
-27.36806
+27.1681
   z [1] =
 101652
 team [1] =
@@ -1178,30 +1178,30 @@ team [1] =
 label = bzn64label_000A
 isUser [1] =
 0
-obj_addr = 0070C020
+obj_addr = 00AFF968
 transform [1] =
   right_x [1] =
-0.2483188
+0.248319
   right_y [1] =
--0.1227544
+-0.122754
   right_z [1] =
--0.9608735
+-0.960874
   up_x [1] =
-0.0297734
+0.0297732
   up_y [1] =
-0.9924466
+0.992441
   up_z [1] =
--0.1190936
+-0.119093
   front_x [1] =
-0.968235
+0.968229
   front_y [1] =
-0.0009647082
+0.000964699
   front_z [1] =
-0.250098
+0.250097
   posit_x [1] =
 752.404
   posit_y [1] =
-27.36806
+27.1681
   posit_z [1] =
 101652
 abandoned [1] =
@@ -1210,11 +1210,11 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-753.5839
+753.584
   y [1] =
-34.28249
+34.0824
   z [1] =
-101650.2
+101650
 euler =
  mass [1] =
 1750
@@ -1223,7 +1223,7 @@ euler =
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1500
  k_i [1] =
@@ -1259,13 +1259,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
-2500
+5000
 maxHealth [1] =
-2500
+5000
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -1274,7 +1274,7 @@ maxAmmo [1] =
 50000
 priority [1] =
 1
-what = 0F000000
+what = ef000000
 who [1] =
 0
 where = 00000000
@@ -1299,7 +1299,7 @@ pos [1] =
   x [1] =
 654.732
   y [1] =
-33.66214
+33.8095
   z [1] =
 101726
 team [1] =
@@ -1307,30 +1307,30 @@ team [1] =
 label = bzn64label_000B
 isUser [1] =
 0
-obj_addr = 0070BB70
+obj_addr = 00AFF568
 transform [1] =
   right_x [1] =
-0.7817373
+0.781483
   right_y [1] =
--0.05112974
+-0.0434311
   right_z [1] =
--0.6215155
+-0.62242
   up_x [1] =
--0.0297734
+-0.039684
   up_y [1] =
-0.9924466
+0.992099
   up_z [1] =
--0.1190936
+-0.119052
   front_x [1] =
-0.6229101
+0.622673
   front_y [1] =
-0.1116045
+0.117737
   front_z [1] =
-0.7743102
+0.773585
   posit_x [1] =
 654.732
   posit_y [1] =
-33.66214
+33.8095
   posit_z [1] =
 101726
 abandoned [1] =
@@ -1339,9 +1339,9 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-655.8741
+655.803
   y [1] =
-40.73803
+40.8962
   z [1] =
 101725
 euler =
@@ -1352,7 +1352,7 @@ euler =
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1500
  k_i [1] =
@@ -1388,13 +1388,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
-2500
+5000
 maxHealth [1] =
-2500
+5000
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -1403,7 +1403,7 @@ maxAmmo [1] =
 50000
 priority [1] =
 1
-what = 0F000000
+what = ef000000
 who [1] =
 0
 where = 00000000
@@ -1428,7 +1428,7 @@ pos [1] =
   x [1] =
 1121.87
   y [1] =
-1.787829
+1.78783
   z [1] =
 101530
 team [1] =
@@ -1436,30 +1436,30 @@ team [1] =
 label = bzn64label_000C
 isUser [1] =
 0
-obj_addr = 0070B6C0
+obj_addr = 00AFF168
 transform [1] =
   right_x [1] =
-0.9729111
+0.972911
   right_y [1] =
--0.06282464
+-0.0628246
   right_z [1] =
--0.2224988
+-0.222499
   up_x [1] =
-0.05988062
+0.0598806
   up_y [1] =
-0.9980103
+0.99801
   up_z [1] =
--0.01996021
+-0.0199602
   front_x [1] =
-0.2233101
+0.22331
   front_y [1] =
-0.006096145
+0.00609614
   front_z [1] =
-0.9747373
+0.974737
   posit_x [1] =
 1121.87
   posit_y [1] =
-1.787829
+1.78783
   posit_z [1] =
 101530
 abandoned [1] =
@@ -1468,11 +1468,11 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-1123.595
+1123.6
   y [1] =
-8.815757
+8.81576
   z [1] =
-101530.3
+101530
 euler =
  mass [1] =
 1750
@@ -1481,7 +1481,7 @@ euler =
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1500
  k_i [1] =
@@ -1517,13 +1517,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-6
+0
 healthRatio [1] =
 1
 curHealth [1] =
-2500
+5000
 maxHealth [1] =
-2500
+5000
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -1532,7 +1532,7 @@ maxAmmo [1] =
 50000
 priority [1] =
 1
-what = 0F000000
+what = ef000000
 who [1] =
 0
 where = 00000000
@@ -1557,7 +1557,7 @@ pos [1] =
   x [1] =
 1223.07
   y [1] =
-0.7000303
+1.30796
   z [1] =
 101435
 team [1] =
@@ -1565,30 +1565,30 @@ team [1] =
 label = bzn64label_000D
 isUser [1] =
 0
-obj_addr = 0070B210
+obj_addr = 00AFED68
 transform [1] =
   right_x [1] =
-0.4195659
+0.419368
   right_y [1] =
--0.01815096
+-0.0488413
   right_z [1] =
--0.9075482
+-0.906506
   up_x [1] =
-0
+0.0299627
   up_y [1] =
-0.9998044
+0.998757
   up_z [1] =
--0.01999609
+-0.0399503
   front_x [1] =
-0.9077336
+0.90733
   front_y [1] =
-0.008389676
+-0.0104075
   front_z [1] =
-0.4194838
+0.42031
   posit_x [1] =
 1223.07
   posit_y [1] =
-0.7000303
+1.30796
   posit_z [1] =
 101435
 abandoned [1] =
@@ -1597,11 +1597,11 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-1224.197
+1224.41
   y [1] =
-7.794823
+8.34611
   z [1] =
-101434.1
+101434
 euler =
  mass [1] =
 1750
@@ -1610,7 +1610,7 @@ euler =
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1500
  k_i [1] =
@@ -1646,13 +1646,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-6
+0
 healthRatio [1] =
 1
 curHealth [1] =
-2500
+5000
 maxHealth [1] =
-2500
+5000
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -1661,7 +1661,7 @@ maxAmmo [1] =
 50000
 priority [1] =
 1
-what = 0F000000
+what = ef000000
 who [1] =
 0
 where = 00000000
@@ -1691,10 +1691,10 @@ pos [1] =
 101322
 team [1] =
 2
-label = bzn64label_000E
+label = commtower
 isUser [1] =
 0
-obj_addr = 0070AD60
+obj_addr = 00AFE968
 transform [1] =
   right_x [1] =
 -0.456934
@@ -1724,20 +1724,20 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-1015.373
+1015.37
   y [1] =
-17.3099
+17.31
   z [1] =
-101325.1
+101325
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
@@ -1773,7 +1773,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-6
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -1818,10 +1818,10 @@ pos [1] =
 101321
 team [1] =
 2
-label = bzn64label_000F
+label = research
 isUser [1] =
 0
-obj_addr = 0070A8B0
+obj_addr = 00AFE568
 transform [1] =
   right_x [1] =
 -0.433022
@@ -1851,20 +1851,20 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-1120.651
+1120.65
   y [1] =
-5.424799
+5.42482
   z [1] =
-101319.8
+101320
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
@@ -1900,7 +1900,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-6
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -1948,12 +1948,12 @@ team [1] =
 label = bzn64label_0010
 isUser [1] =
 0
-obj_addr = 0070A400
+obj_addr = 00AFE168
 transform [1] =
   right_x [1] =
 0.999435
   right_y [1] =
-0
+-0
   right_z [1] =
 0.0337522
   up_x [1] =
@@ -1978,31 +1978,31 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-1102.352
+1102.37
   y [1] =
-1.331326
+1.33133
   z [1] =
-101269.5
+101269
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
-3.55271E-16
+3.55271e-016
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
 0
  v [1] =
   x [1] =
-1.401298E-45
+1.4013e-045
   y [1] =
--3.55271E-16
+-3.55271e-016
   z [1] =
--1.401298E-45
+-1.4013e-045
  omega [1] =
   x [1] =
 0
@@ -2012,11 +2012,11 @@ euler =
 0
  Accel [1] =
   x [1] =
--7.006492E-45
+-7.00649e-045
   y [1] =
--7.006492E-45
+-7.00649e-045
   z [1] =
--7.006492E-45
+-7.00649e-045
 seqNo [1] =
 64
 name = 
@@ -2027,7 +2027,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-6
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -2075,14 +2075,14 @@ team [1] =
 label = bzn64label_0011
 isUser [1] =
 0
-obj_addr = 00709F50
+obj_addr = 00AFDD68
 transform [1] =
   right_x [1] =
 0.979457
   right_y [1] =
-0
+-0
   right_z [1] =
-0.201677
+0.201676
   up_x [1] =
 0
   up_y [1] =
@@ -2107,18 +2107,18 @@ pos [1] =
   x [1] =
 1101.45
   y [1] =
-0.7745631
+0.774566
   z [1] =
 101264
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
-3.55271E-16
+3.55271e-016
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
@@ -2127,9 +2127,9 @@ euler =
   x [1] =
 0
   y [1] =
--3.55271E-16
+-3.55271e-016
   z [1] =
--1.401298E-45
+-1.4013e-045
  omega [1] =
   x [1] =
 0
@@ -2154,7 +2154,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-6
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -2199,10 +2199,10 @@ pos [1] =
 102189
 team [1] =
 1
-label = bzn64label_0012
+label = nav1
 isUser [1] =
 0
-obj_addr = 00709AA0
+obj_addr = 00AFD968
 transform [1] =
   right_x [1] =
 -0.529048
@@ -2219,7 +2219,7 @@ transform [1] =
   front_x [1] =
 0.848575
   front_y [1] =
-0.00667561
+0.00667563
   front_z [1] =
 -0.52905
   posit_x [1] =
@@ -2232,16 +2232,16 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-277.8248
+277.825
   y [1] =
-5.864258
+5.86426
   z [1] =
 102189
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0.142314
  v_mag_inv [1] =
@@ -2266,11 +2266,11 @@ euler =
 0
  Accel [1] =
   x [1] =
--2.80514E-06
+-2.80514e-006
   y [1] =
--2.80514E-06
+-2.80514e-006
   z [1] =
--2.80514E-06
+-2.80514e-006
 seqNo [1] =
 71
 name = 
@@ -2281,7 +2281,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-6
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -2326,17 +2326,17 @@ pos [1] =
 101340
 team [1] =
 1
-label = bzn64label_0013
+label = nav2
 isUser [1] =
 0
-obj_addr = 007095F0
+obj_addr = 00AFD568
 transform [1] =
   right_x [1] =
 -0.995556
   right_y [1] =
 -0.00285569
   right_z [1] =
-0.0941774
+0.0941775
   up_x [1] =
 -0.00662844
   up_y [1] =
@@ -2359,16 +2359,16 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-270.9285
+270.928
   y [1] =
-1.850711
+1.85071
   z [1] =
-101339.8
+101340
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0.236699
  v_mag_inv [1] =
@@ -2393,11 +2393,11 @@ euler =
 0
  Accel [1] =
   x [1] =
--6.42426E-05
+-6.42426e-005
   y [1] =
--6.42426E-05
+-6.42426e-005
   z [1] =
--6.42426E-05
+-6.42426e-005
 seqNo [1] =
 75
 name = 
@@ -2408,7 +2408,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-6
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -2453,17 +2453,17 @@ pos [1] =
 101313
 team [1] =
 2
-label = bzn64label_0014
+label = power1_1
 isUser [1] =
 0
-obj_addr = 00709140
+obj_addr = 00AFD168
 transform [1] =
   right_x [1] =
 0.997012
   right_y [1] =
-0
+-0
   right_z [1] =
-0.0772999
+0.0772998
   up_x [1] =
 0
   up_y [1] =
@@ -2486,20 +2486,20 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-280.4732
+280.473
   y [1] =
-4.020786
+4.0208
   z [1] =
-101312.8
+101313
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
@@ -2535,7 +2535,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -2580,10 +2580,10 @@ pos [1] =
 101315
 team [1] =
 2
-label = bzn64label_0015
+label = power1_2
 isUser [1] =
 0
-obj_addr = 00708C90
+obj_addr = 00AFCD68
 transform [1] =
   right_x [1] =
 0.998001
@@ -2613,20 +2613,20 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-263.2817
+263.282
   y [1] =
-4.020285
+4.02028
   z [1] =
-101314.8
+101315
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
@@ -2662,7 +2662,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -2707,17 +2707,17 @@ pos [1] =
 101316
 team [1] =
 2
-label = bzn64label_0016
+label = power1_3
 isUser [1] =
 0
-obj_addr = 007087E0
+obj_addr = 00AFC968
 transform [1] =
   right_x [1] =
 0.999441
   right_y [1] =
-0
+-8.55681e-005
   right_z [1] =
--0.0335506
+-0.0335505
   up_x [1] =
 0
   up_y [1] =
@@ -2727,7 +2727,7 @@ transform [1] =
   front_x [1] =
 0.0335507
   front_y [1] =
-0.00255142
+0.00254901
   front_z [1] =
 0.999442
   posit_x [1] =
@@ -2740,20 +2740,20 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-245.1279
+245.129
   y [1] =
-4.020374
+4.02044
   z [1] =
-101315.8
+101316
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
@@ -2789,7 +2789,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -2834,27 +2834,27 @@ pos [1] =
 101317
 team [1] =
 2
-label = bzn64label_0017
+label = power1_4
 isUser [1] =
 0
-obj_addr = 00708330
+obj_addr = 00AFC568
 transform [1] =
   right_x [1] =
 0.998415
   right_y [1] =
--0.000866165
+-0.000863452
   right_z [1] =
--0.0563498
+-0.0563497
   up_x [1] =
-0.000864823
+0.000864826
   up_y [1] =
 1
   up_z [1] =
 0
   front_x [1] =
-0.05635
+0.0563499
   front_y [1] =
-0
+-4.87327e-005
   front_z [1] =
 0.99842
   posit_x [1] =
@@ -2867,20 +2867,20 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-226.9878
+226.988
   y [1] =
-4.020789
+4.02075
   z [1] =
-101316.8
+101317
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
@@ -2916,7 +2916,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -2956,15 +2956,15 @@ pos [1] =
   x [1] =
 596.26
   y [1] =
-20.86996
+20.87
   z [1] =
 101521
 team [1] =
 2
-label = bzn64label_0018
+label = power2_1
 isUser [1] =
 0
-obj_addr = 00707E80
+obj_addr = 00AFC168
 transform [1] =
   right_x [1] =
 -0.0203636
@@ -2987,27 +2987,27 @@ transform [1] =
   posit_x [1] =
 596.26
   posit_y [1] =
-20.86996
+20.87
   posit_z [1] =
 101521
 illumination [1] =
 1
 pos [1] =
   x [1] =
-596.1262
+596.126
   y [1] =
-24.89194
+24.8919
   z [1] =
 101521
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
@@ -3043,7 +3043,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -3083,15 +3083,15 @@ pos [1] =
   x [1] =
 578.65
   y [1] =
-20.89997
+20.9
   z [1] =
 101520
 team [1] =
 2
-label = bzn64label_0019
+label = power2_2
 isUser [1] =
 0
-obj_addr = 007079D0
+obj_addr = 00AFBD68
 transform [1] =
   right_x [1] =
 -0.0570548
@@ -3114,27 +3114,27 @@ transform [1] =
   posit_x [1] =
 578.65
   posit_y [1] =
-20.89997
+20.9
   posit_z [1] =
 101520
 illumination [1] =
 1
 pos [1] =
   x [1] =
-578.4778
+578.478
   y [1] =
-24.91779
+24.9178
   z [1] =
-101520.2
+101520
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
@@ -3170,7 +3170,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -3210,15 +3210,15 @@ pos [1] =
   x [1] =
 561.149
   y [1] =
-20.89997
+20.9
   z [1] =
 101520
 team [1] =
 2
-label = bzn64label_001A
+label = power2_3
 isUser [1] =
 0
-obj_addr = 00707520
+obj_addr = 00AFB968
 transform [1] =
   right_x [1] =
 0.127906
@@ -3241,14 +3241,14 @@ transform [1] =
   posit_x [1] =
 561.149
   posit_y [1] =
-20.89997
+20.9
   posit_z [1] =
 101520
 illumination [1] =
 1
 pos [1] =
   x [1] =
-560.9971
+560.997
   y [1] =
 24.9216
   z [1] =
@@ -3257,11 +3257,11 @@ euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
@@ -3297,7 +3297,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -3337,15 +3337,15 @@ pos [1] =
   x [1] =
 544.408
   y [1] =
-20.85997
+20.86
   z [1] =
 101522
 team [1] =
 2
-label = bzn64label_001B
+label = power2_4
 isUser [1] =
 0
-obj_addr = 00707070
+obj_addr = 00AFB568
 transform [1] =
   right_x [1] =
 0.0774412
@@ -3362,33 +3362,33 @@ transform [1] =
   front_x [1] =
 0.997004
   front_y [1] =
--0.00383042
+-0.00383043
   front_z [1] =
 0.0773651
   posit_x [1] =
 544.408
   posit_y [1] =
-20.85997
+20.86
   posit_z [1] =
 101522
 illumination [1] =
 1
 pos [1] =
   x [1] =
-544.2437
+544.244
   y [1] =
-24.87991
+24.8799
   z [1] =
-101522.1
+101522
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
@@ -3424,7 +3424,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -3464,7 +3464,7 @@ pos [1] =
   x [1] =
 204.342
   y [1] =
-11.14086
+11.1409
   z [1] =
 101797
 team [1] =
@@ -3472,7 +3472,7 @@ team [1] =
 label = bzn64label_001C
 isUser [1] =
 0
-obj_addr = 00706BC0
+obj_addr = 00AFB168
 transform [1] =
   right_x [1] =
 0.937018
@@ -3495,27 +3495,27 @@ transform [1] =
   posit_x [1] =
 204.342
   posit_y [1] =
-11.14086
+11.1409
   posit_z [1] =
 101797
 illumination [1] =
 1
 pos [1] =
   x [1] =
-204.1606
+204.161
   y [1] =
-15.14497
+15.145
   z [1] =
-101796.6
+101797
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
@@ -3551,7 +3551,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -3591,7 +3591,7 @@ pos [1] =
   x [1] =
 142.463
   y [1] =
-9.335753
+9.33575
   z [1] =
 101727
 team [1] =
@@ -3599,14 +3599,14 @@ team [1] =
 label = bzn64label_001D
 isUser [1] =
 0
-obj_addr = 00706710
+obj_addr = 00AFAD68
 transform [1] =
   right_x [1] =
--0.497387
+-0.497386
   right_y [1] =
--0.0244807
+-0.0244804
   right_z [1] =
-0.867188
+0.867189
   up_x [1] =
 0.156894
   up_y [1] =
@@ -3622,27 +3622,27 @@ transform [1] =
   posit_x [1] =
 142.463
   posit_y [1] =
-9.335753
+9.33575
   posit_z [1] =
 101727
 illumination [1] =
 1
 pos [1] =
   x [1] =
-143.2403
+143.24
   y [1] =
-13.24511
+13.2451
   z [1] =
-101727.6
+101728
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
@@ -3678,7 +3678,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -3718,7 +3718,7 @@ pos [1] =
   x [1] =
 342.957
   y [1] =
-4.754688
+4.75469
   z [1] =
 102194
 team [1] =
@@ -3726,7 +3726,7 @@ team [1] =
 label = bzn64label_001E
 isUser [1] =
 0
-obj_addr = 00706260
+obj_addr = 00AFA968
 transform [1] =
   right_x [1] =
 -0.304377
@@ -3743,33 +3743,33 @@ transform [1] =
   front_x [1] =
 -0.952519
   front_y [1] =
-0.00383685
+0.00383682
   front_z [1] =
 -0.304483
   posit_x [1] =
 342.957
   posit_y [1] =
-4.754688
+4.75469
   posit_z [1] =
 102194
 illumination [1] =
 1
 pos [1] =
   x [1] =
-343.0849
+343.085
   y [1] =
-8.771441
+8.77144
   z [1] =
-102194.2
+102194
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
@@ -3805,7 +3805,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -3845,7 +3845,7 @@ pos [1] =
   x [1] =
 644.172
   y [1] =
-34.33333
+34.3333
   z [1] =
 101735
 team [1] =
@@ -3853,14 +3853,14 @@ team [1] =
 label = bzn64label_001F
 isUser [1] =
 0
-obj_addr = 00705DB0
+obj_addr = 00AFA568
 transform [1] =
   right_x [1] =
 0.298749
   right_y [1] =
 -0.03516
   right_z [1] =
--0.953688
+-0.953689
   up_x [1] =
 -0.00999155
   up_y [1] =
@@ -3876,7 +3876,7 @@ transform [1] =
   posit_x [1] =
 644.172
   posit_y [1] =
-34.33333
+34.3333
   posit_z [1] =
 101735
 illumination [1] =
@@ -3885,18 +3885,18 @@ pos [1] =
   x [1] =
 643.968
   y [1] =
-38.34707
+38.3471
   z [1] =
-101734.8
+101735
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
@@ -3932,7 +3932,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -3972,22 +3972,22 @@ pos [1] =
   x [1] =
 735.336
   y [1] =
-27.10681
+27.1068
   z [1] =
 101645
 team [1] =
 2
-label = bzn64label_0020
+label = power1
 isUser [1] =
 0
-obj_addr = 00705900
+obj_addr = 00AFA168
 transform [1] =
   right_x [1] =
 -0.857236
   right_y [1] =
 -0.0342619
   right_z [1] =
--0.513791
+-0.513792
   up_x [1] =
 -0.00998707
   up_y [1] =
@@ -3997,33 +3997,33 @@ transform [1] =
   front_x [1] =
 0.514838
   front_y [1] =
--0.0376751
+-0.037675
   front_z [1] =
 -0.856469
   posit_x [1] =
 735.336
   posit_y [1] =
-27.10681
+27.1068
   posit_z [1] =
 101645
 illumination [1] =
 1
 pos [1] =
   x [1] =
-735.2075
+735.207
   y [1] =
 31.1289
   z [1] =
-101644.9
+101645
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
@@ -4059,7 +4059,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -4099,7 +4099,7 @@ pos [1] =
   x [1] =
 1208.62
   y [1] =
-0.2824155
+0.282416
   z [1] =
 101431
 team [1] =
@@ -4107,14 +4107,14 @@ team [1] =
 label = bzn64label_0021
 isUser [1] =
 0
-obj_addr = 00705450
+obj_addr = 00AF9D68
 transform [1] =
   right_x [1] =
 0.371017
   right_y [1] =
-0.00928585
+0.00928584
   right_z [1] =
--0.928585
+-0.928584
   up_x [1] =
 0
   up_y [1] =
@@ -4130,27 +4130,27 @@ transform [1] =
   posit_x [1] =
 1208.62
   posit_y [1] =
-0.2824155
+0.282415
   posit_z [1] =
 101431
 illumination [1] =
 1
 pos [1] =
   x [1] =
-1208.461
+1208.46
   y [1] =
-4.303685
+4.30369
   z [1] =
 101431
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
@@ -4186,7 +4186,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -4234,14 +4234,14 @@ team [1] =
 label = bzn64label_0022
 isUser [1] =
 0
-obj_addr = 00704FA0
+obj_addr = 00AF9968
 transform [1] =
   right_x [1] =
--0.523603
+-0.523602
   right_y [1] =
 0.0471242
   right_z [1] =
-0.850663
+0.850664
   up_x [1] =
 0.0896381
   up_y [1] =
@@ -4264,20 +4264,20 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-1118.576
+1118.58
   y [1] =
-6.381948
+6.38195
   z [1] =
-101515.1
+101515
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
@@ -4313,7 +4313,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -4353,7 +4353,7 @@ pos [1] =
   x [1] =
 1161.26
   y [1] =
-1.864429
+1.837
   z [1] =
 102252
 team [1] =
@@ -4361,12 +4361,12 @@ team [1] =
 label = bzn64label_0023
 isUser [1] =
 0
-obj_addr = 00704AF0
+obj_addr = 00AF9568
 transform [1] =
   right_x [1] =
 -0.622201
   right_y [1] =
-0.00674052
+0.00674053
   right_z [1] =
 -0.782834
   up_x [1] =
@@ -4384,7 +4384,7 @@ transform [1] =
   posit_x [1] =
 1161.26
   posit_y [1] =
-1.864429
+1.837
   posit_z [1] =
 102252
 abandoned [1] =
@@ -4393,11 +4393,11 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-1161.004
+1161
   y [1] =
-3.235286
+3.20786
   z [1] =
-102252.2
+102252
 euler =
  mass [1] =
 1750
@@ -4442,13 +4442,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-2
+0
 healthRatio [1] =
 1
 curHealth [1] =
-2800
+3000
 maxHealth [1] =
-2800
+3000
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -4482,7 +4482,7 @@ pos [1] =
   x [1] =
 1153.22
   y [1] =
-2.439016
+2.37475
   z [1] =
 102260
 team [1] =
@@ -4490,12 +4490,12 @@ team [1] =
 label = bzn64label_0024
 isUser [1] =
 0
-obj_addr = 00704640
+obj_addr = 00AF9168
 transform [1] =
   right_x [1] =
 -0.700471
   right_y [1] =
-0.00843424
+0.00843426
   right_z [1] =
 -0.713637
   up_x [1] =
@@ -4513,7 +4513,7 @@ transform [1] =
   posit_x [1] =
 1153.22
   posit_y [1] =
-2.439016
+2.37475
   posit_z [1] =
 102260
 abandoned [1] =
@@ -4522,11 +4522,11 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-1152.984
+1152.98
   y [1] =
-3.808063
+3.7438
   z [1] =
-102260.3
+102260
 euler =
  mass [1] =
 1750
@@ -4571,13 +4571,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-2
+0
 healthRatio [1] =
 1
 curHealth [1] =
-2800
+3000
 maxHealth [1] =
-2800
+3000
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -4611,7 +4611,7 @@ pos [1] =
   x [1] =
 1144.51
   y [1] =
-3.289414
+3.38941
   z [1] =
 102246
 team [1] =
@@ -4619,12 +4619,12 @@ team [1] =
 label = bzn64label_0025
 isUser [1] =
 0
-obj_addr = 00704190
+obj_addr = 00AF8D68
 transform [1] =
   right_x [1] =
 -0.72211
   right_y [1] =
-0.0125254
+0.0125253
   right_z [1] =
 -0.691671
   up_x [1] =
@@ -4642,7 +4642,7 @@ transform [1] =
   posit_x [1] =
 1144.51
   posit_y [1] =
-3.289414
+3.38941
   posit_z [1] =
 102246
 abandoned [1] =
@@ -4651,11 +4651,11 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-1144.678
+1144.68
   y [1] =
-5.061769
+5.16177
   z [1] =
-102245.9
+102246
 euler =
  mass [1] =
 1750
@@ -4700,7 +4700,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-2
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -4740,18 +4740,18 @@ pos [1] =
   x [1] =
 396.619
   y [1] =
-10.3977
+9.67674
   z [1] =
 102139
 team [1] =
 2
-label = bzn64label_0026
+label = patrol1_1
 isUser [1] =
 0
-obj_addr = 00703CE0
+obj_addr = 00AF8968
 transform [1] =
   right_x [1] =
-0.868456
+0.868455
   right_y [1] =
 0.127885
   right_z [1] =
@@ -4765,13 +4765,13 @@ transform [1] =
   front_x [1] =
 -0.480115
   front_y [1] =
--0.023998
+-0.0239982
   front_z [1] =
 0.876887
   posit_x [1] =
 396.619
   posit_y [1] =
-10.3977
+9.67674
   posit_z [1] =
 102139
 abandoned [1] =
@@ -4780,9 +4780,9 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-396.4722
+396.472
   y [1] =
-11.38265
+10.6617
   z [1] =
 102139
 euler =
@@ -4829,13 +4829,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
-950
+1900
 maxHealth [1] =
-950
+1900
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -4847,7 +4847,7 @@ priority [1] =
 what = 03000000
 who [1] =
 0
-where = 00E17540
+where = 098E8E10
 param [1] =
 0
 aiProcess [1] =
@@ -4869,15 +4869,15 @@ pos [1] =
   x [1] =
 267.728
   y [1] =
-3.266659
+2.73207
   z [1] =
 102294
 team [1] =
 2
-label = bzn64label_0027
+label = patrol1_2
 isUser [1] =
 0
-obj_addr = 00703830
+obj_addr = 00AF8568
 transform [1] =
   right_x [1] =
 0.995045
@@ -4900,7 +4900,7 @@ transform [1] =
   posit_x [1] =
 267.728
   posit_y [1] =
-3.266659
+2.73207
   posit_z [1] =
 102294
 abandoned [1] =
@@ -4909,11 +4909,11 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-267.6985
+267.699
   y [1] =
-4.258573
+3.72398
   z [1] =
-102293.9
+102294
 euler =
  mass [1] =
 1750
@@ -4958,13 +4958,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
-0.999474
+0.998947
 curHealth [1] =
-949
+1898
 maxHealth [1] =
-950
+1900
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -4976,7 +4976,7 @@ priority [1] =
 what = 03000000
 who [1] =
 0
-where = 00E17540
+where = 098E8E10
 param [1] =
 0
 aiProcess [1] =
@@ -4998,15 +4998,15 @@ pos [1] =
   x [1] =
 513.145
   y [1] =
-24.21264
+23.667
   z [1] =
 101577
 team [1] =
 2
-label = bzn64label_0028
+label = patrol2_1
 isUser [1] =
 0
-obj_addr = 00703380
+obj_addr = 00AF8168
 transform [1] =
   right_x [1] =
 -0.920479
@@ -5029,7 +5029,7 @@ transform [1] =
   posit_x [1] =
 513.145
   posit_y [1] =
-24.21264
+23.667
   posit_z [1] =
 101577
 abandoned [1] =
@@ -5038,11 +5038,11 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-513.0333
+513.033
   y [1] =
-25.19647
+24.6508
   z [1] =
-101576.9
+101577
 euler =
  mass [1] =
 1750
@@ -5087,13 +5087,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
-950
+1900
 maxHealth [1] =
-950
+1900
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -5105,7 +5105,7 @@ priority [1] =
 what = 03000000
 who [1] =
 0
-where = 00E17420
+where = 098E8FC8
 param [1] =
 0
 aiProcess [1] =
@@ -5127,22 +5127,22 @@ pos [1] =
   x [1] =
 561.536
   y [1] =
-31.17457
+30.456
   z [1] =
 101714
 team [1] =
 2
-label = bzn64label_0029
+label = patrol2_2
 isUser [1] =
 0
-obj_addr = 00702ED0
+obj_addr = 00AF7D68
 transform [1] =
   right_x [1] =
--0.59763
+-0.597629
   right_y [1] =
-0.0641847
+0.0641849
   right_z [1] =
-0.799204
+0.799205
   up_x [1] =
 -0.106028
   up_y [1] =
@@ -5152,13 +5152,13 @@ transform [1] =
   front_x [1] =
 -0.79474
   front_y [1] =
--0.179239
+-0.17924
   front_z [1] =
 -0.579896
   posit_x [1] =
 561.536
   posit_y [1] =
-31.17457
+30.456
   posit_z [1] =
 101714
 abandoned [1] =
@@ -5167,11 +5167,11 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-561.3912
+561.391
   y [1] =
-32.1421
+31.4235
   z [1] =
-101713.8
+101714
 euler =
  mass [1] =
 1750
@@ -5216,13 +5216,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
-950
+1900
 maxHealth [1] =
-950
+1900
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -5234,7 +5234,7 @@ priority [1] =
 what = 03000000
 who [1] =
 0
-where = 00E17420
+where = 098E8FC8
 param [1] =
 0
 aiProcess [1] =
@@ -5256,20 +5256,20 @@ pos [1] =
   x [1] =
 1193.17
   y [1] =
-2.615826
+1.6683
   z [1] =
 101329
 team [1] =
 2
-label = bzn64label_002A
+label = patrol3_1
 isUser [1] =
 0
-obj_addr = 00702A20
+obj_addr = 00AF7968
 transform [1] =
   right_x [1] =
 -0.986665
   right_y [1] =
--0.106507
+-0.106506
   right_z [1] =
 -0.123117
   up_x [1] =
@@ -5287,7 +5287,7 @@ transform [1] =
   posit_x [1] =
 1193.17
   posit_y [1] =
-2.615826
+1.6683
   posit_z [1] =
 101329
 abandoned [1] =
@@ -5296,11 +5296,11 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-1193.074
+1193.07
   y [1] =
-3.603367
+2.65584
   z [1] =
-101328.9
+101329
 euler =
  mass [1] =
 1750
@@ -5345,13 +5345,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
-950
+1900
 maxHealth [1] =
-950
+1900
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -5363,7 +5363,7 @@ priority [1] =
 what = 03000000
 who [1] =
 0
-where = 00E172E0
+where = 098E8FF0
 param [1] =
 0
 aiProcess [1] =
@@ -5385,22 +5385,22 @@ pos [1] =
   x [1] =
 773.865
   y [1] =
-20.01015
+19.4906
   z [1] =
 101221
 team [1] =
 2
-label = bzn64label_002B
+label = patrol3_2
 isUser [1] =
 0
-obj_addr = 00702570
+obj_addr = 00AF7568
 transform [1] =
   right_x [1] =
 0.930686
   right_y [1] =
-0.0598556
+0.0598554
   right_z [1] =
-0.360901
+0.360902
   up_x [1] =
 0.0234602
   up_y [1] =
@@ -5416,7 +5416,7 @@ transform [1] =
   posit_x [1] =
 773.865
   posit_y [1] =
-20.01015
+19.4906
   posit_z [1] =
 101221
 abandoned [1] =
@@ -5425,11 +5425,11 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-773.8702
+773.87
   y [1] =
-20.99028
+20.4708
   z [1] =
-101220.8
+101221
 euler =
  mass [1] =
 1750
@@ -5474,13 +5474,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
-950
+1900
 maxHealth [1] =
-950
+1900
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -5492,7 +5492,7 @@ priority [1] =
 what = 03000000
 who [1] =
 0
-where = 00E172E0
+where = 098E8FF0
 param [1] =
 0
 aiProcess [1] =
@@ -5519,10 +5519,10 @@ pos [1] =
 101265
 team [1] =
 1
-label = bzn64label_002C
+label = relic
 isUser [1] =
 0
-obj_addr = 007020C0
+obj_addr = 00AF7168
 transform [1] =
   right_x [1] =
 0.00968605
@@ -5539,7 +5539,7 @@ transform [1] =
   front_x [1] =
 0.999962
   front_y [1] =
-0
+-0
   front_z [1] =
 0.00968609
   posit_x [1] =
@@ -5552,20 +5552,20 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-1082.776
+1082.78
   y [1] =
-1.525309
+1.52532
   z [1] =
 101265
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
@@ -5601,7 +5601,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -5646,15 +5646,15 @@ pos [1] =
 101546
 team [1] =
 1
-label = bzn64label_002D
+label = nav3
 isUser [1] =
 0
-obj_addr = 00701C10
+obj_addr = 00AF6D68
 transform [1] =
   right_x [1] =
 0.459652
   right_y [1] =
--0.0103026
+-0.0103027
   right_z [1] =
 -0.888044
   up_x [1] =
@@ -5666,7 +5666,7 @@ transform [1] =
   front_x [1] =
 0.888102
   front_y [1] =
-0.00908291
+0.00908294
   front_z [1] =
 0.459576
   posit_x [1] =
@@ -5679,16 +5679,16 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-569.5208
+569.521
   y [1] =
-22.55899
+22.559
   z [1] =
 101546
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0.0807443
  v_mag_inv [1] =
@@ -5713,11 +5713,11 @@ euler =
 0
  Accel [1] =
   x [1] =
--1.20327E-06
+-1.20327e-006
   y [1] =
--1.20327E-06
+-1.20327e-006
   z [1] =
--1.20327E-06
+-1.20327e-006
 seqNo [1] =
 110
 name = 
@@ -5728,7 +5728,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-6
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -5773,10 +5773,10 @@ pos [1] =
 101403
 team [1] =
 1
-label = bzn64label_002E
+label = nav4
 isUser [1] =
 0
-obj_addr = 00701760
+obj_addr = 00AF6968
 transform [1] =
   right_x [1] =
 0.443833
@@ -5793,7 +5793,7 @@ transform [1] =
   front_x [1] =
 0.896118
   front_y [1] =
-0
+-0
   front_z [1] =
 0.443835
   posit_x [1] =
@@ -5806,16 +5806,16 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-1109.456
+1109.46
   y [1] =
-2.857889
+2.8579
   z [1] =
-101403.1
+101403
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0.000306491
  v_mag_inv [1] =
@@ -5855,7 +5855,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-6
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -5895,7 +5895,7 @@ pos [1] =
   x [1] =
 623.437
   y [1] =
-21.1
+21.2
   z [1] =
 101554
 team [1] =
@@ -5903,7 +5903,7 @@ team [1] =
 label = bzn64label_002F
 isUser [1] =
 0
-obj_addr = 007012B0
+obj_addr = 00AF6568
 transform [1] =
   right_x [1] =
 -0.547759
@@ -5926,11 +5926,11 @@ transform [1] =
   posit_x [1] =
 623.437
   posit_y [1] =
-21.1
+21.2
   posit_z [1] =
 101554
 undeffloat [1] =
-0.7
+2
 undeffloat [1] =
 0
 undeffloat [1] =
@@ -5941,18 +5941,18 @@ undefraw = 02000000
 undeffloat [1] =
 -0.100004
 undefbool [1] =
-False
+false
 abandoned [1] =
 0
 illumination [1] =
 1
 pos [1] =
   x [1] =
-623.2065
+623.207
   y [1] =
-23.14617
+23.2462
   z [1] =
-101553.4
+101553
 euler =
  mass [1] =
 1750
@@ -5961,7 +5961,7 @@ euler =
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1500
  k_i [1] =
@@ -5997,13 +5997,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
-1100
+2200
 maxHealth [1] =
-1100
+2200
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -6045,12 +6045,12 @@ team [1] =
 label = bzn64label_0030
 isUser [1] =
 0
-obj_addr = 00700E00
+obj_addr = 00AF6168
 transform [1] =
   right_x [1] =
 0.287101
   right_y [1] =
-0
+-0
   right_z [1] =
 0.957905
   up_x [1] =
@@ -6072,7 +6072,7 @@ transform [1] =
   posit_z [1] =
 101596
 undeffloat [1] =
-0.7
+2
 undeffloat [1] =
 0
 undeffloat [1] =
@@ -6083,18 +6083,18 @@ undefraw = 02000000
 undeffloat [1] =
 -0.100004
 undefbool [1] =
-False
+false
 abandoned [1] =
 0
 illumination [1] =
 1
 pos [1] =
   x [1] =
-561.1868
+561.187
   y [1] =
-23.24618
+23.2462
   z [1] =
-101596.7
+101597
 euler =
  mass [1] =
 1750
@@ -6103,7 +6103,7 @@ euler =
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1500
  k_i [1] =
@@ -6139,13 +6139,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
-1100
+2200
 maxHealth [1] =
-1100
+2200
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -6179,7 +6179,7 @@ pos [1] =
   x [1] =
 310.474
   y [1] =
-2.033897
+1.37963
   z [1] =
 101378
 team [1] =
@@ -6187,12 +6187,12 @@ team [1] =
 label = bzn64label_0031
 isUser [1] =
 0
-obj_addr = 00700950
+obj_addr = 00AF5D68
 transform [1] =
   right_x [1] =
-0.305193
+0.305194
   right_y [1] =
--0.00403396
+-0.00403391
   right_z [1] =
 -0.952286
   up_x [1] =
@@ -6210,11 +6210,11 @@ transform [1] =
   posit_x [1] =
 310.474
   posit_y [1] =
-2.033897
+1.37963
   posit_z [1] =
 101378
 undeffloat [1] =
-0.7
+2
 undeffloat [1] =
 0
 undeffloat [1] =
@@ -6225,18 +6225,18 @@ undefraw = 02000000
 undeffloat [1] =
 -0.100004
 undefbool [1] =
-False
+false
 abandoned [1] =
 0
 illumination [1] =
 1
 pos [1] =
   x [1] =
-310.6689
+310.669
   y [1] =
-4.083599
+3.42933
   z [1] =
-101377.4
+101377
 euler =
  mass [1] =
 1750
@@ -6245,7 +6245,7 @@ euler =
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1500
  k_i [1] =
@@ -6281,13 +6281,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
-1100
+2200
 maxHealth [1] =
-1100
+2200
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -6321,7 +6321,7 @@ pos [1] =
   x [1] =
 217.805
   y [1] =
-1.089856
+0.80396
   z [1] =
 101364
 team [1] =
@@ -6329,7 +6329,7 @@ team [1] =
 label = bzn64label_0032
 isUser [1] =
 0
-obj_addr = 007004A0
+obj_addr = 00AF5968
 transform [1] =
   right_x [1] =
 0.121779
@@ -6352,11 +6352,11 @@ transform [1] =
   posit_x [1] =
 217.805
   posit_y [1] =
-1.089856
+0.80396
   posit_z [1] =
 101364
 undeffloat [1] =
-0.7
+2
 undeffloat [1] =
 0
 undeffloat [1] =
@@ -6367,7 +6367,7 @@ undefraw = 02000000
 undeffloat [1] =
 -0.100004
 undefbool [1] =
-False
+false
 abandoned [1] =
 0
 illumination [1] =
@@ -6376,9 +6376,9 @@ pos [1] =
   x [1] =
 217.795
   y [1] =
-3.162804
+2.87691
   z [1] =
-101364.6
+101365
 euler =
  mass [1] =
 1750
@@ -6387,7 +6387,7 @@ euler =
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1500
  k_i [1] =
@@ -6423,13 +6423,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
-1100
+2200
 maxHealth [1] =
-1100
+2200
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -6471,7 +6471,7 @@ team [1] =
 label = bzn64label_0033
 isUser [1] =
 0
-obj_addr = 006FFFF0
+obj_addr = 00AF5568
 transform [1] =
   right_x [1] =
 0.995114
@@ -6488,7 +6488,7 @@ transform [1] =
   front_x [1] =
 0.0987815
   front_y [1] =
-0
+-0
   front_z [1] =
 0.995118
   posit_x [1] =
@@ -6498,7 +6498,7 @@ transform [1] =
   posit_z [1] =
 101293
 undeffloat [1] =
-0.7
+2
 undeffloat [1] =
 0
 undeffloat [1] =
@@ -6509,18 +6509,18 @@ undefraw = 02000000
 undeffloat [1] =
 -0.100004
 undefbool [1] =
-False
+false
 abandoned [1] =
 0
 illumination [1] =
 1
 pos [1] =
   x [1] =
-1024.167
+1024.17
   y [1] =
-2.546175
+2.54618
   z [1] =
-101293.1
+101293
 euler =
  mass [1] =
 1750
@@ -6529,7 +6529,7 @@ euler =
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1500
  k_i [1] =
@@ -6565,13 +6565,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
-1100
+2200
 maxHealth [1] =
-1100
+2200
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -6605,7 +6605,7 @@ pos [1] =
   x [1] =
 1008.81
   y [1] =
-1.233375
+2.11771
   z [1] =
 101361
 team [1] =
@@ -6613,7 +6613,7 @@ team [1] =
 label = bzn64label_0034
 isUser [1] =
 0
-obj_addr = 006FFB40
+obj_addr = 00AF5168
 transform [1] =
   right_x [1] =
 -0.686742
@@ -6636,11 +6636,11 @@ transform [1] =
   posit_x [1] =
 1008.81
   posit_y [1] =
-1.233375
+2.11771
   posit_z [1] =
 101361
 undeffloat [1] =
-0.7
+2
 undeffloat [1] =
 0
 undeffloat [1] =
@@ -6651,18 +6651,18 @@ undefraw = 02000000
 undeffloat [1] =
 -0.100004
 undefbool [1] =
-False
+false
 abandoned [1] =
 0
 illumination [1] =
 1
 pos [1] =
   x [1] =
-1008.237
+1008.24
   y [1] =
-3.27955
+4.16389
   z [1] =
-101361.4
+101361
 euler =
  mass [1] =
 1750
@@ -6671,7 +6671,7 @@ euler =
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1500
  k_i [1] =
@@ -6707,13 +6707,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
-1100
+2200
 maxHealth [1] =
-1100
+2200
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -6747,7 +6747,7 @@ pos [1] =
   x [1] =
 1147.88
   y [1] =
-0.5211998
+1.24243
   z [1] =
 101390
 team [1] =
@@ -6755,7 +6755,7 @@ team [1] =
 label = bzn64label_0035
 isUser [1] =
 0
-obj_addr = 006FF690
+obj_addr = 00AF4D68
 transform [1] =
   right_x [1] =
 -0.883588
@@ -6772,17 +6772,17 @@ transform [1] =
   front_x [1] =
 -0.468264
   front_y [1] =
-0.00155693
+0.00155691
   front_z [1] =
 -0.883597
   posit_x [1] =
 1147.88
   posit_y [1] =
-0.5211998
+1.24243
   posit_z [1] =
 101390
 undeffloat [1] =
-0.7
+2
 undeffloat [1] =
 0
 undeffloat [1] =
@@ -6793,18 +6793,18 @@ undefraw = 02000000
 undeffloat [1] =
 -0.0130028
 undefbool [1] =
-False
+false
 abandoned [1] =
 0
 illumination [1] =
 1
 pos [1] =
   x [1] =
-1147.225
+1147.22
   y [1] =
-2.569593
+3.29082
   z [1] =
-101390.2
+101390
 euler =
  mass [1] =
 1750
@@ -6813,7 +6813,7 @@ euler =
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1500
  k_i [1] =
@@ -6849,13 +6849,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
-1100
+2200
 maxHealth [1] =
-1100
+2200
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -6889,7 +6889,7 @@ pos [1] =
   x [1] =
 323.2
   y [1] =
-12.23982
+12.1618
   z [1] =
 102041
 team [1] =
@@ -6897,7 +6897,7 @@ team [1] =
 label = bzn64label_0036
 isUser [1] =
 0
-obj_addr = 006FF1E0
+obj_addr = 00AF4968
 transform [1] =
   right_x [1] =
 -0.757458
@@ -6914,17 +6914,17 @@ transform [1] =
   front_x [1] =
 0.65286
   front_y [1] =
-0.00831031
+0.00831035
   front_z [1] =
 -0.757444
   posit_x [1] =
 323.2
   posit_y [1] =
-12.23982
+12.1618
   posit_z [1] =
 102041
 undeffloat [1] =
-0.7
+2
 undeffloat [1] =
 0
 undeffloat [1] =
@@ -6935,18 +6935,18 @@ undefraw = 02000000
 undeffloat [1] =
 -0.100004
 undefbool [1] =
-False
+false
 abandoned [1] =
 0
 illumination [1] =
 1
 pos [1] =
   x [1] =
-322.8143
+322.814
   y [1] =
-14.29759
+14.2196
   z [1] =
-102040.5
+102040
 euler =
  mass [1] =
 1750
@@ -6955,7 +6955,7 @@ euler =
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1500
  k_i [1] =
@@ -6991,13 +6991,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
-1100
+2200
 maxHealth [1] =
-1100
+2200
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -7031,7 +7031,7 @@ pos [1] =
   x [1] =
 474.933
   y [1] =
-11.54406
+11.146
   z [1] =
 102085
 team [1] =
@@ -7039,7 +7039,7 @@ team [1] =
 label = bzn64label_0037
 isUser [1] =
 0
-obj_addr = 006FED30
+obj_addr = 00AF4568
 transform [1] =
   right_x [1] =
 -0.384642
@@ -7062,11 +7062,11 @@ transform [1] =
   posit_x [1] =
 474.933
   posit_y [1] =
-11.54406
+11.146
   posit_z [1] =
 102085
 undeffloat [1] =
-0.7
+2
 undeffloat [1] =
 0
 undeffloat [1] =
@@ -7077,18 +7077,18 @@ undefraw = 02000000
 undeffloat [1] =
 -0.100004
 undefbool [1] =
-False
+false
 abandoned [1] =
 0
 illumination [1] =
 1
 pos [1] =
   x [1] =
-474.7637
+474.764
   y [1] =
-13.57236
+13.1743
   z [1] =
-102084.3
+102084
 euler =
  mass [1] =
 1750
@@ -7097,7 +7097,7 @@ euler =
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1500
  k_i [1] =
@@ -7133,13 +7133,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
-1100
+2200
 maxHealth [1] =
-1100
+2200
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -7173,20 +7173,20 @@ pos [1] =
   x [1] =
 207.361
   y [1] =
-3.993504
+3.9935
   z [1] =
 102204
 team [1] =
 2
-label = bzn64label_0038
+label = command
 isUser [1] =
 0
-obj_addr = 006FE880
+obj_addr = 00AF4168
 transform [1] =
   right_x [1] =
--0.715462
+-0.715463
   right_y [1] =
--0.00280645
+-0.00280646
   right_z [1] =
 -0.698652
   up_x [1] =
@@ -7204,27 +7204,27 @@ transform [1] =
   posit_x [1] =
 207.361
   posit_y [1] =
-3.993504
+3.9935
   posit_z [1] =
 102204
 illumination [1] =
 1
 pos [1] =
   x [1] =
-209.427
+199.906
   y [1] =
-11.8945
+11.8572
   z [1] =
-102208.6
+102199
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
@@ -7260,7 +7260,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-6
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -7300,7 +7300,7 @@ pos [1] =
   x [1] =
 316.265
   y [1] =
-7.186674
+7.14669
   z [1] =
 102146
 team [1] =
@@ -7308,30 +7308,30 @@ team [1] =
 label = bzn64label_0000
 isUser [1] =
 0
-obj_addr = 006FE3D0
+obj_addr = 00AF3D68
 transform [1] =
   right_x [1] =
--0.7403284
+-0.740645
   right_y [1] =
-0.07044396
+0.063787
   right_z [1] =
--0.6685508
+-0.668869
   up_x [1] =
-0.04987568
+0.049898
   up_y [1] =
-0.9975137
+0.997961
   up_z [1] =
-0.04987568
+0.0399184
   front_x [1] =
-0.6704021
+0.670051
   front_y [1] =
-0.003579953
+-0.00380987
   front_z [1] =
--0.7420011
+-0.742317
   posit_x [1] =
 316.265
   posit_y [1] =
-7.186674
+7.14669
   posit_z [1] =
 102146
 abandoned [1] =
@@ -7340,9 +7340,9 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-316.2178
+316.217
   y [1] =
-14.36595
+14.3162
   z [1] =
 102145
 euler =
@@ -7353,7 +7353,7 @@ euler =
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1500
  k_i [1] =
@@ -7389,13 +7389,13 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
-2500
+5000
 maxHealth [1] =
-2500
+5000
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -7404,7 +7404,7 @@ maxAmmo [1] =
 50000
 priority [1] =
 1
-what = 0F000000
+what = ef000000
 who [1] =
 0
 where = 00000000
@@ -7429,7 +7429,7 @@ pos [1] =
   x [1] =
 302.451
   y [1] =
-6.684343
+6.68434
   z [1] =
 102154
 team [1] =
@@ -7437,7 +7437,7 @@ team [1] =
 label = bzn64label_0039
 isUser [1] =
 0
-obj_addr = 006FDF20
+obj_addr = 00AF3968
 transform [1] =
   right_x [1] =
 -0.681893
@@ -7460,7 +7460,7 @@ transform [1] =
   posit_x [1] =
 302.451
   posit_y [1] =
-6.684343
+6.68434
   posit_z [1] =
 102154
 illumination [1] =
@@ -7469,18 +7469,18 @@ pos [1] =
   x [1] =
 303.463
   y [1] =
-10.36155
+10.3615
   z [1] =
-102155.3
+102155
 euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
@@ -7516,7 +7516,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
+0
 healthRatio [1] =
 1
 curHealth [1] =
@@ -7564,7 +7564,7 @@ team [1] =
 label = bzn64label_003A
 isUser [1] =
 0
-obj_addr = 006FDA70
+obj_addr = 00AF3568
 transform [1] =
   right_x [1] =
 0.759333
@@ -7581,7 +7581,7 @@ transform [1] =
   front_x [1] =
 0.650712
   front_y [1] =
-0
+-0
   front_z [1] =
 0.759336
   posit_x [1] =
@@ -7603,11 +7603,11 @@ euler =
  mass [1] =
 0
  mass_inv [1] =
-1E+30
+1e+030
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1
  k_i [1] =
@@ -7643,9 +7643,9 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-4
-healthRatio [1] =
 0
+healthRatio [1] =
+1
 curHealth [1] =
 0
 maxHealth [1] =
@@ -7683,7 +7683,7 @@ pos [1] =
   x [1] =
 244.741
   y [1] =
-1.64744
+1.69484
   z [1] =
 101360
 team [1] =
@@ -7691,7 +7691,7 @@ team [1] =
 label = bzn64label_003B
 isUser [1] =
 0
-obj_addr = 006FD5C0
+obj_addr = 00AF3168
 transform [1] =
   right_x [1] =
 1
@@ -7710,11 +7710,11 @@ transform [1] =
   front_y [1] =
 0
   front_z [1] =
-1
+1.00001
   posit_x [1] =
 244.741
   posit_y [1] =
-1.64744
+1.69484
   posit_z [1] =
 101360
 abandoned [1] =
@@ -7723,9 +7723,9 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-245.0266
+245.027
   y [1] =
-3.597636
+3.64504
   z [1] =
 101360
 euler =
@@ -7736,7 +7736,7 @@ euler =
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1500
  k_i [1] =
@@ -7776,9 +7776,9 @@ seen [1] =
 healthRatio [1] =
 1
 curHealth [1] =
-1500
+3000
 maxHealth [1] =
-1500
+3000
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -7820,7 +7820,7 @@ team [1] =
 label = bzn64label_003C
 isUser [1] =
 0
-obj_addr = 006FD110
+obj_addr = 00AF2D68
 transform [1] =
   right_x [1] =
 1
@@ -7839,7 +7839,7 @@ transform [1] =
   front_y [1] =
 0
   front_z [1] =
-1
+1.00001
   posit_x [1] =
 622.972
   posit_y [1] =
@@ -7852,7 +7852,7 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-623.2576
+623.258
   y [1] =
 24.1502
   z [1] =
@@ -7865,7 +7865,7 @@ euler =
  v_mag [1] =
 0
  v_mag_inv [1] =
-1E+30
+1e+030
  I [1] =
 1500
  k_i [1] =
@@ -7905,9 +7905,9 @@ seen [1] =
 healthRatio [1] =
 1
 curHealth [1] =
-1500
+3000
 maxHealth [1] =
-1500
+3000
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -7933,19 +7933,19 @@ sspilo
 perceivedTeam [1] =
 2
 name = LuaMission
-sObject = 00E175C0
+sObject = 099A4500
 [AiMission]
 [AOIs]
 size [1] =
 0
 [AiPaths]
 count [1] =
-41
+34
 [AiPath]
-old_ptr = 4075E100
+old_ptr = 108e8e09
 size [1] =
-14
-label = bzn64path_0001
+8
+label = patrol_1
 pointCount [1] =
 14
 points [14] =
@@ -8007,10 +8007,10 @@ points [14] =
 102111
 pathType = 02000000
 [AiPath]
-old_ptr = 2074E100
+old_ptr = c88f8e09
 size [1] =
-14
-label = bzn64path_0002
+8
+label = patrol_2
 pointCount [1] =
 18
 points [18] =
@@ -8088,10 +8088,10 @@ points [18] =
 101788
 pathType = 02000000
 [AiPath]
-old_ptr = E072E100
+old_ptr = f08f8e09
 size [1] =
-14
-label = bzn64path_0003
+8
+label = patrol_3
 pointCount [1] =
 30
 points [30] =
@@ -8217,10 +8217,10 @@ points [30] =
 101563
 pathType = 02000000
 [AiPath]
-old_ptr = 4071E100
+old_ptr = 58918e09
 size [1] =
-14
-label = bzn64path_0004
+11
+label = spawn_tank1
 pointCount [1] =
 1
 points [1] =
@@ -8230,10 +8230,10 @@ points [1] =
 101219
 pathType = 00000000
 [AiPath]
-old_ptr = 9070E100
+old_ptr = 40908e09
 size [1] =
-14
-label = bzn64path_0005
+11
+label = spawn_tank2
 pointCount [1] =
 1
 points [1] =
@@ -8243,10 +8243,10 @@ points [1] =
 101207
 pathType = 00000000
 [AiPath]
-old_ptr = 406ADE00
+old_ptr = 68908e09
 size [1] =
-14
-label = bzn64path_0006
+11
+label = spawn_tank3
 pointCount [1] =
 1
 points [1] =
@@ -8256,10 +8256,10 @@ points [1] =
 101195
 pathType = 00000000
 [AiPath]
-old_ptr = 1060DE00
+old_ptr = a8918e09
 size [1] =
-14
-label = bzn64path_0007
+9
+label = spawn_apc
 pointCount [1] =
 1
 points [1] =
@@ -8269,10 +8269,10 @@ points [1] =
 101187
 pathType = 00000000
 [AiPath]
-old_ptr = 7051DE00
+old_ptr = b8908e09
 size [1] =
-14
-label = bzn64path_0008
+9
+label = spawn_tug
 pointCount [1] =
 1
 points [1] =
@@ -8282,7 +8282,7 @@ points [1] =
 101175
 pathType = 00000000
 [AiPath]
-old_ptr = C076DE00
+old_ptr = 20928e09
 size [1] =
 14
 label = bzn64path_A8B0
@@ -8299,7 +8299,7 @@ points [2] =
 101724
 pathType = 00000000
 [AiPath]
-old_ptr = 60D9DE00
+old_ptr = b0938e09
 size [1] =
 14
 label = bzn64path_614C
@@ -8316,7 +8316,7 @@ points [2] =
 101510
 pathType = 00000000
 [AiPath]
-old_ptr = 50DEDE00
+old_ptr = 48928e09
 size [1] =
 14
 label = bzn64path_349E
@@ -8333,7 +8333,7 @@ points [2] =
 101178
 pathType = 00000000
 [AiPath]
-old_ptr = 90B3DE00
+old_ptr = 70928e09
 size [1] =
 14
 label = bzn64path_2ADD
@@ -8350,7 +8350,7 @@ points [2] =
 101724
 pathType = 00000000
 [AiPath]
-old_ptr = A0E4DE00
+old_ptr = d8938e09
 size [1] =
 14
 label = bzn64path_7D60
@@ -8367,7 +8367,7 @@ points [2] =
 101178
 pathType = 00000000
 [AiPath]
-old_ptr = 80A0DE00
+old_ptr = e8928e09
 size [1] =
 14
 label = bzn64path_D780
@@ -8384,7 +8384,7 @@ points [2] =
 101178
 pathType = 00000000
 [AiPath]
-old_ptr = 50F0DE00
+old_ptr = 10938e09
 size [1] =
 14
 label = bzn64path_6E75
@@ -8401,7 +8401,7 @@ points [2] =
 101178
 pathType = 00000000
 [AiPath]
-old_ptr = 6002DF00
+old_ptr = 38938e09
 size [1] =
 14
 label = bzn64path_6C74
@@ -8418,7 +8418,7 @@ points [2] =
 101178
 pathType = 00000000
 [AiPath]
-old_ptr = 30F0DF00
+old_ptr = 28948e09
 size [1] =
 14
 label = bzn64path_0000
@@ -8435,7 +8435,7 @@ points [2] =
 101178
 pathType = 00000000
 [AiPath]
-old_ptr = C0E9DF00
+old_ptr = 88938e09
 size [1] =
 14
 label = bzn64path_0009
@@ -8448,7 +8448,7 @@ points [1] =
 101752
 pathType = 00000000
 [AiPath]
-old_ptr = C083DF00
+old_ptr = 98928e09
 size [1] =
 14
 label = bzn64path_6365
@@ -8465,10 +8465,10 @@ points [2] =
 101178
 pathType = 00000000
 [AiPath]
-old_ptr = C061E000
+old_ptr = c0928e09
 size [1] =
-14
-label = bzn64path_000A
+11
+label = opening_cin
 pointCount [1] =
 7
 points [7] =
@@ -8502,10 +8502,10 @@ points [7] =
 101269
 pathType = 00000000
 [AiPath]
-old_ptr = 3060E000
+old_ptr = 50948e09
 size [1] =
-14
-label = bzn64path_000B
+10
+label = convoy_cin
 pointCount [1] =
 7
 points [7] =
@@ -8539,7 +8539,7 @@ points [7] =
 101240
 pathType = 00000000
 [AiPath]
-old_ptr = 40F0E000
+old_ptr = 78948e09
 size [1] =
 14
 label = bzn64path_000C
@@ -8556,7 +8556,7 @@ points [2] =
 101696
 pathType = 00000000
 [AiPath]
-old_ptr = 808FE100
+old_ptr = 00948e09
 size [1] =
 14
 label = bzn64path_000D
@@ -8569,7 +8569,7 @@ points [1] =
 101212
 pathType = 00000000
 [AiPath]
-old_ptr = E08EE100
+old_ptr = 60938e09
 size [1] =
 14
 label = bzn64path_000E
@@ -8582,7 +8582,7 @@ points [1] =
 101205
 pathType = 00000000
 [AiPath]
-old_ptr = 408EE100
+old_ptr = a0948e09
 size [1] =
 14
 label = bzn64path_000F
@@ -8599,24 +8599,7 @@ points [2] =
 101209
 pathType = 00000000
 [AiPath]
-old_ptr = 908DE100
-size [1] =
-14
-label = bzn64path_0000
-pointCount [1] =
-2
-points [2] =
-  x [1] =
-533.939
-  z [1] =
-101665
-  x [1] =
-531
-  z [1] =
-101661
-pathType = 00000000
-[AiPath]
-old_ptr = E08CE100
+old_ptr = b87d8e09
 size [1] =
 14
 label = bzn64path_0010
@@ -8629,7 +8612,7 @@ points [1] =
 101158
 pathType = 00000000
 [AiPath]
-old_ptr = 308CE100
+old_ptr = 48dd8e09
 size [1] =
 14
 label = bzn64path_0011
@@ -8642,7 +8625,7 @@ points [1] =
 101212
 pathType = 00000000
 [AiPath]
-old_ptr = 908BE100
+old_ptr = 78da8e09
 size [1] =
 14
 label = bzn64path_0012
@@ -8659,10 +8642,10 @@ points [2] =
 101140
 pathType = 00000000
 [AiPath]
-old_ptr = E08AE100
+old_ptr = f8dc8e09
 size [1] =
-14
-label = bzn64path_0013
+13
+label = spawn_svfigh1
 pointCount [1] =
 1
 points [1] =
@@ -8672,10 +8655,10 @@ points [1] =
 101131
 pathType = 00000000
 [AiPath]
-old_ptr = 308AE100
+old_ptr = 70dd8e09
 size [1] =
-14
-label = bzn64path_0014
+13
+label = spawn_svfigh2
 pointCount [1] =
 1
 points [1] =
@@ -8685,10 +8668,10 @@ points [1] =
 101131
 pathType = 00000000
 [AiPath]
-old_ptr = 8089E100
+old_ptr = 98dd8e09
 size [1] =
-14
-label = bzn64path_0015
+13
+label = spawn_svrckt1
 pointCount [1] =
 1
 points [1] =
@@ -8698,10 +8681,10 @@ points [1] =
 101131
 pathType = 00000000
 [AiPath]
-old_ptr = D088E100
+old_ptr = 08dc8e09
 size [1] =
-14
-label = bzn64path_0016
+13
+label = spawn_svrckt2
 pointCount [1] =
 1
 points [1] =
@@ -8711,10 +8694,10 @@ points [1] =
 101128
 pathType = 00000000
 [AiPath]
-old_ptr = 2088E100
+old_ptr = e8dd8e09
 size [1] =
-14
-label = bzn64path_0017
+12
+label = spawn_svhraz
 pointCount [1] =
 1
 points [1] =
@@ -8724,7 +8707,7 @@ points [1] =
 101128
 pathType = 00000000
 [AiPath]
-old_ptr = 7087E100
+old_ptr = 20dd8e09
 size [1] =
 14
 label = bzn64path_0018
@@ -8735,174 +8718,4 @@ points [1] =
 214.337
   z [1] =
 102083
-pathType = 00000000
-[AiPath]
-old_ptr = D086E100
-size [1] =
-14
-label = bzn64path_0000
-pointCount [1] =
-3
-points [3] =
-  x [1] =
-404.92
-  z [1] =
-102117
-  x [1] =
-401.022
-  z [1] =
-102129
-  x [1] =
-399.01
-  z [1] =
-102169
-pathType = 00000000
-[AiPath]
-old_ptr = 3086E100
-size [1] =
-14
-label = bzn64path_0000
-pointCount [1] =
-7
-points [7] =
-  x [1] =
-339.783
-  z [1] =
-102263
-  x [1] =
-339.783
-  z [1] =
-102263
-  x [1] =
-338.007
-  z [1] =
-102264
-  x [1] =
-338.007
-  z [1] =
-102264
-  x [1] =
-336.038
-  z [1] =
-102265
-  x [1] =
-280
-  z [1] =
-102305
-  x [1] =
-278.736
-  z [1] =
-102319
-pathType = 00000000
-[AiPath]
-old_ptr = 7085E100
-size [1] =
-14
-label = bzn64path_0000
-pointCount [1] =
-4
-points [4] =
-  x [1] =
-577.672
-  z [1] =
-101729
-  x [1] =
-577.672
-  z [1] =
-101729
-  x [1] =
-577.596
-  z [1] =
-101730
-  x [1] =
-531
-  z [1] =
-101713
-pathType = 00000000
-[AiPath]
-old_ptr = C084E100
-size [1] =
-14
-label = bzn64path_0000
-pointCount [1] =
-6
-points [6] =
-  x [1] =
-1215.56
-  z [1] =
-101361
-  x [1] =
-1205
-  z [1] =
-101355
-  x [1] =
-1203.48
-  z [1] =
-101351
-  x [1] =
-1196.45
-  z [1] =
-101332
-  x [1] =
-1196.45
-  z [1] =
-101332
-  x [1] =
-1230.31
-  z [1] =
-101271
-pathType = 00000000
-[AiPath]
-old_ptr = 0084E100
-size [1] =
-14
-label = bzn64path_0000
-pointCount [1] =
-7
-points [7] =
-  x [1] =
-512.766
-  z [1] =
-101611
-  x [1] =
-512.766
-  z [1] =
-101611
-  x [1] =
-514.394
-  z [1] =
-101610
-  x [1] =
-514.394
-  z [1] =
-101610
-  x [1] =
-515.911
-  z [1] =
-101609
-  x [1] =
-515.911
-  z [1] =
-101609
-  x [1] =
-461.052
-  z [1] =
-101501
-pathType = 00000000
-[AiPath]
-old_ptr = 4083E100
-size [1] =
-14
-label = bzn64path_0000
-pointCount [1] =
-2
-points [2] =
-  x [1] =
-1087.67
-  z [1] =
-101138
-  x [1] =
-1016.98
-  z [1] =
-101183
 pathType = 00000000
