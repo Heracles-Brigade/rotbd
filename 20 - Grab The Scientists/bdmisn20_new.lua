@@ -73,7 +73,7 @@ local checkCommand = mission.Objective:define("checkCommand"):init({
     end,
     fail = function(self)
         UpdateObjective(self.otf,"red");
-        FailMission(5);
+        FailMission(GetTime() + 5,"bdmisn20lse.des");
     end
 });
 
