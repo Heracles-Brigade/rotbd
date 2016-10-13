@@ -146,7 +146,11 @@ function Update()
 		ClearObjectives();
 		
 		if not M.CommandInfoed then
-			AddObjective("bdmisn201.otf", "WHITE");
+			if not IsAlive(M.Command) then
+				AddObjective("bdmisn201.otf", "RED");
+			else
+				AddObjective("bdmisn201.otf", "WHITE");
+			end
 		else
 			AddObjective("bdmisn201.otf", "GREEN");
 			
