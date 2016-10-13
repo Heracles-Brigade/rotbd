@@ -14,7 +14,7 @@ Power2Dead = false, -- Destroyed all of Power2?
 Patrol3Dead = false, -- Spawn more enemies!
 TugGotRelic = false, -- Did it pick it up?
 TugAway = false, -- Tug / APC gone.
-MissionWon = false, -- Yay!
+MissionOver = false, -- Yay!
 
 -- Floats (realy doubles in Lua)
 
@@ -255,9 +255,15 @@ function Update()
 	end
 	
 	-- Win Conditions:
-	if (not M.MissionWon) and M.Power1Dead and M.Power2Dead and not IsAlive(M.CommTower) then
+	if (not M.MissionOver) and M.Power1Dead and M.Power2Dead and not IsAlive(M.CommTower) then
 		SucceedMission(GetTime()+5.0, "bdmisn20win.des");
-		M.MissionWon = true;
+		M.MissionOver = true;
+	end
+	
+	-- Lose Conditions
+	if (not M.MissionOver) and not M.CommandInfoed and not IsAlive(M.Command) then
+		FailMission(GetTime()+5.0, "bdmisn20lse.des");
+		M.MissionOver = true;
 	end
 	
 end
