@@ -48,7 +48,7 @@ SetObjectiveOff(Recy)? (needs confirmation)
 
 When both GT's are destroyed:
 SetObjectiveOff(svrecy).
----spawn 2 svfigh(path_0008, path_0009), ??? nope? triggered by something else? Never occured for me? -- INVESTIGATE THIS. Omit for now.
+---spawn 2 svfigh(path_0008, path_0009), ??? nope? triggered by something else? Never occured for me? -- INVESTIGATE THIS. Omit for now. might have mistaken a different spawn.
 spawn 3 avwalk(path_0013, path_0014, path_0015), goto path_001B.
 spawn 2 avtank(path_0016, path_0004), goto(path_001B? path_0017?), (far tank: Goto path_0018).
 CameraPath path_0017 target: avwalk(@path_0015) (one heading to recy),
