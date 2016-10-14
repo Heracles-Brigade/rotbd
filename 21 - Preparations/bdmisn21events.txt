@@ -1,49 +1,66 @@
-start scrap: 10
-start pilots: 5
+Starting objects:
 
-spawn enemy base:
-    svrecy(path_0003)
-    sbturr(path_0001-0002) infinite health until objective 7
-    
-Wave1/Objective 1. 
-3 svfigh attack, about 20 seconds? probably started from across map(path_0005-0007).
+Player Recycler: label_0017
+CCA Base Geyser: label_0022
+Nav1: label_0002
+Nav2: label_0003
+Nav3: label_0004
+Nav4: label_0005
+
+
+On Start:
+
+SetScrap(1, 10)
+SetPilot(1, 5)
+spawn 1 svrecy(path_0003) and 2 sbtowe(path_0001, path_0002) 
+Wave1/Objective 1, white. 
+3 svfigh spawn (path_0005, path_006, path_0007). Goto path_0019.
+SetObjectiveOn(Recycler);
+
+Before objective 7:
+if GetDistance(Player, Recycler) > 700, FailMission(GetTime()+5.0, "bdmisn21ls1.des");
+addhealth to svrecy, and both sbtowe. (IMPROVEMENT: To make truly invincible, save maxhealth, SetMaxHealth(h, 0), then after objective 7 SetMaxHealth back to saved value).
 
 When recycler deploys, objective 1 green, objective 2 white.
 
-When 2nd scavenger is complete, Objective 2 green, objective 3 white.
+When recycler deploys, after 120 seconds, spawn 2 svfigh (path_0005, path_0006), Goto path_0019.
 
-2 more svfigh attack, (path_000C-000D)
+When 2nd scavenger is complete, Objective 2 green, objective 3 white.
+spawn 2 svfigh, (path_000C, path_000D), goto path_0018.
 
 When scrap is >= 20, clear objectives, objective 4 white.
 
 When factory is complete, objective 4 green, objective 5 white.
-
-2 more svfigh(path_000C-000D).
+spawn 2 svfigh, (path_000C, path_000D), goto path_0018.
 
 When built 3 new tanks and 1 new bomber, objective 5 green, objective 6 white.
-
-2 more svfigh(path_000C-000D) does nothing, never commanded by script.
-2 svscav(000A-000B)
+2 more svfigh(path_000C, path_000D), does nothing, never commanded by script. (Bug in original? Goto path_0018)
+2 sbspow(path_000E, path_000F) 
+2 svscav(path_000A, path_000B)
 
 When 3 turrets built, objective 6 green.
+spawn 2 svfigh(path_0010, path_0011). Goto path_001A.
 
-2 more svfigh(path_0010-0011).
-
-
-50 seconds? later, Objective 7 white, wave 2. spawn sbspow(path_000e-000f) and objectify that and a svrecy(path_0003).
-
+45 seconds after 3 turrets built, Objective 7 white, wave 2. 
+SetObjectiveOn(svrecy), SetObjectiveOn(sbtowe1), SetObjectiveOn(sbtowe2)
+svrecy, and sbtowes no longer addhealth.
+SetObjectiveOff(Recy)? (needs confirmation)
 
 When both GT's are destroyed:
-Unobjectify svrecy
+SetObjectiveOff(svrecy).
+---spawn 2 svfigh(path_0008, path_0009), ??? nope? triggered by something else? Never occured for me? -- INVESTIGATE THIS. Omit for now.
+spawn 3 avwalk(path_0013, path_0014, path_0015), goto path_001B.
+spawn 2 avtank(path_0016, path_0004), goto(path_001B? path_0017?), (far tank: Goto path_0018).
 CameraPath path_0017 target: avwalk(@path_0015) (one heading to recy),
+SetObjectiveOn all attackers. 
+SetObjectiveOn Recycler.
 Wave 3, objecitve 8 white. 
 
-Spawn several NDFG units:
-2 svfigh(path_0008-0009)
-3 avwalk(path_0013-0015), 
-2 avtank(path_0016,0004), 
-all objectified. 1 tank attack player? 2 walk and 1 tank attack recy. Objectify myrecy.
-
+When all attackers are dead, nothing happens, mission objectives don't update. IMPROVEMENT: Re-direct to destroy svrecy/setobjectiveon svrecy again?
 
 When enemy recy is dead, clear objectives, objective 9.
+
+When comm tower is built, SucceedMission(GetTime()+5.0, "bdmisn21win.des");
+
+If your recycler is destroyed, FailMission(GetTime(), "bdmisn21ls2.des");
 
