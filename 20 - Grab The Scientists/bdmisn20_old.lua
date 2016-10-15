@@ -74,10 +74,6 @@ function AddObject(h)
 
 	local Team = GetTeamNum(h);
 
-	if M.StopScript == 0 then
-
-	end
-
 end
 
 function DeleteObject(h)
@@ -260,7 +256,7 @@ function Update()
 	end
 	
 	-- Win Conditions:
-	if (not M.MissionOver) and M.Power1Dead and M.Power2Dead and not IsAlive(M.CommTower) then
+	if (not M.MissionOver) and M.Power1Dead and M.Power2Dead and M.CommandInfoed and not IsAlive(M.CommTower) then
 		SucceedMission(GetTime()+5.0, "bdmisn20win.des");
 		M.MissionOver = true;
 		M.UpdateObjectives = true;

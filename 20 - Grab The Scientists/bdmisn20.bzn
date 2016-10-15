@@ -112,9 +112,9 @@ seen [1] =
 healthRatio [1] =
 1
 curHealth [1] =
-3000
+2800
 maxHealth [1] =
-3000
+2800
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -136,7 +136,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-asuser
+bsuser
 perceivedTeam [1] =
 1
 [GameObject]

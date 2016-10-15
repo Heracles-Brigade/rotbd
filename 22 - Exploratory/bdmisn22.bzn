@@ -12,7 +12,7 @@ size [1] =
 64
 [GameObject]
 PrjID [1] =
-asuser
+bsuser
 seqno [1] =
 868
 pos [1] =
@@ -538,7 +538,7 @@ pos [1] =
 100171
 team [1] =
 2
-label = bzn64label_0005
+label = supply
 isUser [1] =
 0
 obj_addr = 00B00D68
@@ -665,7 +665,7 @@ pos [1] =
 100187
 team [1] =
 2
-label = bzn64label_0006
+label = tug
 isUser [1] =
 0
 obj_addr = 00B00968
@@ -1178,7 +1178,7 @@ pos [1] =
 100192
 team [1] =
 2
-label = bzn64label_0009
+label = recy
 isUser [1] =
 0
 obj_addr = 00AFF968
@@ -2899,7 +2899,7 @@ pos [1] =
 101012
 team [1] =
 2
-label = bzn64label_0016
+label = hangar
 isUser [1] =
 0
 obj_addr = 00AFC568
@@ -3026,7 +3026,7 @@ pos [1] =
 101087
 team [1] =
 2
-label = bzn64label_0017
+label = radar1
 isUser [1] =
 0
 obj_addr = 00AFC168
@@ -3534,7 +3534,7 @@ pos [1] =
 101081
 team [1] =
 1
-label = bzn64label_001B
+label = nav1
 isUser [1] =
 0
 obj_addr = 00AFB168
@@ -3661,7 +3661,7 @@ pos [1] =
 100121
 team [1] =
 1
-label = bzn64label_001C
+label = nav2
 isUser [1] =
 0
 obj_addr = 00AFAD68
@@ -3788,7 +3788,7 @@ pos [1] =
 99992.2
 team [1] =
 1
-label = bzn64label_001D
+label = nav3
 isUser [1] =
 0
 obj_addr = 00AFA968
@@ -3915,7 +3915,7 @@ pos [1] =
 99280.1
 team [1] =
 1
-label = bzn64label_001E
+label = nav4
 isUser [1] =
 0
 obj_addr = 00AFA568
@@ -4685,7 +4685,7 @@ pos [1] =
 100568
 team [1] =
 1
-label = bzn64label_0024
+label = nav5
 isUser [1] =
 0
 obj_addr = 00AF8D68
@@ -6725,7 +6725,7 @@ pos [1] =
 100015
 team [1] =
 2
-label = bzn64label_0031
+label = radar3
 isUser [1] =
 0
 obj_addr = 00AF4D68
@@ -7110,7 +7110,7 @@ pos [1] =
 100222
 team [1] =
 2
-label = bzn64label_0033
+label = radar2
 isUser [1] =
 0
 obj_addr = 00AF4168
@@ -7237,7 +7237,7 @@ pos [1] =
 99922
 team [1] =
 2
-label = bzn64label_0034
+label = control
 isUser [1] =
 0
 obj_addr = 00AF3D68
@@ -8128,7 +8128,7 @@ pos [1] =
 99241.5
 team [1] =
 2
-label = bzn64label_003B
+label = mammoth
 isUser [1] =
 0
 obj_addr = 00AF2168
@@ -8255,8 +8255,8 @@ count [1] =
 [AiPath]
 old_ptr = a84e7302
 size [1] =
-14
-label = bzn64path_0001
+12
+label = spawn_radar2
 pointCount [1] =
 1
 points [1] =
@@ -8633,8 +8633,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = e84a7302
 size [1] =
-14
-label = bzn64path_0012
+11
+label = camera_path
 pointCount [1] =
 13
 points [13] =
@@ -8741,8 +8741,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = c8477302
 size [1] =
-14
-label = bzn64path_0014
+12
+label = spawn_radar1
 pointCount [1] =
 1
 points [1] =
@@ -8767,8 +8767,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 204a7302
 size [1] =
-14
-label = bzn64path_0016
+12
+label = spawn_radar3
 pointCount [1] =
 1
 points [1] =
