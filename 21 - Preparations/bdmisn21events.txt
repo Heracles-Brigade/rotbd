@@ -44,16 +44,14 @@ spawn 2 svfigh(path_0010, path_0011). Goto path_001A.
 45 seconds after 3 turrets built, Objective 7 white, wave 2. 
 SetObjectiveOn(svrecy), SetObjectiveOn(sbtowe1), SetObjectiveOn(sbtowe2)
 svrecy, and sbtowes no longer addhealth.
-SetObjectiveOff(Recy)? (needs confirmation)
 
 When both GT's are destroyed:
 SetObjectiveOff(svrecy).
----spawn 2 svfigh(path_0008, path_0009), ??? nope? triggered by something else? Never occured for me? -- INVESTIGATE THIS. Omit for now. might have mistaken a different spawn.
+spawn 2 svfigh(path_0008, path_0009), Goto path_0019.
 spawn 3 avwalk(path_0013, path_0014, path_0015), goto path_001B.
 spawn 2 avtank(path_0016, path_0004), goto(path_001B? path_0017?), (far tank: Goto path_0018).
 CameraPath path_0017 target: avwalk(@path_0015) (one heading to recy),
 SetObjectiveOn all attackers. 
-SetObjectiveOn Recycler.
 Wave 3, objecitve 8 white. 
 
 When all attackers are dead, nothing happens, mission objectives don't update. IMPROVEMENT: Re-direct to destroy svrecy/setobjectiveon svrecy again?
