@@ -6,7 +6,7 @@ local mission = require('cmisnlib');
 local globals = {
     keepGTsAtFullHealth = true
 };
-
+local tracker = mission.UnitTracker:new();
 
 
 SetAIControl(2,false);
@@ -46,7 +46,6 @@ local deployRecy = mission.Objective:define("deploy_recycler"):init({
 });
 
 local makeScavs = mission.Objective:define("make_scavs"):init({
-    scav_count = 0,
     next = 'get_scrap',
     otf = 'bdmisn2102.otf'
 }):setListeners({
@@ -54,23 +53,15 @@ local makeScavs = mission.Objective:define("make_scavs"):init({
         SetObjectiveOff(GetHandle("bzn64label_0005"));
         AddObjective(self.otf,"white");
     end,
-    add_object = function(self,handle)
-        if(GetClassLabel(handle) == "scavenger" and GetTeamNum(handle) == 1) then
-            self.scav_count = self.scav_count + 1;
-        end
-        if(self.scav_count >= 2) then
+    update = function(self)
+        --Check if player has 2 scavengers
+        if(tracker:gotOfClass("scavenger",2)) then
             self:success();
         end
     end,
     success = function(self)
         UpdateObjective(self.otf,"green");
         mission.Objective:Start(self.next);
-    end,
-    save = function(self)
-        return self.scav_count;
-    end,
-    load = function(self,...)
-        self.scav_count = ...;
     end
 });
 
@@ -84,7 +75,6 @@ local getScrap = mission.Objective:define('get_scrap'):init({
     end,
     update = function(self)
         if(GetScrap(1) >= 20) then
-            print("Scrap done!")
             self:success();
         end
     end,
@@ -100,12 +90,9 @@ local makeFactory = mission.Objective:define("make_factory"):init({
 }):setListeners({
     start = function(self)
         AddObjective(self.otf,"white");
-        if(IsAlive(GetFactoryHandle(1))) then
-            self:success();
-        end
     end,
-    add_object = function(self,handle)
-        if(GetClassLabel(handle) == "factory" and GetTeamNum(handle) == 1) then
+    update = function(self)
+        if(tracker:gotOfClass("factory",1)) then
             self:success();
         end
     end,
@@ -115,30 +102,19 @@ local makeFactory = mission.Objective:define("make_factory"):init({
     end
 });
 
-
-
-
 local makeOffensive = mission.Objective:define("make_offensive"):init({
     next = 'make_defensive',
-    tank_count = 0,
-    bomber_count = 0,
     otf = 'bdmisn2105.otf'
 }):setListeners({
     start = function(self)
         AddObjective(self.otf,"white");
         createWave("svfigh",{"bzn64path_000C","bzn64path_000D"},"bzn64path_0018");
+        self.tracker = mission.UnitTracker:new();
     end,
-    add_object = function(self,handle)
-        if(GetTeamNum(handle) == 1) then
-            if(IsOdf(handle,"bvtank")) then
-                self.tank_count = self.tank_count + 1;
-            end
-            if(IsOdf(handle,"bvhraz")) then
-                self.bomber_count = self.bomber_count + 1;
-            end
-            if(self.bomber_count >= 1 and self.tank_count >= 3) then
-                self:success();
-            end
+    update = function(self)
+        --Check if got 3 more tanks + 1 bomber, since mission start
+        if(self.tracker:gotOfOdf("bvtank",3) and self.tracker:gotOfOdf("bvhraz",1)) then
+            self:success();
         end
     end,
     success = function(self)
@@ -146,10 +122,13 @@ local makeOffensive = mission.Objective:define("make_offensive"):init({
         mission.Objective:Start(self.next);
     end,
     save = function(self)
-        return self.tank_count, self.bomber_count;
+        return self.tracker:save();
     end,
-    load = function(self,...)
-        self.tank_count, self.bomber_count = ...;
+    load = function(self,tdata)
+        self.tracker = mission.UnitTracker:Load(tdata);
+    end,
+    finish = function(self)
+        self.tracker:kill();
     end
 });
 
@@ -163,24 +142,14 @@ local makeDefensive = mission.Objective:define("make_defensive"):init({
         createWave("svfigh",{"bzn64path_000C","bzn64path_000D"},"bzn64path_0018");
         createWave("svscav",{"bzn64path_000A","bzn64path_000B"});
     end,
-    add_object = function(self,handle)
-        if(GetClassLabel(handle) == "turrettank" and GetTeamNum(handle) == 1) then
-            self.turr_count = self.turr_count + 1;
-        --    self:success();
-        end
-        if(self.turr_count >= 3) then
+    update = function(self)
+        if(tracker:gotOfClass("turrettank",3)) then
             self:success();
         end
     end,
     success = function(self)
         UpdateObjective(self.otf,"green");
         mission.Objective:Start(self.next);
-    end,
-    save = function(self)
-        return self.turr_count;
-    end,
-    load = function(self,...)
-        self.turr_count = ...;
     end
 });
 
@@ -308,8 +277,8 @@ local makeComm = mission.Objective:define("make_comm"):init({
 });
 
 function Start()
-    SetScrap(1,10);
-    SetPilot(1,5);
+    SetScrap(1,20);
+    SetPilot(1,10);
     SetScrap(2,0);
     SetPilot(2,0);
     
@@ -348,10 +317,11 @@ function DeleteObject(handle)
 end
 
 function Save()
-    return mission:Save(), globals;
+    return mission:Save(), globals, tracker:save();
 end
 
-function Load(misison_date,g)
+function Load(misison_date,g,tdata)
     mission:Load(misison_date);
     globals = g;
+    tracker = mission.UnitTracker:Load(tdata);
 end
