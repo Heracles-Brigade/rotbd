@@ -112,9 +112,9 @@ seen [1] =
 healthRatio [1] =
 1
 curHealth [1] =
-3000
+2800
 maxHealth [1] =
-3000
+2800
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -136,7 +136,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-asuser
+bsuser
 perceivedTeam [1] =
 1
 [GameObject]
@@ -252,7 +252,7 @@ maxAmmo [1] =
 50000
 priority [1] =
 1
-what = ef000000
+what = 0f000000
 who [1] =
 0
 where = 00000000
@@ -508,7 +508,7 @@ maxAmmo [1] =
 50000
 priority [1] =
 1
-what = ef000000
+what = 0f000000
 who [1] =
 0
 where = 00000000
@@ -637,7 +637,7 @@ maxAmmo [1] =
 50000
 priority [1] =
 1
-what = ef000000
+what = 0f000000
 who [1] =
 0
 where = 00000000
@@ -1274,7 +1274,7 @@ maxAmmo [1] =
 50000
 priority [1] =
 1
-what = ef000000
+what = 0f000000
 who [1] =
 0
 where = 00000000
@@ -1403,7 +1403,7 @@ maxAmmo [1] =
 50000
 priority [1] =
 1
-what = ef000000
+what = 0f000000
 who [1] =
 0
 where = 00000000
@@ -1532,7 +1532,7 @@ maxAmmo [1] =
 50000
 priority [1] =
 1
-what = ef000000
+what = 0f000000
 who [1] =
 0
 where = 00000000
@@ -1661,7 +1661,7 @@ maxAmmo [1] =
 50000
 priority [1] =
 1
-what = ef000000
+what = 0f000000
 who [1] =
 0
 where = 00000000
@@ -7404,7 +7404,7 @@ maxAmmo [1] =
 50000
 priority [1] =
 1
-what = ef000000
+what = 0f000000
 who [1] =
 0
 where = 00000000

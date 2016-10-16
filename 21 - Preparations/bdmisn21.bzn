@@ -24,7 +24,7 @@ pos [1] =
 101316
 team [1] =
 1
-label = bzn64label_0001
+label = player
 isUser [1] =
 1
 obj_addr = 0070EA50
@@ -136,7 +136,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-asuser
+bsuser
 perceivedTeam [1] =
 1
 [GameObject]
@@ -153,7 +153,7 @@ pos [1] =
 102210
 team [1] =
 1
-label = bzn64label_0002
+label = nav1
 isUser [1] =
 0
 obj_addr = 0070E5A0
@@ -280,7 +280,7 @@ pos [1] =
 101700
 team [1] =
 1
-label = bzn64label_0003
+label = nav2
 isUser [1] =
 0
 obj_addr = 0070E0F0
@@ -407,7 +407,7 @@ pos [1] =
 101648
 team [1] =
 1
-label = bzn64label_0004
+label = nav3
 isUser [1] =
 0
 obj_addr = 0070DC40
@@ -534,7 +534,7 @@ pos [1] =
 101301
 team [1] =
 1
-label = bzn64label_0005
+label = nav4
 isUser [1] =
 0
 obj_addr = 0070D790
@@ -2939,7 +2939,7 @@ perceivedTeam [1] =
 0
 [GameObject]
 PrjID [1] =
-bvrecy
+bvrecy21
 seqno [1] =
 295
 pos [1] =
@@ -2951,7 +2951,7 @@ pos [1] =
 101368
 team [1] =
 1
-label = bzn64label_0017
+label = recycler
 isUser [1] =
 0
 obj_addr = 00707E80
@@ -5635,7 +5635,7 @@ pos [1] =
 102245
 team [1] =
 0
-label = bzn64label_0022
+label = ccageyser
 isUser [1] =
 0
 obj_addr = 00701C10
@@ -5760,8 +5760,8 @@ count [1] =
 [AiPath]
 old_ptr = 50A2E000
 size [1] =
-14
-label = bzn64path_0001
+13
+label = spawn_sbtowe1
 pointCount [1] =
 1
 points [1] =
@@ -5773,8 +5773,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = A0A1E000
 size [1] =
-14
-label = bzn64path_0002
+13
+label = spawn_sbtowe2
 pointCount [1] =
 1
 points [1] =
@@ -5786,8 +5786,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = F0A0E000
 size [1] =
-14
-label = bzn64path_0003
+12
+label = spawn_svrecy
 pointCount [1] =
 1
 points [1] =
@@ -5799,8 +5799,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 40A0E000
 size [1] =
-14
-label = bzn64path_0004
+8
+label = spawn_w1
 pointCount [1] =
 1
 points [1] =
@@ -5812,8 +5812,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 50BCE000
 size [1] =
-14
-label = bzn64path_0005
+8
+label = spawn_n1
 pointCount [1] =
 1
 points [1] =
@@ -5825,8 +5825,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = A0BBE000
 size [1] =
-14
-label = bzn64path_0006
+8
+label = spawn_n2
 pointCount [1] =
 1
 points [1] =
@@ -5838,8 +5838,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = F0BAE000
 size [1] =
-14
-label = bzn64path_0007
+8
+label = spawn_n3
 pointCount [1] =
 1
 points [1] =
@@ -5851,8 +5851,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 40BAE000
 size [1] =
-14
-label = bzn64path_0008
+8
+label = spawn_n4
 pointCount [1] =
 1
 points [1] =
@@ -5864,8 +5864,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 90B9E000
 size [1] =
-14
-label = bzn64path_0009
+8
+label = spawn_n5
 pointCount [1] =
 1
 points [1] =
@@ -5877,8 +5877,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = E0B8E000
 size [1] =
-14
-label = bzn64path_000A
+8
+label = spawn_w2
 pointCount [1] =
 1
 points [1] =
@@ -5890,8 +5890,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 30B8E000
 size [1] =
-14
-label = bzn64path_000B
+8
+label = spawn_w3
 pointCount [1] =
 1
 points [1] =
@@ -5903,8 +5903,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 80B7E000
 size [1] =
-14
-label = bzn64path_000C
+8
+label = spawn_w4
 pointCount [1] =
 1
 points [1] =
@@ -5916,8 +5916,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = D0B6E000
 size [1] =
-14
-label = bzn64path_000D
+8
+label = spawn_w5
 pointCount [1] =
 1
 points [1] =
@@ -5929,8 +5929,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 20B6E000
 size [1] =
-14
-label = bzn64path_000E
+13
+label = spawn_sbspow1
 pointCount [1] =
 1
 points [1] =
@@ -5942,8 +5942,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 70B5E000
 size [1] =
-14
-label = bzn64path_000F
+13
+label = spawn_sbspow2
 pointCount [1] =
 1
 points [1] =
@@ -5955,8 +5955,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = C0B4E000
 size [1] =
-14
-label = bzn64path_0010
+8
+label = spawn_e1
 pointCount [1] =
 1
 points [1] =
@@ -5968,8 +5968,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 10B4E000
 size [1] =
-14
-label = bzn64path_0011
+8
+label = spawn_e2
 pointCount [1] =
 1
 points [1] =
@@ -5981,8 +5981,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 60B3E000
 size [1] =
-14
-label = bzn64path_0012
+8
+label = spawn_e3
 pointCount [1] =
 1
 points [1] =
@@ -5994,8 +5994,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = B0B2E000
 size [1] =
-14
-label = bzn64path_0013
+13
+label = spawn_avwalk1
 pointCount [1] =
 1
 points [1] =
@@ -6007,8 +6007,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 10B2E000
 size [1] =
-14
-label = bzn64path_0014
+13
+label = spawn_avwalk2
 pointCount [1] =
 1
 points [1] =
@@ -6020,8 +6020,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 70B1E000
 size [1] =
-14
-label = bzn64path_0015
+13
+label = spawn_avwalk3
 pointCount [1] =
 1
 points [1] =
@@ -6033,8 +6033,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = D0B0E000
 size [1] =
-14
-label = bzn64path_0016
+13
+label = spawn_tank1
 pointCount [1] =
 1
 points [1] =
@@ -6046,8 +6046,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 30B0E000
 size [1] =
-14
-label = bzn64path_0017
+11
+label = camera_nsdf
 pointCount [1] =
 7
 points [7] =
@@ -6083,8 +6083,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 40CFE000
 size [1] =
-14
-label = bzn64path_0018
+9
+label = west_path
 pointCount [1] =
 6
 points [6] =
@@ -6116,8 +6116,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 60CEE000
 size [1] =
-14
-label = bzn64path_0019
+10
+label = north_path
 pointCount [1] =
 5
 points [5] =
@@ -6145,8 +6145,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 90CDE000
 size [1] =
-14
-label = bzn64path_001A
+9
+label = east_path
 pointCount [1] =
 3
 points [3] =
@@ -6166,8 +6166,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = D0CCE000
 size [1] =
-14
-label = bzn64path_001B
+9
+label = nsdf_path
 pointCount [1] =
 5
 points [5] =
