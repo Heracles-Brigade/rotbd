@@ -2,6 +2,166 @@ local Objective;
 local Listener;
 local ObjectiveInstance;
 local ObjectiveManager;
+local UnitTracker;
+local UnitTrackerManager;
+local MissionManager;
+
+local _GetOdf = GetOdf;
+--GetOdf sometimes returns junk after the name
+--This wrapper removes that junk
+GetOdf = function(...)
+    local r = _GetOdf(...);
+    if(r) then
+        return r:gmatch("[^%c]+")();
+    end
+    return r;
+    --return _GetOdf(...):gmatch("[^%c]+")();
+end
+
+
+UnitTracker = {
+    new = function(cls)
+        local self = setmetatable({
+            classT = {},
+            odfT = {},
+            handles = {},
+            alive = true
+        },cls.mt);
+        UnitTrackerManager:addTracker(self);
+        return self;
+    end,
+    Load = function(cls,data)
+        local inst = cls:new();
+        inst:load(data);
+        return inst;
+    end,
+    prototype = {
+        addObject = function(self,handle)
+            self.handles[handle] = {
+                class = GetClassLabel(handle),
+                odf = GetOdf(handle),
+                team = GetTeamNum(handle)
+            };
+            local c = GetClassLabel(handle);
+            local o = GetOdf(handle);
+            local t = GetTeamNum(handle);
+            if(not self.classT[t]) then
+                self.classT[t] = {};
+            end
+            if(not self.odfT[t]) then
+                self.odfT[t] = {};
+            end
+            if(not self.classT[t][c]) then
+                self.classT[t][c] = {count = 0,total=0,handles={}};
+            end
+            if(not self.odfT[t][o]) then
+                self.odfT[t][o] = {count = 0,handles={},total=0};
+            end
+            self.classT[t][c].handles[handle] = true;
+            self.odfT[t][o].handles[handle] = true;
+            self.classT[t][c].count = self.classT[t][c].count + 1;
+            self.odfT[t][o].count = self.odfT[t][o].count + 1;
+            self.classT[t][c].total = self.classT[t][c].total + 1;
+            self.odfT[t][o].total = self.odfT[t][o].total + 1;          
+        end,
+        kill = function(self)
+            self.alive = false;
+        end,
+        deleteObject = function(self,handle)
+            if(self.handles[handle]) then
+                local c = self.handles[handle].class;
+                local o = self.handles[handle].odf;
+                local t = self.handles[handle].team;
+                if(self.classT[t] and self.classT[t][c]) then
+                    self.classT[t][c].handles[handle] = nil;
+                    self.classT[t][c].count = self.classT[t][c].count - 1;
+                end
+                if(self.odfT[t] and self.odfT[t][o]) then
+                    self.odfT[t][o].handles[handle] = nil;
+                    self.odfT[t][o].count = self.odfT[t][o].count - 1;
+                end
+            end
+        end,
+        countByClass = function(self,class,team)
+            team = team or GetTeamNum(GetPlayerHandle())
+            if(self.classT[team] and self.classT[team][class]) then
+                return self.classT[team][class].count;
+            end
+            return 0;
+        end,
+        countByOdf = function(self,odf,team)
+            team = team or GetTeamNum(GetPlayerHandle());
+            if(self.odfT[team] and self.odfT[team][odf]) then
+                return self.odfT[team][odf].count;
+            end
+            return 0;
+        end,
+        totalByClass = function(self,class,team)
+            team = team or GetTeamNum(GetPlayerHandle())
+            if(self.classT[team] and self.classT[team][class]) then
+                return self.classT[team][class].total;
+            end
+            return 0;
+        end,
+        totalByOdf = function(self,odf,team)
+            team = team or GetTeamNum(GetPlayerHandle())
+            if(self.odfT[team] and self.odfT[team][odf]) then
+                return self.odfT[team][odf].total;
+            end
+            return 0;
+        end,
+        hasBuiltOfClass = function(self,class,count,team)
+            return self:totalByClass(class,team) >= count;
+        end,
+        hasBuiltOfOdf = function(self,odf,count,team)
+            return self:totalByOdf(odf,team) >= count;
+        end,
+        gotOfClass = function(self,class,count,team)
+            return self:countByClass(class,team) >= count;     
+        end,
+        gotOfOdf = function(self,odf,count,team)
+            return self:countByOdf(odf,team) >= count;
+        end,
+        save = function(self)
+            return self;
+        end,
+        load = function(self,data)
+            self.classT = data.classT;
+            self.odfT = data.odfT;
+            self.handles = data.handles;
+        end
+    } 
+}
+
+UnitTracker.mt = {__index = UnitTracker.prototype};
+setmetatable(UnitTracker,{__call = UnitTracker.new});
+
+UnitTrackerManager = {
+    trackers = {},
+    addTracker = function(self,tracker)
+        table.insert(self.trackers,tracker);
+    end,
+    AddObject = function(self,...)
+        for i,v in pairs(self.trackers) do
+            if(v.alive) then
+                v:addObject(...);
+            else
+                self.trackers[i] = nil;
+            end
+        end
+    end,
+    DeleteObject = function(self,...)
+        for i,v in pairs(self.trackers) do
+            if(v.alive) then
+                v:deleteObject(...);
+            else
+                self.trackers[i] = nil;
+            end
+        end
+    end
+}
+
+
 --Listener 'class' is used to keep track of callbacks
 --Dosen't do much
 Listener = {
@@ -21,8 +181,8 @@ Listener = {
         end
     }
 }
-Listener.mt = {__call = Listener.new,__index = Listener.prototype};
-setmetatable(Listener,Listener.mt);
+Listener.mt = {__index = Listener.prototype};
+setmetatable(Listener,{__call = Listener.new});
 
 ObjectiveInstance = {
     new = function(cls,parent_name,default)
@@ -106,10 +266,9 @@ ObjectiveInstance = {
     }
 };
 ObjectiveInstance.mt = {
-    __index = ObjectiveInstance.prototype,
-    __call = ObjectiveInstance.new
+    __index = ObjectiveInstance.prototype
 }
-setmetatable(ObjectiveInstance,ObjectiveInstance.mt);
+setmetatable(ObjectiveInstance,{__call = ObjectiveInstance.new});
 
 --Objective 'class', this is used to define objectives
 Objective = {
@@ -264,13 +423,37 @@ ObjectiveManager = {
     end
 }
 
+MissionManager = {
+    Update = function(self,...)
+        ObjectiveManager:Update(...);
+    end,
+    AddObject = function(self,...)
+        UnitTrackerManager:AddObject(...);
+        ObjectiveManager:AddObject(...);
+    end,
+    CreateObject = function(self,...)
+        ObjectiveManager:CreateObject(...);
+    end,
+    DeleteObject = function(self,...)
+        UnitTrackerManager:DeleteObject(...);
+        ObjectiveManager:DeleteObject(...);
+    end,
+    Save = function(self,...)
+        return ObjectiveManager:Save(...);
+    end,
+    Load = function(self,data)
+        ObjectiveManager:Load(data);
+    end
+}
+
 return {    
     Objective = Objective,
-    Update = ObjectiveManager.Update,
-    AddObject = ObjectiveManager.AddObject,
-    DeleteObject = ObjectiveManager.DeleteObject,
-    CreateObject = ObjectiveManager.CreateObject,
-    Load = ObjectiveManager.Load,
-    Save = ObjectiveManager.Save,
+    Update = MissionManager.Update,
+    AddObject = MissionManager.AddObject,
+    DeleteObject = MissionManager.DeleteObject,
+    CreateObject = MissionManager.CreateObject,
+    Load = MissionManager.Load,
+    Save = MissionManager.Save,
     objectives = ObjectiveManager.objectives,
+    UnitTracker = UnitTracker
 }
