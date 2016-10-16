@@ -338,7 +338,7 @@ function Start()
     --initial wave
     BuildObject("svrecy",2,"spawn_svrecy");
     globals.sb_turr_1 = BuildObject("sbtowe",2,"spawn_sbtowe1");
-    globals.sb_turr_2 = BuildObject("sbtowe",2,"spawn_Sbtowe2");
+    globals.sb_turr_2 = BuildObject("sbtowe",2,"spawn_sbtowe2");
 
     createWave("svfigh",{"spawn_n1","spawn_n2","spawn_n3"},"north_path");
 
