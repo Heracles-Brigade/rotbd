@@ -257,14 +257,14 @@ function Update()
 	
 	-- Win Conditions:
 	if (not M.MissionOver) and M.Power1Dead and M.Power2Dead and M.CommandInfoed and not IsAlive(M.CommTower) then
-		SucceedMission(GetTime()+5.0, "bdmisn20win.des");
+		SucceedMission(GetTime()+5.0, "bdmisn20wn.des");
 		M.MissionOver = true;
 		M.UpdateObjectives = true;
 	end
 	
 	-- Lose Conditions
 	if (not M.MissionOver) and not M.CommandInfoed and not IsAlive(M.Command) then
-		FailMission(GetTime()+5.0, "bdmisn20lse.des");
+		FailMission(GetTime()+5.0, "bdmisn20ls.des");
 		M.MissionOver = true;
 		M.UpdateObjectives = true;
 	end

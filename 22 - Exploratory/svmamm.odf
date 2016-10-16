@@ -13,6 +13,7 @@ heatSignature = 1.2
 imageSignature = 3.0
 radarSignature = 0.1
 
+// Original RotBD had 3 weapon groups: Group 1: 4 AT Stab, Group 2: 4 Chaingun, Group 3: Thumper.
 weaponHard1 = "GC1"
 weaponName1 = "gatstab"
 weaponHard2 = "GC2"
@@ -21,6 +22,11 @@ weaponHard3 = "GC1"
 weaponName3 = "gatstab"
 weaponHard4 = "GC2"
 weaponName4 = "gatstab"
+// 4 more Cannon slots, same HPs, but different group.
+//weaponHard# = "GC#"
+//weaponName# = "gminisov"
+weaponHard5 = "GS2"
+weaponName5 = "gquake"
 weaponMask = 00001
 
 [CraftClass]

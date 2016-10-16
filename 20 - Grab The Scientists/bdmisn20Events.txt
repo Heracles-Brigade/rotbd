@@ -55,4 +55,8 @@ When tug reaches path point, tug disappear, all american units disappear. (In RL
 When Patrol 3 is dead, spawn 3 svfigh 2 svrckt, 1 svhraz. Goto Nav 4.
 Spawns: svhraz: "spawn_svhraz" (path_0017), svrckt: "spawn_svrckt1", "spawn_svrckt2", (path_0016, path_0015), svfigh: "spawn_svfigh1", "spawn_svfigh2" (path_0013, path_0014)
 
-when comm tower, and all 8 powers are dead, win mission.
+when comm tower, and all 8 powers are dead:
+SucceedMission(GetTime()+5.0, "bdmisn20wn.des");
+
+if player destroys command before info,
+FailMission(GetTime()+5.0, "bdmisn20ls.des");

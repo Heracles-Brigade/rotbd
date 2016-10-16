@@ -19,7 +19,7 @@ Wave1/Objective 1, white.
 SetObjectiveOn(Recycler);
 
 Before objective 7:
-if GetDistance(Player, Recycler) > 700, FailMission(GetTime()+5.0, "bdmisn21ls1.des");
+if GetDistance(Player, Recycler) > 700, FailMission(GetTime()+5.0, "bdmisn21l1.des");
 addhealth to svrecy, and both sbtowe. (IMPROVEMENT: To make truly invincible, save maxhealth, SetMaxHealth(h, 0), then after objective 7 SetMaxHealth back to saved value).
 
 When recycler deploys, objective 1 green, objective 2 white.
@@ -63,7 +63,7 @@ Wave 3, objecitve 8 white.
 
 When enemy recy is dead, clear objectives, objective 9.
 
-When comm tower is built, SucceedMission(GetTime()+5.0, "bdmisn21win.des");
+When comm tower is built, SucceedMission(GetTime()+5.0, "bdmisn21wn.des");
 
-If your recycler is destroyed, FailMission(GetTime(), "bdmisn21ls2.des");
+If your recycler is destroyed, FailMission(GetTime(), "bdmisn21l2.des");
 

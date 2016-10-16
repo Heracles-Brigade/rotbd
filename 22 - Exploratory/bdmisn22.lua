@@ -276,7 +276,7 @@ function Update()
 	
 		-- Win Conditions:
 		if M.MammothInfoed and GetDistance(M.Player, M.Nav[5]) < 50.0 then
-			SucceedMission(GetTime()+5.0, "bdmisn22win.des");
+			SucceedMission(GetTime()+5.0, "bdmisn22wn.des");
 			M.MissionOver = true;
 			M.UpdateObjectives = true;
 		end
@@ -284,19 +284,19 @@ function Update()
 		-- Lose Conditions:
 		-- Kill Hanger too soon?
 		if not M.HangarInfoed and not IsAlive(M.Hangar) then
-			FailMission(GetTime()+5.0, "bdmisn22ls3.des");
+			FailMission(GetTime()+5.0, "bdmisn22l3.des");
 			M.MissionOver = true;
 			M.UpdateObjectives = true;
 		end
 		-- Kill Mammoth too soon?
 		if  not M.MammothInfoed and not IsAlive(M.Mammoth) then
-			FailMission(GetTime()+5.0, "bdmisn22ls1.des");
+			FailMission(GetTime()+5.0, "bdmisn22l1.des");
 			M.MissionOver = true;
 			M.UpdateObjectives = true;
 		end
 		-- Fail to escape in time?
 		if M.MammothInfoed and GetCockpitTimer() == 0 then
-			FailMission(GetTime(), "bdmisn22ls2.des");
+			FailMission(GetTime(), "bdmisn22l2.des");
 			M.MissionOver = true;
 			M.UpdateObjectives = true;
 		end

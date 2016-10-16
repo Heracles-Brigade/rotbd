@@ -4027,7 +4027,7 @@ maxAmmo [1] =
 50000
 priority [1] =
 1
-what = 0F000000
+what = 0f000000
 who [1] =
 0
 where = 00000000
@@ -4410,7 +4410,7 @@ maxAmmo [1] =
 50000
 priority [1] =
 1
-what = 0F000000
+what = 0f000000
 who [1] =
 0
 where = 00000000
