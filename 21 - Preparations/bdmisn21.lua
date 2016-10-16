@@ -7,7 +7,7 @@ local mission = require('cmisnlib');
 local globals = {
     keepGTsAtFullHealth = true
 };
-
+local tracker = mission.UnitTracker:new();
 
 
 SetAIControl(2,false);
@@ -56,6 +56,7 @@ local DelayedSpawn = mission.Objective:define("delayed_spawn"):init({
         if((not self.wait_done) and self.wait_timer <= 0) then
             createWave("svfigh",{"spawn_n1","spawn_n2"},"north_path");
             self.wait_done = true;
+            self:success();
         end
         self.wait_timer = self.wait_timer - dtime;
     end,
@@ -68,7 +69,6 @@ local DelayedSpawn = mission.Objective:define("delayed_spawn"):init({
 });
 
 local makeScavs = mission.Objective:define("make_scavs"):init({
-    scav_count = 0,
     next = 'get_scrap',
     otf = 'bdmisn2102.otf'
 }):setListeners({
@@ -76,23 +76,15 @@ local makeScavs = mission.Objective:define("make_scavs"):init({
         SetObjectiveOff(GetHandle("nav4"));
         AddObjective(self.otf,"white");
     end,
-    add_object = function(self,handle)
-        if(GetClassLabel(handle) == "scavenger" and GetTeamNum(handle) == 1) then
-            self.scav_count = self.scav_count + 1;
-        end
-        if(self.scav_count >= 2) then
+    update = function(self)
+        --Check if player has 2 scavengers
+        if(tracker:gotOfClass("scavenger",2)) then
             self:success();
         end
     end,
     success = function(self)
         UpdateObjective(self.otf,"green");
         mission.Objective:Start(self.next);
-    end,
-    save = function(self)
-        return self.scav_count;
-    end,
-    load = function(self,...)
-        self.scav_count = ...;
     end
 });
 
@@ -106,7 +98,6 @@ local getScrap = mission.Objective:define('get_scrap'):init({
     end,
     update = function(self)
         if(GetScrap(1) >= 20) then
-            print("Scrap done!")
             self:success();
         end
     end,
@@ -122,12 +113,9 @@ local makeFactory = mission.Objective:define("make_factory"):init({
 }):setListeners({
     start = function(self)
         AddObjective(self.otf,"white");
-        if(IsAlive(GetFactoryHandle(1))) then
-            self:success();
-        end
     end,
-    add_object = function(self,handle)
-        if(GetClassLabel(handle) == "factory" and GetTeamNum(handle) == 1) then
+    update = function(self)
+        if(tracker:gotOfClass("factory",1)) then
             self:success();
         end
     end,
@@ -137,30 +125,19 @@ local makeFactory = mission.Objective:define("make_factory"):init({
     end
 });
 
-
-
-
 local makeOffensive = mission.Objective:define("make_offensive"):init({
     next = 'make_defensive',
-    tank_count = 0,
-    bomber_count = 0,
     otf = 'bdmisn2105.otf'
 }):setListeners({
     start = function(self)
         AddObjective(self.otf,"white");
+        self.tracker = mission.UnitTracker:new();
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path");
     end,
-    add_object = function(self,handle)
-        if(GetTeamNum(handle) == 1) then
-            if(IsOdf(handle,"bvtank")) then
-                self.tank_count = self.tank_count + 1;
-            end
-            if(IsOdf(handle,"bvhraz")) then
-                self.bomber_count = self.bomber_count + 1;
-            end
-            if(self.bomber_count >= 1 and self.tank_count >= 3) then
-                self:success();
-            end
+    update = function(self)
+        --Check if got 3 more tanks + 1 bomber, since mission start
+        if(self.tracker:gotOfOdf("bvtank",3) and self.tracker:gotOfOdf("bvhraz",1)) then
+            self:success();
         end
     end,
     success = function(self)
@@ -168,17 +145,19 @@ local makeOffensive = mission.Objective:define("make_offensive"):init({
         mission.Objective:Start(self.next);
     end,
     save = function(self)
-        return self.tank_count, self.bomber_count;
+        return self.tracker:save();
     end,
-    load = function(self,...)
-        self.tank_count, self.bomber_count = ...;
+    load = function(self,tdata)
+        self.tracker = mission.UnitTracker:Load(tdata);
+    end,
+    finish = function(self)
+        self.tracker:kill();
     end
 });
 
 local makeDefensive = mission.Objective:define("make_defensive"):init({
     next = 'destroy_soviet',
-    otf = 'bdmisn2106.otf',
-	--turr_count = 0
+    otf = 'bdmisn2106.otf'
 }):setListeners({
     start = function(self)
         AddObjective(self.otf,"white");
@@ -187,14 +166,8 @@ local makeDefensive = mission.Objective:define("make_defensive"):init({
 		--Not really creating a wave, but spawns sbspow
 		createWave("sbspow",{"spawn_sbspow1","spawn_sbspow2"});
     end,
-    --add_object = function(self,handle)
-	update = function(self)
-       -- if(GetClassLabel(handle) == "turrettank" and GetTeamNum(handle) == 1) then
-         --   self.turr_count = self.turr_count + 1;
-        --    self:success();
-        --end
-        --if(self.turr_count >= 3) then
-		if(globals.turr_count >= 3) then
+    update = function(self)
+        if(tracker:gotOfClass("turrettank",3)) then
             self:success();
         end
     end,
@@ -202,14 +175,6 @@ local makeDefensive = mission.Objective:define("make_defensive"):init({
         UpdateObjective(self.otf,"green");
         mission.Objective:Start(self.next);
     end
-	--[[
-    save = function(self)
-        return self.turr_count;
-    end,
-    load = function(self,...)
-        self.turr_count = ...;
-    end
-	--]]
 });
 
 local destorySoviet = mission.Objective:define("destroy_soviet"):init({
@@ -229,6 +194,7 @@ local destorySoviet = mission.Objective:define("destroy_soviet"):init({
             SetObjectiveOn(globals.sb_turr_2);
             SetObjectiveOn(GetRecyclerHandle(2));
             self.wait_done = true;
+            mission.Objective:getObjective("toofarfrom_recy"):success();
         else
             if(not(IsAlive(globals.sb_turr_1) or IsAlive(globals.sb_turr_2))) then
                 self:success();
@@ -322,9 +288,9 @@ local makeComm = mission.Objective:define("make_comm"):init({
 }):setListeners({
     start = function(self)
         AddObjective(self.otf,"white");
-    end,
-    add_object = function(self,handle)
-        if(GetTeamNum(handle) == 1 and GetClassLabel(handle) == "commtower") then
+    end
+    update = function(self)
+        if(tracker:gotOfClass("commtower",1)) then
             self:success();
         end
     end,
@@ -335,10 +301,7 @@ local makeComm = mission.Objective:define("make_comm"):init({
 });
 
 -- Lose conditions by GBD. No idea if i did this right, mission doesn't update otfs, or goto a next thing, it runs throughout the mission. (distance check until ordered to attack CCA base, and recy loss throughout entire mission.)
-local loseRecy = mission.Objective:define("lose_recy"):init({
-    next = '',
-    otf = ''
-}):setListeners({
+local loseRecy = mission.Objective:define("lose_recy"):setListeners({
     update = function(self)
         if(not IsAlive(GetRecyclerHandle(1))) then
             self:fail();
@@ -349,16 +312,11 @@ local loseRecy = mission.Objective:define("lose_recy"):init({
 	end
 });
 -- If you go too far.
-local TooFarFromRecy = mission.Objective:define("toofarfrom_recy"):init({
-    next = '',
-    otf = ''
-}):setListeners({
+local TooFarFromRecy = mission.Objective:define("toofarfrom_recy"):setListeners({
     update = function(self)
-		if(globals.keepGTsAtFullHealth) then
-			if IsAlive(GetRecyclerHandle(1)) and GetDistance(GetPlayerHandle(), GetRecyclerHandle(1)) > 700.0 then
-				self:fail();
-			end
-		end
+        if IsAlive(GetRecyclerHandle(1)) and GetDistance(GetPlayerHandle(), GetRecyclerHandle(1)) > 700.0 then
+            self:fail();
+        end
     end,
     fail = function(self)
         FailMission(GetTime() + 5, "bdmisn21l1.des");
@@ -366,18 +324,10 @@ local TooFarFromRecy = mission.Objective:define("toofarfrom_recy"):init({
 });
 
 -- AddObject Listener for Turrets? 
-local turretCounter = mission.Objective:define("turret_counter"):init({
-}):setListeners({
-    add_object = function(self,handle)
-        if(GetClassLabel(handle) == "turrettank" and GetTeamNum(handle) == 1) then
-            globals.turr_count = globals.turr_count + 1;
-        end
-    end,
-});
 
 function Start()
-    SetScrap(1,10);
-    SetPilot(1,5);
+    SetScrap(1,20);
+    SetPilot(1,10);
     SetScrap(2,0);
     SetPilot(2,0);
         
@@ -389,15 +339,13 @@ function Start()
     --initial wave
     BuildObject("svrecy",2,"spawn_svrecy");
     globals.sb_turr_1 = BuildObject("sbtowe",2,"spawn_sbtowe1");
-    globals.sb_turr_2 = BuildObject("sbtowe",2,"spawn_Sbtowe2");
-	globals.turr_count = 0;
-    
+    globals.sb_turr_2 = BuildObject("sbtowe",2,"spawn_sbtowe2");
+
     createWave("svfigh",{"spawn_n1","spawn_n2","spawn_n3"},"north_path");
 
     local instance = deployRecy:start();
 	local instance2 = loseRecy:start();
 	local instance3 = TooFarFromRecy:start();
-	local instance4 = turretCounter:start();
 end
 
 function Update(dtime)
@@ -421,10 +369,11 @@ function DeleteObject(handle)
 end
 
 function Save()
-    return mission:Save(), globals;
+    return mission:Save(), globals, tracker:save();
 end
 
-function Load(misison_date,g)
+function Load(misison_date,g,tdata)
     mission:Load(misison_date);
     globals = g;
+    tracker = mission.UnitTracker:Load(tdata);
 end
