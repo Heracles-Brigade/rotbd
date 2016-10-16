@@ -24,7 +24,7 @@ pos [1] =
 101283
 team [1] =
 1
-label = bzn64label_0001
+label = player
 isUser [1] =
 1
 obj_addr = 00B01D68
