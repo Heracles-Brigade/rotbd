@@ -56,6 +56,7 @@ local DelayedSpawn = mission.Objective:define("delayed_spawn"):init({
         if((not self.wait_done) and self.wait_timer <= 0) then
             createWave("svfigh",{"spawn_n1","spawn_n2"},"north_path");
             self.wait_done = true;
+            self:success();
         end
         self.wait_timer = self.wait_timer - dtime;
     end,
@@ -287,9 +288,9 @@ local makeComm = mission.Objective:define("make_comm"):init({
 }):setListeners({
     start = function(self)
         AddObjective(self.otf,"white");
-    end,
-    add_object = function(self,handle)
-        if(GetTeamNum(handle) == 1 and GetClassLabel(handle) == "commtower") then
+    end
+    update = function(self)
+        if(tracker:gotOfClass("commtower",1)) then
             self:success();
         end
     end,
