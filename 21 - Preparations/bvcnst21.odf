@@ -1,4 +1,5 @@
 [GameObjectClass] // Special BDOG Cnst for BD mission 21. Limited build tree.
+baseName = "bvcnst"
 classLabel = "constructionrig"
 collisionRadius = 7.0
 scrapValue = 7
@@ -61,7 +62,7 @@ soundDeploy = "avartle0.wav"
 soundUndeploy = "avartle4.wav"
 
 [ProducerClass]
-buildItem1 = "bbspow"
+buildItem1 = "abspow" //"bbspow" // Enable bbspow for BZR. -GBD
 buildItem2 = "bbtowe"
 buildItem3 = "bbcomm"
 //buildItem4 = "bbbarr"

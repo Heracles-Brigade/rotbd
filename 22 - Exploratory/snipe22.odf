@@ -1,0 +1,20 @@
+[OrdnanceClass] // Special Sniper for RotBD BD mission 22. 
+classLabel = "snipershell"
+
+shotGeometry = NULL
+xplGround = "xbulgnd"
+xplVehicle = "xbulcar"
+xplBuilding = "xbulbld"
+
+ammoCost = 1
+lifeSpan = 0.5
+shotSpeed = 1000.0
+damageBallistic = 750 //1000 //25
+damageConcussion = 0
+damageFlame = 0
+damageImpact = 0
+
+[SniperShellClass]
+killRadius = 0.5
+killLength = 10.0
+

@@ -1,0 +1,12 @@
+[WeaponClass] // Special Sniper for RotBD BD mission 22. 
+classLabel = "snipergun"
+ordName = "snipe22"
+wpnName = "Sniper Rifle"
+fireSound = "gsnipe00.wav"
+wpnReticle = "gminigun"
+wpnPriority = 0
+wpnCategory = "CANN"
+
+[CannonClass]
+shotDelay = 1.0
+

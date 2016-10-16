@@ -1,4 +1,5 @@
 [GameObjectClass] // Special BDOG recy for BD Mission 21. No Armory, limited Fact and Cnst.
+baseName = "bvrecy"
 classLabel = "recycler"
 scrapValue = 10
 scrapCost = 0

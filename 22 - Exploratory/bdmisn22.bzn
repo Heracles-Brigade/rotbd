@@ -12,7 +12,7 @@ size [1] =
 64
 [GameObject]
 PrjID [1] =
-bsuser
+bsuser22
 seqno [1] =
 868
 pos [1] =
@@ -120,9 +120,9 @@ maxHealth [1] =
 ammoRatio [1] =
 1
 curAmmo [1] =
-3
+50
 maxAmmo [1] =
-3
+50
 priority [1] =
 0
 what = 00000000
@@ -4171,7 +4171,7 @@ pos [1] =
 100066
 team [1] =
 2
-label = bzn64label_0020
+label = patrol1_1
 isUser [1] =
 0
 obj_addr = 00AF9D68
@@ -6209,7 +6209,7 @@ pos [1] =
 99184.9
 team [1] =
 2
-label = bzn64label_002D
+label = patrol2_1
 isUser [1] =
 0
 obj_addr = 00AF5D68
@@ -6338,7 +6338,7 @@ pos [1] =
 99712.3
 team [1] =
 2
-label = bzn64label_002E
+label = patrol2_2
 isUser [1] =
 0
 obj_addr = 00AF5968
@@ -6467,7 +6467,7 @@ pos [1] =
 99613.6
 team [1] =
 2
-label = bzn64label_002F
+label = patrol2_3
 isUser [1] =
 0
 obj_addr = 00AF5568
@@ -6596,7 +6596,7 @@ pos [1] =
 99339.7
 team [1] =
 2
-label = bzn64label_0030
+label = patrol2_4
 isUser [1] =
 0
 obj_addr = 00AF5168
@@ -8411,8 +8411,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = b84d7302
 size [1] =
-14
-label = bzn64path_000C
+8
+label = patrol_1
 pointCount [1] =
 18
 points [18] =
@@ -8492,8 +8492,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 604b7302
 size [1] =
-14
-label = bzn64path_000D
+8
+label = patrol_2
 pointCount [1] =
 20
 points [20] =

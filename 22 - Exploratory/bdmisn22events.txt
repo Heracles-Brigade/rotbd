@@ -10,23 +10,32 @@ Tug: tug //label_0006
 Recy? recy //label_0009
 Control Tower: control //label_0034
 
-Nav1: nav1 //label_001B
-Nav2: nav2 //label_001C
-Nav3: nav3 //label_001D
-Nav4: nav4 //label_001E
-Nav5: nav5 //label_0024 "Rendeverouz Point"
+-- All navs are invincible. (I think this is all RotBD Mission Navs.)
+Nav1: nav1 //label_001B "Navpoint 1"
+Nav2: nav2 //label_001C "Navpoint 2"
+Nav3: nav3 //label_001D "Navpoint 3"
+Nav4: nav4 //label_001E "Navpoint 4"
+Nav5: nav5 //label_0024 "Rendezvous Point"
+
+-- Patrol path: patrol_1 //path_000C
+Patrol1_1: patrol1_1 //label_0020
+
+-- Patrol path: patrol_2 //path_000D
+Patrol2_1: patrol2_1 //label_002D
+Patrol2_2: patrol2_2 //label_002E
+Patrol2_3: patrol2_3 //label_002F
+Patrol2_4: patrol2_4 //label_0030
 
 On Start:
 
 CameraPath("camera_path", 2000, 1000, Mammoth), Wave1.  // path_0012
 When camera finish: Objective1, White.
 SetTarget(Nav 1)
-All navs are invincible. (I think this is all RotBD Mission Navs.)
 
-AddHealth Hanger to make it invincible.
-AddHealth Supply to make it invincible.
+AddHealth Hanger to make it invincible. (IMPROVEMENT: Just make mission fail if it dies before intel)
+AddHealth Supply to make it invincible. (IMPROVEMENT: Why do we care? Just GetDistance to Tug instead)
 
-AddAmmo(Player, 1); (every second?) IMPROVEMENT: Give special asuser22 with special sniper rifle, and 100 ammo.
+AddAmmo(Player, 1); (every second?) (IMPROVEMENT: Give special asuser22 with special sniper rifle, and 100 ammo.)
 
 if GetDistance(Player, RadarTower1) < 150, Wave 2.
 
@@ -43,11 +52,11 @@ if GetDistance(Player, RadarTower2) < 150, Wave 2.
 if(GetDistance(Player, RadarTower2) < 100 then
 spawn 2 svhraz, 1 svfigh at spawn_radar2, attack player. //path_0001
 
-if GetDistance(Player, Supply) < 50, Objective 3 "GREEN". IMPROVEMENT: BUG: Should be white, not green. Should turn green once ur inside the tug.
+if GetDistance(Player, Supply) < 50, Objective 3 "GREEN". (IMPROVEMENT: BUG: Should be white, not green. Should turn green once ur inside the tug.)
 
 ?IMPROVEMENT: I Went to Nav 2 in a flanker, rand up to hug Radar, blew up everything, including tug. No lose condition for that???? Hmmm.
 
-If IsPerson(Player) and Objective2 triggered, Wave 4/Objective 4 "WHITE". IMPROVEMENT: Wait until player is confirmed to be in the tug? Maybe?
+If IsPerson(Player) and Objective2 triggered, Wave 4/Objective 4 "WHITE". (IMPROVEMENT: Wait until player is confirmed to be in the tug? Maybe?)
 SetTarget(Nav3)
 
 if GetDistance(Player, RadarTower3) < 150, Wave 2.

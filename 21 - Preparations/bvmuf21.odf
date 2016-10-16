@@ -1,4 +1,5 @@
 [GameObjectClass] // Special BDOG Factory for BD mission 21. Limited build tree.
+baseName = "bvmuf"
 classLabel = "factory"
 scrapValue = 9
 scrapCost = 12

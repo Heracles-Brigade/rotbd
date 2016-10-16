@@ -38,10 +38,11 @@ When built 3 new tanks and 1 new bomber, objective 5 green, objective 6 white.
 2 sbspow(path_000E, path_000F) 
 2 svscav(path_000A, path_000B)
 
-When 3 turrets built, objective 6 green.
+When 3 turrets built, objective 6 green. (NOTE: You can build 2-3 turrets before finishing offensive force, and they still count for this objective.)
 spawn 2 svfigh(path_0010, path_0011). Goto path_001A.
 
-45 seconds after 3 turrets built, Objective 7 white, wave 2. 
+45 seconds after 3 turrets built:
+Wave 2 / Objective 7 "WHITE". 
 SetObjectiveOn(svrecy), SetObjectiveOn(sbtowe1), SetObjectiveOn(sbtowe2)
 svrecy, and sbtowes no longer addhealth.
 
@@ -50,11 +51,11 @@ SetObjectiveOff(svrecy).
 spawn 2 svfigh(path_0008, path_0009), Goto path_0019.
 spawn 3 avwalk(path_0013, path_0014, path_0015), goto path_001B.
 spawn 2 avtank(path_0016, path_0004), goto(path_001B? path_0017?), (far tank: Goto path_0018).
-CameraPath path_0017 target: avwalk(@path_0015) (one heading to recy),
+CameraPath path_0017 target: avwalk(@path_0015),
 SetObjectiveOn all attackers. 
 Wave 3, objecitve 8 white. 
 
-When all attackers are dead, nothing happens, mission objectives don't update. IMPROVEMENT: Re-direct to destroy svrecy/setobjectiveon svrecy again?
+??When all attackers are dead, nothing happens, mission objectives don't update. IMPROVEMENT: Re-direct to destroy svrecy/setobjectiveon svrecy again?
 
 When enemy recy is dead, clear objectives, objective 9.
 

@@ -58,6 +58,7 @@ local checkCommand = mission.Objective:define("checkCommand"):init({
     end,
     update = function(self)
         if(GetDistance(GetPlayerHandle(), self.command) < 50.0) then
+			AudioMessage("bdmisn2002.wav");
             self:success();
         elseif(not IsAlive(self.command)) then
             self:fail();
@@ -98,6 +99,7 @@ local destroySolar = mission.Objective:define("destorySolar"):init({
         if(self.power1_4 and checkDead(self.handles)) then
             self.power1_4 = false;
             UpdateObjective(self.otf1,"green");
+			AudioMessage("bdmisn2003.wav");
         elseif(not (self.power1_4 or self.power5_8init)) then
             SetObjectiveOff(globals.nav[2]);
             SetObjectiveOn(globals.nav[3]);
@@ -133,6 +135,7 @@ local destroyComm = mission.Objective:define("destroyComm"):init({
     gotRelic = false
 }):setListeners({
     start = function(self)
+		AudioMessage("bdmisn2004.wav");
         --SetObjectiveOn(globals.nav[4]);
         SetObjectiveOn(globals.comm);
         AddObjective(self.otf,"white");
@@ -228,6 +231,7 @@ function Start()
         SetObjectiveName(v,"Nav " .. i);
         SetMaxHealth(v,0);
     end
+	AudioMessage("bdmisn2001.wav");
  
     local instance = cinematic:start();
     local instance2 = patrolControl :start();

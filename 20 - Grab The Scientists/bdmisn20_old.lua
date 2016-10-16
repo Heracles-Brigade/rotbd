@@ -133,7 +133,7 @@ function Update()
 		-- Start up the mission.
 		CameraReady();
 		M.Camera1Time = GetTime() + 20;
-		--aud1 = AudioMessage("bdmisn2001.wav");
+		M.Aud1 = AudioMessage("bdmisn2001.wav");
 	end
 	
 	-- Handle Objectives.
@@ -172,7 +172,7 @@ function Update()
 	end
 	
 	-- Do the opening Camera.
-	if not M.OpeningCinDone and (CameraPath("opening_cin", 2000, 1000, M.Cafe) or CameraCancelled() or GetTime() > M.Camera1Time) then -- IsAudioMessageDone(aud1) then 
+	if not M.OpeningCinDone and (CameraPath("opening_cin", 2000, 1000, M.Cafe) or CameraCancelled() or GetTime() > M.Camera1Time) then -- IsAudioMessageDone(M.Aud1) then 
 		CameraFinish();
 		SetObjectiveOn(M.Nav[1]);
 		M.OpeningCinDone = true;
@@ -181,7 +181,7 @@ function Update()
 	
 	-- If the player gets close to Command.
 	if not M.CommandInfoed and GetDistance(M.Player, M.Command) < 50.0 then
-		--aud1 = AudioMessage("bdmisn2002.wav");
+		M.Aud1 = AudioMessage("bdmisn2002.wav");
 		SetObjectiveOff(M.Nav[1]);
 		SetObjectiveOn(M.Nav[2]);
 		M.CommandInfoed = true;
@@ -190,7 +190,7 @@ function Update()
 	
 	-- Is Power1 Dead yet?
 	if not M.Power1Dead and (not IsAlive(M.Power1[1]) and not IsAlive(M.Power1[2]) and not IsAlive(M.Power1[3]) and not IsAlive(M.Power1[4])) then
-		--aud1 = AudioMessage("bdmisn2003.wav");
+		M.Aud1 = AudioMessage("bdmisn2003.wav");
 		SetObjectiveOff(M.Nav[2]);
 		SetObjectiveOn(M.Nav[3]);
 		M.Power1Dead = true;
@@ -199,7 +199,7 @@ function Update()
 	
 	-- Is Power2 Dead yet?
 	if not M.Power2Dead and (not IsAlive(M.Power2[1]) and not IsAlive(M.Power2[2]) and not IsAlive(M.Power2[3]) and not IsAlive(M.Power2[4])) then
-		--aud1 = AudioMessage("bdmisn2004.wav");
+		M.Aud1 = AudioMessage("bdmisn2004.wav");
 		CameraReady();
 		SetObjectiveOff(M.Nav[3]);
 		M.Power2Dead = true;
