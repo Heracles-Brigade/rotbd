@@ -156,8 +156,7 @@ local makeOffensive = mission.Objective:define("make_offensive"):init({
 
 local makeDefensive = mission.Objective:define("make_defensive"):init({
     next = 'destroy_soviet',
-    otf = 'bdmisn2106.otf',
-	--turr_count = 0
+    otf = 'bdmisn2106.otf'
 }):setListeners({
     start = function(self)
         AddObjective(self.otf,"white");
@@ -175,15 +174,6 @@ local makeDefensive = mission.Objective:define("make_defensive"):init({
         UpdateObjective(self.otf,"green");
         mission.Objective:Start(self.next);
     end
-	--[[
-    save = function(self)
-        return self.turr_count;
-    end,
-    load = function(self,...)
-        self.turr_count = ...;
->>>>>>> 2170b6d9971d0f31cbe13f785f96133566eaef01
-    end
-	--]]
 });
 
 local destorySoviet = mission.Objective:define("destroy_soviet"):init({
@@ -203,6 +193,7 @@ local destorySoviet = mission.Objective:define("destroy_soviet"):init({
             SetObjectiveOn(globals.sb_turr_2);
             SetObjectiveOn(GetRecyclerHandle(2));
             self.wait_done = true;
+            mission.Objective:getObjective("toofarfrom_recy"):success();
         else
             if(not(IsAlive(globals.sb_turr_1) or IsAlive(globals.sb_turr_2))) then
                 self:success();
@@ -322,11 +313,9 @@ local loseRecy = mission.Objective:define("lose_recy"):setListeners({
 -- If you go too far.
 local TooFarFromRecy = mission.Objective:define("toofarfrom_recy"):setListeners({
     update = function(self)
-		if(globals.keepGTsAtFullHealth) then
-			if IsAlive(GetRecyclerHandle(1)) and GetDistance(GetPlayerHandle(), GetRecyclerHandle(1)) > 700.0 then
-				self:fail();
-			end
-		end
+        if IsAlive(GetRecyclerHandle(1)) and GetDistance(GetPlayerHandle(), GetRecyclerHandle(1)) > 700.0 then
+            self:fail();
+        end
     end,
     fail = function(self)
         FailMission(GetTime() + 5, "bdmisn21ls1.des");
