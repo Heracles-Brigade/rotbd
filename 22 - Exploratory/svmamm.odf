@@ -22,12 +22,18 @@ weaponHard3 = "GC1"
 weaponName3 = "gatstab"
 weaponHard4 = "GC2"
 weaponName4 = "gatstab"
-// 4 more Cannon slots, same HPs, but different group.
-//weaponHard# = "GC#"
-//weaponName# = "gminisov"
 weaponHard5 = "GS2"
 weaponName5 = "gquake"
-weaponMask = 00001
+weaponMask = 01111
+
+// 4 more Cannon slots, same HPs, but different group.
+// Lua switches via GiveWeapon to these when you press the "G" key, mimicing TRO's 
+// function but using it for different means. (Maybe use deploy key "K" instead?)
+[ExtraWeapons]
+weaponName1 = "gminisov"
+weaponName2 = "gminisov"
+weaponName3 = "gminisov"
+weaponName4 = "gminisov"
 
 [CraftClass]
 rangeScan = 400.0f
