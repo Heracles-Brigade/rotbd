@@ -148,6 +148,9 @@ function Update()
 	-- Did you do the deed yet?
 	if not M.MammothStolen and M.Player == M.Mammoth then
 		M.Aud1 = AudioMessage("bdmisn2304.wav");
+		SetObjectiveOff(M.Nav[1]);
+		SetObjectiveOff(M.Mammoth);
+		SetObjectiveOn(M.Nav[2]);
 		M.MammothStolen = true;
 		M.UpdateObjectives = true;
 	end
