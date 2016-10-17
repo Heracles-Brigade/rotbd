@@ -4581,7 +4581,7 @@ pos [1] =
 100632
 team [1] =
 1
-label = bzn64label_0021
+label = nav1
 isUser [1] =
 0
 obj_addr = 00704640
@@ -5751,7 +5751,7 @@ pos [1] =
 99109.5
 team [1] =
 1
-label = bzn64label_002A
+label = nav2
 isUser [1] =
 0
 obj_addr = 00701C10
@@ -8840,7 +8840,7 @@ pos [1] =
 99569.8
 team [1] =
 2
-label = bzn64label_0042
+label = mammoth
 isUser [1] =
 0
 obj_addr = 006FAB90
@@ -8969,7 +8969,7 @@ pos [1] =
 100407
 team [1] =
 2
-label = bzn64label_0043
+label = badmammoth
 isUser [1] =
 0
 obj_addr = 006FA6E0
@@ -9612,8 +9612,8 @@ count [1] =
 [AiPath]
 old_ptr = 002CE200
 size [1] =
-14
-label = bzn64path_0001
+13
+label = spawn_svhraz1
 pointCount [1] =
 1
 points [1] =
@@ -9625,8 +9625,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 702BE200
 size [1] =
-14
-label = bzn64path_0002
+13
+label = spawn_svhraz2
 pointCount [1] =
 1
 points [1] =
@@ -9638,8 +9638,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = C02AE200
 size [1] =
-14
-label = bzn64path_0003
+13
+label = spawn_svfigh1
 pointCount [1] =
 1
 points [1] =
@@ -9651,8 +9651,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 102AE200
 size [1] =
-14
-label = bzn64path_0004
+13
+label = spawn_svfigh2
 pointCount [1] =
 1
 points [1] =
@@ -9664,8 +9664,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 6029E200
 size [1] =
-14
-label = bzn64path_0005
+13
+label = spawn_svrckt1
 pointCount [1] =
 1
 points [1] =
@@ -9677,8 +9677,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = B028E200
 size [1] =
-14
-label = bzn64path_0006
+13
+label = spawn_svrckt2
 pointCount [1] =
 1
 points [1] =
@@ -9729,8 +9729,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = F025E200
 size [1] =
-14
-label = bzn64path_000A
+8
+label = patrol_1
 pointCount [1] =
 51
 points [51] =
@@ -9942,8 +9942,8 @@ pathType = 02000000
 [AiPath]
 old_ptr = B023E200
 size [1] =
-14
-label = bzn64path_000B
+8
+label = patrol_2
 pointCount [1] =
 54
 points [54] =
@@ -10167,8 +10167,8 @@ pathType = 02000000
 [AiPath]
 old_ptr = 5021E200
 size [1] =
-14
-label = bzn64path_000C
+8
+label = patrol_3
 pointCount [1] =
 115
 points [115] =
@@ -10818,8 +10818,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 305BE200
 size [1] =
-14
-label = bzn64path_001B
+8
+label = patrol_4
 pointCount [1] =
 13
 points [13] =
@@ -10879,8 +10879,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 305AE200
 size [1] =
-14
-label = bzn64path_001C
+8
+label = patrol_5
 pointCount [1] =
 14
 points [14] =

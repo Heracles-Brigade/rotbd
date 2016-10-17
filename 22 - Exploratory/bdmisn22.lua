@@ -1,4 +1,4 @@
--- Battlezone: Rise of the Black Dogs, Black Dog Mission 20 written by General BlackDragon.
+-- Battlezone: Rise of the Black Dogs, Black Dog Mission 22 written by General BlackDragon.
 
 local M = {
 -- Bools
