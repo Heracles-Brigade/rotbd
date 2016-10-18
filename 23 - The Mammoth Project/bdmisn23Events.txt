@@ -23,6 +23,7 @@ if GetDistance(Player, Mammoth Decoy) < 100? 150?
 Damage(Mammoth, 90001);
 Wave 2 / Objective 2, "WHITE".
 spawn ??? // Nope, waited around, nothing happened. Guess the earlier spawn was the trap.
+// Further investigation, I believe the Nav originally spawned on the hill, much closer to the Mammoth, and "slid down" over time. Maybe put nav on apex of hill or move it so it slides down closer to Mammoth Decoy.
 
 When GetDistance(Player, Nav1) > 400,
 Wave 3 / Objective 2, "GREEN", Objective 3 "WHITE"

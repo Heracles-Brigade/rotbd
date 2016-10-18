@@ -25,6 +25,7 @@ SafetyReached = false, -- Are we safe yet?
 MissionOver = false, -- Yay!
 
 -- Floats (realy doubles in Lua)
+MammothTime = 0, -- Time to sit at Mammoth.
 
 -- Handles
 Player = nil,
@@ -40,9 +41,6 @@ Supply = nil,
 -- Radar Arrays.
 --Radar { RadarHandle = nil, RadarWarn = false, RadarTrigger = false, }
 Radar = { },
-
--- Floats. (really doubles in Lua)
-MammothTime = 0, -- Time to sit at Mammoth.
 
 -- Ints
 Aud1 = 0
@@ -62,7 +60,7 @@ end
 
 function Start()
 
-    print("Black Dog Mission 20 Lua created by General BlackDragon");
+    print("Black Dog Mission 22 Lua created by General BlackDragon");
 
 end
 

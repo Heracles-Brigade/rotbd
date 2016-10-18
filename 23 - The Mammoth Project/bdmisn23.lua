@@ -38,7 +38,7 @@ end
 
 function Start()
 
-    print("Black Dog Mission 20 Lua created by General BlackDragon");
+    print("Black Dog Mission 23 Lua created by General BlackDragon");
 
 end
 
@@ -164,7 +164,7 @@ function Update()
 	
 	-- Lose Conditions
 	if not M.MissionOver and not IsValid(M.Mammoth) then
-		FailMission(GetTime()+5.0, "bdmisn20l1.des");
+		FailMission(GetTime()+5.0, "bdmisn23l1.des");
 		M.MammothDead = true;
 		M.MissionOver = true;
 		M.UpdateObjectives = true;
