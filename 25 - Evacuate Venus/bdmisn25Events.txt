@@ -1,0 +1,33 @@
+Object Labels:
+
+Nav1: nav1 //label_0011
+Nav2: nav2 //label_0012
+
+APC1: apc1 //label_000F
+APC2: apc2 //label_0010
+
+Events:
+
+On Start:
+Nav1 Name: "Black Dog Outpost"
+Nav2 Name: "Rendezvous Point"
+Wave 1 / Objective 1, "WHITE"
+
+
+if GetDistance(Player, Nav1) < 200 then
+spawn 6 aspilo, "spawn_pilo1 - spawn_pilo6" //"path_0001, path_0002, path_0003, path_0004, path_0005, path_0006" // IMPROVEMENT: bspilo!
+
+When both APCs are < 50m from Nav1, 
+Order 3 soldiers to goto APC1, other 3 to Goto APC2.
+
+after 15 seconds from APCs reaching Nav1:
+Delete pilots.
+Wave 2 / Objective 2, "WHITE", Objective 3, "WHITE"
+
+if after Nav1 rescue, GetDistance both APCs from Nav1 < 100, 
+SucceedMission(GetTime()+5.0, "bdmisn25wn.des");
+
+if either APC is destroyed,
+FailMission(GetTime()+5.0, "bdmisn25l1.des");
+
+// IMPROVEMENT: If any survivors die, lose mission.

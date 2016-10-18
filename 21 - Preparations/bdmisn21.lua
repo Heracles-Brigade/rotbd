@@ -296,7 +296,7 @@ local makeComm = mission.Objective:define("make_comm"):init({
     end,
     success = function(self)
         UpdateObjective(self.otf,"green");
-        SucceedMission(GetTime() + 5, "bdmisn21win.des");
+        SucceedMission(GetTime() + 5, "bdmisn21wn.des");
     end
 });
 
@@ -308,7 +308,7 @@ local loseRecy = mission.Objective:define("lose_recy"):setListeners({
         end
     end,
 	fail = function(self)
-		FailMission(GetTime() + 5, "bdmisn21ls2.des");
+		FailMission(GetTime() + 5, "bdmisn21l2.des");
 	end
 });
 -- If you go too far.
@@ -319,7 +319,7 @@ local TooFarFromRecy = mission.Objective:define("toofarfrom_recy"):setListeners(
         end
     end,
     fail = function(self)
-        FailMission(GetTime() + 5, "bdmisn21ls1.des");
+        FailMission(GetTime() + 5, "bdmisn21l1.des");
     end
 });
 

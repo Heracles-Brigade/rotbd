@@ -7940,7 +7940,7 @@ size [1] =
 0
 [AiPaths]
 count [1] =
-34
+21
 [AiPath]
 old_ptr = 108e8e09
 size [1] =
@@ -8282,159 +8282,6 @@ points [1] =
 101175
 pathType = 00000000
 [AiPath]
-old_ptr = 20928e09
-size [1] =
-14
-label = bzn64path_A8B0
-pointCount [1] =
-2
-points [2] =
-  x [1] =
-618.466
-  z [1] =
-101724
-  x [1] =
-618.466
-  z [1] =
-101724
-pathType = 00000000
-[AiPath]
-old_ptr = b0938e09
-size [1] =
-14
-label = bzn64path_614C
-pointCount [1] =
-2
-points [2] =
-  x [1] =
-640.156
-  z [1] =
-101510
-  x [1] =
-640.156
-  z [1] =
-101510
-pathType = 00000000
-[AiPath]
-old_ptr = 48928e09
-size [1] =
-14
-label = bzn64path_349E
-pointCount [1] =
-2
-points [2] =
-  x [1] =
-1156.58
-  z [1] =
-101178
-  x [1] =
-1156.58
-  z [1] =
-101178
-pathType = 00000000
-[AiPath]
-old_ptr = 70928e09
-size [1] =
-14
-label = bzn64path_2ADD
-pointCount [1] =
-2
-points [2] =
-  x [1] =
-618.459
-  z [1] =
-101724
-  x [1] =
-618.459
-  z [1] =
-101724
-pathType = 00000000
-[AiPath]
-old_ptr = d8938e09
-size [1] =
-14
-label = bzn64path_7D60
-pointCount [1] =
-2
-points [2] =
-  x [1] =
-1156.58
-  z [1] =
-101178
-  x [1] =
-1156.58
-  z [1] =
-101178
-pathType = 00000000
-[AiPath]
-old_ptr = e8928e09
-size [1] =
-14
-label = bzn64path_D780
-pointCount [1] =
-2
-points [2] =
-  x [1] =
-1156.58
-  z [1] =
-101178
-  x [1] =
-1156.58
-  z [1] =
-101178
-pathType = 00000000
-[AiPath]
-old_ptr = 10938e09
-size [1] =
-14
-label = bzn64path_6E75
-pointCount [1] =
-2
-points [2] =
-  x [1] =
-1156.58
-  z [1] =
-101178
-  x [1] =
-1156.58
-  z [1] =
-101178
-pathType = 00000000
-[AiPath]
-old_ptr = 38938e09
-size [1] =
-14
-label = bzn64path_6C74
-pointCount [1] =
-2
-points [2] =
-  x [1] =
-1156.58
-  z [1] =
-101178
-  x [1] =
-1156.58
-  z [1] =
-101178
-pathType = 00000000
-[AiPath]
-old_ptr = 28948e09
-size [1] =
-14
-label = bzn64path_0000
-pointCount [1] =
-2
-points [2] =
-  x [1] =
-1156.58
-  z [1] =
-101178
-  x [1] =
-1156.58
-  z [1] =
-101178
-pathType = 00000000
-[AiPath]
 old_ptr = 88938e09
 size [1] =
 14
@@ -8446,23 +8293,6 @@ points [1] =
 577.925
   z [1] =
 101752
-pathType = 00000000
-[AiPath]
-old_ptr = 98928e09
-size [1] =
-14
-label = bzn64path_6365
-pointCount [1] =
-2
-points [2] =
-  x [1] =
-1156.58
-  z [1] =
-101178
-  x [1] =
-1156.58
-  z [1] =
-101178
 pathType = 00000000
 [AiPath]
 old_ptr = c0928e09
@@ -8539,23 +8369,6 @@ points [7] =
 101240
 pathType = 00000000
 [AiPath]
-old_ptr = 78948e09
-size [1] =
-14
-label = bzn64path_000C
-pointCount [1] =
-2
-points [2] =
-  x [1] =
-533.535
-  z [1] =
-101697
-  x [1] =
-534.728
-  z [1] =
-101696
-pathType = 00000000
-[AiPath]
 old_ptr = 00948e09
 size [1] =
 14
@@ -8582,23 +8395,6 @@ points [1] =
 101205
 pathType = 00000000
 [AiPath]
-old_ptr = a0948e09
-size [1] =
-14
-label = bzn64path_000F
-pointCount [1] =
-2
-points [2] =
-  x [1] =
-1111.61
-  z [1] =
-101209
-  x [1] =
-1111.61
-  z [1] =
-101209
-pathType = 00000000
-[AiPath]
 old_ptr = b87d8e09
 size [1] =
 14
@@ -8623,23 +8419,6 @@ points [1] =
 1137.64
   z [1] =
 101212
-pathType = 00000000
-[AiPath]
-old_ptr = 78da8e09
-size [1] =
-14
-label = bzn64path_0012
-pointCount [1] =
-2
-points [2] =
-  x [1] =
-1097.05
-  z [1] =
-101143
-  x [1] =
-1094.58
-  z [1] =
-101140
 pathType = 00000000
 [AiPath]
 old_ptr = f8dc8e09

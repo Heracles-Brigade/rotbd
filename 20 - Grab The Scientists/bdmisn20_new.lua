@@ -74,7 +74,7 @@ local checkCommand = mission.Objective:define("checkCommand"):init({
     end,
     fail = function(self)
         UpdateObjective(self.otf,"red");
-        FailMission(GetTime() + 5,"bdmisn20lse.des");
+        FailMission(GetTime() + 5,"bdmisn20ls.des");
     end
 });
 
@@ -178,7 +178,7 @@ local destroyComm = mission.Objective:define("destroyComm"):init({
     success = function(self)
         UpdateObjective(self.otf,"green");
         UpdateObjective(self.otf2,"green");
-        SucceedMission(GetTime()+5,"bdmisn20win.des");
+        SucceedMission(GetTime()+5,"bdmisn20wn.des");
     end
 });
 

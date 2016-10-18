@@ -73,8 +73,10 @@ After 10 seconds, Wave 6/Objective 7 "GREEN", Objective 8, "WHITE".
 StartCockpitTimer(120, 60, 30);
 SetTarget(Nav5);
 
-If(GetDistance(Player, Nav5) < 50, SucceedMission(GetTime()+5.0, "bdmisn22win.des");
+If(GetDistance(Player, Nav5) < 50, SucceedMission(GetTime()+5.0, "bdmisn22wn.des");
 
-if(GetCockpitTimer() == 0), FailMission(GetTime(), "bdmisn22ls2.des") "You Died." IMPROVEMENT: Writing a new one...
+if(GetCockpitTimer() == 0), FailMission(GetTime(), "bdmisn22l2.des") "You Died." IMPROVEMENT: Writing a new one...
 
-if Mammoth is sniped or destroyed, FailMission(GetTime()+5.0, "bdmisn22ls1.des")
+if Mammoth is sniped or destroyed, FailMission(GetTime()+5.0, "bdmisn22l1.des")
+
+if Hangar destroyed before info, FailMission(GetTime()+5.0, "bdmisn22l3.des")

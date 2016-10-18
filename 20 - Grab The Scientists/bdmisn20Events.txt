@@ -37,7 +37,7 @@ Patrol2_1 and Patrol2_2, patrol path "patrol_2". (path_0002)
 Patrol3_1 and Patrol3_2, patrol path "patrol_3". (path_0003)
 
 
-Cutscene, Camera Path "opening_cin" (bzn64path_000A) Target: Cafe. Ends after 17? seconds. Wave1. (in RL, finish when camerapath or wave1 finishes),
+Cutscene, Camera Path "opening_cin" (bzn64path_000A) Target: Cafe. Ends after 17? seconds. Wave1. (IMPROVEMENT: finish when camerapath or wave1 finishes),
 
 NAV.1-painted
 
@@ -50,9 +50,13 @@ When all 4 Soalr arrays at nav 3 are dead, cutscene, wave/objective 4/5. CameraP
 spawns: 1 avapc "spawn_apc" (path_0007), 1 avtug "spawn_tug" (path_0008, indestructible), 3 avtank. "spawn_tank1", "spawn_tank2", "spawn_tank3" (path_0004, path_0005, path_0006)
 Tug ordered to pick up relic. APC ordered to follow Tug. Tanks ordered to Goto CommTower.
 When Tug has relic, goto "spawn_svfigh1" (path_0013?)
-When tug reaches path point, tug disappear, all american units disappear. (In RL, tanks stay)
+When tug reaches path point, tug disappear, all american units disappear. (IMPROVEMENT: tanks stay to defend comm tower)
 
 When Patrol 3 is dead, spawn 3 svfigh 2 svrckt, 1 svhraz. Goto Nav 4.
 Spawns: svhraz: "spawn_svhraz" (path_0017), svrckt: "spawn_svrckt1", "spawn_svrckt2", (path_0016, path_0015), svfigh: "spawn_svfigh1", "spawn_svfigh2" (path_0013, path_0014)
 
-when comm tower, and all 8 powers are dead, win mission.
+when comm tower, and all 8 powers are dead:
+SucceedMission(GetTime()+5.0, "bdmisn20wn.des");
+
+if player destroys command before info,
+FailMission(GetTime()+5.0, "bdmisn20ls.des");

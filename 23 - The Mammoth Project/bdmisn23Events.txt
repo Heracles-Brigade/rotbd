@@ -1,0 +1,39 @@
+Object Labels:
+
+Nav1: nav1 //label_0021
+Nav2: nav2 //label_002A
+
+Mammoth: mammoth //label_0042
+Mammoth Decoy: badmammoth //label_0043
+
+Events:
+
+on Start:
+Nav1 name: "Navpoint 1"
+Nav2 name: "Pickup Zone"
+Wave1/Objective 1, "WHITE".
+
+if GetDistance(Player, Nav1) < 175.0,
+spawn 2 svhraz (spawn_svhraz1, spawn_svhraz2) //path_0001, path_0002
+spawn 2 svfigh (spawn_svfigh1, spawn_svfigh2) //path_0003, path_0004) 
+spawn 2 svrckt (spawn_svrckt1, spawn_svrckt2) //path_0005, path_0006)
+all attack Player.
+
+if GetDistance(Player, Mammoth Decoy) < 100? 150?
+Damage(Mammoth, 90001);
+Wave 2 / Objective 2, "WHITE".
+spawn ??? // Nope, waited around, nothing happened. Guess the earlier spawn was the trap.
+// Further investigation, I believe the Nav originally spawned on the hill, much closer to the Mammoth, and "slid down" over time. Maybe put nav on apex of hill or move it so it slides down closer to Mammoth Decoy.
+
+When GetDistance(Player, Nav1) > 400,
+Wave 3 / Objective 2, "GREEN", Objective 3 "WHITE"
+SetObjectiveOn(Mammoth);
+
+When Player is in Mammoth, Wave 4 / Objective 4, "WHITE"
+SetObjectiveOn(Nav2);
+
+if Player is in Mammoth, and GetDistance(Player, Nav2) < 100, 
+SucceedMission(GetTime()+5.0, "bdmisn23wn.des");
+
+if not IsValid(Mammoth),
+FailMission(GetTime()+5.0, "bdmisn23l1.des");

@@ -1,4 +1,4 @@
--- Battlezone: Rise of the Black Dogs, Black Dog Mission 20 written by General BlackDragon.
+-- Battlezone: Rise of the Black Dogs, Black Dog Mission 22 written by General BlackDragon.
 
 local M = {
 -- Bools
@@ -25,6 +25,7 @@ SafetyReached = false, -- Are we safe yet?
 MissionOver = false, -- Yay!
 
 -- Floats (realy doubles in Lua)
+MammothTime = 0, -- Time to sit at Mammoth.
 
 -- Handles
 Player = nil,
@@ -40,9 +41,6 @@ Supply = nil,
 -- Radar Arrays.
 --Radar { RadarHandle = nil, RadarWarn = false, RadarTrigger = false, }
 Radar = { },
-
--- Floats. (really doubles in Lua)
-MammothTime = 0, -- Time to sit at Mammoth.
 
 -- Ints
 Aud1 = 0
@@ -62,7 +60,7 @@ end
 
 function Start()
 
-    print("Black Dog Mission 20 Lua created by General BlackDragon");
+    print("Black Dog Mission 22 Lua created by General BlackDragon");
 
 end
 
@@ -97,27 +95,21 @@ function Update()
 		M.Tug = GetHandle("tug");
 		M.ControlTower = GetHandle("control");
 		
-		M.Nav[1] = GetHandle("nav1");
-		SetObjectiveName(M.Nav[1], "Navpoint 1");
-		M.Nav[2] = GetHandle("nav2");
-		SetObjectiveName(M.Nav[2], "Navpoint 2");
-		M.Nav[3] = GetHandle("nav3");
-		SetObjectiveName(M.Nav[3], "Navpoint 3");
-		M.Nav[4] = GetHandle("nav4");
-		SetObjectiveName(M.Nav[4], "Navpoint 4");
-		M.Nav[5] = GetHandle("nav5");
-		SetObjectiveName(M.Nav[5], "Rendezvous Point");
-		-- In BZ64, navs are invincible, maybe keep it that way for now. (units in this mission use navs to goto)
-		for i = 1, 5 do
+		for i = 1, 5 do 
+			M.Nav[i] = GetHandle("nav" .. i);
+			if i == 5 then
+				SetObjectiveName(M.Nav[i], "Rendezvous Point");
+			else
+				SetObjectiveName(M.Nav[i], "Navpoint " .. i);
+			end
 			SetMaxHealth(M.Nav[i], 0);
 		end
 				
 		-- Units in BZN set to do wierd thing? Idk. Reset Patrols here. -GBD
 		Patrol(GetHandle("patrol1_1"), "patrol_1", 1);
-		Patrol(GetHandle("patrol2_1"), "patrol_2", 1);
-		Patrol(GetHandle("patrol2_2"), "patrol_2", 1);
-		Patrol(GetHandle("patrol2_3"), "patrol_2", 1);
-		Patrol(GetHandle("patrol2_4"), "patrol_2", 1);
+		for i = 1, 4 do
+			Patrol(GetHandle("patrol2_" .. i), "patrol_2", 1);
+		end
 		
 		M.StartDone = true;
 		
@@ -276,7 +268,7 @@ function Update()
 	
 		-- Win Conditions:
 		if M.MammothInfoed and GetDistance(M.Player, M.Nav[5]) < 50.0 then
-			SucceedMission(GetTime()+5.0, "bdmisn22win.des");
+			SucceedMission(GetTime()+5.0, "bdmisn22wn.des");
 			M.MissionOver = true;
 			M.UpdateObjectives = true;
 		end
@@ -284,19 +276,19 @@ function Update()
 		-- Lose Conditions:
 		-- Kill Hanger too soon?
 		if not M.HangarInfoed and not IsAlive(M.Hangar) then
-			FailMission(GetTime()+5.0, "bdmisn22ls3.des");
+			FailMission(GetTime()+5.0, "bdmisn22l3.des");
 			M.MissionOver = true;
 			M.UpdateObjectives = true;
 		end
 		-- Kill Mammoth too soon?
 		if  not M.MammothInfoed and not IsAlive(M.Mammoth) then
-			FailMission(GetTime()+5.0, "bdmisn22ls1.des");
+			FailMission(GetTime()+5.0, "bdmisn22l1.des");
 			M.MissionOver = true;
 			M.UpdateObjectives = true;
 		end
 		-- Fail to escape in time?
 		if M.MammothInfoed and GetCockpitTimer() == 0 then
-			FailMission(GetTime(), "bdmisn22ls2.des");
+			FailMission(GetTime(), "bdmisn22l2.des");
 			M.MissionOver = true;
 			M.UpdateObjectives = true;
 		end
