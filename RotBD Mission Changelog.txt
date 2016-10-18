@@ -23,7 +23,9 @@ BDOG Mission 5:
 -Instead of simply adding Health to the Soviet Comm Tower, upped it's health to 20,000.
 
 BDOG Mission 6:
-
+-Made you start in a BDOG tank, not an NSDF Tank.
+-Made rescue spawn BDOG pilots instead of NSDF pilots.
+-Added a lose condition if any of the pilots die before they get into APCs.
 
 BDOG Mission 7:
 

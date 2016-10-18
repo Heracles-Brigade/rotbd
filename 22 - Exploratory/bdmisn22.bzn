@@ -8251,7 +8251,7 @@ size [1] =
 0
 [AiPaths]
 count [1] =
-25
+23
 [AiPath]
 old_ptr = a84e7302
 size [1] =
@@ -8703,40 +8703,6 @@ points [1] =
 1413.62
   z [1] =
 100172
-pathType = 00000000
-[AiPath]
-old_ptr = a0477302
-size [1] =
-14
-label = bzn64path_0000
-pointCount [1] =
-2
-points [2] =
-  x [1] =
-4243
-  z [1] =
-99210.2
-  x [1] =
-4243
-  z [1] =
-99210.2
-pathType = 00000000
-[AiPath]
-old_ptr = 884b7302
-size [1] =
-14
-label = bzn64path_0000
-pointCount [1] =
-2
-points [2] =
-  x [1] =
-4243
-  z [1] =
-99210.2
-  x [1] =
-4243
-  z [1] =
-99210.2
 pathType = 00000000
 [AiPath]
 old_ptr = c8477302

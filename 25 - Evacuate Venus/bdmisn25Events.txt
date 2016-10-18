@@ -29,3 +29,5 @@ SucceedMission(GetTime()+5.0, "bdmisn25wn.des");
 
 if either APC is destroyed,
 FailMission(GetTime()+5.0, "bdmisn25l1.des");
+
+// IMPROVEMENT: If any survivors die, lose mission.
