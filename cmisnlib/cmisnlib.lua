@@ -459,6 +459,7 @@ return {
     CreateObject = MissionManager.CreateObject,
     Load = MissionManager.Load,
     Save = MissionManager.Save,
+    getObjective = MissionManager.getObjective,
     objectives = ObjectiveManager.objectives,
     UnitTracker = UnitTracker
 }
