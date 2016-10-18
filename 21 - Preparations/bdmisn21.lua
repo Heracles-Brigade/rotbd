@@ -288,7 +288,7 @@ local makeComm = mission.Objective:define("make_comm"):init({
 }):setListeners({
     start = function(self)
         AddObjective(self.otf,"white");
-    end
+    end,
     update = function(self)
         if(tracker:gotOfClass("commtower",1)) then
             self:success();
