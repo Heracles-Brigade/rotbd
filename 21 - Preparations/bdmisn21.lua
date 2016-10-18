@@ -320,10 +320,6 @@ local TooFarFromRecy = mission.Objective:define("toofarfrom_recy"):setListeners(
             self:fail();
         end
     end,
-    success = function(self)
-        print("Can go far away!");
-        print(self.alive);
-    end,
     fail = function(self)
         FailMission(GetTime() + 5, "bdmisn21l1.des");
     end
