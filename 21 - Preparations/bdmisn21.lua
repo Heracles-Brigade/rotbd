@@ -194,7 +194,7 @@ local destorySoviet = mission.Objective:define("destroy_soviet"):init({
             SetObjectiveOn(globals.sb_turr_2);
             SetObjectiveOn(GetRecyclerHandle(2));
             self.wait_done = true;
-            mission.Objective:getObjective("toofarfrom_recy"):success();
+            mission:getObjective("toofarfrom_recy"):success();
         else
             if(not(IsAlive(globals.sb_turr_1) or IsAlive(globals.sb_turr_2))) then
                 self:success();
@@ -314,9 +314,15 @@ local loseRecy = mission.Objective:define("lose_recy"):setListeners({
 -- If you go too far.
 local TooFarFromRecy = mission.Objective:define("toofarfrom_recy"):setListeners({
     update = function(self)
+        
         if IsAlive(GetRecyclerHandle(1)) and GetDistance(GetPlayerHandle(), GetRecyclerHandle(1)) > 700.0 then
+            print(self.alive);
             self:fail();
         end
+    end,
+    success = function(self)
+        print("Can go far away!");
+        print(self.alive);
     end,
     fail = function(self)
         FailMission(GetTime() + 5, "bdmisn21l1.des");
@@ -340,7 +346,7 @@ function Start()
     BuildObject("svrecy",2,"spawn_svrecy");
     globals.sb_turr_1 = BuildObject("sbtowe",2,"spawn_sbtowe1");
     globals.sb_turr_2 = BuildObject("sbtowe",2,"spawn_sbtowe2");
-    
+
     createWave("svfigh",{"spawn_n1","spawn_n2","spawn_n3"},"north_path");
 
     local instance = deployRecy:start();
