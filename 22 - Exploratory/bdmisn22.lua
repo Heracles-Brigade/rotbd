@@ -95,27 +95,21 @@ function Update()
 		M.Tug = GetHandle("tug");
 		M.ControlTower = GetHandle("control");
 		
-		M.Nav[1] = GetHandle("nav1");
-		SetObjectiveName(M.Nav[1], "Navpoint 1");
-		M.Nav[2] = GetHandle("nav2");
-		SetObjectiveName(M.Nav[2], "Navpoint 2");
-		M.Nav[3] = GetHandle("nav3");
-		SetObjectiveName(M.Nav[3], "Navpoint 3");
-		M.Nav[4] = GetHandle("nav4");
-		SetObjectiveName(M.Nav[4], "Navpoint 4");
-		M.Nav[5] = GetHandle("nav5");
-		SetObjectiveName(M.Nav[5], "Rendezvous Point");
-		-- In BZ64, navs are invincible, maybe keep it that way for now. (units in this mission use navs to goto)
-		for i = 1, 5 do
+		for i = 1, 5 do 
+			M.Nav[i] = GetHandle("nav" .. i);
+			if i == 5 then
+				SetObjectiveName(M.Nav[i], "Rendezvous Point");
+			else
+				SetObjectiveName(M.Nav[i], "Navpoint " .. i);
+			end
 			SetMaxHealth(M.Nav[i], 0);
 		end
 				
 		-- Units in BZN set to do wierd thing? Idk. Reset Patrols here. -GBD
 		Patrol(GetHandle("patrol1_1"), "patrol_1", 1);
-		Patrol(GetHandle("patrol2_1"), "patrol_2", 1);
-		Patrol(GetHandle("patrol2_2"), "patrol_2", 1);
-		Patrol(GetHandle("patrol2_3"), "patrol_2", 1);
-		Patrol(GetHandle("patrol2_4"), "patrol_2", 1);
+		for i = 1, 4 do
+			Patrol(GetHandle("patrol2_" .. i), "patrol_2", 1);
+		end
 		
 		M.StartDone = true;
 		

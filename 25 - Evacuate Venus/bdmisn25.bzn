@@ -12,7 +12,7 @@ size [1] =
 48
 [GameObject]
 PrjID [1] =
-player
+bvtank
 seqno [1] =
 1
 pos [1] =
@@ -24,7 +24,7 @@ pos [1] =
 99140.9
 team [1] =
 1
-label = bzn64label_0001
+label = player
 isUser [1] =
 1
 obj_addr = 0070EA50
@@ -112,9 +112,9 @@ seen [1] =
 healthRatio [1] =
 0.993667
 curHealth [1] =
-2981
+2782
 maxHealth [1] =
-3000
+2800
 ammoRatio [1] =
 1
 curAmmo [1] =
@@ -136,7 +136,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-asuser
+bsuser
 perceivedTeam [1] =
 1
 [GameObject]
@@ -1826,7 +1826,7 @@ pos [1] =
 99154.5
 team [1] =
 1
-label = bzn64label_000F
+label = apc1
 isUser [1] =
 0
 obj_addr = 0070A8B0
@@ -1958,7 +1958,7 @@ pos [1] =
 99156.7
 team [1] =
 1
-label = bzn64label_0010
+label = apc2
 isUser [1] =
 0
 obj_addr = 0070A400
@@ -2090,7 +2090,7 @@ pos [1] =
 97993.2
 team [1] =
 1
-label = bzn64label_0011
+label = nav1
 isUser [1] =
 0
 obj_addr = 00709F50
@@ -2217,7 +2217,7 @@ pos [1] =
 99414.2
 team [1] =
 1
-label = bzn64label_0012
+label = nav2
 isUser [1] =
 0
 obj_addr = 00709AA0
@@ -6328,8 +6328,8 @@ count [1] =
 [AiPath]
 old_ptr = 309BE100
 size [1] =
-14
-label = bzn64path_0001
+11
+label = spawn_pilo1
 pointCount [1] =
 1
 points [1] =
@@ -6341,8 +6341,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 809AE100
 size [1] =
-14
-label = bzn64path_0002
+11
+label = spawn_pilo2
 pointCount [1] =
 1
 points [1] =
@@ -6354,8 +6354,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = D099E100
 size [1] =
-14
-label = bzn64path_0003
+11
+label = spawn_pilo3
 pointCount [1] =
 1
 points [1] =
@@ -6367,8 +6367,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 2099E100
 size [1] =
-14
-label = bzn64path_0004
+11
+label = spawn_pilo4
 pointCount [1] =
 1
 points [1] =
@@ -6380,8 +6380,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 7098E100
 size [1] =
-14
-label = bzn64path_0005
+11
+label = spawn_pilo5
 pointCount [1] =
 1
 points [1] =
@@ -6393,8 +6393,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = C097E100
 size [1] =
-14
-label = bzn64path_0006
+11
+label = spawn_pilo6
 pointCount [1] =
 1
 points [1] =

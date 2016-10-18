@@ -93,26 +93,12 @@ function Update()
 		M.Relic = GetHandle("relic");
 		SetMaxHealth(M.Relic, 0); -- This is invincible.
 		
-		M.Power1[1] = GetHandle("power1_1");
-		M.Power1[2] = GetHandle("power1_2");
-		M.Power1[3] = GetHandle("power1_3");
-		M.Power1[4] = GetHandle("power1_4");
-		
-		M.Power2[1] = GetHandle("power2_1");
-		M.Power2[2] = GetHandle("power2_2");
-		M.Power2[3] = GetHandle("power2_3");
-		M.Power2[4] = GetHandle("power2_4");
-		
-		M.Nav[1] = GetHandle("nav1");
-		SetObjectiveName(M.Nav[1], "Nav 1");
-		M.Nav[2] = GetHandle("nav2");
-		SetObjectiveName(M.Nav[2], "Nav 2");
-		M.Nav[3] = GetHandle("nav3");
-		SetObjectiveName(M.Nav[3], "Nav 3");
-		M.Nav[4] = GetHandle("nav4");
-		SetObjectiveName(M.Nav[4], "Nav 4");
-		-- In BZ64, navs are invincible, maybe keep it that way for now. (units in this mission use navs to goto)
 		for i = 1, 4 do
+			M.Power1[i] = GetHandle("power1_" .. i);
+			M.Power2[i] = GetHandle("power2_" .. i);
+			
+			M.Nav[i] = GetHandle("nav" .. i);
+			SetObjectiveName(M.Nav[i], "Nav " .. i);
 			SetMaxHealth(M.Nav[i], 0);
 		end
 		

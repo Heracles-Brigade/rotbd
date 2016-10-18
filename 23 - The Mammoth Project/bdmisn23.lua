@@ -64,22 +64,22 @@ function Update()
 		M.MammothDecoy = GetHandle("badmammoth");
 		SetIndependence(M.MammothDecoy, 0); -- Nope.
 
-		M.Nav[1] = GetHandle("nav1");
-		SetObjectiveName(M.Nav[1], "Navpoint 1");
-		M.Nav[2] = GetHandle("nav2");
-		SetObjectiveName(M.Nav[2], "Pickup Zone");
 		-- In BZ64, navs are invincible, maybe keep it that way for now. (units in this mission use navs to goto)
 		for i = 1, 2 do
+			M.Nav[i] = GetHandle("nav" .. i);
+			if i == 2 then
+				SetObjectiveName(M.Nav[i], "Pickup Zone");
+			else
+				SetObjectiveName(M.Nav[i], "Navpoint 1");
+			end
 			SetMaxHealth(M.Nav[i], 0);
 		end
 			
 		--[[ -- Units already set in BZN to do patrol. :)
-		Patrol(M.Patrol1_1, "patrol_1", 1);
-		Patrol(M.Patrol1_2, "patrol_1", 1);
-		Patrol(M.Patrol2_1, "patrol_2", 1);
-		Patrol(M.Patrol2_2, "patrol_2", 1);
-		Patrol(M.Patrol3_1, "patrol_3", 1);
-		Patrol(M.Patrol3_2, "patrol_3", 1);
+		for i = 1, 2 do
+			Patrol(GetHandle("patrol1_" .. i), "patrol_1", 1);
+			Patrol(GetHandle("patrol2_" .. i),  "patrol_2", 1);
+			Patrol(GetHandle("patrol3_" .. i),  "patrol_3", 1);
 		--]]
 		
 		M.StartDone = true;
