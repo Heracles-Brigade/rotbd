@@ -314,7 +314,7 @@ local loseRecy = mission.Objective:define("lose_recy"):setListeners({
 -- If you go too far.
 local TooFarFromRecy = mission.Objective:define("toofarfrom_recy"):setListeners({
     update = function(self)
-        if globals.keepGTsAtFullHealth and IsAlive(GetRecyclerHandle(1)) and GetDistance(GetPlayerHandle(), GetRecyclerHandle(1)) > 700.0 then
+        if IsAlive(GetRecyclerHandle(1)) and GetDistance(GetPlayerHandle(), GetRecyclerHandle(1)) > 700.0 then
             self:fail();
         end
     end,
