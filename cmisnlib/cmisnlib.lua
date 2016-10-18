@@ -374,7 +374,7 @@ Objective.mt = {
 setmetatable(Objective,Objective.mt);
 
 ObjectiveManager = {
-    objectives = {}
+    objectives = {},
     getObjective = function(self,name)
         return self.objectives[name];
     end,
