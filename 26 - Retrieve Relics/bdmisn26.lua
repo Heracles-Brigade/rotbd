@@ -99,6 +99,13 @@ function Update()
 			SetMaxHealth(M.Nav[i], 0);
 		end
 		
+		-- For some reason, the units on the map do wierd things on start, moving on their own. In RotBD original, they stayed put.
+		for h in AllCraft() do
+			if GetTeamNum(h) == 2 then
+				Defend(h, 1);
+			end
+		end
+		
 		M.StartDone = true;
 		
 		-- Start up the mission.
