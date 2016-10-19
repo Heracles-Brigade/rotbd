@@ -218,6 +218,7 @@ ObjectiveInstance = {
         end,
         kill = function(self)
             self.alive = false;
+            print(self,self.alive);
         end,
         update = function(self,...)
             self:parentCall('update',...);
@@ -374,8 +375,12 @@ setmetatable(Objective,Objective.mt);
 
 ObjectiveManager = {
     objectives = {},
+    getObjective = function(self,name)
+        return self.objectives[name];
+    end,
     addInstance = function(self,instance)
-        table.insert(self.objectives,instance);
+        self.objectives[instance.parentName] = instance;
+        --table.insert(self.objectives,instance);
     end,
     Update = function(self,...)
         for i,obj in pairs(self.objectives) do 
@@ -454,6 +459,7 @@ return {
     CreateObject = MissionManager.CreateObject,
     Load = MissionManager.Load,
     Save = MissionManager.Save,
+    getObjective = ObjectiveManager.getObjective,
     objectives = ObjectiveManager.objectives,
     UnitTracker = UnitTracker
 }

@@ -194,7 +194,7 @@ local destorySoviet = mission.Objective:define("destroy_soviet"):init({
             SetObjectiveOn(globals.sb_turr_2);
             SetObjectiveOn(GetRecyclerHandle(2));
             self.wait_done = true;
-            mission.Objective:getObjective("toofarfrom_recy"):success();
+            mission:getObjective("toofarfrom_recy"):success();
         else
             if(not(IsAlive(globals.sb_turr_1) or IsAlive(globals.sb_turr_2))) then
                 self:success();
@@ -314,7 +314,9 @@ local loseRecy = mission.Objective:define("lose_recy"):setListeners({
 -- If you go too far.
 local TooFarFromRecy = mission.Objective:define("toofarfrom_recy"):setListeners({
     update = function(self)
-        if globals.keepGTsAtFullHealth and IsAlive(GetRecyclerHandle(1)) and GetDistance(GetPlayerHandle(), GetRecyclerHandle(1)) > 700.0 then
+        
+        if IsAlive(GetRecyclerHandle(1)) and GetDistance(GetPlayerHandle(), GetRecyclerHandle(1)) > 700.0 then
+            print(self.alive);
             self:fail();
         end
     end,
