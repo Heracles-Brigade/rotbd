@@ -12,7 +12,7 @@ size [1] =
 49
 [GameObject]
 PrjID [1] =
-asuser
+bsuser
 seqno [1] =
 241
 pos [1] =
@@ -24,7 +24,7 @@ pos [1] =
 98550.6
 team [1] =
 1
-label = bzn64label_0001
+label = player
 isUser [1] =
 1
 obj_addr = 00B01D68
@@ -138,7 +138,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-asuser
+bsuser
 perceivedTeam [1] =
 1
 [GameObject]
@@ -155,7 +155,7 @@ pos [1] =
 99892.9
 team [1] =
 1
-label = bzn64label_0002
+label = nav1
 isUser [1] =
 0
 obj_addr = 00B01968
@@ -282,7 +282,7 @@ pos [1] =
 98811.4
 team [1] =
 1
-label = bzn64label_0003
+label = nav2
 isUser [1] =
 0
 obj_addr = 00B01568
@@ -409,7 +409,7 @@ pos [1] =
 98572.5
 team [1] =
 1
-label = bzn64label_0004
+label = tug
 isUser [1] =
 0
 obj_addr = 00B01168
@@ -793,7 +793,7 @@ pos [1] =
 100358
 team [1] =
 2
-label = bzn64label_0007
+label = soviethq
 isUser [1] =
 0
 obj_addr = 00B00568
@@ -920,7 +920,7 @@ pos [1] =
 100250
 team [1] =
 2
-label = bzn64label_0008
+label = sovtug1
 isUser [1] =
 0
 obj_addr = 00B00168
@@ -1688,14 +1688,14 @@ seqno [1] =
 217
 pos [1] =
   x [1] =
-961.198
+975.198
   y [1] =
 41.3228
   z [1] =
-98539.1
+98535.1
 team [1] =
 1
-label = bzn64label_000E
+label = recycler
 isUser [1] =
 0
 obj_addr = 00AFE968
@@ -1719,11 +1719,11 @@ transform [1] =
   front_z [1] =
 0.977515
   posit_x [1] =
-961.198
+975.198
   posit_y [1] =
 41.3228
   posit_z [1] =
-98539.1
+98535.1
 undefptr = 00000000
 timeDeploy [1] =
 5
@@ -1966,7 +1966,7 @@ pos [1] =
 100290
 team [1] =
 2
-label = bzn64label_0010
+label = sovtug2
 isUser [1] =
 0
 obj_addr = 00AFE168
@@ -2870,7 +2870,7 @@ pos [1] =
 98564.2
 team [1] =
 1
-label = bzn64label_0017
+label = nav3
 isUser [1] =
 0
 obj_addr = 00AFC568
@@ -2997,7 +2997,7 @@ pos [1] =
 99898.1
 team [1] =
 0
-label = bzn64label_0018
+label = relic1
 isUser [1] =
 0
 obj_addr = 00AFC168
@@ -3124,7 +3124,7 @@ pos [1] =
 98773.4
 team [1] =
 0
-label = bzn64label_0019
+label = relic2
 isUser [1] =
 0
 obj_addr = 00AFBD68
@@ -5451,7 +5451,7 @@ pos [1] =
 99000.3
 team [1] =
 1
-label = bzn64label_002B
+label = nav4
 isUser [1] =
 0
 obj_addr = 00AF7568
@@ -6086,7 +6086,7 @@ pos [1] =
 98532.4
 team [1] =
 0
-label = bzn64label_0000
+label = recygeyser
 isUser [1] =
 0
 obj_addr = 00AF6168
@@ -6425,8 +6425,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 9811d209
 size [1] =
-14
-label = bzn64path_0006
+11
+label = camera_path
 pointCount [1] =
 7
 points [7] =
@@ -6462,8 +6462,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 2812d209
 size [1] =
-14
-label = bzn64path_0007
+11
+label = spawn_call1
 pointCount [1] =
 1
 points [1] =
@@ -6475,8 +6475,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 7012d209
 size [1] =
-14
-label = bzn64path_0008
+11
+label = spawn_call2
 pointCount [1] =
 1
 points [1] =
@@ -6488,8 +6488,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = b812d209
 size [1] =
-14
-label = bzn64path_0009
+11
+label = spawn_call3
 pointCount [1] =
 1
 points [1] =
@@ -6501,8 +6501,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 0013d209
 size [1] =
-14
-label = bzn64path_000A
+11
+label = spawn_call4
 pointCount [1] =
 1
 points [1] =
@@ -6514,8 +6514,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 4813d209
 size [1] =
-14
-label = bzn64path_000B
+15
+label = spawn_defend1_1
 pointCount [1] =
 1
 points [1] =
@@ -6527,8 +6527,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 9013d209
 size [1] =
-14
-label = bzn64path_000C
+15
+label = spawn_defend1_2
 pointCount [1] =
 1
 points [1] =
@@ -6540,8 +6540,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = d813d209
 size [1] =
-14
-label = bzn64path_000D
+13
+label = spawn_attack1
 pointCount [1] =
 1
 points [1] =
@@ -6553,8 +6553,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 2014d209
 size [1] =
-14
-label = bzn64path_000E
+13
+label = spawn_attack2
 pointCount [1] =
 1
 points [1] =
@@ -6566,8 +6566,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 6814d209
 size [1] =
-14
-label = bzn64path_000F
+13
+label = spawn_attack3
 pointCount [1] =
 1
 points [1] =
@@ -6579,8 +6579,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = b014d209
 size [1] =
-14
-label = bzn64path_0010
+13
+label = spawn_attack4
 pointCount [1] =
 1
 points [1] =

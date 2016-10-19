@@ -314,7 +314,7 @@ local loseRecy = mission.Objective:define("lose_recy"):setListeners({
 -- If you go too far.
 local TooFarFromRecy = mission.Objective:define("toofarfrom_recy"):setListeners({
     update = function(self)
-        if IsAlive(GetRecyclerHandle(1)) and GetDistance(GetPlayerHandle(), GetRecyclerHandle(1)) > 700.0 then
+        if globals.keepGTsAtFullHealth and IsAlive(GetRecyclerHandle(1)) and GetDistance(GetPlayerHandle(), GetRecyclerHandle(1)) > 700.0 then
             self:fail();
         end
     end,
@@ -340,7 +340,7 @@ function Start()
     BuildObject("svrecy",2,"spawn_svrecy");
     globals.sb_turr_1 = BuildObject("sbtowe",2,"spawn_sbtowe1");
     globals.sb_turr_2 = BuildObject("sbtowe",2,"spawn_sbtowe2");
-    
+
     createWave("svfigh",{"spawn_n1","spawn_n2","spawn_n3"},"north_path");
 
     local instance = deployRecy:start();

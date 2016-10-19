@@ -549,7 +549,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
@@ -691,7 +691,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
@@ -833,7 +833,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
@@ -962,7 +962,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
@@ -1091,7 +1091,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
@@ -1220,7 +1220,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
@@ -2637,7 +2637,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
@@ -3274,7 +3274,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
@@ -3403,7 +3403,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
@@ -6756,12 +6756,12 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
 PrjID [1] =
-avturr
+bvturr
 seqno [1] =
 67
 pos [1] =
@@ -6898,12 +6898,12 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
 PrjID [1] =
-avturr
+bvturr
 seqno [1] =
 68
 pos [1] =
@@ -7040,12 +7040,12 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
 PrjID [1] =
-avturr
+bvturr
 seqno [1] =
 69
 pos [1] =
@@ -7182,12 +7182,12 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
 PrjID [1] =
-avturr
+bvturr
 seqno [1] =
 70
 pos [1] =
@@ -7324,7 +7324,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 name = LuaMission

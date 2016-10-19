@@ -1,6 +1,6 @@
 Changes made from original RotBD by General BlackDragon:
 
--All Missions: Set user's pilot from asuser to bsuser.
+-All Missions: Set user's/crafts pilot from asuser to bsuser.
 
 BDOG Mission 1:
 !!TODO -Camera Sequence ends after opening VO finishes, since we have that now.
@@ -13,7 +13,6 @@ BDOG Mission 3:
 -Made pilot have 50 sniper ammo instead of adding ammo continously.
 -Made Hanger/Supply destructible. Added mission fail if you destroy Hanger before getting intel.
 -Made Nav 2 objective succeed if you are inside the tug, or inside another vehicle. If you are a pilot when near Tug, orders you to Commandeer it. When in a vehicle, if you are in the tug, commandeer objective turns green, if your not in tug, doesn't bother displaying commandeer tug.
-
 
 BDOG Mission 4:
 -Moved Nav 1 closer to Mammoth so the trap spawn is more believable. I believe it slid down the hill over time, drifting too far away from Mammoth Decoy.
@@ -28,7 +27,8 @@ BDOG Mission 6:
 -Added a lose condition if any of the pilots die before they get into APCs.
 
 BDOG Mission 7:
-
+-Changed Tug to BDOG Tug instead of NSDF.
+-Changed path points for spawns on Distress call to utilize an unused path (typo in original code?)
 
 BDOG Mission 8:
 
