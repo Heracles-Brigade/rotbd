@@ -1688,11 +1688,11 @@ seqno [1] =
 217
 pos [1] =
   x [1] =
-975.198
+961.198
   y [1] =
 41.3228
   z [1] =
-98535.1
+98539.1
 team [1] =
 1
 label = recycler
@@ -1719,17 +1719,17 @@ transform [1] =
   front_z [1] =
 0.977515
   posit_x [1] =
-975.198
+961.198
   posit_y [1] =
 41.3228
   posit_z [1] =
-98535.1
+98539.1
 undefptr = 00000000
 timeDeploy [1] =
 5
 timeUndeploy [1] =
 5
-undefptr = 00000000
+undefptr = 00AF6168
 state = 01000000
 delayTimer [1] =
 -1.35

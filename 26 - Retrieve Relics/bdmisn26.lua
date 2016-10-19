@@ -80,7 +80,7 @@ function Update()
 		
 		M.Recycler = GetHandle("recycler");
 		--Goto(M.Recycler, GetHandle("recygeyser"), 1);
-		Deploy(M.Recycler);
+		--Deploy(M.Recycler);
 		M.Tug = GetHandle("tug");
 		
 		M.SovHQ = GetHandle("soviethq");
