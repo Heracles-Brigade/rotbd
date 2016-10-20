@@ -5,6 +5,7 @@ Changes made from original RotBD by General BlackDragon:
 BDOG Mission 1:
 !!TODO -Camera Sequence ends after opening VO finishes, since we have that now.
 -Made 3 american tanks not get deleted with tug/apc, they stay engaged in combat/to defend comm tower.
+- Re-Painted terrain to make it match BZ1 better.
 
 BDOG Mission 2:
 -Re-Objectify CCA Recycler after NSDF attack is defeated.
@@ -16,22 +17,27 @@ BDOG Mission 3:
 
 BDOG Mission 4:
 -Moved Nav 1 closer to Mammoth so the trap spawn is more believable. I believe it slid down the hill over time, drifting too far away from Mammoth Decoy.
+-Added new Objective for if Mammoth is destroyed.
 
 BDOG Mission 5:
--Made you start out in BDOG tank instead of NSDF Tank "player".
+-Made you start out in a BDOG tank instead of an NSDF Tank "player".
 -Instead of simply adding Health to the Soviet Comm Tower, upped it's health to 20,000.
 
 BDOG Mission 6:
--Made you start in a BDOG tank, not an NSDF Tank.
+-Made you start out in a BDOG tank, instead of an NSDF Tank "player"
 -Made rescue spawn BDOG pilots instead of NSDF pilots.
 -Added a lose condition if any of the pilots die before they get into APCs.
 
 BDOG Mission 7:
--Changed Tug to BDOG Tug instead of NSDF.
+-Changed Tug to BDOG Tug instead of NSDF Tug.
 -Changed path points for spawns on Distress call to utilize an unused path (typo in original code?)
+-Added new Objectives for when you lose tug or recy.
+-Changed spawn location for one of the distress signal attackers to match the location of distress signal, used the former path for one of the final attackers. I believe this was a typo in original script spawns.
 
 BDOG Mission 8:
-
+-Made you start out in a BDOG tank, instead of an NSDF Tank "player"
+-Changed last Objective text to mention rendezvous with Pvt Griggs. (Formerly only mentioned it in mission briefing)
+-Added lose condition, if Griggs dies.
 
 BDOG Mission 9:
 

@@ -1,6 +1,6 @@
 Wave 1: In order to communicate with our troops on the Moon, we need to disable several Soviet communications towers that are jamming our signals. Disable them by destroying their power generators. You may want to destroy any resistance before attacking the power generators.
 
-Wave 2: One down, two to go. The jamming signal was definately decreased in power.
+Wave 2: One down, two to go. The jamming signal was definitely decreased in power.
 
 Wave 3: That's two towers down. We can almost get a signal through.
 

@@ -75,8 +75,10 @@ function Update()
 		
 		M.Relic1 = GetHandle("relic1");
 		SetObjectiveName(M.Relic1, "Alien Relic");
+		SetMaxHealth(M.Relic1, 0); -- Indestructible.
 		M.Relic2 = GetHandle("relic2");
 		SetObjectiveName(M.Relic2, "Alien Relic");
+		SetMaxHealth(M.Relic2, 0); -- Indestructible.
 		
 		M.Recycler = GetHandle("recycler");
 		--Goto(M.Recycler, GetHandle("recygeyser"), 1);

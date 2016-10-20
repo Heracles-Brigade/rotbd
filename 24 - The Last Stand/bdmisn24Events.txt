@@ -46,7 +46,7 @@ if not IsValid(Walker) then
 Clear Objectives.
 Wave 2 / Objective 3, "WHITE".
 
-after 2 minutes 15? seconds, spawn attack wave on path_0002 4 svfigh, 
+after 2 minutes 15? seconds, spawn attack wave on "patrol_1" 4 svfigh, //path_0002
 Attack CommTower
 
 if GetWhoShotMe(SovietComm) then
