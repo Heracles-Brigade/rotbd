@@ -1,0 +1,39 @@
+Object Labels:
+
+Armory: armory //label_0002
+NSDF HQ: nsdfhq //label_001C
+Fury: furry //label_000B
+
+NSDF Guard 1: nsdfguard1 //label_001D
+NSDF Guard 2: nsdfguard2 //label_001E
+NSDF Guard 3: nsdfguard3 //label_001F
+NSDF Guard 4: nsdfguard4 //label_0022
+NSDF Guard 5: nsdfguard5 //label_0023
+NSDF Guard 6: nsdfguard6 //label_0024
+NSDF Guard 7: nsdfguard7 //label_0027
+NSDF Guard 8: nsdfguard8 //label_0028
+NSDF Guard 9: nsdfguard9 //label_0029
+NSDF Guard 10: nsdfguard10 //label_0000
+
+Nav1: nav1 //label_0003
+
+
+NOTE: Path under sbhqcp: path_000E
+Events:
+
+On Start:
+CameraPath("camera_path", 1000, 1000, Armory); //path_0014
+Wave 1, Objective 1, "WHITE".
+SetObjectiveName(Nav1, "American Base");
+
+AddHealth(Armory) // IMPROVEMENT: Just set maxHealth to 0.
+
+IMPROVEMENT: Make label_0011 and label_0012 on cliffs into howitzers? Make label_0009 a turret?
+
+if If GetDistance(Player, Armory) < 100 and NOT all NSDF Guards dead,
+SetObjectiveOn(all NSDF Guards)
+//Note: There is a stack of 4 avfigh in back of base, only 1 is objectified. I believe the other 3 are "extras", somehow got duplicated, can be deleted. The mission only counted the first one.
+//Confirmed, there were also 4 NSDF HQCP stacked ontop of each other. Deleted extra 3, opted to keep the extra 3 avfigh to make it tougher, though. Spread them out.
+
+If GetDistance(Player, Armory) < 100 and all NSDF Guards dead, then
+SucceedMission("GetTime()+5.0, "bdmisn28wn.des");
