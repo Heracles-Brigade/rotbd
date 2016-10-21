@@ -9,7 +9,7 @@ missionSave [1] =
 true
 TerrainName = misn13
 size [1] =
-63
+60
 [GameObject]
 PrjID [1] =
 bvtank
@@ -24,7 +24,7 @@ pos [1] =
 101030
 team [1] =
 1
-label = bzn64label_0001
+label = player
 isUser [1] =
 1
 obj_addr = 0070EA50
@@ -136,7 +136,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-asuser
+bsuser
 perceivedTeam [1] =
 1
 [GameObject]
@@ -153,7 +153,7 @@ pos [1] =
 98028
 team [1] =
 0
-label = bzn64label_0002
+label = armory
 isUser [1] =
 0
 obj_addr = 0070E5A0
@@ -280,7 +280,7 @@ pos [1] =
 98010
 team [1] =
 1
-label = bzn64label_0003
+label = nav1
 isUser [1] =
 0
 obj_addr = 0070E0F0
@@ -1336,7 +1336,7 @@ pos [1] =
 98204.6
 team [1] =
 2
-label = bzn64label_000B
+label = furry
 isUser [1] =
 0
 obj_addr = 0070BB70
@@ -1577,7 +1577,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
@@ -1706,7 +1706,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
@@ -1835,7 +1835,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
@@ -1964,7 +1964,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
@@ -3568,7 +3568,7 @@ pos [1] =
 98047.6
 team [1] =
 2
-label = bzn64label_001C
+label = nsdfhq
 isUser [1] =
 0
 obj_addr = 00706BC0
@@ -3688,14 +3688,14 @@ seqno [1] =
 770
 pos [1] =
   x [1] =
-3348.53
+3338.53
   y [1] =
 40.1
   z [1] =
-97973.1
+97993.1
 team [1] =
 2
-label = bzn64label_001D
+label = nsdfguard1
 isUser [1] =
 0
 obj_addr = 00706710
@@ -3719,11 +3719,11 @@ transform [1] =
   front_z [1] =
 1.00001
   posit_x [1] =
-3348.53
+3338.53
   posit_y [1] =
 40.1
   posit_z [1] =
-97973.1
+97993.1
 abandoned [1] =
 0
 illumination [1] =
@@ -3824,7 +3824,7 @@ pos [1] =
 97887.8
 team [1] =
 2
-label = bzn64label_001E
+label = nsdfguard2
 isUser [1] =
 0
 obj_addr = 00706260
@@ -3953,7 +3953,7 @@ pos [1] =
 97927.8
 team [1] =
 2
-label = bzn64label_001F
+label = nsdfguard3
 isUser [1] =
 0
 obj_addr = 00705DB0
@@ -4194,136 +4194,9 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
-[GameObject]
-PrjID [1] =
-abhqcp
-seqno [1] =
-776
-pos [1] =
-  x [1] =
-3416.67
-  y [1] =
-39.1
-  z [1] =
-98047.6
-team [1] =
-2
-label = bzn64label_0021
-isUser [1] =
-0
-obj_addr = 00705450
-transform [1] =
-  right_x [1] =
-1
-  right_y [1] =
-0
-  right_z [1] =
-0
-  up_x [1] =
-0
-  up_y [1] =
-1
-  up_z [1] =
-0
-  front_x [1] =
-0
-  front_y [1] =
-0
-  front_z [1] =
-1.00001
-  posit_x [1] =
-3416.67
-  posit_y [1] =
-39.1
-  posit_z [1] =
-98047.6
-illumination [1] =
-1
-pos [1] =
-  x [1] =
-3410.886
-  y [1] =
-54.24058
-  z [1] =
-98045.84
-euler =
- mass [1] =
-0
- mass_inv [1] =
-1E+30
- v_mag [1] =
-0
- v_mag_inv [1] =
-1E+30
- I [1] =
-1
- k_i [1] =
-0
- v [1] =
-  x [1] =
-0
-  y [1] =
-0
-  z [1] =
-0
- omega [1] =
-  x [1] =
-0
-  y [1] =
-0
-  z [1] =
-0
- Accel [1] =
-  x [1] =
-0
-  y [1] =
-0
-  z [1] =
-0
-seqNo [1] =
-776
-name = 
-isObjective [1] =
-false
-isSelected [1] =
-false
-isVisible [1] =
-ffffffff
-seen [1] =
-4
-healthRatio [1] =
-1
-curHealth [1] =
-20000
-maxHealth [1] =
-20000
-ammoRatio [1] =
-0
-curAmmo [1] =
-0
-maxAmmo [1] =
-0
-priority [1] =
-0
-what = 00000000
-who [1] =
-0
-where = 00000000
-param [1] =
-0
-aiProcess [1] =
-false
-isCargo [1] =
-false
-independence [1] =
-1
-curPilot [1] =
-
-perceivedTeam [1] =
-2
 [GameObject]
 PrjID [1] =
 avfigh
@@ -4331,14 +4204,14 @@ seqno [1] =
 777
 pos [1] =
   x [1] =
-3348.11
+3368.11
   y [1] =
 40.1
   z [1] =
-97975
+97985
 team [1] =
 2
-label = bzn64label_0022
+label = nsdfguard4
 isUser [1] =
 0
 obj_addr = 00704FA0
@@ -4362,11 +4235,11 @@ transform [1] =
   front_z [1] =
 1.00001
   posit_x [1] =
-3348.11
+3368.11
   posit_y [1] =
 40.1
   posit_z [1] =
-97975
+97985
 abandoned [1] =
 0
 illumination [1] =
@@ -4467,7 +4340,7 @@ pos [1] =
 97911.8
 team [1] =
 2
-label = bzn64label_0023
+label = nsdfguard5
 isUser [1] =
 0
 obj_addr = 00704AF0
@@ -4596,7 +4469,7 @@ pos [1] =
 97905.1
 team [1] =
 2
-label = bzn64label_0024
+label = nsdfguard6
 isUser [1] =
 0
 obj_addr = 00704640
@@ -4837,7 +4710,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
@@ -4966,136 +4839,9 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
-[GameObject]
-PrjID [1] =
-abhqcp
-seqno [1] =
-784
-pos [1] =
-  x [1] =
-3416.67
-  y [1] =
-39.1
-  z [1] =
-98047.6
-team [1] =
-2
-label = bzn64label_0000
-isUser [1] =
-0
-obj_addr = 00703830
-transform [1] =
-  right_x [1] =
-1
-  right_y [1] =
-0
-  right_z [1] =
-0
-  up_x [1] =
-0
-  up_y [1] =
-1
-  up_z [1] =
-0
-  front_x [1] =
-0
-  front_y [1] =
-0
-  front_z [1] =
-1.00001
-  posit_x [1] =
-3416.67
-  posit_y [1] =
-39.1
-  posit_z [1] =
-98047.6
-illumination [1] =
-1
-pos [1] =
-  x [1] =
-3410.886
-  y [1] =
-54.24058
-  z [1] =
-98045.84
-euler =
- mass [1] =
-0
- mass_inv [1] =
-1E+30
- v_mag [1] =
-0
- v_mag_inv [1] =
-1E+30
- I [1] =
-1
- k_i [1] =
-0
- v [1] =
-  x [1] =
-0
-  y [1] =
-0
-  z [1] =
-0
- omega [1] =
-  x [1] =
-0
-  y [1] =
-0
-  z [1] =
-0
- Accel [1] =
-  x [1] =
-0
-  y [1] =
-0
-  z [1] =
-0
-seqNo [1] =
-784
-name = 
-isObjective [1] =
-false
-isSelected [1] =
-false
-isVisible [1] =
-ffffffff
-seen [1] =
-4
-healthRatio [1] =
-1
-curHealth [1] =
-20000
-maxHealth [1] =
-20000
-ammoRatio [1] =
-0
-curAmmo [1] =
-0
-maxAmmo [1] =
-0
-priority [1] =
-0
-what = 00000000
-who [1] =
-0
-where = 00000000
-param [1] =
-0
-aiProcess [1] =
-false
-isCargo [1] =
-false
-independence [1] =
-1
-curPilot [1] =
-
-perceivedTeam [1] =
-2
 [GameObject]
 PrjID [1] =
 avfigh
@@ -5103,14 +4849,14 @@ seqno [1] =
 785
 pos [1] =
   x [1] =
-3348.11
+3338.11
   y [1] =
 40.1
   z [1] =
-97975
+97969
 team [1] =
 2
-label = bzn64label_0000
+label = nsdfguard10
 isUser [1] =
 0
 obj_addr = 00703380
@@ -5134,11 +4880,11 @@ transform [1] =
   front_z [1] =
 1.00001
   posit_x [1] =
-3348.11
+3338.11
   posit_y [1] =
 40.1
   posit_z [1] =
-97975
+97969
 abandoned [1] =
 0
 illumination [1] =
@@ -5239,7 +4985,7 @@ pos [1] =
 97934.5
 team [1] =
 2
-label = bzn64label_0027
+label = nsdfguard7
 isUser [1] =
 0
 obj_addr = 00702ED0
@@ -5356,146 +5102,19 @@ perceivedTeam [1] =
 2
 [GameObject]
 PrjID [1] =
-abhqcp
-seqno [1] =
-790
-pos [1] =
-  x [1] =
-3416.67
-  y [1] =
-39.1
-  z [1] =
-98047.6
-team [1] =
-2
-label = bzn64label_0000
-isUser [1] =
-0
-obj_addr = 00702A20
-transform [1] =
-  right_x [1] =
-1
-  right_y [1] =
-0
-  right_z [1] =
-0
-  up_x [1] =
-0
-  up_y [1] =
-1
-  up_z [1] =
-0
-  front_x [1] =
-0
-  front_y [1] =
-0
-  front_z [1] =
-1.00001
-  posit_x [1] =
-3416.67
-  posit_y [1] =
-39.1
-  posit_z [1] =
-98047.6
-illumination [1] =
-1
-pos [1] =
-  x [1] =
-3410.886
-  y [1] =
-54.24058
-  z [1] =
-98045.84
-euler =
- mass [1] =
-0
- mass_inv [1] =
-1E+30
- v_mag [1] =
-0
- v_mag_inv [1] =
-1E+30
- I [1] =
-1
- k_i [1] =
-0
- v [1] =
-  x [1] =
-0
-  y [1] =
-0
-  z [1] =
-0
- omega [1] =
-  x [1] =
-0
-  y [1] =
-0
-  z [1] =
-0
- Accel [1] =
-  x [1] =
-0
-  y [1] =
-0
-  z [1] =
-0
-seqNo [1] =
-790
-name = 
-isObjective [1] =
-false
-isSelected [1] =
-false
-isVisible [1] =
-ffffffff
-seen [1] =
-4
-healthRatio [1] =
-1
-curHealth [1] =
-20000
-maxHealth [1] =
-20000
-ammoRatio [1] =
-0
-curAmmo [1] =
-0
-maxAmmo [1] =
-0
-priority [1] =
-0
-what = 00000000
-who [1] =
-0
-where = 00000000
-param [1] =
-0
-aiProcess [1] =
-false
-isCargo [1] =
-false
-independence [1] =
-1
-curPilot [1] =
-
-perceivedTeam [1] =
-2
-[GameObject]
-PrjID [1] =
 avfigh
 seqno [1] =
 791
 pos [1] =
   x [1] =
-3348.11
+3362.11
   y [1] =
 40.1
   z [1] =
-97975
+97965
 team [1] =
 2
-label = bzn64label_0028
+label = nsdfguard8
 isUser [1] =
 0
 obj_addr = 00702570
@@ -5519,11 +5138,11 @@ transform [1] =
   front_z [1] =
 1.00001
   posit_x [1] =
-3348.11
+3362.11
   posit_y [1] =
 40.1
   posit_z [1] =
-97975
+97965
 abandoned [1] =
 0
 illumination [1] =
@@ -5624,7 +5243,7 @@ pos [1] =
 97937.1
 team [1] =
 2
-label = bzn64label_0029
+label = nsdfguard9
 isUser [1] =
 0
 obj_addr = 007020C0
@@ -8151,7 +7770,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 name = LuaMission
@@ -8994,8 +8613,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = F0DAE200
 size [1] =
-14
-label = bzn64path_0014
+11
+label = camera_path
 pointCount [1] =
 4
 points [4] =

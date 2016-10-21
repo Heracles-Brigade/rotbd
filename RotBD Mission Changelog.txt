@@ -40,6 +40,8 @@ BDOG Mission 8:
 -Added lose condition, if Griggs dies.
 
 BDOG Mission 9:
-
+-Deleted extra 3 NSDF Command buildings (duplicated ontop of eachother.)
+-Spread out extra 3 NSDF Fighters. (duplicated ontop of eachother.)
+-Added a lose condition if the Armory is destroyed.
 
 BDOG Mission 10:

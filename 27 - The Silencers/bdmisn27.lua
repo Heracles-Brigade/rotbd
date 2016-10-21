@@ -221,7 +221,7 @@ function Update()
 	end
 	
 	-- Lose Conditions
-	if not M.MissionOver and not Power3Kill and GetCockpitTimer() == 0 then
+	if not M.MissionOver and not M.Power3Kill and GetCockpitTimer() == 0 then
 		FailMission(GetTime()+5.0, "bdmisn27l1.des");
 		M.TimeUp = true;
 		M.MissionOver = true;
