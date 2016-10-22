@@ -1,4 +1,4 @@
--- Battlezone: Rise of the Black Dogs, Black Dog Mission 29 written by General BlackDragon.
+-- Battlezone: Rise of the Black Dogs, Black Dog Mission 30 written by General BlackDragon.
 
 if not SetLabel then SetLabel = SettLabel end -- BZ1.5 backwards compatability.
 
@@ -24,7 +24,12 @@ MissionOver = false, -- Yay!
 AttackWaveTimer = { }, -- Timers.
 ConsTimer = 0, -- For construction time. IMPROVEMENT: Just force it to Goto.
 CameraTime = 0, -- For camera.
-MagicScrapCounter = { }, -- Respawn these scrap 10 times, exactly.
+
+--Magic Scrap!
+MagiScrapCounter = { }, -- Respawn these scrap 10 times, exactly.
+MagiScrapPosition = { }, -- Saved position.
+MagiScrap = { }, -- Handles.
+MagiScrapOdf = { }, -- ODF.
 
 -- Handles
 Player = nil,
@@ -61,7 +66,7 @@ end
 
 function Start()
 
-    print("Black Dog Mission 27 Lua created by General BlackDragon");
+    print("Black Dog Mission 30 Lua created by General BlackDragon");
 
 end
 
@@ -86,17 +91,17 @@ end
 
 function DeleteObject(h)
 
+--[[ -- BAD! BuildObject in DeleteObject() crashes on Exit (Mission Cleanup, calls DeleteObject on all things).
 	for i = 1, 10 do
 		if GetLabel(h) == "magiscrap" .. i then -- BZR version.
-		--if h == M.Magiscrap[i] then
 			if M.MagicScrapCounter[i] < 10 then
 				SetLabel(BuildObject(GetOdf(h), 0, h), "magiscrap" .. i); -- Replace this asap. -- BZR version. SetLabel required. :(
-				--SettLabel(BuildObject(GetOdf(h), 0, h), "magiscrap" .. i); -- Replace this asap. -- BZR version. SetLabel required. :(
-				--M.Magiscrap[i] = BuildObject(GetOdf(h), 0, h);
-				M.MagicScrapCounter[i] = M.MagicScrapCounter[i] + 1;
+				M.BuildMagicScrap = { local Pos = GetPosition(h)};
+				M.MagiScrapCounter[i] = M.MagiScrapCounter[i] + 1;
 			end		
 		end
 	end
+	--]]
 	
 end
 
@@ -106,7 +111,7 @@ function Update()
 	
 	if not M.StartDone then
 		
-		for i = 1, 5 do 
+		for i = 1, 2 do 
 			M.Nav[i] = GetHandle("nav" .. i);
 			if i == 1 then
 				SetObjectiveName(M.Nav[i], "Black Dog Outpost");
@@ -129,8 +134,10 @@ function Update()
 		
 		-- Magic Scrap.
 		for i = 1, 10 do
-			--M.Magiscrap[i] = GetHandle("magiscrap" .. i);
-			M.MagicScrapCounter[i] = 0;
+			M.MagiScrap[i] = GetHandle("magiscrap" .. i);
+			M.MagiScrapOdf[i] = GetOdf(M.MagiScrap[i]);
+			M.MagiScrapPosition[i] = GetPosition(M.MagiScrap[i]);
+			M.MagiScrapCounter[i] = 0;
 		end
 		
 		-- Setup timers.
@@ -143,7 +150,7 @@ function Update()
 		M.StartDone = true;
 		
 		-- Start up the mission.
-		M.Aud1 = AudioMessage("bdmisn2901.wav");
+		M.Aud1 = AudioMessage("bdmisn3001.wav");
 		SetObjectiveOn(M.Nav[1]);
 		SetObjectiveOn(M.Nav[2]);
 		Goto(BuildObject("avfigh", 2, "spawn_se3"), M.Silo1); --Attack?
@@ -160,17 +167,25 @@ function Update()
 		-- Whew, that was a tough one...
 		if not M.LPadBuilt then
 			if not M.BaseDead and not M.ConsDead and not M.SilosDead then --NEW: Fail if all 3 Silos die.
-				AddObjective("bdmisn2901.otf", "WHITE");
+				AddObjective("bdmisn3001.otf", "WHITE");
 			else
-				AddObjective("bdmisn2901.otf", "RED");
+				AddObjective("bdmisn3001.otf", "RED");
 			end
-			AddObjective("bdmisn2902.otf", "WHITE");
+			AddObjective("bdmisn3002.otf", "WHITE");
 		else
 			if not M.LPadDead and not M.TransportDead then -- Run away!
-				AddObjective("bdmisn2903.otf", "GREEN");
+				AddObjective("bdmisn3003.otf", "GREEN");
 			else
-				AddObjective("bdmisn2903.otf", "RED");
+				AddObjective("bdmisn3003.otf", "RED");
 			end
+		end
+	end
+	
+	-- Respawning Scrap.
+	for i = 1, 10 do
+		if not IsValid(M.MagiScrap[i]) and M.MagiScrapCounter[i] < 10 then
+			M.MagiScrap[i] = BuildObject(M.MagiScrapOdf[i], 0, M.MagiScrapPosition[i]);
+			M.MagiScrapCounter[i] = M.MagiScrapCounter[i] + 1;
 		end
 	end
 	
@@ -183,7 +198,7 @@ function Update()
 				Attack(BuildObject("avwalk", 2, "spawn_se2"), M.Recycler);
 				Attack(BuildObject("avtank", 2, "spawn_se1"), M.CommTower);
 				Attack(BuildObject("avtank", 2, "spawn_se4"), M.Silo1);
-				-- Some Goto(blah, "nsdf_path");
+				-- IMPROVEMENT: make tanks Goto(blah, "nsdf_path");
 				-- CCA Units.
 				Attack(BuildObject("svhraz", 2, "spawn_s1"), M.Player);
 				Attack(BuildObject("svhraz", 2, "spawn_s2"), M.Player);
@@ -191,11 +206,11 @@ function Update()
 			elseif i == 2 then -- Second Attack, CCA.
 				Attack(BuildObject("svfigh", 2, "spawn_sw1"), M.Silo1);
 				Attack(BuildObject("svhraz", 2, "spawn_sw2"), M.Player);
-				-- Some Goto(blah, "soviet_path");
+				-- IMPROVEMENT: make some Goto(blah, "soviet_path");
 			elseif i == 3 then -- Third Attack, CCA.
 				Attack(BuildObject("svhraz", 2, "spawn_sw3"), M.Silo1);
 				Attack(BuildObject("svhraz", 2, "spawn_sw4"), M.Player);
-				-- Some Goto(blah, "soviet_path");
+				-- IMPROVEMENT: Make some Goto(blah, "soviet_path");
 			elseif i == 4 then -- Fourth Attack, CCA.
 				Attack(BuildObject("svfigh", 2, "spawn_w1"), M.Silo1);
 				Attack(BuildObject("svfigh", 2, "spawn_w2"), M.Silo2);
@@ -211,7 +226,9 @@ function Update()
 	
 	-- If NSDF Scouts attack Silo:
 	if not M.SiloAttacked and GetTime() < M.AttackWaveTimer[1] and 
-	(GetTeamNum(GetWhoShotMe(M.Silo1)) == 2 or GetTeamNum(GetWhoShotMe(M.Silo2)) == 2 or GetTeamNum(GetWhoShotMe(M.Silo3)) == 2) then
+	((GetWhoShotMe(M.Silo1) and GetTeamNum(GetWhoShotMe(M.Silo1)) == 2) or 
+	(GetWhoShotMe(M.Silo2) and GetTeamNum(GetWhoShotMe(M.Silo2)) == 2) or 
+	(GetWhoShotMe(M.Silo3) and GetTeamNum(GetWhoShotMe(M.Silo3)) == 2)) then
 		M.Aud1 = AudioMessage("bdmisn3002.wav");
 		M.SiloAttacked = true;	
 	end

@@ -46,3 +46,5 @@ BDOG Mission 9:
 -Added a lose condition if the Armory is destroyed.
 
 BDOG Mission 10:
+-Made Constructor actually buildAt the LPad, instead of using BuildObject().
+-Added a lose condition if all 3 Silos are destroyed.

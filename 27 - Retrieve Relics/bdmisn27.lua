@@ -172,7 +172,7 @@ function Update()
 	
 	-- When you get close to one of the relics, trigger a distraction.
 	if not M.DistressSignal and (GetDistance(M.Tug, M.Relic1) < 50 or GetDistance(M.Tug, M.Relic2) < 50) then
-		--M.Aud1 = AudioMessage("bdmisn2703.wav"); -- ADD ME! // "We're picking up a distress signal, we've dropped a Nav beacon."
+		M.Aud1 = AudioMessage("bdmisn2703.wav"); -- ADD ME! // "We're picking up a distress signal, we've dropped a Nav beacon."
 		M.DistressSignal = true;
 		M.UpdateObjectives = true;
 	end
