@@ -397,7 +397,7 @@ perceivedTeam [1] =
 1
 [GameObject]
 PrjID [1] =
-avhaul
+bvhaul
 seqno [1] =
 191
 pos [1] =
@@ -522,7 +522,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]

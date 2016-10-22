@@ -136,7 +136,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-asuser
+bsuser
 perceivedTeam [1] =
 1
 [GameObject]
@@ -153,7 +153,7 @@ pos [1] =
 101938
 team [1] =
 1
-label = bzn64label_0002
+label = command
 isUser [1] =
 0
 obj_addr = 0070E610
@@ -423,7 +423,7 @@ pos [1] =
 101950
 team [1] =
 1
-label = bzn64label_0004
+label = comm
 isUser [1] =
 0
 obj_addr = 0070DCB0
@@ -789,7 +789,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
@@ -918,7 +918,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
@@ -1047,12 +1047,12 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
 PrjID [1] =
-bvrecy
+bvrecy30
 seqno [1] =
 719
 pos [1] =
@@ -1064,7 +1064,7 @@ pos [1] =
 101905
 team [1] =
 1
-label = bzn64label_0009
+label = recycler
 isUser [1] =
 0
 obj_addr = 0070C540
@@ -1462,7 +1462,7 @@ pos [1] =
 101919
 team [1] =
 1
-label = bzn64label_000C
+label = nav1
 isUser [1] =
 0
 obj_addr = 0070B730
@@ -1841,7 +1841,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
@@ -1983,7 +1983,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
@@ -2125,7 +2125,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
@@ -2267,7 +2267,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
@@ -2409,7 +2409,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
@@ -2551,7 +2551,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
@@ -2568,7 +2568,7 @@ pos [1] =
 101858
 team [1] =
 1
-label = bzn64label_0014
+label = silo1
 isUser [1] =
 0
 obj_addr = 007091B0
@@ -2696,7 +2696,7 @@ pos [1] =
 101855
 team [1] =
 1
-label = bzn64label_0015
+label = silo2
 isUser [1] =
 0
 obj_addr = 00708D00
@@ -2824,7 +2824,7 @@ pos [1] =
 101858
 team [1] =
 1
-label = bzn64label_0016
+label = silo3
 isUser [1] =
 0
 obj_addr = 00708850
@@ -3333,7 +3333,7 @@ pos [1] =
 101700
 team [1] =
 1
-label = bzn64label_0019
+label = scav
 isUser [1] =
 0
 obj_addr = 00707590
@@ -3434,10 +3434,10 @@ maxAmmo [1] =
 0
 priority [1] =
 1
-what = 03000000
+what = 00000000
 who [1] =
 0
-where = 00E2B260
+where = 00000000
 param [1] =
 0
 aiProcess [1] =
@@ -3447,7 +3447,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-aspilo
+bspilo
 perceivedTeam [1] =
 1
 [GameObject]
@@ -3464,7 +3464,7 @@ pos [1] =
 101709
 team [1] =
 0
-label = bzn64label_001A
+label = magiscrap1
 isUser [1] =
 0
 obj_addr = 007070E0
@@ -3591,7 +3591,7 @@ pos [1] =
 101665
 team [1] =
 0
-label = bzn64label_001B
+label = magiscrap2
 isUser [1] =
 0
 obj_addr = 00706C30
@@ -3718,7 +3718,7 @@ pos [1] =
 101689
 team [1] =
 0
-label = bzn64label_001C
+label = magiscrap3
 isUser [1] =
 0
 obj_addr = 00706780
@@ -3845,7 +3845,7 @@ pos [1] =
 101653
 team [1] =
 0
-label = bzn64label_001D
+label = magiscrap4
 isUser [1] =
 0
 obj_addr = 007062D0
@@ -3972,7 +3972,7 @@ pos [1] =
 101658
 team [1] =
 0
-label = bzn64label_001E
+label = magiscrap5
 isUser [1] =
 0
 obj_addr = 00705E20
@@ -4099,7 +4099,7 @@ pos [1] =
 101722
 team [1] =
 0
-label = bzn64label_001F
+label = magiscrap6
 isUser [1] =
 0
 obj_addr = 00705970
@@ -4226,7 +4226,7 @@ pos [1] =
 101685
 team [1] =
 0
-label = bzn64label_0020
+label = magiscrap7
 isUser [1] =
 0
 obj_addr = 007054C0
@@ -4353,7 +4353,7 @@ pos [1] =
 101695
 team [1] =
 0
-label = bzn64label_0021
+label = magiscrap8
 isUser [1] =
 0
 obj_addr = 00705010
@@ -4480,7 +4480,7 @@ pos [1] =
 101701
 team [1] =
 0
-label = bzn64label_0022
+label = magiscrap9
 isUser [1] =
 0
 obj_addr = 00704B60
@@ -4607,7 +4607,7 @@ pos [1] =
 101676
 team [1] =
 0
-label = bzn64label_0023
+label = magiscrap10
 isUser [1] =
 0
 obj_addr = 007046B0
@@ -4722,7 +4722,7 @@ perceivedTeam [1] =
 0
 [GameObject]
 PrjID [1] =
-bvcnst22
+bvcnst30
 seqno [1] =
 1159
 pos [1] =
@@ -4734,7 +4734,7 @@ pos [1] =
 102044
 team [1] =
 1
-label = bzn64label_0024
+label = constructor
 isUser [1] =
 0
 obj_addr = 00704200
@@ -5158,7 +5158,7 @@ pos [1] =
 100303
 team [1] =
 2
-label = bzn64label_0025
+label = ccarecy
 isUser [1] =
 0
 obj_addr = 007033F0
@@ -5818,7 +5818,7 @@ pos [1] =
 100185
 team [1] =
 2
-label = bzn64label_0029
+label = nsdfrecy
 isUser [1] =
 0
 obj_addr = 00701C80
@@ -6474,7 +6474,7 @@ pos [1] =
 100237
 team [1] =
 2
-label = bzn64label_002C
+label = ccacomm
 isUser [1] =
 0
 obj_addr = 00700510
@@ -6601,7 +6601,7 @@ pos [1] =
 101690
 team [1] =
 1
-label = bzn64label_002D
+label = nav2
 isUser [1] =
 0
 obj_addr = 00700060
@@ -6980,8 +6980,8 @@ count [1] =
 [AiPath]
 old_ptr = 2040E200
 size [1] =
-14
-label = bzn64path_0001
+9
+label = spawn_sw1
 pointCount [1] =
 1
 points [1] =
@@ -6993,8 +6993,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 605FE200
 size [1] =
-14
-label = bzn64path_0002
+9
+label = spawn_sw2
 pointCount [1] =
 1
 points [1] =
@@ -7006,8 +7006,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = B05EE200
 size [1] =
-14
-label = bzn64path_0003
+9
+label = spawn_sw3
 pointCount [1] =
 1
 points [1] =
@@ -7019,8 +7019,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 005EE200
 size [1] =
-14
-label = bzn64path_0004
+9
+label = spawn_sw4
 pointCount [1] =
 1
 points [1] =
@@ -7032,15 +7032,11 @@ pathType = 00000000
 [AiPath]
 old_ptr = 505DE200
 size [1] =
-14
-label = bzn64path_0005
+9
+label = spawn_se1
 pointCount [1] =
-2
-points [2] =
-  x [1] =
-2194.08
-  z [1] =
-100690
+1
+points [1] =
   x [1] =
 2194.08
   z [1] =
@@ -7049,8 +7045,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 905CE200
 size [1] =
-14
-label = bzn64path_0006
+9
+label = spawn_se2
 pointCount [1] =
 1
 points [1] =
@@ -7062,8 +7058,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = E05BE200
 size [1] =
-14
-label = bzn64path_0007
+9
+label = spawn_se3
 pointCount [1] =
 1
 points [1] =
@@ -7075,8 +7071,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 305BE200
 size [1] =
-14
-label = bzn64path_0008
+9
+label = spawn_se4
 pointCount [1] =
 1
 points [1] =
@@ -7088,8 +7084,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 805AE200
 size [1] =
-14
-label = bzn64path_0009
+11
+label = spawn_fury1
 pointCount [1] =
 1
 points [1] =
@@ -7101,8 +7097,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = D059E200
 size [1] =
-14
-label = bzn64path_000A
+11
+label = spawn_fury2
 pointCount [1] =
 1
 points [1] =
@@ -7114,8 +7110,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 2059E200
 size [1] =
-14
-label = bzn64path_000B
+11
+label = spawn_fury3
 pointCount [1] =
 1
 points [1] =
@@ -7127,8 +7123,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 7058E200
 size [1] =
-14
-label = bzn64path_000C
+11
+label = spawn_fury4
 pointCount [1] =
 1
 points [1] =
@@ -7140,8 +7136,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = C057E200
 size [1] =
-14
-label = bzn64path_000D
+9
+label = fury_path
 pointCount [1] =
 12
 points [12] =
@@ -7197,8 +7193,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = B056E200
 size [1] =
-14
-label = bzn64path_000E
+11
+label = soviet_path
 pointCount [1] =
 10
 points [10] =
@@ -7246,8 +7242,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = B055E200
 size [1] =
-14
-label = bzn64path_000F
+9
+label = nsdf_path
 pointCount [1] =
 15
 points [15] =
@@ -7315,8 +7311,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 3053E200
 size [1] =
-14
-label = bzn64path_0010
+9
+label = launchpad
 pointCount [1] =
 1
 points [1] =
@@ -7328,8 +7324,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 306AE200
 size [1] =
-14
-label = bzn64path_0011
+12
+label = spawn_trans1
 pointCount [1] =
 1
 points [1] =
@@ -7341,8 +7337,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 9069E200
 size [1] =
-14
-label = bzn64path_0012
+12
+label = spawn_trans2
 pointCount [1] =
 1
 points [1] =
@@ -7354,8 +7350,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = F068E200
 size [1] =
-14
-label = bzn64path_0013
+12
+label = spawn_trans3
 pointCount [1] =
 1
 points [1] =
@@ -7367,8 +7363,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 307DE200
 size [1] =
-14
-label = bzn64path_0014
+9
+label = spawn_sw5
 pointCount [1] =
 1
 points [1] =
@@ -7380,8 +7376,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 807CE200
 size [1] =
-14
-label = bzn64path_0015
+9
+label = spawn_sw6
 pointCount [1] =
 1
 points [1] =
@@ -7393,8 +7389,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = D07BE200
 size [1] =
-14
-label = bzn64path_0016
+9
+label = spawn_sw7
 pointCount [1] =
 1
 points [1] =
@@ -7406,8 +7402,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 80A7E200
 size [1] =
-14
-label = bzn64path_0017
+8
+label = fury_cam
 pointCount [1] =
 11
 points [11] =
@@ -7459,8 +7455,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 90CFE200
 size [1] =
-14
-label = bzn64path_0018
+8
+label = spawn_w1
 pointCount [1] =
 1
 points [1] =
@@ -7472,8 +7468,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = E0CEE200
 size [1] =
-14
-label = bzn64path_0019
+8
+label = spawn_w2
 pointCount [1] =
 1
 points [1] =
@@ -7485,8 +7481,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 30CEE200
 size [1] =
-14
-label = bzn64path_001A
+8
+label = spawn_w3
 pointCount [1] =
 1
 points [1] =
@@ -7498,8 +7494,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 80CDE200
 size [1] =
-14
-label = bzn64path_001B
+8
+label = spawn_w4
 pointCount [1] =
 1
 points [1] =
@@ -7511,8 +7507,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = D0CCE200
 size [1] =
-14
-label = bzn64path_001C
+8
+label = spawn_w5
 pointCount [1] =
 1
 points [1] =
@@ -7524,8 +7520,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 20CCE200
 size [1] =
-14
-label = bzn64path_001D
+8
+label = spawn_w6
 pointCount [1] =
 1
 points [1] =
@@ -7615,8 +7611,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 50C7E200
 size [1] =
-14
-label = bzn64path_0024
+8
+label = spawn_s1
 pointCount [1] =
 1
 points [1] =
@@ -7628,8 +7624,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = A0C6E200
 size [1] =
-14
-label = bzn64path_0025
+8
+label = spawn_s2
 pointCount [1] =
 1
 points [1] =
@@ -7641,8 +7637,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = F0C5E200
 size [1] =
-14
-label = bzn64path_0026
+8
+label = spawn_s3
 pointCount [1] =
 1
 points [1] =
@@ -7654,8 +7650,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 40C5E200
 size [1] =
-14
-label = bzn64path_0027
+8
+label = spawn_s4
 pointCount [1] =
 1
 points [1] =
@@ -7667,8 +7663,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 90C4E200
 size [1] =
-14
-label = bzn64path_0028
+8
+label = spawn_s5
 pointCount [1] =
 1
 points [1] =
@@ -7680,8 +7676,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = E0C3E200
 size [1] =
-14
-label = bzn64path_0029
+8
+label = spawn_s6
 pointCount [1] =
 1
 points [1] =

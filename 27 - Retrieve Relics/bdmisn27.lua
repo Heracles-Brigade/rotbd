@@ -226,7 +226,7 @@ function Update()
 	end
 	
 	-- If we GotOne, and we picked up 2nd.
-	if M.GotOne and not M.PickedUpSecond and (GetDistance(M.Relic1, M.Nav[3]) > 200 and GetTug(M.Relic1)) or (GetDistance(M.Relic2, M.Nav[3]) > 200 and GetTug(M.Relic2)) then
+	if M.GotOne and not M.PickedUpSecond and (GetDistance(M.Relic1, M.Nav[3]) > 200 and GetTug(M.Relic1) or GetDistance(M.Relic2, M.Nav[3]) > 200 and GetTug(M.Relic2)) then
 		M.PickedUpSecond = true;
 		M.UpdateObjectives = true;
 	end

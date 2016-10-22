@@ -1,4 +1,5 @@
 [GameObjectClass] // Special BDOG Armory for BDOG mission 29. Limited build tree.
+baseName = "bvslf"
 classLabel = "armory"
 collisionRadius = 5.0
 scrapValue = 5
