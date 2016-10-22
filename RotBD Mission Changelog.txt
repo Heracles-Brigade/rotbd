@@ -27,6 +27,7 @@ BDOG Mission 6:
 -Made you start out in a BDOG tank, instead of an NSDF Tank "player"
 -Made rescue spawn BDOG pilots instead of NSDF pilots.
 -Added a lose condition if any of the pilots die before they get into APCs.
+-Made APCs into Tugs, so they can't be used to attack.
 
 BDOG Mission 7:
 -Changed Tug to BDOG Tug instead of NSDF Tug.

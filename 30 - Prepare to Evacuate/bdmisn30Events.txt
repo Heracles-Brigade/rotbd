@@ -1,0 +1,87 @@
+Object Labels:
+
+Nav1: label_000C
+Nav2: label_0019
+
+Recycler: label_0009
+Constructor: label_0024
+Comm: label_0004
+Silo1: label_0014
+Silo2: label_0015
+Silo3: label_0016
+
+Events:
+
+On Start:
+Wave 1 / Objective 1, 2, "WHITE".
+SetObjectiveName(Nav1, "Black Dog Outpost")
+SetObjectiveName(Nav2, "Navpoint 1")
+2 avfigh spawn path_0007, Goto Silos (IMPROVEMENT: Split 1 to each silo.)
+// IMPROVEMENT: Spawn: path_0005 - path_0006 to spread out instead.
+
+After 1 minute, order avfighs to attack Silos? (IMPROVEMENT: Just order them to attack the silos, periodically in case they get distracted?)
+
+if GetWhoShotMe(Silos) == either avfigh then
+Wave 2.
+
+After 3m 30s from start:
+Spawn:
+2 avwalk (path_0005, path_0006), 2 avtank (path_0005, path_0008). //path_0005, path_0006, path_0007, path_0008. (IMPROVEMENT: Spread out, spawn 1st tank on path_0007)
+@ path_0008 Attack Silo 2. (IMPROVEMENT: Make them randomly attack silo1-3/recy/hqcp)
+@path_0007 / path_0008 Attack Recycler.
+@path_0005 Attack Comm Tower.
+spawn 3: svhraz, path_0024 - 0026? // Or path_0027 - path_0029 somewhere in there.
+@path_0026 Attack Silo, other 2 Attack Player.
+
+After 6m 30s from start:
+spawn 1 svfigh and 1 svhraz, path_0001, path_0002? (path_0004, path_0003?)
+svfigh attack Silos, svhraz attack Player.
+
+After 10m from start:
+spawn 2 svhraz, (path_0003, path_0004?)
+1 Attack Player, other attack ??? Silos?
+
+
+After 12m 30s from start (or after furies dead?)
+spawn 3 svfigh, 1 svhraz, (path_0018, path_0019, path_001A, path_001B) 
+3 svfigh Goto Silos, svhraz Attack Player?
+
+After 14m 15s from start, 
+spawn: 2 avtank, (path_0024 - path_0028 ???? confirm? anyone?)
+Goto (Silos?)
+
+if CountUnitsNearObject(Nav1, 200.0f? 0, npscr1 - npscr3) == 0 then
+Goto(Constructor, Nav1);
+
+then if GetDistance(Constructor, Nav1) < 50 then
+Wave 3.
+//Presumably? bvcnst ordered to build ablpad on path_0010? (Nope, magicspawns it.)
+IMPROVEMENT: Order cons to physically build it.
+
+15 seconds later, 
+CameraPath(path_0017?)
+Spawn: 2 hvsav / 2 hvsat, (path_0009, path_000A, path_000B, path_000C)
+One hvsav, Attack Player, another Attack Recycler?
+BuildObject("ablpad", 1, "path_0010");
+
+After 10 seconds.
+CameraFinish()
+ClearObjectives()
+Objective 3, "WHITE"
+SetObjectiveOn(LPad)
+spawn 3 bvhaul, path_0011, path_0012, path_0013.
+Goto(Tugs, LPad, 1)
+SetObjectiveName(Tugs, "Transport 1" - "Transport 3")
+SetObjectiveOn(Tugss)
+
+if GetDistance(Tugs) < 100? 
+SucceedMission(GetTime() + 5.0, "bdmisn29wn.des");
+
+if constructor dies:
+FailMission(GetTime()+5.0, "bdmisn29l1.des");
+
+if recycler dies:
+FailMission(GetTime()+5.0, "bdmisn29l2.des");
+
+if transport dies:
+FailMission(GetTime()+5.0, "bdmisn29l3.des");
