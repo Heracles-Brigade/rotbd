@@ -13,6 +13,8 @@ heatSignature = 1.2
 imageSignature = 3.0
 radarSignature = 0.1
 
+explosionName = "xbmbxpl" // Mammoth dies with a Quakeblast. :)
+
 // Original RotBD had 3 weapon groups: Group 1: 4 AT Stab, Group 2: 4 Chaingun, Group 3: Thumper.
 weaponHard1 = "GC1"
 weaponName1 = "gatstab"
