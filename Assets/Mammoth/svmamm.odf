@@ -31,6 +31,7 @@ weaponMask = 01111
 // 4 more Cannon slots, same HPs, but different group.
 // Lua switches via GiveWeapon to these when you press the "G" key, mimicing TRO's 
 // function but using it for different means. (Maybe use deploy key "K" instead?)
+customClass1 = "ExtraWeapons"
 [ExtraWeapons_1]
 weaponName1 = "gminisov"
 weaponName2 = "gminisov"
