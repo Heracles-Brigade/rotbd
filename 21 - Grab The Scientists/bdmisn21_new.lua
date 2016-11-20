@@ -83,7 +83,7 @@ local destroySolar = mission.Objective:define("destorySolar"):init({
     otf2 = 'bdmisn213.otf',
     next = 'destroyComm',
     target_l1 = {"power1_1","power1_2","power1_3","power1_4"},
-    target_l2 = {"power2_1","power2_2","power2_3","power4_4"},
+    target_l2 = {"power2_1","power2_2","power2_3","power2_4"},
     power1_4 = true,
     power5_8init = false
 }):setListeners({
