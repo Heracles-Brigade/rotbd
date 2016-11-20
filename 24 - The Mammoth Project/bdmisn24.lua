@@ -16,6 +16,7 @@ DecoyTriggered = false, -- It's a Trap!
 TrapEscaped = false, -- Whew, close one!
 MammothStolen = false, -- Steal the Mammoth!
 MammothDead = false, -- You can't kill something that's extinct.
+DropZoneReached = false, -- Are we there yet?
 MissionOver = false, -- Yay!
 
 -- Floats (realy doubles in Lua)
@@ -197,7 +198,11 @@ function Update(dtime)
 					end
 				end		
 			else -- Get to the drop zone.
-				AddObjective("bdmisn2404.otf", "WHITE");
+				if not M.DropZoneReached then
+					AddObjective("bdmisn2404.otf", "WHITE");
+				else
+					AddObjective("bdmisn2404.otf", "GREEN");
+				end
 			end
 		else -- ITS DEAD! NOOOOO! NEW Fail objective. -GBD
 			AddObjective("bdmisn2405.otf", "RED");
@@ -245,6 +250,7 @@ function Update(dtime)
 		SucceedMission(GetTime()+5.0, "bdmisn24wn.des");
 		M.MissionOver = true;
 		M.UpdateObjectives = true;
+		M.DropZoneReached = true;
 	end
 	
 	-- Lose Conditions
