@@ -1,4 +1,10 @@
 -- Battlezone: Rise of the Black Dogs, Black Dog Mission 24 written by General BlackDragon.
+local bzCore = require("bz_core");
+local mammoth = require("mammoth");
+
+
+
+
 
 local M = {
 -- Bools
@@ -24,37 +30,116 @@ MammothDecoy = nil,
 Aud1 = 0
 }
 
-function Save()
-    return 
-		M
-end
+--[[
 
-function Load(...)	
-    if select('#', ...) > 0 then
-		M
-		= ...
+
+function Update(dtime)
+    bzCore:update(dtime);
+    if(loaded) then
+        afterLoad();
     end
 end
 
+function Save()
+    return bzCore:save(dtime); 
+end
+
+function afterSave()
+    bzCore:afterSave();
+end
+
+function Load(data)
+    bzCore:load(data);
+    loaded = true;
+end
+
+function afterLoad()
+    bzCore:afterLoad();
+    loaded = false;
+end
+
+function AddObject(...)
+    bzCore:onAddObject(...);
+end
+
+function CreateObject(handle,...)
+    bzCore:onCreateObject(handle,...);
+end
+
+function DeleteObject(...)
+    bzCore:onDeleteObject(...);
+end
+
+
+
+function Receive(...)
+    bzCore:onReceive(...);
+end
+
+function AddPlayer(...)
+    print("AddPlayer",...);
+end
+
+function CreatePlayer(...)
+    print("CreatePlayer",...);
+end
+
+
+]]
+
+
+local loaded = false;
+
+function Save()
+    return 
+		M, bzCore:save();
+end
+
+function Load(missionData,bzUtilsData)	
+    --[[if select('#', ...) > 0 then
+		M
+		= ...
+    end--]]
+		M = missionData;
+		bzCore:load(bzUtilsData);
+		loaded = true;
+end
+
+function GameKey(...)
+    bzCore:onGameKey(...);
+end
+
 function Start()
-
-    print("Black Dog Mission 24 Lua created by General BlackDragon");
-
+	bzCore:onStart();
+	print("Black Dog Mission 24 Lua created by General BlackDragon");
 end
 
 function AddObject(h)
-
+	bzCore:onAddObject(h);
 	local Team = GetTeamNum(h);
 
 end
 
 function DeleteObject(h)
-
-	
+	bzCore:onDeleteObject(h);
 end
 
-function Update()
+function CreateObject(h)
+	bzCore:onCreateObject(h);
+end
+
+function afterSave()
+    bzCore:afterSave();
+		loaded = false;
+end
+
+function Update(dtime)
+	bzCore:update(dtime);
 	
+	if(loaded) then
+		afterLoad();
+	end
+
 	M.Player = GetPlayerHandle();
 	
 	if not M.StartDone then
