@@ -225,6 +225,7 @@ local nsdfAttack = mission.Objective:define("nsdf_attack"):init({
     recycler_target = false
 }):setListeners({
     start = function(self)
+		ClearObjectives();
 		AudioMessage("bdmisn2203.wav");
         AddObjective(self.otf,"whtie");
         local a,b,camTarget = createWave("avwalk",{"spawn_avwalk1","spawn_avwalk2","spawn_avwalk3"},"nsdf_path");

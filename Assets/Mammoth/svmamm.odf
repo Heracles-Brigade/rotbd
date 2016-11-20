@@ -1,4 +1,4 @@
-[GameObject] // Mammoth Tank. Should have 4 Cannon Hardpoints.
+[GameObjectClass] // Mammoth Tank. Should have 4 Cannon Hardpoints.
 baseName = "svtank"
 classLabel = "wingman"
 scrapValue = 5
