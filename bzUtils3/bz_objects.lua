@@ -446,7 +446,7 @@ local ObjectManager = D(BzModule("ObjectManagerModule"),
       update = function(...)
         for i, v in pairs(self.objsToBeDecided) do
           --Test if remote, a bit temp
-          if(not IsRemote(i)) then
+          if(not (IsNetGame() and IsRemote(i)) ) then
             for i, v in pairs(self:registerHandle(i)) do
               v:onInit();
             end

@@ -35,11 +35,12 @@ local ExtraWeapons = Decorate(
   }),
   --The class definition
   --Class takes three arguments: (class name, class definition, [super class])
-  Class("EW", {
+  Class("ExtraWeapons", {
     constructor = function(handle)
       self.handle = bzObjects.Handle(handle);
       self.wepPages = {};
       self.page = 1;
+      self.key = "K";
       self.dead = false;
       self.lastPosition = self.handle:getPosition();
       local nextPage = self.handle:getTable("GameObjectClass", "weaponName");
@@ -99,9 +100,8 @@ local ExtraWeapons = Decorate(
         end
       end,
       onGameKey = function(key)
-        print(key);
         --Called when a key is pressed
-        if (key == "K" and self.handle:getHandle() == GetPlayerHandle()) then
+        if ( (key == self.key) and (self.handle:getHandle() == GetPlayerHandle()) ) then
           self:setWeaponPage(((self.page) % #self.wepPages) + 1);
         end
       end,
