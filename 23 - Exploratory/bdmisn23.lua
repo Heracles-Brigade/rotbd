@@ -271,6 +271,7 @@ function Update()
 			SucceedMission(GetTime()+5.0, "bdmisn23wn.des");
 			M.MissionOver = true;
 			M.UpdateObjectives = true;
+			M.SafetyReached = true;
 		end
 		
 		-- Lose Conditions:
