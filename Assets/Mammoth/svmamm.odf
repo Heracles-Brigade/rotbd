@@ -1,7 +1,6 @@
 [GameObjectClass] // Mammoth Tank. Should have 4 Cannon Hardpoints.
 baseName = "svtank"
 classLabel = "wingman"
-customClass1 = "extraWeapons"
 scrapValue = 5
 scrapCost = 8
 buildTime = 10.0
@@ -29,12 +28,10 @@ weaponHard5 = "GS1"
 weaponName5 = "gquake"
 weaponMask = 01111
 
-extraPages = 1
-
 // 4 more Cannon slots, same HPs, but different group.
 // Lua switches via GiveWeapon to these when you press the "G" key, mimicing TRO's 
 // function but using it for different means. (Maybe use deploy key "K" instead?)
-customClass1 = "ExtraWeapons"
+customClass1 = "extraWeapons"
 [ExtraWeapons_1]
 weaponName1 = "gminisov"
 weaponName2 = "gminisov"

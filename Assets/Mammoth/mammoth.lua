@@ -67,13 +67,10 @@ local ExtraWeapons = Decorate(
         end
       end,
       onInit = function()
+        print("Mammoth added", self.handle);
       --Called when object is added to the world
       end,
       onDestroy = function()
-      --Spawn a nuke for some reason,
-      --Called ONCE when HP > 0
-      --Does not mean the object is removed from the world
-      --BuildObject("apwrck",self.handle:getTeamNum(),self.lastPosition + SetVector(0,50,0));
       end,
       save = function()
         --Return data you want to save for the object

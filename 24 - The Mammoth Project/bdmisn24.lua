@@ -31,62 +31,6 @@ MammothDecoy = nil,
 Aud1 = 0
 }
 
---[[
-
-
-function Update(dtime)
-    bzCore:update(dtime);
-    if(loaded) then
-        afterLoad();
-    end
-end
-
-function Save()
-    return bzCore:save(dtime); 
-end
-
-function afterSave()
-    bzCore:afterSave();
-end
-
-function Load(data)
-    bzCore:load(data);
-    loaded = true;
-end
-
-function afterLoad()
-    bzCore:afterLoad();
-    loaded = false;
-end
-
-function AddObject(...)
-    bzCore:onAddObject(...);
-end
-
-function CreateObject(handle,...)
-    bzCore:onCreateObject(handle,...);
-end
-
-function DeleteObject(...)
-    bzCore:onDeleteObject(...);
-end
-
-
-
-function Receive(...)
-    bzCore:onReceive(...);
-end
-
-function AddPlayer(...)
-    print("AddPlayer",...);
-end
-
-function CreatePlayer(...)
-    print("CreatePlayer",...);
-end
-
-
-]]
 
 
 local loaded = false;
@@ -116,6 +60,7 @@ function Start()
 end
 
 function AddObject(h)
+	print("Root:AddObject",h);
 	bzCore:onAddObject(h);
 	local Team = GetTeamNum(h);
 

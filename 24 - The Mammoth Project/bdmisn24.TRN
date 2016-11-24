@@ -12,6 +12,9 @@ FogDirection=1
 TerrainShadowLuma=20
 CarAmbient=20
 
+[Atlases]
+MaterialName	= ma_detail_atlas
+
 [World]
 MusicTrack=3
 

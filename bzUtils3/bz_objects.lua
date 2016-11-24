@@ -489,6 +489,9 @@ local ObjectManager = D(BzModule("ObjectManagerModule"),
         end
       end,
       onStart = function(...)
+        for v in AllObjects() do
+          self:onAddObject(v);
+        end
         for i, v in pairs(self.startListeners) do
           for i2, v2 in pairs(v) do
             v2:onStart(...);
@@ -590,6 +593,7 @@ local ObjectManager = D(BzModule("ObjectManagerModule"),
         local odf = GetOdf(handle);
         local classLabel = GetClassLabel(handle);
         local customClasses = Handle(handle):getTable("GameObjectClass", "customClass");
+
         Meta(handle, {
           dead = false,
           truelocal = not (IsNetGame() and IsRemote(handle));
@@ -696,6 +700,7 @@ local ObjectManager = D(BzModule("ObjectManagerModule"),
         end
       end,
       declearClass = function(obj)
+        print("Declearing class",Meta(obj).name);
         table.insert(self.classes, obj);
       end
     }
