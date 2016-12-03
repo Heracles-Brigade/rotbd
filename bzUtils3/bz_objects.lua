@@ -682,7 +682,6 @@ local ObjectManager = D(BzModule("ObjectManagerModule"),
           table.insert(self.objectListeners[handle], obj);
         end
         if (KeyListener:made(obj)) then
-          print("KeyListener made", obj);
           self.keyListeners[handle] = self.keyListeners[handle] or {};
           table.insert(self.keyListeners[handle], obj);
         end

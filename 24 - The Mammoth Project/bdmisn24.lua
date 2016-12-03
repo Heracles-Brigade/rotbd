@@ -60,7 +60,6 @@ function Start()
 end
 
 function AddObject(h)
-	print("Root:AddObject",h);
 	bzCore:onAddObject(h);
 	local Team = GetTeamNum(h);
 

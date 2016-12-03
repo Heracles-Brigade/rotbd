@@ -58,55 +58,55 @@ local function getHash(a)
 end
 
 local TableStore = Class("TableStore",{
-    constructor = function()
-      this.tables = {};
-      this.newIndecies = {};
+  constructor = function()
+    this.tables = {};
+    this.newIndecies = {};
+  end,
+  static = {
+    load = function(data)
+      return class:new():load(data);
+    end
+  },
+  methods = {
+    register = function(t)
+      if(not t) then
+        error("Can not register a nil value",2)
+      end
+      if(not this:hasTable(getHash(t))) then
+        this.tables[getHash(t)] = t;
+      else
+        error(string.format("Table[0x%X] is already registered",getHash(t)),2);
+      end
     end,
-    static = {
-      load = function(data)
-        return class:new():load(data);
+    getTable = function(index)
+      if(self:hasTable(index)) then
+        return self.tables[index];
+      else
+        error(string.format("Could not find table[0x%X]",index),2);
       end
-    },
-    methods = {
-      register = function(t)
-        if(not t) then
-          error("Can not register a nil value",2)
-        end
-        if(not this:hasTable(getHash(t))) then
-          this.tables[getHash(t)] = t;
-        else
-          error(string.format("Table[0x%X] is already registered",getHash(t)),2);
-        end
-      end,
-      getTable = function(index)
-        if(self:hasTable(index)) then
-          return self.tables[index];
-        else
-          error(string.format("Could not find table[0x%X]",index),2);
-        end
-      end,
-      hasTable = function(index)
-        return ((self.tables[index] and {true}) or {false})[1];
-      end,
-      getNewIndex = function(old)
-        --return new index after load
-        if(self.newIndecies[old]) then
-          return self.newIndecies[old];
-        else
-          error(string.format("Could not get new index from 0x%X",old));
-        end
-      end,
-      save = function()
-        return self.tables;
-      end,
-      load = function(data)
-        for i,v in pairs(data) do
-          local newIndex = getHash(v);
-          self.newIndecies[i] = newIndex;
-          self:register(v);
-        end
+    end,
+    hasTable = function(index)
+      return ((self.tables[index] and {true}) or {false})[1];
+    end,
+    getNewIndex = function(old)
+      --return new index after load
+      if(self.newIndecies[old]) then
+        return self.newIndecies[old];
+      else
+        error(string.format("Could not get new index from 0x%X",old));
       end
-    }
+    end,
+    save = function()
+      return self.tables;
+    end,
+    load = function(data)
+      for i,v in pairs(data) do
+        local newIndex = getHash(v);
+        self.newIndecies[i] = newIndex;
+        self:register(v);
+      end
+    end
+  }
 })
 
 --temp tablestore
@@ -114,129 +114,129 @@ local tableRefs = TableStore();
 
 local Pointer;
 Pointer = Class("Pointer",{
-    constructor = function(tornum)
-      local t;
-      local i;
-      if(type(tornum) == "number") then
-        i = tornum;
-        t = class:_toTable(tornum);
-      else
-        i = class:_get(tornum);
-        t = tornum;
+  constructor = function(tornum)
+    local t;
+    local i;
+    if(type(tornum) == "number") then
+      i = tornum;
+      t = class:_toTable(tornum);
+    else
+      i = class:_get(tornum);
+      t = tornum;
+    end
+    self.tref = t;
+    self.index = i;
+  end,
+  static = {
+    _get = function(t)
+      print("Get",class,t);
+      local i = getHash(t);
+      if(not tableRefs:hasTable(i)) then
+          tableRefs:register(t);
       end
-      self.tref = t;
-      self.index = i;
+      return i;
     end,
-    static = {
-      _get = function(t)
-        print("Get",class,t);
-        local i = getHash(t);
-        if(not tableRefs:hasTable(i)) then
-            tableRefs:register(t);
-        end
-        return i;
-      end,
-      _toTable = function(index)
-        print("To table",class);
-        return tableRefs:getTable(index);
-      end,
-      _fromOld = function(index)
-        print("From old",class)
-        return tableRefs:getTable(tableRefs:getNewIndex(index));
-      end
-    },
-    methods = {
-      save = function()
-        return self.index;
-      end,
-      getHash = function()
-        return self.index;
-      end,
-      getTable = function()
-        return self.tref;
-      end
-    },
-    metatable = {
-      __index = function(t,k)
-        return t:getTable()[k];
-      end,
-      __newindex = function(t,k,v)
-        t:getTable()[k] = v;
-      end
-    }
+    _toTable = function(index)
+      print("To table",class);
+      return tableRefs:getTable(index);
+    end,
+    _fromOld = function(index)
+      print("From old",class)
+      return tableRefs:getTable(tableRefs:getNewIndex(index));
+    end
+  },
+  methods = {
+    save = function()
+      return self.index;
+    end,
+    getHash = function()
+      return self.index;
+    end,
+    getTable = function()
+      return self.tref;
+    end
+  },
+  metatable = {
+    __index = function(t,k)
+      return t:getTable()[k];
+    end,
+    __newindex = function(t,k,v)
+      t:getTable()[k] = v;
+    end
+  }
 });
 
 local odfHeader = Class("odfHeader",{
-    constructor = function(file,name)
-      self.file = file;
-      self.header = name;
+  constructor = function(file,name)
+    self.file = file;
+    self.header = name;
+  end,
+  methods = {
+    getVar = function(varName,...)
+      return GetODFString(self.file,self.header,varName,...);
     end,
-    methods = {
-      getVar = function(varName,...)
-        return GetODFString(self.file,self.header,varName,...);
-      end,
-      getAsInt = function(varName,...)
-        return GetODFInt(self.file,self.header,varName,...);
-      end,
-      getAsBool = function(varName,...)
-        return GetODFBool(self.file,self.header,varName,...);
-      end,
-      getAsFloat = function(varName,...)
-        return GetODFFloat(self.file,self.header,varName,...);
-      end,
-      getAsVector = function(varName,...)
-        local v = self:getVar(varName,...);
-        if(v) then
-            return str2vec(v);
-        end
-      end,
-      getAsTable = function(varName,...)
-        local ret = {};
-        local c = 1;
-        local n = self:getVar(varName .. c,...);
-        while n do
-          table.insert(ret,n);
-          c = c + 1;
-          n = self:getVar(varName .. c,...);
-        end
-        return ret;
+    getAsInt = function(varName,...)
+      return GetODFInt(self.file,self.header,varName,...);
+    end,
+    getAsBool = function(varName,...)
+      return GetODFBool(self.file,self.header,varName,...);
+    end,
+    getAsFloat = function(varName,...)
+      return GetODFFloat(self.file,self.header,varName,...);
+    end,
+    getAsVector = function(varName,...)
+      local v = self:getVar(varName,...);
+      if(v) then
+          return str2vec(v);
       end
-  }
+    end,
+    getAsTable = function(varName,...)
+      local ret = {};
+      local c = 1;
+      local n = self:getVar(varName .. c,...);
+      while n do
+        table.insert(ret,n);
+        c = c + 1;
+        n = self:getVar(varName .. c,...);
+      end
+      return ret;
+    end
+}
 })
 
 local odfFile = Class("odfFile",{
-    constructor = function(fileName)
-      self.name = fileName;
-      self.file = OpenODF(fileName);
-      self.headers = {};
-      assert(self.file,"Could not open \"%s\"!",self.name);
-    end,
-    methods = {
-      getHeader = function(headerName)
-        if(not self.headers[headerName]) then
-            self.headers[headerName] = odfHeader(self.file,headerName);
-        end
-        return self.headers[headerName];
-      end,
-      getInt = function(header,...)
-        return self:getHeader(header):getAsInt(...);
-      end,
-      getFloat = function(header,...)
-        return self:getHeader(header):getAsFloat(...);
-      end,
-      getProperty = function(header,...)
-        return self:getHeader(header):getVar(...);
-      end,
-      getBool = function(header,...)
-        return self:getHeader(header):getAsBool(...);
-      end,
-      getTable = function(header,...)
-        return self:getHeader(header):getAsTable(...);
-      end,
-      getVector = function(header,...)
-        return self:getHeader(header):getAsVector(...);
+  constructor = function(fileName)
+    self.name = fileName;
+    self.file = OpenODF(fileName);
+    self.headers = {};
+    assert(self.file,"Could not open \"%s\"!",self.name);
+  end,
+  methods = {
+    getHeader = function(headerName)
+      if(not self.headers[headerName]) then
+          self.headers[headerName] = odfHeader(self.file,headerName);
       end
-    }
+      return self.headers[headerName];
+    end,
+    getInt = function(header,...)
+      return self:getHeader(header):getAsInt(...);
+    end,
+    getFloat = function(header,...)
+      return self:getHeader(header):getAsFloat(...);
+    end,
+    getProperty = function(header,...)
+      return self:getHeader(header):getVar(...);
+    end,
+    getBool = function(header,...)
+      return self:getHeader(header):getAsBool(...);
+    end,
+    getTable = function(header,...)
+      return self:getHeader(header):getAsTable(...);
+    end,
+    getVector = function(header,...)
+      return self:getHeader(header):getAsVector(...);
+    end
+  }
 })
 
 
