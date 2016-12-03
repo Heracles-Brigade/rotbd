@@ -169,6 +169,7 @@ function Update(dtime)
 		Damage(M.MammothDecoy, 90001); -- It's over 9000!!!
 		M.Aud1 = AudioMessage("bdmisn2402.wav");
 		M.DecoyTriggered = true;
+		M.UpdateObjectives = true;
 	end
 	-- Okay, your safe.
 	if M.DecoyTriggered and not M.TrapEscaped and GetDistance(M.Player, M.Nav[1]) > 400.0 then
