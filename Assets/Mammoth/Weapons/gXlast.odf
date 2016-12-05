@@ -1,0 +1,12 @@
+[WeaponClass]
+classLabel = "cannon"
+ordName = "blast"
+wpnName = "Blast Cannon"
+fireSound = "gblas00.wav"
+wpnReticle = "gblast"
+wpnPriority = 10
+wpnCategory = "CANN"
+
+[CannonClass]
+shotDelay = 4.0 //1.0 // 4x refire rate for Mammoth.
+shotAlternate = true // Mammothy.
