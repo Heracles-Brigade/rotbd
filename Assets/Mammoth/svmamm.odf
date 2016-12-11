@@ -17,13 +17,13 @@ explosionName = "xbmbxpl" // Mammoth dies with a Quakeblast. :)
 
 // Original RotBD had 3 weapon groups: Group 1: 4 AT Stab, Group 2: 4 Chaingun, Group 3: Thumper.
 weaponHard1 = "GC1"
-weaponName1 = "gatstab"
+weaponName1 = "gXtstab"
 weaponHard2 = "GC2"
-weaponName2 = "gatstab"
+weaponName2 = "gXtstab"
 weaponHard3 = "GC1"
-weaponName3 = "gatstab"
+weaponName3 = "gXtstab"
 weaponHard4 = "GC2"
-weaponName4 = "gatstab"
+weaponName4 = "gXtstab"
 weaponHard5 = "GS1"
 weaponName5 = "gquake"
 weaponMask = 01111
@@ -33,10 +33,10 @@ weaponMask = 01111
 // function but using it for different means. (Maybe use deploy key "K" instead?)
 customClass1 = "extraWeapons"
 [ExtraWeapons_1]
-weaponName1 = "gminisov"
-weaponName2 = "gminisov"
-weaponName3 = "gminisov"
-weaponName4 = "gminisov"
+weaponName1 = "gXinisov"
+weaponName2 = "gXinisov"
+weaponName3 = "gXinisov"
+weaponName4 = "gXinisov"
 
 [CraftClass]
 rangeScan = 400.0f

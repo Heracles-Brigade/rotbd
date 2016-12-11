@@ -1,0 +1,12 @@
+[WeaponClass]
+classLabel = "cannon"
+ordName = "bolt"
+wpnName = "Bolt Buddy"
+fireSound = "gbolt00.wav"
+wpnReticle = "gbolt"
+wpnPriority = 0
+wpnCategory = "CANN"
+
+[CannonClass]
+shotDelay = 0.6 // 4x refire rate for Mammoth.
+shotAlternate = true // Mammothy.
