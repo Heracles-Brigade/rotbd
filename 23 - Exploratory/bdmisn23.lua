@@ -282,7 +282,7 @@ function Update()
 			M.UpdateObjectives = true;
 		end
 		-- Kill Mammoth too soon?
-		if  not M.MammothInfoed and not IsAlive(M.Mammoth) then
+		if  not IsAlive(M.Mammoth) then --not M.MammothInfoed and 
 			FailMission(GetTime()+5.0, "bdmisn23l1.des");
 			M.MissionOver = true;
 			M.UpdateObjectives = true;
