@@ -10,6 +10,15 @@ local tracker = mission.UnitTracker:new();
 
 SetAIControl(2,false);
 
+local function enemiesInRange(dist,place)
+    local enemies_nearby = false;
+    for v in ObjectsInRange(300,globals.nav[4]) do
+        if(IsCraft(v) and GetTeamNum(v) == 2) then
+            enemies_nearby = true;
+        end
+    end
+    return enemies_nearby;
+end
 
 local function createWave(odf,path_list,follow)
     local ret = {};
@@ -248,7 +257,7 @@ local nsdfAttack = mission.Objective:define("nsdf_attack"):init({
         if(self.camOn) then
             CameraPath("camera_nsdf",1000,1500,self.camTarget);
             self.camTime = self.camTime - dtime;
-            if(self.camTime <= 0) then
+            if(self.camTime <= 0 or CameraCancelled()) then
                 self.camOn = not CameraFinish();
             end
         end
@@ -528,24 +537,50 @@ local patrolControl = mission.Objective:define("destoryNSDF"):init({
     end,
     load = function(self,...)
         self.spawned = ...;
-    end,
-    success = function(self)
-        UpdateObjective(self.otf,"green");
     end
 });
 
 local intermediate = mission.Objective:define("intermediate"):init({
+    timer = 90,
+    enemiesAtStart = false
 }):setListeners({
     start = function(self)
-        --Might do a delay
-        self:success();
+        ClearObjectives();
+        --Only show if area is not cleared
+        if(enemiesInRange(270,globals.nav[4])) then
+            AddObjective("bdmisn311.otf","white");
+        else
+            self.enemiesAtStart = true;
+            AddObjective("bdmisn311b.otf","yellow");
+        end
+    end,
+    update = function(self,dtime)
+        --Check for enemies nearby?
+        self.timer = self.timer - dtime;
+        --Check for enemies @ nav4
+        if(self.timer <= 0 or (not enemiesInRange(270,globals.nav[4])) ) then
+            self:success();
+        end
+    end,
+    save = function()
+        return self.timer;
+    end,
+    load = function(...)
+        self.timer = ...;
     end,
     success = function(self)
+        if(self.enemiesAtStart) then
+            UpdateObjective("bdmisn311.otf","green");
+        end
         globals.keepGTsAtFullHealth = true;
         --Spawn in recycler
-        --Remove old navs
-        --Spawn in navs
         local recy = BuildObject("bvrecy22",1,"recy_spawn");
+        --Recycler escort
+        local e1 = BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
+        local e2 = BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
+        Defend2(e1,recy,0);
+        Defend2(e2,recy,0);
+        --Make recycler follow path
         Goto(recy,GetHandle("nav4"),0);
         AddScrap(1,20);
         AddPilot(1,10);
@@ -553,18 +588,16 @@ local intermediate = mission.Objective:define("intermediate"):init({
         SetPilot(2,0);  
         SetObjectiveOn(recy);
         SetObjectiveOn(GetHandle("nav4"));
-        for i = 1, 4 do
-            SetObjectiveName(GetHandle("nav" .. i),"Navpoint " .. i);
-        end
         --initial wave
         BuildObject("svrecy",2,"spawn_svrecy");
         globals.sb_turr_1 = BuildObject("sbtowe",2,"spawn_sbtowe1");
         globals.sb_turr_2 = BuildObject("sbtowe",2,"spawn_sbtowe2");
+        --Start wave after a delay?
         createWave("svfigh",{"spawn_n1","spawn_n2","spawn_n3"},"north_path");
         local instance = deployRecy:start();
         local instance2 = loseRecy:start();
         local instance3 = TooFarFromRecy:start();
-  end
+    end
 });
 
 function Start()
@@ -582,14 +615,15 @@ function Start()
         GetHandle("patrol3_1"),
         GetHandle("patrol3_2")
     };
+        
     for i,v in pairs(globals.nav) do
-        SetObjectiveName(v,"Nav " .. i);
+        SetObjectiveName(GetHandle("nav" .. i),"Navpoint " .. i);
         SetMaxHealth(v,0);
     end
 	AudioMessage("bdmisn2101.wav");
  
     local instance = cinematic:start();
-    local instance2 = patrolControl :start();
+    local instance2 = patrolControl:start();
 end
 
 function Update(dtime)
