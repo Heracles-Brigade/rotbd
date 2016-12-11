@@ -1,17 +1,17 @@
 [GameObjectClass] // Mammoth Tank. Should have 4 Cannon Hardpoints.
 baseName = "svtank"
 classLabel = "wingman"
-scrapValue = 5
-scrapCost = 8
-buildTime = 10.0
-maxHealth = 3250
-maxAmmo = 1500
+scrapValue = 10
+scrapCost = 20
+buildTime = 30.0
+maxHealth = 10000
+maxAmmo = 3000
 unitName = "Tank"
 aiName = "TankFriend"
 aiName2 = "TankEnemy"
-heatSignature = 1.2
-imageSignature = 3.0
-radarSignature = 0.1
+heatSignature = 2.0
+imageSignature = 6.0
+radarSignature = 0.8
 
 explosionName = "xbmbxpl" // Mammoth dies with a Quakeblast. :)
 
@@ -65,25 +65,25 @@ killedMsg = "svtankv3.wav"
 diedMsg = "sbetty3.wav"
 
 [WingmanClass]
-setAltitude = 0.8
-accelDragStop = 3.5
-accelDragFull = 1.0
+setAltitude = 1.5
+accelDragStop = 4.0
+accelDragFull = 0.5
 alphaTrack = 20.0
 alphaDamp = 5.0
-pitchPitch = 0.25
+pitchPitch = 0.1
 pitchThrust = 0.1
 rollStrafe = 0.1
 rollSteer = 0.1
 
 velocForward = 20.0
 velocReverse = 15.0
-velocStrafe = 20.0
-accelThrust = 20.0
-accelBrake = 75.0
-omegaSpin = 3.5
-omegaTurn = 1.5
-alphaSteer = 5.0
-accelJump = 15.0
+velocStrafe = 15.0
+accelThrust = 5.0
+accelBrake = 50.0
+omegaSpin = 0.75
+omegaTurn = 0.3
+alphaSteer = 1.5
+accelJump = 5.0
 
 soundThrust = "svtanke0.wav"
 soundTurbo = "svtanke3.wav"
