@@ -7,6 +7,23 @@ local UnitTrackerManager;
 local MissionManager;
 
 local _GetOdf = GetOdf;
+
+function table.pack(...)
+  return { n = select("#", ...); ... };
+end
+local old_unpack = unpack;
+
+function unpack(t)
+    if(t.n) then
+        return old_unpack(t,1,t.n);
+    end
+    return old_unpack(t);
+end
+
+
+if(not SetLabel) then
+    SetLabel = SettLabel;
+end
 --GetOdf sometimes returns junk after the name
 --This wrapper removes that junk
 GetOdf = function(...)
@@ -17,7 +34,37 @@ GetOdf = function(...)
     return r;
     --return _GetOdf(...):gmatch("[^%c]+")();
 end
+--Spawn in formation from bzUtils3
+local function spawnInFormation(formation,location,dir,units,team,seperation)
+    if(seperation == nil) then 
+        seperation = 10;
+    end
+    local tempH = {};
+    local directionVec = Normalize(SetVector(dir.x,0,dir.z));
+    local formationAlign = Normalize(SetVector(-dir.z,0,dir.x));
+    for i2, v2 in ipairs(formation) do
+        local length = v2:len();
+        local i3 = 1;
+        for c in v2:gmatch(".") do
+        local n = tonumber(c);
+        if(n) then
+            local x = (i3-(length/2))*seperation;
+            local z = i2*seperation*2;
+            local pos = x*formationAlign + -z*directionVec + location;
+            local h = BuildObject(units[n],team,pos);
+            local t = BuildDirectionalMatrix(GetPosition(h),directionVec);
+            SetTransform(h,t);
+            table.insert(tempH,h);
+        end
+        i3 = i3+1;
+        end
+    end
+    return tempH;
+end
 
+local function spawnInFormation2(formation,location,units,team,seperation)
+    return spawnInFormation(formation,GetPosition(location,0),GetPosition(location,1) - GetPosition(location,0),units,team,seperation);
+end
 
 UnitTracker = {
     new = function(cls)
@@ -198,6 +245,7 @@ ObjectiveInstance = {
             self[i] = v;
         end
         ObjectiveManager:addInstance(self);
+        self:init();
         return self;
     end,
     Load = function(cls,save_data)
@@ -286,8 +334,8 @@ Objective = {
         cls:addObjective(self);
         return self;
     end,
-    Start = function(cls,name)
-        return cls:getObjective(name):start();
+    Start = function(cls,name,...)
+        return cls:getObjective(name):start(...);
     end,
     getObjective = function(cls,name)
         return cls.objectives[name];
@@ -344,7 +392,7 @@ Objective = {
             local ret = {};
             if(self.listeners[event]) then
                 for i,listener in pairs(self.listeners[event]) do
-                    table.insert(ret,{listener:call(...)});
+                    table.insert(ret,table.pack(listener:call(...)));
                 end
             end
             return ret;
@@ -461,5 +509,7 @@ return {
     Save = MissionManager.Save,
     getObjective = ObjectiveManager.getObjective,
     objectives = ObjectiveManager.objectives,
-    UnitTracker = UnitTracker
+    UnitTracker = UnitTracker,
+    spawnInFormation = spawnInFormation,
+    spawnInFormation2 = spawnInFormation2
 }
