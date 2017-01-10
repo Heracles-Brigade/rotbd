@@ -84,6 +84,9 @@ UnitTracker = {
     end,
     prototype = {
         addObject = function(self,handle)
+            if(self.handles[handle]) then
+                return;
+            end
             self.handles[handle] = {
                 class = GetClassLabel(handle),
                 odf = GetOdf(handle),

@@ -473,8 +473,8 @@ local destroyComm = mission.Objective:define("destroyComm"):init({
         self.tug = BuildObject("avhaul",2,"spawn_tug");
         SetMaxHealth(self.tug, 0); -- This is invincible.
         SetMaxHealth(self.apc, 0); -- This is invincible.
-        SetPilotClass(self.tug, nil); -- This is invincible.
-        SetPilotClass(self.apc, nil); -- This is invincible.
+        SetPilotClass(self.tug, ""); -- This is invincible.
+        SetPilotClass(self.apc, ""); -- This is invincible.
         Follow(self.apc,self.tug);
         Pickup(self.tug,globals.relic);
         print("Pickup",self.tug,globals.relic);
@@ -546,8 +546,12 @@ local patrolControl = mission.Objective:define("destoryNSDF"):init({
 
 local intermediate = mission.Objective:define("intermediate"):init({
     timer = 90,
+    recyspawned = false,
     enemiesAtStart = false
 }):setListeners({
+    init = function(self)
+        self.nav = GetHandle("nav4");
+    end,
     start = function(self)
         ClearObjectives();
         --Only show if area is not cleared
@@ -562,15 +566,29 @@ local intermediate = mission.Objective:define("intermediate"):init({
         --Check for enemies nearby?
         self.timer = self.timer - dtime;
         --Check for enemies @ nav4
-        if(self.timer <= 0 or (not enemiesInRange(270,globals.nav[4])) ) then
+        if((not self.recyspawned) and  (self.timer <= 0 or (not enemiesInRange(270,globals.nav[4]))) ) then
+            self.recyspawned = true;
+            local recy = BuildObject("bvrecy22",1,"recy_spawn");
+            local e1 = BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
+            local e2 = BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
+            Defend2(e1,recy,0);
+            Defend2(e2,recy,0);
+            --Make recycler follow path
+            Goto(recy,self.nav,0);
+            self.recy = recy;
+            
+            SetObjectiveOn(recy);
+            --self:success();
+        end
+        if(self.recy and IsWithin(self.recy,self.nav,200)) then
             self:success();
         end
     end,
     save = function(self)
-        return self.timer;
+        return self.timer, self.recy, self.recyspawned;
     end,
     load = function(self,...)
-        self.timer = ...;
+        self.timer, self.recy, self.recyspawned = ...;
     end,
     success = function(self)
         if(self.enemiesAtStart) then
@@ -578,20 +596,13 @@ local intermediate = mission.Objective:define("intermediate"):init({
         end
         globals.keepGTsAtFullHealth = true;
         --Spawn in recycler
-        local recy = BuildObject("bvrecy22",1,"recy_spawn");
         --Recycler escort
-        local e1 = BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
-        local e2 = BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
-        Defend2(e1,recy,0);
-        Defend2(e2,recy,0);
-        --Make recycler follow path
-        Goto(recy,GetHandle("nav4"),0);
+
         AddScrap(1,20);
         AddPilot(1,10);
         SetScrap(2,0);
-        SetPilot(2,0);  
-        SetObjectiveOn(recy);
-        SetObjectiveOn(GetHandle("nav4"));
+        SetPilot(2,0);
+        SetObjectiveOn(self.nav);
         --initial wave
         BuildObject("svrecy",2,"spawn_svrecy");
         globals.sb_turr_1 = BuildObject("sbtowe",2,"spawn_sbtowe1");
@@ -647,10 +658,11 @@ function DeleteObject(handle)
 end
 
 function Save()
-    return mission:Save(), globals;
+    return mission:Save(), globals, tracker:save();
 end
 
-function Load(misison_date,g)
+function Load(misison_date,g,tdata)
     mission:Load(misison_date);
     globals = g;
+    tracker = mission.UnitTracker:Load(tdata);
 end
