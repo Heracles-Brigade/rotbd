@@ -74,8 +74,12 @@ function CreateObject(h)
 end
 
 function afterSave()
-    bzCore:afterSave();
-		loaded = false;
+	bzCore:afterSave();
+end
+
+function afterLoad()
+	bzCore:afterLoad();
+	loaded = false;
 end
 
 function Update(dtime)

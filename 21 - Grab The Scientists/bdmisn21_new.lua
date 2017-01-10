@@ -143,6 +143,7 @@ local destroyComm = mission.Objective:define("destroyComm"):init({
         self.camOn = CameraReady();
         self.apc = BuildObject("avapc",2,"spawn_apc");
         self.tug = BuildObject("avhaul",2,"spawn_tug");
+        SetMaxHealth(self.tug,0);
         Follow(self.apc,self.tug);
         Pickup(self.tug,globals.relic);
         print("Pickup",self.tug,globals.relic);

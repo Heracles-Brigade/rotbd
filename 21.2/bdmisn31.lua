@@ -471,6 +471,10 @@ local destroyComm = mission.Objective:define("destroyComm"):init({
         self.camOn = CameraReady();
         self.apc = BuildObject("avapc",2,"spawn_apc");
         self.tug = BuildObject("avhaul",2,"spawn_tug");
+        SetMaxHealth(self.tug, 0); -- This is invincible.
+        SetMaxHealth(self.apc, 0); -- This is invincible.
+        SetPilotClass(self.tug, nil); -- This is invincible.
+        SetPilotClass(self.apc, nil); -- This is invincible.
         Follow(self.apc,self.tug);
         Pickup(self.tug,globals.relic);
         print("Pickup",self.tug,globals.relic);
@@ -562,10 +566,10 @@ local intermediate = mission.Objective:define("intermediate"):init({
             self:success();
         end
     end,
-    save = function()
+    save = function(self)
         return self.timer;
     end,
-    load = function(...)
+    load = function(self,...)
         self.timer = ...;
     end,
     success = function(self)
