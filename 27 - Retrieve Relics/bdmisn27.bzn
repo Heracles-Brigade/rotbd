@@ -19,9 +19,9 @@ pos [1] =
   x [1] =
 1022.02
   y [1] =
-35.8192
+35.8143
   z [1] =
-98550.6
+98550.5
 team [1] =
 1
 label = player
@@ -34,25 +34,25 @@ transform [1] =
   right_y [1] =
 -0.00305298
   right_z [1] =
--0.305388
+-0.305389
   up_x [1] =
--2.74342e-008
+-6.91834e-009
   up_y [1] =
-0.999954
+0.999955
   up_z [1] =
--0.009997
+-0.00999659
   front_x [1] =
 0.305405
   front_y [1] =
 0.00951903
   front_z [1] =
-0.952184
+0.952185
   posit_x [1] =
 1022.02
   posit_y [1] =
-35.8192
+35.8143
   posit_z [1] =
-98550.6
+98550.5
 nextScream [1] =
 153.303
 abandoned [1] =
@@ -63,18 +63,18 @@ pos [1] =
   x [1] =
 1022.12
   y [1] =
-36.7914
+36.7865
   z [1] =
-98550.9
+98550.7
 euler =
  mass [1] =
 200
  mass_inv [1] =
 0.000666667
  v_mag [1] =
-0.00491963
+0.00476731
  v_mag_inv [1] =
-203.268
+209.762
  I [1] =
 1500
  k_i [1] =
@@ -83,28 +83,28 @@ euler =
   x [1] =
 0
   y [1] =
--0.000145366
+-0.000140852
   z [1] =
--0.00491748
+-0.00476523
  omega [1] =
   x [1] =
--1.45883e-008
+9.41199e-009
   y [1] =
 0
   z [1] =
--3.40818e-009
+2.05435e-009
  Accel [1] =
   x [1] =
 0
   y [1] =
--9.79145
+-9.79066
   z [1] =
-0.289194
+0.315877
 seqNo [1] =
 241
 name = 
 isObjective [1] =
-false
+true
 isSelected [1] =
 false
 isVisible [1] =
@@ -447,7 +447,7 @@ pos [1] =
   x [1] =
 1010.39
   y [1] =
-39.5553
+39.5554
   z [1] =
 98573.6
 euler =
@@ -1576,7 +1576,7 @@ transform [1] =
   right_y [1] =
 -0.00134975
   right_z [1] =
-0.000455646
+0.000455644
   up_x [1] =
 0.00134975
   up_y [1] =
@@ -1584,9 +1584,9 @@ transform [1] =
   up_z [1] =
 0
   front_x [1] =
--0.000455647
+-0.000455645
   front_y [1] =
-6.1501e-007
+6.15007e-007
   front_z [1] =
 1.00001
   posit_x [1] =
@@ -1690,7 +1690,7 @@ pos [1] =
   x [1] =
 975.198
   y [1] =
-41.3228
+41.204
   z [1] =
 98534.1
 team [1] =
@@ -1721,7 +1721,7 @@ transform [1] =
   posit_x [1] =
 975.198
   posit_y [1] =
-41.3228
+41.204
   posit_z [1] =
 98534.1
 undefptr = 00000000
@@ -1745,11 +1745,11 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-960.88
+974.88
   y [1] =
-44.1342
+44.0153
   z [1] =
-98540.3
+98535.3
 euler =
  mass [1] =
 1750
@@ -1798,9 +1798,9 @@ seen [1] =
 healthRatio [1] =
 1
 curHealth [1] =
-6000
+12000
 maxHealth [1] =
-6000
+12000
 ammoRatio [1] =
 0
 curAmmo [1] =
@@ -1974,19 +1974,19 @@ transform [1] =
   right_x [1] =
 0.937936
   right_y [1] =
-0.000981849
+0.000981857
   right_z [1] =
 -0.346818
   up_x [1] =
--0.000973568
+-0.000973576
   up_y [1] =
 1
   up_z [1] =
-0.00019811
+0.000198112
   front_x [1] =
 0.34682
   front_y [1] =
-0.000151837
+0.000151838
   front_z [1] =
 0.937941
   posit_x [1] =
@@ -3159,7 +3159,7 @@ pos [1] =
   x [1] =
 2348.11
   y [1] =
-80.7037
+80.7036
   z [1] =
 98774.1
 euler =
@@ -3919,7 +3919,7 @@ transform [1] =
   right_y [1] =
 -0.00352375
   right_z [1] =
-4.14527e-005
+4.14526e-005
   up_x [1] =
 0.00352399
   up_y [1] =
@@ -3927,7 +3927,7 @@ transform [1] =
   up_z [1] =
 -0.0117631
   front_x [1] =
-4.15041e-010
+5.38723e-010
   front_y [1] =
 0.0117632
   front_z [1] =
@@ -4269,7 +4269,7 @@ priority [1] =
 what = 03000000
 who [1] =
 -184549150
-where = 09D20A90
+where = 00000000
 param [1] =
 0
 aiProcess [1] =
@@ -4564,7 +4564,7 @@ transform [1] =
   right_y [1] =
 0.0253161
   right_z [1] =
--9.38112e-005
+-9.38114e-005
   up_x [1] =
 -0.0253163
   up_y [1] =
@@ -4572,7 +4572,7 @@ transform [1] =
   up_z [1] =
 -0.00370565
   front_x [1] =
--3.18165e-008
+-3.16274e-008
   front_y [1] =
 0.00370685
   front_z [1] =
@@ -4701,7 +4701,7 @@ transform [1] =
   up_z [1] =
 -0.0217448
   front_x [1] =
--3.38432e-010
+-1.83685e-011
   front_y [1] =
 0.0217452
   front_z [1] =
@@ -5090,7 +5090,7 @@ transform [1] =
   front_x [1] =
 -0.999601
   front_y [1] =
-0.00692209
+0.0069221
   front_z [1] =
 -0.0276884
   posit_x [1] =
@@ -6329,16 +6329,16 @@ curPilot [1] =
 perceivedTeam [1] =
 1
 name = LuaMission
-sObject = 09BA4150
+sObject = 0C270F40
 [AiMission]
 [AOIs]
 size [1] =
 0
 [AiPaths]
 count [1] =
-16
+21
 [AiPath]
-old_ptr = 784bec08
+old_ptr = 706a3a0c
 size [1] =
 14
 label = bzn64path_0001
@@ -6351,10 +6351,10 @@ points [1] =
 98926.9
 pathType = 00000000
 [AiPath]
-old_ptr = c04bec08
+old_ptr = e86a3a0c
 size [1] =
-14
-label = bzn64path_0002
+15
+label = spawn_defend1_3
 pointCount [1] =
 1
 points [1] =
@@ -6364,7 +6364,7 @@ points [1] =
 99910.8
 pathType = 00000000
 [AiPath]
-old_ptr = 084cec08
+old_ptr = 606b3a0c
 size [1] =
 14
 label = bzn64path_0003
@@ -6377,7 +6377,7 @@ points [1] =
 100204
 pathType = 00000000
 [AiPath]
-old_ptr = 504cec08
+old_ptr = 886b3a0c
 size [1] =
 14
 label = bzn64path_0004
@@ -6390,7 +6390,7 @@ points [1] =
 99361.9
 pathType = 00000000
 [AiPath]
-old_ptr = 5853ec08
+old_ptr = 08693a0c
 size [1] =
 14
 label = bzn64path_0005
@@ -6423,7 +6423,7 @@ points [6] =
 98641.7
 pathType = 00000000
 [AiPath]
-old_ptr = 9811d209
+old_ptr = f8693a0c
 size [1] =
 11
 label = camera_path
@@ -6460,7 +6460,7 @@ points [7] =
 99910.7
 pathType = 00000000
 [AiPath]
-old_ptr = 2812d209
+old_ptr = 986a3a0c
 size [1] =
 11
 label = spawn_call1
@@ -6473,7 +6473,7 @@ points [1] =
 99022.6
 pathType = 00000000
 [AiPath]
-old_ptr = 7012d209
+old_ptr = 206a3a0c
 size [1] =
 11
 label = spawn_call2
@@ -6486,7 +6486,7 @@ points [1] =
 98927.8
 pathType = 00000000
 [AiPath]
-old_ptr = b812d209
+old_ptr = 106b3a0c
 size [1] =
 11
 label = spawn_call3
@@ -6499,7 +6499,7 @@ points [1] =
 98984.7
 pathType = 00000000
 [AiPath]
-old_ptr = 0013d209
+old_ptr = 30693a0c
 size [1] =
 11
 label = spawn_call4
@@ -6512,7 +6512,7 @@ points [1] =
 98944.4
 pathType = 00000000
 [AiPath]
-old_ptr = 4813d209
+old_ptr = 386b3a0c
 size [1] =
 15
 label = spawn_defend1_1
@@ -6525,7 +6525,7 @@ points [1] =
 99935.6
 pathType = 00000000
 [AiPath]
-old_ptr = 9013d209
+old_ptr = 80693a0c
 size [1] =
 15
 label = spawn_defend1_2
@@ -6538,7 +6538,7 @@ points [1] =
 99942.6
 pathType = 00000000
 [AiPath]
-old_ptr = d813d209
+old_ptr = a8693a0c
 size [1] =
 13
 label = spawn_attack1
@@ -6551,7 +6551,7 @@ points [1] =
 99701.1
 pathType = 00000000
 [AiPath]
-old_ptr = 2014d209
+old_ptr = d0693a0c
 size [1] =
 13
 label = spawn_attack2
@@ -6564,7 +6564,7 @@ points [1] =
 99666.7
 pathType = 00000000
 [AiPath]
-old_ptr = 6814d209
+old_ptr = 486a3a0c
 size [1] =
 13
 label = spawn_attack3
@@ -6577,7 +6577,7 @@ points [1] =
 99620.9
 pathType = 00000000
 [AiPath]
-old_ptr = b014d209
+old_ptr = c0653a0c
 size [1] =
 13
 label = spawn_attack4
@@ -6588,4 +6588,73 @@ points [1] =
 1562.21
   z [1] =
 99563.6
+pathType = 00000000
+[AiPath]
+old_ptr = 68683a0c
+size [1] =
+12
+label = spawn_light2
+pointCount [1] =
+2
+points [2] =
+  x [1] =
+1892.76
+  z [1] =
+99037
+  x [1] =
+1892.76
+  z [1] =
+99037
+pathType = 00000000
+[AiPath]
+old_ptr = 58643a0c
+size [1] =
+12
+label = spawn_light1
+pointCount [1] =
+1
+points [1] =
+  x [1] =
+1941.65
+  z [1] =
+98952.1
+pathType = 00000000
+[AiPath]
+old_ptr = 40683a0c
+size [1] =
+11
+label = spawn_figh5
+pointCount [1] =
+1
+points [1] =
+  x [1] =
+1970.12
+  z [1] =
+99015.9
+pathType = 00000000
+[AiPath]
+old_ptr = f8643a0c
+size [1] =
+11
+label = spawn_figh6
+pointCount [1] =
+1
+points [1] =
+  x [1] =
+1870.47
+  z [1] =
+98970.4
+pathType = 3187d747
+[AiPath]
+old_ptr = 58965d0c
+size [1] =
+11
+label = spawn_figh2
+pointCount [1] =
+1
+points [1] =
+  x [1] =
+1942.4
+  z [1] =
+99300
 pathType = 00000000

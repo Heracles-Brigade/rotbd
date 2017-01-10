@@ -53,7 +53,15 @@ end
 function Start()
 
     print("Black Dog Mission 27 Lua created by General BlackDragon");
+		--Spawn units around geyser
+		BuildObject("svfigh",2,"spawn_figh2");
+		BuildObject("svfigh",2,"spawn_figh5");
+		BuildObject("svfigh",2,"spawn_figh6");
+		BuildObject("svltnk",2,"spawn_light1");
+		BuildObject("svltnk",2,"spawn_light2");
 
+		SetScrap(1,8);
+		SetPilot(1,2);
 end
 
 function AddObject(h)
@@ -202,8 +210,8 @@ function Update()
 		if M.DistressFinished then
 			M.UpdateObjectives = true;
 			-- IMPROVEMENT: Make this spawn based on which Relic was captured, using "spawn_defend2_1" and "spawn_defend2_2" if Relic 1 was the one captured.
-			BuildObject("svhraz", 2, "spawn_defend1_1");
-			BuildObject("svfigh", 2, "spawn_defend1_2");
+			BuildObject("svhraz", 2, "spawn_defend1_2");
+			BuildObject("svfigh", 2, "spawn_defend1_3");
 		end
 	end
 	
@@ -216,10 +224,10 @@ function Update()
 		M.GotTwo = true;
 		M.UpdateObjectives = true;
 		for i = 1, 4 do
-			if i < 2 then
-				M.Attackers[i] = BuildObject("svhraz", 2, "spawn_attacker" .. i);
+			if i <= 2 then
+				M.Attackers[i] = BuildObject("svhraz", 2, "spawn_attack" .. i);
 			else
-				M.Attackers[i] = BuildObject("svrckt", 2, "spawn_attacker" .. i);
+				M.Attackers[i] = BuildObject("svrckt", 2, "spawn_attack" .. i);
 			end
 			Attack(M.Attackers[i], M.Recycler, 1);
 		end
@@ -232,10 +240,10 @@ function Update()
 	end
 	
 	-- if GotTwo and not attack wave dead.
-	if M.GotTwo and not M.AttackSpawnDead then
+	if M.GotTwo and (not M.AttackSpawnDead) then
 		M.AttackSpawnDead = true;
 		for i = 1, 4 do
-			if IsAlive(M.Attackers[i]) and GetTeamNum(M.Attackers[i]) == 2 then
+			if (IsAlive(M.Attackers[i])) and (GetTeamNum(M.Attackers[i]) == 2) then
 				M.AttackSpawnDead = false -- Nope!
 			end
 		end
