@@ -2,7 +2,7 @@
 --Contributors:
     --Jarle Trollebø(Mario)
     --General BlackDragon
-
+    --The Deus Ex
 
 local mission = require('cmisnlib');
 local globals = {};
@@ -20,19 +20,6 @@ local function enemiesInRange(dist,place)
     return enemies_nearby;
 end
 
-local function createWave(odf,path_list,follow)
-    local ret = {};
-    print("Spawning:" .. odf);
-    for i,v in pairs(path_list) do
-        local h = BuildObject(odf,2,v);
-        if(follow) then
-            Goto(h,follow);
-        end
-        table.insert(ret,h);
-    end
-    return unpack(ret);
-end
-
 local function spawnAtPath(odf,team,path)
     local handles = {};
     local current = GetPosition(path);
@@ -45,6 +32,19 @@ local function spawnAtPath(odf,team,path)
         current = GetPosition(path,c);
     end
     return handles;
+end
+
+local function createWave(odf,path_list,follow)
+    local ret = {};
+    print("Spawning:" .. odf);
+    for i,v in pairs(path_list) do
+        local h = BuildObject(odf,2,v);
+        if(follow) then
+            Goto(h,follow);
+        end
+        table.insert(ret,h);
+    end
+    return unpack(ret);
 end
 
 --Define all objectives
@@ -77,6 +77,7 @@ local DelayedSpawn = mission.Objective:define("delayed_spawn"):init({
     update = function(self,dtime)
         if((not self.wait_done) and self.wait_timer <= 0) then
             createWave("svfigh",{"spawn_n1","spawn_n2"},"north_path");
+			createWave("svtank",{"spawn_n3"},"north_path"); 
             self.wait_done = true;
             self:success();
         end
@@ -116,6 +117,7 @@ local getScrap = mission.Objective:define('get_scrap'):init({
 }):setListeners({
     start = function(self)
         AddObjective(self.otf,"white");
+		createWave("svtank",{"spawn_w1"},"west_path"); 
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path");
     end,
     update = function(self)
@@ -154,6 +156,7 @@ local makeOffensive = mission.Objective:define("make_offensive"):init({
     start = function(self)
         AddObjective(self.otf,"white");
         self.tracker = mission.UnitTracker:new();
+		createWave("svtank",{"spawn_w1"},"west_path"); 
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path");
     end,
     update = function(self)
@@ -183,6 +186,7 @@ local makeDefensive = mission.Objective:define("make_defensive"):init({
 }):setListeners({
     start = function(self)
         AddObjective(self.otf,"white");
+		createWave("svtank",{"spawn_w1"},"west_path"); 
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path"); -- Original Script did nothing with these 2. Possibly sent to guard Scavs instead? -GBD
         createWave("svscav",{"spawn_w2","spawn_w3"});
 		--Not really creating a wave, but spawns sbspow
@@ -207,10 +211,12 @@ local destorySoviet = mission.Objective:define("destroy_soviet"):init({
 }):setListeners({
     start = function()
         createWave("svfigh",{"spawn_e1","spawn_e2"},"east_path");
+		createWave("svtank",{"spawn_e3"},"east_path");
     end,
     update = function(self,dtime)
         if((not self.wait_done) and self.wait_timer <= 0) then
             AddObjective(self.otf,"white");
+            globals.keepGTsAtFullHealth = false;
             SetObjectiveOn(globals.sb_turr_1);
             SetObjectiveOn(globals.sb_turr_2);
             SetObjectiveOn(GetRecyclerHandle(2));
@@ -250,9 +256,9 @@ local nsdfAttack = mission.Objective:define("nsdf_attack"):init({
 		AudioMessage("bdmisn2203.wav");
         AddObjective(self.otf,"white");
         local a,b,camTarget = createWave("avwalk",{"spawn_avwalk1","spawn_avwalk2","spawn_avwalk3"},"nsdf_path");
-        local c = createWave("avtank",{"spawn_tank1"},"nsdf_path");
-        local d = createWave("avtank",{"spawn_w1"},"west_path");
-        local f = createWave("svfigh",{"spawn_n4","spawn_n5"},"north_path");
+        local c = createWave("avtank",{"spawn_avtank1","spawn_avtank2","spawn_avtank3"},"nsdf_path");
+        local d = createWave("avtank",{"spawn_w1","spawn_w2","spawn_w3"},"west_path");
+        local f = createWave("svtank",{"spawn_n4","spawn_n5"},"north_path");
         self.camTarget = camTarget;
         self.camOn = CameraReady();
         self.targets = {
@@ -348,7 +354,7 @@ local TooFarFromRecy = mission.Objective:define("toofarfrom_recy"):setListeners(
         FailMission(GetTime() + 5, "bdmisn22l1.des");
     end,
     finish = function(self)
-        globals.keepGTsAtFullHealth = false;    
+        globals.keepGTsAtFullHealth = false;
     end
 });
 
@@ -397,7 +403,7 @@ local checkCommand = mission.Objective:define("checkCommand"):init({
     start = function(self)
         SetObjectiveOn(globals.nav[1]);
         AddObjective(self.otf,"white");
-        self.command = GetHandle("command");
+        self.command = GetHandle("sbhqcp0_i76building");
         print(self.otf,self.command);
     end,
     update = function(self)
@@ -455,11 +461,14 @@ local destroySolar = mission.Objective:define("destorySolar"):init({
                 self.handles[i] = GetHandle(v);
             end
             self.power5_8init = true;
-        elseif(self.power5_8init) then
-            self.t1 = self.t1 - dtime;
-            if(checkDead(self.handles) and self.t1 <= 0) then
+        elseif(checkDead(self.handles)) then
+            if(self.t1 <= 0) then
                 self:success();
+            elseif(self.t1 == 3) then
+                SetObjectiveOff(globals.nav[3]);
+                UpdateObjective(self.otf2,"green");
             end
+            self.t1 = self.t1 - dtime;
         end
     end,
     save = function(self)
@@ -469,8 +478,6 @@ local destroySolar = mission.Objective:define("destorySolar"):init({
         self.handles,self.power1_4,self.power5_8init,self.t1 = ...;
     end,
     success = function(self)
-        SetObjectiveOff(globals.nav[3]);
-        UpdateObjective(self.otf2,"green");
         mission.Objective:Start(self.next);
     end
 });
@@ -502,10 +509,9 @@ local destroyComm = mission.Objective:define("destroyComm"):init({
         Goto(BuildObject("avtank",2,"spawn_tank1"),globals.comm);
         Goto(BuildObject("avtank",2,"spawn_tank2"),globals.comm);
         Goto(BuildObject("avtank",2,"spawn_tank3"),globals.comm);
-        
         for i,v in pairs(spawnAtPath("bvtank",1,"extra_tanks")) do
             Follow(v,GetPlayerHandle(),0);
-        end   
+        end
     end,
     update = function(self)
         if(self.camOn) then
@@ -629,10 +635,12 @@ local intermediate = mission.Objective:define("intermediate"):init({
         SetObjectiveOn(self.nav);
         --initial wave
         BuildObject("svrecy",2,"spawn_svrecy");
+		BuildObject("svmuf",2,"spawn_svmuf");
         globals.sb_turr_1 = BuildObject("sbtowe",2,"spawn_sbtowe1");
         globals.sb_turr_2 = BuildObject("sbtowe",2,"spawn_sbtowe2");
         --Start wave after a delay?
         createWave("svfigh",{"spawn_n1","spawn_n2","spawn_n3"},"north_path");
+		createWave("svtank",{"spawn_n4","spawn_n5"},"north_path"); 
         local instance = deployRecy:start();
         local instance2 = loseRecy:start();
         local instance3 = TooFarFromRecy:start();
@@ -646,13 +654,13 @@ function Start()
         GetHandle("nav3"),
         GetHandle("nav4"),
     };
-    globals.cafe = GetHandle("research");
-    globals.comm = GetHandle("commtower");
-    globals.relic = GetHandle("relic");
+    globals.cafe = GetHandle("sbcafe1_i76building");
+    globals.comm = GetHandle("sbcomm1_commtower");
+    globals.relic = GetHandle("obdata3_artifact");
     SetMaxHealth(globals.relic,0);
     globals.patrolUnits = {
-        GetHandle("patrol3_1"),
-        GetHandle("patrol3_2")
+        GetHandle("svfigh4_wingman"),
+        GetHandle("svfigh5_wingman")
     };
         
     for i,v in pairs(globals.nav) do

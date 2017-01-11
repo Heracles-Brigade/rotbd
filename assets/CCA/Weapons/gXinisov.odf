@@ -1,0 +1,12 @@
+[WeaponClass]
+classLabel = "machinegun"
+ordName = "bullet2"
+wpnName = "Chaingun"
+fireSound = "gmsov00.wav"
+wpnReticle = "gminigun"
+wpnPriority = 0
+wpnCategory = "CANN"
+
+[CannonClass]
+shotDelay = 1.2 //0.30 // 4x refire rate for Mammoth.
+shotAlternate = true // Mammothy.

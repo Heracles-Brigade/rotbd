@@ -1,0 +1,89 @@
+[GameObjectClass] // Mammoth Tank. Should have 4 Cannon Hardpoints.
+baseName = "cvhtnk" //"svtank"
+classLabel = "wingman"
+scrapValue = 10
+scrapCost = 20
+buildTime = 30.0
+maxHealth = 10000
+maxAmmo = 3000
+unitName = "Tank"
+aiName = "TankFriend"
+aiName2 = "TankEnemy"
+heatSignature = 2.0
+imageSignature = 6.0
+radarSignature = 0.8
+
+explosionName = "xbmbxpl" // Mammoth dies with a Quakeblast. :)
+
+// Original RotBD had 3 weapon groups: Group 1: 4 AT Stab, Group 2: 4 Chaingun, Group 3: Thumper.
+weaponHard1 = "GC1"
+weaponName1 = "gXtstab"
+weaponHard2 = "GC2"
+weaponName2 = "gXtstab"
+weaponHard3 = "GC1"
+weaponName3 = "gXtstab"
+weaponHard4 = "GC2"
+weaponName4 = "gXtstab"
+weaponHard5 = "GS1"
+weaponName5 = "gquake"
+weaponMask = 01111
+
+// 4 more Cannon slots, same HPs, but different group.
+// Lua switches via GiveWeapon to these when you press the "G" key, mimicing TRO's 
+// function but using it for different means. (Maybe use deploy key "K" instead?)
+customClass1 = "extraWeapons"
+[ExtraWeapons_1]
+weaponName1 = "gXinisov"
+weaponName2 = "gXinisov"
+weaponName3 = "gXinisov"
+weaponName4 = "gXinisov"
+
+[CraftClass]
+rangeScan = 400.0f
+periodScan = 5.0f
+velocJam = 2.5f
+
+selectWaitMsg = "svtankv0.wav"
+selectAttackMsg = "svtankvj.wav"
+selectFollowMsg = "svtankvn.wav"
+selectGoMsg = "svtankvm.wav"
+selectOtherMsg = "svtankvp.wav"
+
+goMsg = "svtankv1.wav"
+goObjectMsg = "svtankv1.wav"
+attackMsg = "svtankv2.wav"
+followMsg = "svtankvk.wav"
+followMeMsg = "svtankv4.wav"
+repairMsg = "svtankv8.wav"
+reloadMsg = "svtankv9.wav"
+rescueMsg = "svtankvc.wav"
+recycleMsg = "svtankvd.wav"
+otherMsg = "svtankvh.wav"
+
+user1Msg = "svtankva.wav"
+killedMsg = "svtankv3.wav"
+diedMsg = "sbetty3.wav"
+
+[WingmanClass]
+setAltitude = 1.5
+accelDragStop = 4.0
+accelDragFull = 0.5
+alphaTrack = 20.0
+alphaDamp = 5.0
+pitchPitch = 0.1
+pitchThrust = 0.1
+rollStrafe = 0.1
+rollSteer = 0.1
+
+velocForward = 20.0
+velocReverse = 15.0
+velocStrafe = 15.0
+accelThrust = 5.0
+accelBrake = 50.0
+omegaSpin = 0.75
+omegaTurn = 0.3
+alphaSteer = 1.5
+accelJump = 5.0
+
+soundThrust = "svtanke0.wav"
+soundTurbo = "svtanke3.wav"
