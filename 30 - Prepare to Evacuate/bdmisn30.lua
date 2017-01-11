@@ -1,4 +1,8 @@
--- Battlezone: Rise of the Black Dogs, Black Dog Mission 30 written by General BlackDragon.
+-- Battlezone: Rise of the Black Dogs, Black Dog Mission 30
+
+--Contributors:
+    --Jarle Trollebø(Mario)
+    --General BlackDragon
 
 if not SetLabel then SetLabel = SettLabel end -- BZ1.5 backwards compatability.
 
@@ -52,6 +56,15 @@ Transport = { },
 Aud1 = 0
 }
 
+local function checkAnyDead(handles)
+    for i,v in pairs(handles) do
+        if(not IsAlive(v)) then
+            return true;
+        end
+    end
+    return false;
+end
+
 function Save()
     return 
 		M
@@ -76,6 +89,7 @@ function AddObject(h)
 	
 	-- NEW: Detect actual LPad construction?
 	if not M.LPadBuilt and IsOdf(h, "ablpad") then
+		M.LPad = h;
 		M.LPadBuilt = true;
 		CameraReady();
 		M.CameraTime = GetTime() + 10.0;
@@ -287,7 +301,7 @@ function Update()
 	end
 	
 	-- Lose a Transport
-	if not M.MissionOver and M.LPadBuilt and (not IsAlive(M.Transport[1]) or not IsAlive(M.Transport[2]) or not IsAlive(M.Transport[3])) then
+	if M.FuryCinDone and (not M.MissionOver) and M.LPadBuilt and checkAnyDead(M.Transport) then
 		FailMission(GetTime()+5.0, "bdmisn30l3.des");
 		M.TransportDead = true;
 		M.MissionOver = true;

@@ -429,6 +429,7 @@ local pickupSurvivors = mission.Objective:define("pickupSurvivors"):setListeners
             RemoveObject(v);
         end    
         UpdateObjective("bdmisn2601.otf","green");
+        AudioMessage("bdmisn2402.wav");
         mission.Objective:Start("escortAPCs");
     end,
     fail = function(self,v)
@@ -479,6 +480,7 @@ miss25setup = function()
     local comm = GetHandle("commtower");
     SetMaxHealth(comm,GetMaxHealth(comm)*2.5);
     SetCurHealth(comm,GetMaxHealth(comm));
+    AudioMessage("bdmisn2501.wav");
     --Set units to patrol
     for i = 1, 13 do
         Patrol(GetHandle("patrol_" .. i), "patrol_path");

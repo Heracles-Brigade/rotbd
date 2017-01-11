@@ -1,4 +1,8 @@
--- Battlezone: Rise of the Black Dogs, Black Dog Mission 27 written by General BlackDragon.
+-- Battlezone: Rise of the Black Dogs, Black Dog Mission 27
+--Contributors:
+    --Jarle Trollebø(Mario)
+    --General BlackDragon
+
 
 local M = {
 -- Bools
