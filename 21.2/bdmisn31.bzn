@@ -19,7 +19,7 @@ pos [1] =
   x [1] =
 1137.3
   y [1] =
-3.04228
+3.05809
   z [1] =
 102268
 team [1] =
@@ -30,27 +30,27 @@ isUser [1] =
 obj_addr = 00B01D68
 transform [1] =
   right_x [1] =
-0.688242
+0.782375
   right_y [1] =
-0.00965181
+0.00828588
   right_z [1] =
--0.725423
+-0.622759
   up_x [1] =
-6.65429e-009
+1.32758e-007
   up_y [1] =
 0.99992
   up_z [1] =
-0.013304
+0.0133042
   front_x [1] =
-0.725487
+0.622814
   front_y [1] =
--0.00915632
+-0.0104089
   front_z [1] =
-0.688181
+0.782306
   posit_x [1] =
 1137.3
   posit_y [1] =
-3.04228
+3.05809
   posit_z [1] =
 102268
 abandoned [1] =
@@ -59,9 +59,9 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-1137.04
+1137.08
   y [1] =
-4.40964
+4.42592
   z [1] =
 102268
 euler =
@@ -70,34 +70,34 @@ euler =
  mass_inv [1] =
 0.000666667
  v_mag [1] =
-0.00637557
+0.00638013
  v_mag_inv [1] =
-156.849
+156.737
  I [1] =
 1500
  k_i [1] =
 1
  v [1] =
   x [1] =
-4.32843e-010
+-2.29974e-010
   y [1] =
--0.000534442
+-0.00046983
   z [1] =
-0.00635313
+0.00636281
  omega [1] =
   x [1] =
--4.09298e-009
+1.46953e-006
   y [1] =
 0
   z [1] =
--4.25228e-008
+1.66448e-008
  Accel [1] =
   x [1] =
-2.4805e-009
+-6.84863e-009
   y [1] =
-0.000756869
+0.000354067
   z [1] =
--0.00616035
+-0.00670946
 seqNo [1] =
 105
 name = 
@@ -2842,11 +2842,11 @@ transform [1] =
   right_x [1] =
 0.998415
   right_y [1] =
--0.000863455
+-0.000863461
   right_z [1] =
 -0.0563497
   up_x [1] =
-0.000864829
+0.000864835
   up_y [1] =
 1
   up_z [1] =
@@ -2854,7 +2854,7 @@ transform [1] =
   front_x [1] =
 0.0563499
   front_y [1] =
--4.87328e-005
+-4.87332e-005
   front_z [1] =
 0.99842
   posit_x [1] =
@@ -4847,7 +4847,7 @@ priority [1] =
 what = 03000000
 who [1] =
 0
-where = 0BD28800
+where = 0BF465A8
 param [1] =
 0
 aiProcess [1] =
@@ -4976,7 +4976,7 @@ priority [1] =
 what = 03000000
 who [1] =
 0
-where = 0BD28800
+where = 0BF465A8
 param [1] =
 0
 aiProcess [1] =
@@ -5105,7 +5105,7 @@ priority [1] =
 what = 03000000
 who [1] =
 0
-where = 0BD283C8
+where = 0BF464E0
 param [1] =
 0
 aiProcess [1] =
@@ -5234,7 +5234,7 @@ priority [1] =
 what = 03000000
 who [1] =
 0
-where = 0BD283C8
+where = 0BF464E0
 param [1] =
 0
 aiProcess [1] =
@@ -5363,7 +5363,7 @@ priority [1] =
 what = 03000000
 who [1] =
 0
-where = 0BD28850
+where = 0BF46378
 param [1] =
 0
 aiProcess [1] =
@@ -5492,7 +5492,7 @@ priority [1] =
 what = 03000000
 who [1] =
 0
-where = 0BD28850
+where = 0BF46378
 param [1] =
 0
 aiProcess [1] =
@@ -7968,7 +7968,7 @@ transform [1] =
   front_y [1] =
 0
   front_z [1] =
-1
+1.00001
   posit_x [1] =
 213.333
   posit_y [1] =
@@ -7979,11 +7979,11 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-188.608
+213.333
   y [1] =
-1.6
+2.06663
   z [1] =
-102259
+102245
 euler =
  mass [1] =
 0
@@ -8095,7 +8095,7 @@ transform [1] =
   front_y [1] =
 0
   front_z [1] =
-1
+1.00001
   posit_x [1] =
 995.164
   posit_y [1] =
@@ -8106,11 +8106,11 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-982.939
+995.164
   y [1] =
 0
   z [1] =
-101339
+101313
 euler =
  mass [1] =
 0
@@ -8187,16 +8187,16 @@ curPilot [1] =
 perceivedTeam [1] =
 0
 name = LuaMission
-sObject = 0B844FA0
+sObject = 02C9EDE8
 [AiMission]
 [AOIs]
 size [1] =
 0
 [AiPaths]
 count [1] =
-49
+50
 [AiPath]
-old_ptr = 0088d20b
+old_ptr = a865f40b
 size [1] =
 8
 label = patrol_1
@@ -8261,7 +8261,7 @@ points [14] =
 102111
 pathType = 02000000
 [AiPath]
-old_ptr = c883d20b
+old_ptr = e064f40b
 size [1] =
 8
 label = patrol_2
@@ -8342,7 +8342,7 @@ points [18] =
 101788
 pathType = 02000000
 [AiPath]
-old_ptr = 5088d20b
+old_ptr = 7863f40b
 size [1] =
 8
 label = patrol_3
@@ -8471,7 +8471,7 @@ points [30] =
 101563
 pathType = 02000000
 [AiPath]
-old_ptr = a088d20b
+old_ptr = 6864f40b
 size [1] =
 11
 label = spawn_tank1
@@ -8484,7 +8484,7 @@ points [1] =
 101219
 pathType = 00000000
 [AiPath]
-old_ptr = 7888d20b
+old_ptr = 3862f40b
 size [1] =
 11
 label = spawn_tank2
@@ -8497,7 +8497,7 @@ points [1] =
 101207
 pathType = 00000000
 [AiPath]
-old_ptr = 7086d20b
+old_ptr = 8065f40b
 size [1] =
 11
 label = spawn_tank3
@@ -8510,7 +8510,7 @@ points [1] =
 101195
 pathType = 00000000
 [AiPath]
-old_ptr = 1884d20b
+old_ptr = e861f40b
 size [1] =
 9
 label = spawn_apc
@@ -8523,7 +8523,7 @@ points [1] =
 101187
 pathType = 00000000
 [AiPath]
-old_ptr = 9084d20b
+old_ptr = 2061f40b
 size [1] =
 9
 label = spawn_tug
@@ -8536,7 +8536,7 @@ points [1] =
 101175
 pathType = 00000000
 [AiPath]
-old_ptr = 8887d20b
+old_ptr = d065f40b
 size [1] =
 14
 label = bzn64path_0009
@@ -8549,7 +8549,7 @@ points [1] =
 101752
 pathType = 00000000
 [AiPath]
-old_ptr = 2888d20b
+old_ptr = 9064f40b
 size [1] =
 11
 label = opening_cin
@@ -8586,7 +8586,7 @@ points [7] =
 101269
 pathType = 00000000
 [AiPath]
-old_ptr = b884d20b
+old_ptr = 1062f40b
 size [1] =
 10
 label = convoy_cin
@@ -8623,7 +8623,7 @@ points [7] =
 101240
 pathType = 00000000
 [AiPath]
-old_ptr = 0885d20b
+old_ptr = 1864f40b
 size [1] =
 14
 label = bzn64path_000D
@@ -8636,7 +8636,7 @@ points [1] =
 101212
 pathType = 00000000
 [AiPath]
-old_ptr = 5885d20b
+old_ptr = 9861f40b
 size [1] =
 14
 label = bzn64path_000E
@@ -8649,7 +8649,7 @@ points [1] =
 101205
 pathType = 00000000
 [AiPath]
-old_ptr = 2086d20b
+old_ptr = 4064f40b
 size [1] =
 14
 label = bzn64path_0010
@@ -8662,7 +8662,7 @@ points [1] =
 101158
 pathType = 00000000
 [AiPath]
-old_ptr = 8085d20b
+old_ptr = 6062f40b
 size [1] =
 14
 label = bzn64path_0011
@@ -8675,7 +8675,7 @@ points [1] =
 101212
 pathType = 00000000
 [AiPath]
-old_ptr = 1087d20b
+old_ptr = 7061f40b
 size [1] =
 13
 label = spawn_svfigh1
@@ -8688,7 +8688,7 @@ points [1] =
 101131
 pathType = 00000000
 [AiPath]
-old_ptr = a885d20b
+old_ptr = d862f40b
 size [1] =
 13
 label = spawn_svfigh2
@@ -8701,7 +8701,7 @@ points [1] =
 101131
 pathType = 00000000
 [AiPath]
-old_ptr = b087d20b
+old_ptr = 0865f40b
 size [1] =
 13
 label = spawn_svrckt1
@@ -8714,7 +8714,7 @@ points [1] =
 101131
 pathType = 00000000
 [AiPath]
-old_ptr = d085d20b
+old_ptr = 4861f40b
 size [1] =
 13
 label = spawn_svrckt2
@@ -8727,7 +8727,7 @@ points [1] =
 101128
 pathType = 00000000
 [AiPath]
-old_ptr = f885d20b
+old_ptr = b864f40b
 size [1] =
 12
 label = spawn_svhraz
@@ -8740,7 +8740,7 @@ points [1] =
 101128
 pathType = 00000000
 [AiPath]
-old_ptr = c086d20b
+old_ptr = a063f40b
 size [1] =
 14
 label = bzn64path_0018
@@ -8753,7 +8753,7 @@ points [1] =
 102083
 pathType = 00000000
 [AiPath]
-old_ptr = 9886d20b
+old_ptr = f865f40b
 size [1] =
 13
 label = spawn_sbtowe1
@@ -8766,7 +8766,7 @@ points [1] =
 102091
 pathType = 00000000
 [AiPath]
-old_ptr = e886d20b
+old_ptr = b062f40b
 size [1] =
 13
 label = spawn_sbtowe2
@@ -8779,7 +8779,7 @@ points [1] =
 102131
 pathType = 00000000
 [AiPath]
-old_ptr = d887d20b
+old_ptr = 8862f40b
 size [1] =
 12
 label = spawn_svrecy
@@ -8792,7 +8792,7 @@ points [1] =
 102227
 pathType = 00000000
 [AiPath]
-old_ptr = 3887d20b
+old_ptr = 0063f40b
 size [1] =
 8
 label = spawn_w1
@@ -8805,7 +8805,7 @@ points [1] =
 101963
 pathType = 00000000
 [AiPath]
-old_ptr = d08ad20b
+old_ptr = f063f40b
 size [1] =
 8
 label = spawn_n1
@@ -8818,7 +8818,7 @@ points [1] =
 102387
 pathType = 00000000
 [AiPath]
-old_ptr = 708bd20b
+old_ptr = c061f40b
 size [1] =
 8
 label = spawn_n2
@@ -8831,7 +8831,7 @@ points [1] =
 102384
 pathType = 00000000
 [AiPath]
-old_ptr = b08cd20b
+old_ptr = 3065f40b
 size [1] =
 8
 label = spawn_n3
@@ -8844,7 +8844,7 @@ points [1] =
 102384
 pathType = 00000000
 [AiPath]
-old_ptr = 808ad20b
+old_ptr = 5865f40b
 size [1] =
 8
 label = spawn_n4
@@ -8857,7 +8857,7 @@ points [1] =
 102384
 pathType = 00000000
 [AiPath]
-old_ptr = 9089d20b
+old_ptr = 2863f40b
 size [1] =
 8
 label = spawn_n5
@@ -8870,7 +8870,7 @@ points [1] =
 102384
 pathType = 00000000
 [AiPath]
-old_ptr = 008dd20b
+old_ptr = 5063f40b
 size [1] =
 8
 label = spawn_w2
@@ -8883,7 +8883,7 @@ points [1] =
 102050
 pathType = 00000000
 [AiPath]
-old_ptr = 508dd20b
+old_ptr = c863f40b
 size [1] =
 8
 label = spawn_w3
@@ -8896,7 +8896,7 @@ points [1] =
 102024
 pathType = 00000000
 [AiPath]
-old_ptr = 108cd20b
+old_ptr = 2066f40b
 size [1] =
 8
 label = spawn_w4
@@ -8909,7 +8909,7 @@ points [1] =
 101912
 pathType = 00000000
 [AiPath]
-old_ptr = 208bd20b
+old_ptr = 3867f40b
 size [1] =
 8
 label = spawn_w5
@@ -8922,7 +8922,7 @@ points [1] =
 101882
 pathType = 00000000
 [AiPath]
-old_ptr = b889d20b
+old_ptr = 7066f40b
 size [1] =
 13
 label = spawn_sbspow1
@@ -8935,7 +8935,7 @@ points [1] =
 102098
 pathType = 00000000
 [AiPath]
-old_ptr = e089d20b
+old_ptr = 8867f40b
 size [1] =
 13
 label = spawn_sbspow2
@@ -8948,7 +8948,7 @@ points [1] =
 102144
 pathType = 00000000
 [AiPath]
-old_ptr = 788dd20b
+old_ptr = 9866f40b
 size [1] =
 8
 label = spawn_e1
@@ -8961,7 +8961,7 @@ points [1] =
 101901
 pathType = 00000000
 [AiPath]
-old_ptr = a08dd20b
+old_ptr = 1067f40b
 size [1] =
 8
 label = spawn_e2
@@ -8974,7 +8974,7 @@ points [1] =
 101888
 pathType = 00000000
 [AiPath]
-old_ptr = c888d20b
+old_ptr = 4866f40b
 size [1] =
 8
 label = spawn_e3
@@ -8987,7 +8987,7 @@ points [1] =
 101861
 pathType = 00000000
 [AiPath]
-old_ptr = 988bd20b
+old_ptr = b067f40b
 size [1] =
 13
 label = spawn_avwalk1
@@ -9000,7 +9000,7 @@ points [1] =
 101981
 pathType = 00000000
 [AiPath]
-old_ptr = 488bd20b
+old_ptr = c066f40b
 size [1] =
 13
 label = spawn_avwalk2
@@ -9013,7 +9013,7 @@ points [1] =
 102000
 pathType = 00000000
 [AiPath]
-old_ptr = 308ad20b
+old_ptr = e866f40b
 size [1] =
 13
 label = spawn_avwalk3
@@ -9026,7 +9026,7 @@ points [1] =
 101960
 pathType = 00000000
 [AiPath]
-old_ptr = 608cd20b
+old_ptr = 6067f40b
 size [1] =
 11
 label = spawn_tank1
@@ -9039,7 +9039,7 @@ points [1] =
 101973
 pathType = 00000000
 [AiPath]
-old_ptr = c08bd20b
+old_ptr = f04af40b
 size [1] =
 11
 label = camera_nsdf
@@ -9076,7 +9076,7 @@ points [7] =
 101373
 pathType = 00000000
 [AiPath]
-old_ptr = f88ad20b
+old_ptr = 904bf40b
 size [1] =
 9
 label = west_path
@@ -9109,7 +9109,7 @@ points [6] =
 101369
 pathType = 00000000
 [AiPath]
-old_ptr = e88bd20b
+old_ptr = 2048f40b
 size [1] =
 10
 label = north_path
@@ -9138,7 +9138,7 @@ points [5] =
 101352
 pathType = 00000000
 [AiPath]
-old_ptr = a88ad20b
+old_ptr = b84bf40b
 size [1] =
 9
 label = east_path
@@ -9159,7 +9159,7 @@ points [3] =
 101364
 pathType = 00000000
 [AiPath]
-old_ptr = f088d20b
+old_ptr = 6049f40b
 size [1] =
 9
 label = nsdf_path
@@ -9188,7 +9188,7 @@ points [5] =
 101337
 pathType = 00000000
 [AiPath]
-old_ptr = 388cd20b
+old_ptr = 4848f40b
 size [1] =
 10
 label = recy_spawn
@@ -9199,4 +9199,21 @@ points [1] =
 1180.17
   z [1] =
 100700
+pathType = 00000000
+[AiPath]
+old_ptr = 1049f40b
+size [1] =
+11
+label = extra_tanks
+pointCount [1] =
+2
+points [2] =
+  x [1] =
+1193.49
+  z [1] =
+102394
+  x [1] =
+1232.85
+  z [1] =
+102371
 pathType = 00000000

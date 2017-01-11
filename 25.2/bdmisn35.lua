@@ -1,4 +1,4 @@
---Combination of Grab The Scientists and Preparations
+--Combination of The Last Stand and Evacuate Venus
 --Contributors:
     --Jarle Trollebø(Mario)
     --General BlackDragon

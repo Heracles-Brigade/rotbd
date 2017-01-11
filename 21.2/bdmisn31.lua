@@ -33,6 +33,20 @@ local function createWave(odf,path_list,follow)
     return unpack(ret);
 end
 
+local function spawnAtPath(odf,team,path)
+    local handles = {};
+    local current = GetPosition(path);
+    local prev = nil;
+    local c = 0;
+    while current ~= prev do
+        c = c + 1;
+        table.insert(handles,BuildObject(odf,team,current));
+        prev = current;
+        current = GetPosition(path,c);
+    end
+    return handles;
+end
+
 --Define all objectives
 local deployRecy = mission.Objective:define("deploy_recycler"):init({
     next = 'make_scavs',
@@ -481,6 +495,11 @@ local destroyComm = mission.Objective:define("destroyComm"):init({
         Goto(BuildObject("avtank",2,"spawn_tank1"),globals.comm);
         Goto(BuildObject("avtank",2,"spawn_tank2"),globals.comm);
         Goto(BuildObject("avtank",2,"spawn_tank3"),globals.comm);
+        
+        for i,v in pairs(spawnAtPath("bvtank",1,"extra_tanks")) do
+            Follow(v,GetPlayerHandle(),0);
+        end
+
         
     end,
     update = function(self)
