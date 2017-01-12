@@ -1,0 +1,75 @@
+[GameObjectClass]
+baseName = "avapc"
+classLabel = "tug"
+collisionRadius = 7.0
+scrapValue = 4
+scrapCost = 5
+buildTime = 10.0
+maxHealth = 5000
+maxAmmo = 0
+unitName = "APC"
+aiName = "APCFriend"
+aiName2 = "APCEnemy"
+heatSignature = 0.2
+imageSignature = 3.5
+radarSignature = 0.1
+
+[CraftClass]
+rangeScan = 200.0
+periodScan = 0.0
+velocJam = 0.0
+
+selectWaitMsg = "avapcva.wav"
+selectDropoffMsg = "avapcvf.wav"
+selectPickupMsg = "avapcvg.wav"
+selectOtherMsg = "avapcvj.wav"
+
+goMsg = "avapcv0.wav"
+attackMsg = "avapcv9.wav"
+followMsg = "avapcvh.wav"
+followMeMsg = "avapcv3.wav"
+repairMsg = "avapcv4.wav"
+recycleMsg = "avapcv6.wav"
+rescueMsg = "avapcv5.wav"
+otherMsg = "avapcvh.wav"
+
+deployedMsg = "avapcv2.wav"
+diedMsg = "abetty3.wav"
+
+[HoverCraftClass]
+setAltitude = 1.5
+accelDragStop = 4.0
+accelDragFull = 1.0
+alphaTrack = 10.0
+alphaDamp = 3.0
+pitchPitch = 0.1
+pitchThrust = 0.05
+rollStrafe = 0.1
+rollSteer = 0.1
+
+velocForward = 12.0
+velocReverse = 12.0
+velocStrafe = 12.0
+accelThrust = 50.0
+accelBrake = 50.0
+omegaSpin = 2.0
+omegaTurn = 1.0
+alphaSteer = 5.0
+accelJump = 0.0
+
+flameParent1="bap11nfl"
+flameOffset1="-0.15 -1.0 -1.0"
+flameAngles1="1.9 0.0 0.0"
+flameParent2="bap11nfr"
+flameOffset2="0.15 -1.0 -1.0"
+flameAngles2="1.9 0.0 0.0"
+
+soundThrust = "avapce1.wav"
+soundSteer = "avapce5.wav"
+soundDeploy = "avapce2.wav"
+soundUndeploy = "avapce0.wav"
+
+[APCClass]
+soldierType = "bssold"
+soldierCount = 5
+timeDeploy = 2.0

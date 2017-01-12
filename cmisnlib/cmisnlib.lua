@@ -5,6 +5,9 @@ local ObjectiveManager;
 local UnitTracker;
 local UnitTrackerManager;
 local MissionManager;
+local TaskSequencer;
+local TaskManager;
+
 
 local _GetOdf = GetOdf;
 
@@ -18,6 +21,50 @@ function unpack(t)
         return old_unpack(t,1,t.n);
     end
     return old_unpack(t);
+end
+
+local function enemiesInRange(dist,place)
+    local enemies_nearby = false;
+    for v in ObjectsInRange(300,globals.nav[4]) do
+        if(IsCraft(v) and GetTeamNum(v) == 2) then
+            enemies_nearby = true;
+        end
+    end
+    return enemies_nearby;
+end
+
+local function spawnAtPath(odf,team,path)
+    local handles = {};
+    local current = GetPosition(path);
+    local prev = nil;
+    local c = 0;
+    while current ~= prev do
+        c = c + 1;
+        table.insert(handles,BuildObject(odf,team,current));
+        prev = current;
+        current = GetPosition(path,c);
+    end
+    return handles;
+end
+--Returns true of all of the handles given are dead
+--areAnyAlive = not areAllDead
+local function areAllDead(handles)
+    for i,v in pairs(handles) do
+        if(IsAlive(v)) then
+            return false;
+        end
+    end
+    return true;
+end
+--Returns true of any of the handles given are dead
+--areAllAlive = not areAnyDead
+local function areAnyDead(handles)
+    for i,v in pairs(handles) do
+        if(not IsAlive(v)) then
+            return true;
+        end
+    end
+    return false;
 end
 
 
@@ -65,6 +112,45 @@ end
 local function spawnInFormation2(formation,location,units,team,seperation)
     return spawnInFormation(formation,GetPosition(location,0),GetPosition(location,1) - GetPosition(location,0),units,team,seperation);
 end
+
+TaskSequencer = {
+    new = function(cls,handle)
+        self = setmetatable({},cls.mt);
+        self.tasks = {};
+        self.handle = handle;
+        return self;
+    end,
+    prototype = {
+        update = function(self,dtime)
+            if((#self.tasks > 0) and (GetCurrentCommand(self.handle) == AiCommand["NONE"])) then
+                local next = table.remove(self.tasks, 1);
+                if(next.type == 1) then
+                    SetCommand(self.handle,unpack(next.args));
+                elseif(next.type == 2) then
+                    _G[next.fname](self.handle,unpack(next.args));
+                end
+            end
+        end,
+        save = function(self)
+            return self.tasks;
+        end,
+        load = function(self,...)
+            self.tasks = ...;
+        end,
+        clear = function(self)
+            self.tasks = {};
+        end,
+        queue = function(self,...)
+            table.insert(self.tasks,{type=1,args={...}});
+        end,
+        queue2 = function(self,fname,...)
+            table.insert(self.tasks,{type=2,fname=fname,args={...}});
+        end
+    }
+}
+TaskSequencer.mt = {__index = TaskSequencer.prototype};
+setmetatable(TaskSequencer,{__call = TaskSequencer.new});
+
 
 UnitTracker = {
     new = function(cls)
@@ -424,6 +510,43 @@ Objective.mt = {
 };
 setmetatable(Objective,Objective.mt);
 
+TaskManager = {
+    sequencers = {},
+    Update = function(self,...)
+        for i,v in pairs(self.sequencers) do
+            if(IsValid(i)) then
+                v:update(...);
+            else
+                self.sequencers[i] = nil;
+            end
+        end
+    end,
+    DeleteObject = function(self,h)
+        --self.sequencers[h] = nil;
+    end,
+    Save = function(self,...)
+        local sdata = {};
+        for i,v in pairs(self.sequencers) do
+            sdata[i] = table.pack(v:save());
+        end
+        return sdata;
+    end,
+    sequencer = function(self,handle)
+        if(not self.sequencers[handle]) then
+            self.sequencers[handle] = TaskSequencer(handle);
+        end
+        return self.sequencers[handle];
+    end,
+    Load = function(self,data)
+        for i,v in pairs(data) do
+            local s = self:sequencer(i);
+            s:load(unpack(v));
+        end
+    end
+}
+
+
+
 ObjectiveManager = {
     objectives = {},
     getObjective = function(self,name)
@@ -481,6 +604,7 @@ ObjectiveManager = {
 
 MissionManager = {
     Update = function(self,...)
+        TaskManager:Update(...);
         ObjectiveManager:Update(...);
     end,
     AddObject = function(self,...)
@@ -491,14 +615,16 @@ MissionManager = {
         ObjectiveManager:CreateObject(...);
     end,
     DeleteObject = function(self,...)
+        TaskManager:DeleteObject(...)
         UnitTrackerManager:DeleteObject(...);
         ObjectiveManager:DeleteObject(...);
     end,
-    Save = function(self,...)
-        return ObjectiveManager:Save(...);
+    Save = function(self)
+        return {ObjectiveManager:Save(), TaskManager:Save()};
     end,
     Load = function(self,data)
-        ObjectiveManager:Load(data);
+        ObjectiveManager:Load(data[1]);
+        TaskManager:Load(data[2]);
     end
 }
 
@@ -514,5 +640,10 @@ return {
     objectives = ObjectiveManager.objectives,
     UnitTracker = UnitTracker,
     spawnInFormation = spawnInFormation,
-    spawnInFormation2 = spawnInFormation2
+    spawnInFormation2 = spawnInFormation2,
+    spawnAtPath = spawnAtPath,
+    enemiesInRange = enemiesInRange,
+    areAllDead = areAllDead,
+    areAnyDead = areAnyDead,
+    TaskManager = TaskManager
 }

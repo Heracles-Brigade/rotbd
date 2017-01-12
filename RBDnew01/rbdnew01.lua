@@ -10,6 +10,13 @@ local tracker = mission.UnitTracker:new();
 
 SetAIControl(2,false);
 
+function RemoveConvoy(...)
+    local h = {...};
+    for i,v in pairs(h) do
+        RemoveObject(v);
+    end
+end
+
 local function enemiesInRange(dist,place)
     local enemies_nearby = false;
     for v in ObjectsInRange(300,globals.nav[4]) do
@@ -415,7 +422,7 @@ local checkCommand = mission.Objective:define("checkCommand"):init({
         end
     end,
     load = function(self,...)
-        self.command = GetHandle("command");
+        self.command = GetHandle("sbhqcp0_i76building");
     end,
     success = function(self)
         SetObjectiveOff(globals.nav[1]);
@@ -432,8 +439,8 @@ local destroySolar = mission.Objective:define("destorySolar"):init({
     otf1 = 'bdmisn212.otf',
     otf2 = 'bdmisn213.otf',
     next = 'destroyComm',
-    target_l1 = {"power1_1","power1_2","power1_3","power1_4"},
-    target_l2 = {"power2_1","power2_2","power2_3","power2_4"},
+    target_l1 = {"sbspow1_powerplant","sbspow2_powerplant","sbspow3_powerplant","sbspow4_powerplant"},
+    target_l2 = {"sbspow7_powerplant","sbspow8_powerplant","sbspow5_powerplant","sbspow6_powerplant"},
     power1_4 = true,
     t1=3,
     power5_8init = false
@@ -497,15 +504,19 @@ local destroyComm = mission.Objective:define("destroyComm"):init({
         AddObjective(self.otf,"white");
         AddObjective(self.otf2,"white");
         self.camOn = CameraReady();
-        self.apc = BuildObject("avapc",2,"spawn_apc");
-        self.tug = BuildObject("avhaul",2,"spawn_tug");
-        SetMaxHealth(self.tug, 0); -- This is invincible.
-        SetMaxHealth(self.apc, 0); -- This is invincible.
-        SetPilotClass(self.tug, ""); -- This is invincible.
-        SetPilotClass(self.apc, ""); -- This is invincible.
-        Follow(self.apc,self.tug);
-        Pickup(self.tug,globals.relic);
-        print("Pickup",self.tug,globals.relic);
+        local apc = BuildObject("avapc",2,"spawn_apc");
+        local tug = BuildObject("avhaul",2,"spawn_tug");
+        SetMaxHealth(tug, 0); -- This is invincible.
+        SetMaxHealth(apc, 0); -- This is invincible.
+        SetPilotClass(tug, ""); -- This is invincible.
+        SetPilotClass(apc, ""); -- This is invincible.
+        Follow(apc,tug);
+        local tugTasks = mission.TaskManager:sequencer(tug);
+        tugTasks:queue2("Pickup",globals.relic);
+        tugTasks:queue2("Goto","spawn_svfigh1");
+        tugTasks:queue2("RemoveConvoy",apc,globals.relic);
+        Pickup(tug,globals.relic);
+        print("Pickup",tug,globals.relic);
         Goto(BuildObject("avtank",2,"spawn_tank1"),globals.comm);
         Goto(BuildObject("avtank",2,"spawn_tank2"),globals.comm);
         Goto(BuildObject("avtank",2,"spawn_tank3"),globals.comm);
@@ -519,23 +530,15 @@ local destroyComm = mission.Objective:define("destroyComm"):init({
                 self.camOn = not CameraFinish();
             end
         end
-        if((not self.gotRelic) and GetTug(globals.relic) == self.tug) then
-            Goto(self.tug,"spawn_svfigh1");
-            self.gotRelic = true;
-        elseif(IsValid(self.tug) and GetDistance(self.tug, "spawn_svfigh1") < 25.0) then
-            RemoveObject(globals.relic);
-            RemoveObject(self.tug);
-            RemoveObject(self.apc);
-        end
         if(not IsAlive(globals.comm)) then
             self:success();
         end
     end,
     save = function(self)
-        return self.camOn, self.apc, self.tug;
+        return self.camOn;
     end,
     load = function(self,...)
-        self.camOn, self.apc, self.tug = ...;
+        self.camOn = ...;
     end,
     success = function(self)
         UpdateObjective(self.otf,"green");
@@ -586,9 +589,9 @@ local intermediate = mission.Objective:define("intermediate"):init({
         ClearObjectives();
         --Only show if area is not cleared
         if(enemiesInRange(270,globals.nav[4])) then
+            self.enemiesAtStart = true;
             AddObjective("bdmisn311.otf","white");
         else
-            self.enemiesAtStart = true;
             AddObjective("bdmisn311b.otf","yellow");
         end
     end,
@@ -598,6 +601,9 @@ local intermediate = mission.Objective:define("intermediate"):init({
         --Check for enemies @ nav4
         if((not self.recyspawned) and  (self.timer <= 0 or (not enemiesInRange(270,globals.nav[4]))) ) then
             self.recyspawned = true;
+            if(self.enemiesAtStart) then
+                UpdateObjective("bdmisn311.otf","green");
+            end
             local recy = BuildObject("bvrecy22",1,"recy_spawn");
             local e1 = BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
             local e2 = BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
@@ -621,9 +627,7 @@ local intermediate = mission.Objective:define("intermediate"):init({
         self.timer, self.recy, self.recyspawned = ...;
     end,
     success = function(self)
-        if(self.enemiesAtStart) then
-            UpdateObjective("bdmisn311.otf","green");
-        end
+
         globals.keepGTsAtFullHealth = true;
         --Spawn in recycler
         --Recycler escort
