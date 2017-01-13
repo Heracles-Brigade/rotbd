@@ -187,8 +187,8 @@ timeDeploy [1] =
 5
 timeUndeploy [1] =
 5
-undefptr = 00000000
-state = 00000000
+undefptr = 00AF4568
+state = 02000000
 delayTimer [1] =
 -1e+030
 nextRepair [1] =

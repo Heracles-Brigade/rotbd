@@ -321,15 +321,23 @@ Listener.mt = {__index = Listener.prototype};
 setmetatable(Listener,{__call = Listener.new});
 
 ObjectiveInstance = {
-    new = function(cls,parent_name,default)
+    new = function(cls,parent_name,default,subTasks)
         local self = setmetatable({
             parentName = parent_name,
             parentRef = Objective:getObjective(parent_name),
+            subTasks = {},
             alive = true,
             started = false
         },cls.mt);
         self.parentRef.child = self;
         self.parentRef.hasChild = true;
+        for i,v in pairs(subTasks) do
+            self.subTasks[i] = {
+                running = false,
+                done = false,
+                state = 0
+            };
+        end
         for i,v in pairs(default) do
             self[i] = v;
         end
@@ -342,6 +350,7 @@ ObjectiveInstance = {
         local inst = cls:new(save_data.parentName,objDefinition.child_vars);
         inst.started = save_data.started;
         inst.alive = save_data.alive;
+        inst.subTasks = save_data.subTasks;
         inst:load(save_data.userData);
         return inst;
     end,
@@ -349,13 +358,15 @@ ObjectiveInstance = {
         parentCall = function(self,event,...) 
             return self.parentRef:dispatchEvent(event,self,...)
         end,
+        call = function(self,...)
+            return self:parentCall(event,...);
+        end,
         start = function(self,...)
             self:parentCall('start',...);
             self.started = true;
         end,
         kill = function(self)
             self.alive = false;
-            print(self,self.alive);
         end,
         update = function(self,...)
             self:parentCall('update',...);
@@ -386,11 +397,46 @@ ObjectiveInstance = {
         createObject = function(self,...)
             self:parentCall('create_object',...)
         end,
+        isTaskActive = function(self,name)
+            if(self.subTasks[name]) then
+                return self.subTasks[name].running;
+            end
+        end,
+        isTaskDone = function(self,name)
+            if(self.subTasks[name]) then
+                return self.subTasks[name].done;
+            end
+        end,
+        startTask = function(self,name)
+            if(self.subTasks[name]) then
+                local t = self.subTasks[name];
+                t.state = 1;
+                t.running = true;
+                self:parentCall('task_start',name);
+            end
+        end,
+        taskSucceed = function(self,name)
+            if(self.subTasks[name]) then
+                local t = self.subTasks[name];
+                t.done = true;
+                t.state = 2;
+                self:parentCall('task_success',name);
+            end
+        end,
+        taskFail = function(self,name)
+            if(self.subTasks[name]) then
+                local t = self.subTasks[name];
+                t.done = true;
+                t.state = 3;
+                self:parentCall('task_fail',name);
+            end
+        end,
         save = function(self,...)
             local save_data = {
                 parentName = self.parentName,
                 alive = self.alive,
                 userData = {},
+                subTasks = self.subTasks,
                 started = self.started
             };
             for i,v in pairs(self:parentCall('save',...)) do
@@ -414,6 +460,7 @@ Objective = {
         local self = setmetatable({
             name = name,
             listeners = {},
+            subTasks = {},
             child_vars = {},
             child = false,
             hasChild = false
@@ -464,6 +511,10 @@ Objective = {
             end
             return self;
         end,
+        createTasks = function(self,tasks)
+            self.subTasks = tasks;
+            return self;
+        end,
         getInstance = function(self)
             return self.child;
         end,
@@ -488,7 +539,7 @@ Objective = {
         end,
         --construct an objective instance
         start = function(self,...)
-            local instance = ObjectiveInstance:new(self.name,self.child_vars);
+            local instance = ObjectiveInstance:new(self.name,self.child_vars,self.subTasks);
             self.child = instance;
             self.hasChild = true;
             instance:start(...);
