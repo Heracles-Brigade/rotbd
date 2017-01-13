@@ -71,5 +71,5 @@ soundUndeploy = "avapce0.wav"
 
 [APCClass]
 soldierType = "bssold"
-soldierCount = 5
+soldierCount = 0
 timeDeploy = 2.0

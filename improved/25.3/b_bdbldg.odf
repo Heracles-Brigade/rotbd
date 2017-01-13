@@ -1,0 +1,13 @@
+[Builder]
+buildName = "Buildings"
+buildTeam = 1
+buildItem1 = "bbbarr"
+buildItem2 = "bbcafe"
+buildItem3 = "bbcomm"
+buildItem4 = "bbhang"
+buildItem5 = "bbhqcp"
+buildItem6 = "bblpad"
+buildItem7 = "bbmbld"
+buildItem8 = "bbshld"
+buildItem9 = "bbsupp"
+buildItem10 = "bbtowe"
