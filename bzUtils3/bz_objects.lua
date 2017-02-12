@@ -1,6 +1,8 @@
 local bzCore = require("bz_core");
 local misc = require("misc");
 local OOP = require("oop");
+local rx = require("rx");
+local net = require("bz_net");
 
 local Class = OOP.Class;
 local D = OOP.Decorate;
@@ -28,10 +30,10 @@ local BzInit = misc.BzInit;
 local BzDestroy = misc.BzDestroy;
 local BzRemove = misc.BzRemove;
 local MpSyncable = misc.MpSyncable;
-
-
 local AfterLoad = misc.AfterLoad;
 local AfterSave = misc.AfterSave;
+local BzMessage = misc.BzMessage;
+local getAmmoCost = misc.getAmmoCost;
 
 local BzModule = misc.BzModule;
 
@@ -39,20 +41,114 @@ if ((not SetLabel) and SettLabel) then
   SetLabel = SettLabel;
 end
 
+
+local function copyObject(handle,odf)
+  local nObject = BuildObject(odf,GetTeamNum(handle),GetTransform(handle));
+  local pilot = GetPilotClass(handle) or "";
+  local hp = GetCurHealth(handle) or 0;
+  local mhp = GetMaxHealth(handle) or 0;
+  local ammo = GetCurAmmo(handle) or 0;
+  local mammo = GetMaxAmmo(handle) or 0;
+  local transform = GetTransform(handle);
+  local vel = GetVelocity(handle);
+  local omega = GetOmega(handle);
+  local label = GetLabel(handle);
+  local d = IsDeployed(handle);
+  local currentCommand = GetCurrentCommand(handle);
+  local currentWho = GetCurrentWho(handle);
+  local independence = GetIndependence(handle);
+  local weapons = {
+    GetWeaponClass(handle,0),
+    GetWeaponClass(handle,1),
+    GetWeaponClass(handle,2),
+    GetWeaponClass(handle,3),
+    GetWeaponClass(handle,4),
+  };
+  for i=1,#weapons do
+    GiveWeapon(nObject,weapons[i],i-1);
+  end
+  SetTransform(nObject,transform);
+  --SetMaxAmmo(nObject,mammo);
+  --SetMaxHealth(nObject,mhp);
+  SetCurHealth(nObject,hp);
+  SetCurAmmo(nObject,hp);
+  if(IsAliveAndPilot(handle)) then
+    SetPilotClass(nObject,pilot);
+  elseif(not IsAlive(handle)) then
+    RemovePilot(handle);
+  end
+  SetLabel(nObject,label);
+  SetVelocity(nObject,vel);
+  SetOmega(nObject,omega);
+  if(not IsBusy(handle)) then
+    SetCommand(nObject,currentCommand,0,currentWho,transform,0);
+  end
+  if(d) then
+    Deploy(nObject);
+  end
+  SetOwner(nObject,GetOwner(handle));
+  return nObject;
+  --RemoveObject(handle);
+end
+
+--TODO: make MP safe
+--Extend to support listeners
 --Wrapper for handle
-local Handle = Class("Handle", {
+
+
+local Handle = Class("Obj.Handle", {
   constructor = function(handle)
     self.handle = handle;
+    self.taskQueue = {};
   end,
   methods = {
     getHandle = function()
       return self.handle;
     end,
+    save = function()
+      return self.taskQueue;
+    end,
+    load = function(...)
+      self.taskQueue = ...;
+    end,
     removeObject = function()
       RemoveObject(self:getHandle());
     end,
+    queueTask = function(...)
+      table.insert(self.taskQueue,{...});
+    end,
+    cloak = function()
+      Cloak(self:getHandle());
+    end,
+    decloak = function()
+      Decloak(self:getHandle());
+    end,
+    setCloaked = function()
+      SetCloaked(self:getHandle());
+    end,
+    setDecloaked = function()
+      SetDecloaked(self:getHandle());
+    end,
+    isCloaked = function()
+      return IsCloaked(self:getHandle());
+    end,
+    enableCloaking = function(enable)
+      EnableCloaking(self:getHandle(),enable);
+    end,
     getOdf = function()
       return GetOdf(self:getHandle());
+    end,
+    hide = function()
+      Hide(self:getHandle());
+    end,
+    unHide = function()
+      UnHide(self:getHandle());
+    end,
+    getCargo = function()
+      return GetCargo(self:getHandle());
+    end,
+    formation = function(other)
+      Formation(self:getHandle(),other);
     end,
     isOdf = function(...)
       return IsOdf(self:getHandle(), ...);
@@ -92,6 +188,9 @@ local Handle = Class("Handle", {
     end,
     isBuilding = function()
       return IsBuilding(self:getHandle());
+    end,
+    isPlayer = function(team)
+      return self.handle == GetPlayerHandle(team);
     end,
     isPerson = function()
       return IsPerson(self:getHandle());
@@ -174,6 +273,9 @@ local Handle = Class("Handle", {
     isAlly = function(...)
       return IsAlly(self:getHandle(), ...);
     end,
+    isEnemy = function(other)
+      return not (self:isAlly(other) or (self:getTeamNum() == GetTeamNum(other)) or (GetTeamNum(other) == 0) ); 
+    end,
     setObjectiveOn = function()
       SetObjectiveOn(self:getHandle());
     end,
@@ -185,6 +287,10 @@ local Handle = Class("Handle", {
     end,
     getObjectiveName = function()
       return GetObjectiveName(self:getHandle());
+    end,
+    copyObject = function(odf)
+      odf = odf or self:getOdf();
+      return copyObject(self.handle,odf);
     end,
     getDistance = function(...)
       return GetDistance(self:getHandle(), ...);
@@ -413,18 +519,75 @@ local Handle = Class("Handle", {
     end
   }
 });
+local HListener = Class("HListener",{
+  constructor = function(handle)
+    self.handle = Handle(handle);
+    self.subjects = {};
+    self.state = self:_getNewState();
+    self.dead = (not self.handle:isValid()) or self.state.health < 0;
+  end,
+  methods = {
+    onNext = function(change)
+      --Return subscribable
+      self.subjects[change] = self.subjects[change] or rx.Subject.create();
+      return self.subjects[change];
+    end,
+    dispatch = function(change,...)
+      if(self.subjects[change]) then
+        self.subjects[change]:onNext(self.handle:getHandle(),...);
+      end
+    end,
+    update = function(dtime)
+      if(not self.dead) then
+        local n = self:_getNewState();
+        if(n.health <= 0) then
+          self:onDeath();
+          return;
+        end
+        for i,v in pairs(n) do
+          if(self.state[i] ~= v) then
+            self:dispatch(i,v,self.state[i]);
+          end
+          self.state[i] = v;
+        end
+
+        if((self.state.ammo > 0) and (n.ammo <= 0)) then
+          self:dispatch("ammoDepleted");
+        end
+      end
+    end,
+    onDeath = function()
+      self.dead = true;
+      self:dispatch("destroyed");
+    end,
+    onRemove = function()
+      self:dispatch("removed");
+      self.subjects = {};
+    end,
+    _getNewState = function()
+      return {
+        command = self.handle:getCurrentCommand(),
+        who = self.handle:getCurrentWho(),
+        target = self.handle:getTarget(),
+        health = self.handle:getCurHealth(),
+        ammo = self.handle:getCurAmmo()
+      }
+    end
+
+  }
+});
 
 local function GameObject(data)
   return function(class)
     Meta(class, {GameObject = assignObject({
       odfs = {},
       classLabels = {},
-      customClass = nil
+      customClass = nil,
+      global = false
     }, data)});
-    D(Implements(Serializable, Updateable, BzInit), class);
+    D(Implements(Serializable, Updateable, BzInit, BzMessage), class);
   end
 end
-
 
 
 local ObjectManager = D(BzModule("ObjectManagerModule"),
@@ -441,9 +604,28 @@ local ObjectManager = D(BzModule("ObjectManagerModule"),
       self.startListeners = {};
       self.classes = {};
       self.objsToBeDecided = {};
+      self.handleListeners = {};
+      net.netManager:getSockets("OBJ.NET"):subscribe(function(...)
+        self:onNewSocket(...);
+      end);
     end,
     methods = {
+      onNewSocket = function(socket,...)
+        local class,h = ...;
+        class = getClass(class);
+        local inst = class:new(h);
+        self:_regmeta(h);
+        inst:mpGainObject(socket);
+        self:registerObject(h,inst);
+      end,
       update = function(...)
+        for i, v in pairs(self.handleListeners) do
+          if(v.dead) then
+          --  self.handleListeners[i] = nil;
+          else
+            v:update(...);
+          end
+        end
         for i, v in pairs(self.objsToBeDecided) do
           --Test if remote, a bit temp
           if(not (IsNetGame() and IsRemote(i)) ) then
@@ -461,8 +643,23 @@ local ObjectManager = D(BzModule("ObjectManagerModule"),
           end
         end
       end,
+      getHandleListener = function(handle)
+        if(not self.handleListeners[handle]) then
+          self.handleListeners[handle] = HListener(handle);
+        end
+        return self.handleListeners[handle];
+      end,
+      getComponent = function(handle,class)
+        if(self.all[handle]) then
+          for i, v in pairs(self.all[handle]) do
+            if(class:made(v)) then
+              return v;
+            end
+          end
+        end
+      end,
       updateMeta = function(handle, objs)
-        if ((not Meta(handle).dead) and GetCurHealth(handle) < -1) then
+        if ((not Meta(handle).dead) and GetCurHealth(handle) <= 0) then
           Meta(handle, {dead = true});
           for i, v in pairs(objs) do
             if (BzDestroy:made(v)) then
@@ -477,20 +674,23 @@ local ObjectManager = D(BzModule("ObjectManagerModule"),
           local objdata = {};
           for i2, v2 in pairs(objs) do
             if (MpSyncable:made(v2)) then
-              v2:onMachineChange();
-              objdata[getClassRef(v2)] = {v2:mpSyncSend()};
+              --v2:onMachineChange();
+              --objdata[getClassRef(v2)] = {v2:mpSyncSend()};
+              local socket = net.netManager:createSocket("OBJ.NET",0,getClassRef(v2),handle);
+              v2:mpLoseObject(socket);
               self:unregisterHandle(handle);
             end
           end
           --Find out what player got the new object?
           --Create a new system for async sending of data
           Send(0,"O","mov",{h=handle,i=objdata});
-
         end
       end,
       onStart = function(...)
         for v in AllObjects() do
-          self:onAddObject(v);
+          if(not self.all[v] and (not (IsNetGame() and IsRemote(v)))) then
+            self:onAddObject(v);
+          end
         end
         for i, v in pairs(self.startListeners) do
           for i2, v2 in pairs(v) do
@@ -588,27 +788,37 @@ local ObjectManager = D(BzModule("ObjectManagerModule"),
           v:onInit();
         end
       end,
+      _regmeta = function(handle)
+        if(not self.all[handle]) then
+          Meta(handle, {
+            dead = false,
+            truelocal = not (IsNetGame() and IsRemote(handle));
+          });
+        end
+      end,
       registerHandle = function(handle)
         local objs = {};
-        local odf = GetOdf(handle);
-        local classLabel = GetClassLabel(handle);
-        local customClasses = Handle(handle):getTable("GameObjectClass", "customClass");
-
-        Meta(handle, {
-          dead = false,
-          truelocal = not (IsNetGame() and IsRemote(handle));
-        });
-        for i, v in pairs(self.classes) do
-          local objectMeta = Meta(v).GameObject;
-          
-          local m = isIn(odf, objectMeta.odfs or {})
-            or isIn(classLabel, objectMeta.classLabels or {})
-            or isIn(objectMeta.customClass, customClasses or {});
-          
-          if (m) then
-            local obj = v:new(handle);
-            table.insert(objs, obj);
-            self:registerObject(handle, obj);
+        if(not self.all[handle]) then
+          local odf = GetOdf(handle);
+          local classLabel = GetClassLabel(handle);
+          local customClasses = Handle(handle):getTable("GameObjectClass", "customClass");
+          self:_regmeta(handle);
+          for i, v in pairs(self.classes) do
+            local objectMeta = Meta(v).GameObject;
+            local customTest = objectMeta.customTest;
+            
+            local m = isIn(odf, objectMeta.odfs or {})
+              or isIn(classLabel, objectMeta.classLabels or {})
+              or isIn(objectMeta.customClass, customClasses or {});
+            if(customTest) then
+              m = customTest(handle,m);
+            end  
+            
+            if (m) then
+              local obj = v:new(handle);
+              table.insert(objs, obj);
+              self:registerObject(handle, obj);
+            end
           end
         end
         return objs;
@@ -632,7 +842,14 @@ local ObjectManager = D(BzModule("ObjectManagerModule"),
         self.startListeners[handle] = nil;
       end,
       onDeleteObject = function(handle, ...)
+        if(self.all[handle]) then
+          self:updateMeta(handle,self.all[handle]);
+        end
         self:unregisterHandle(handle);
+        if(self.handleListeners[handle]) then
+          self.handleListeners[handle]:onRemove();
+          self.handleListeners[handle] = nil;
+        end
         for i, v in pairs(self.objectListeners) do
           for i2, v2 in pairs(v) do
             v2:onDeleteObject(handle, ...);
@@ -640,22 +857,6 @@ local ObjectManager = D(BzModule("ObjectManagerModule"),
         end
       end,
       onReceive = function(id,type,ns,data)
-        if(type=="O" and ns=="mov") then
-          if(not IsRemote(data.h) and IsLocal(data.h) ) then
-            local objs = self:registerHandle(data.h);
-            for i, v in pairs(objs) do
-              if MpSyncable:made(v) then
-                for i2, v2 in pairs(data.i) do
-                  if(i2 == getClassRef(v)) then
-                    v:mpSyncReceive(unpack(v2));
-                  end
-                end
-              else
-                v:onInit();
-              end
-            end
-          end
-        end
         for i, v in pairs(self.netListeners) do
           for i2, v2 in pairs(v) do
             v2:onReceive(id,type,ns,data);
@@ -699,16 +900,116 @@ local ObjectManager = D(BzModule("ObjectManagerModule"),
         end
       end,
       declearClass = function(obj)
-        print("Declearing class",Meta(obj).name);
         table.insert(self.classes, obj);
       end
     }
   })
 );
 local objectManager = bzCore:addModule(ObjectManager);
---objectManager:declearClass(tank);
+
+
+local StatTracker = Class("StatTracker",{
+  constructor = function(handle,gtracker)
+    self.handle = Handle(handle);
+    self.mask = tonumber(self.handle:getProperty("GameObjectClass","weaponMask","1"),2);
+    local weapons = self.handle:getTable("GameObjectClass","weaponName");
+    self.weapons = {};
+    for i,v in ipairs(weapons) do
+      table.insert(self.weapons,{
+        odf = v,
+        slot = i-1,
+        cost = getAmmoCost(v)
+      });
+    end
+    self.gtracker = gtracker;
+    self.listener = objectManager:getHandleListener(handle);
+    self.team = self.handle:getTeamNum();
+    self.listener:onNext("ammo"):subscribe(function(...)
+      self:updateAmmo(...);
+    end);
+    self.listener:onNext("health"):subscribe(function(...)
+      self:updateHealth(...);
+    end);
+    self.listener:onNext("destroyed"):subscribe(function(...)
+      self:onDestroy(...);
+    end);
+  end,
+  methods = {
+    updateAmmo = function(h,ammo,old)
+      local d = old - ammo;
+      if(d > 0) then
+        local sortedByCost = copyTable(self.weapons);
+        local shots = 0;
+        table.sort(sortedByCost,function(a,b)
+          return a.cost > b.cost
+        end);
+        for i, v in ipairs(sortedByCost) do
+          if((d >= v.cost) and (v.cost > 0) ) then
+            d = d - v.cost;
+            shots = shots+1;
+          end
+          if(d <= 0) then
+            break;
+          end
+        end
+        self.gtracker:addShots(self.team,shots);
+      end
+    end,
+    updateHealth = function(h,health,old)
+      local d = old - math.max(health,0);
+      if(d > 0) then
+        self.gtracker:addDamage(self.team,d);
+      end
+    end,
+    onDestroy = function()
+      self.gtracker:addUnitsLost(self.team,1);
+    end
+  }
+});
+
+local MultiTracker = Class("MultiTracker",{
+  constructor = function()
+    self.stats = {};
+    self.trackers = {};
+  end,
+  methods = {
+    recordTeam = function(team)
+      self.stats[team] = {
+        damageReceived = 0,
+        shotCount = 0,
+        unitsLost = 0
+      };
+    end,
+    addShots = function(team,shots)
+      self.stats[team].shotCount = self.stats[team].shotCount + shots;
+    end,
+    addDamage = function(team,damage)
+      self.stats[team].damageReceived = self.stats[team].damageReceived + damage;
+    end,
+    addUnitsLost = function(team,units)
+      self.stats[team].unitsLost = self.stats[team].unitsLost + units;
+    end,
+    getStats = function(team)
+      return self.stats[team];
+    end,
+    onAddObject = function(handle)
+      if(self.stats[GetTeamNum(handle)]) then
+        self.trackers[handle] = self.trackers[handle] or StatTracker:new(handle,self);
+      end
+    end,
+    onDeleteObject = function(handle)
+      self.trackers[handle] = nil;
+    end
+  }
+});
+
+
 return {
   Handle = Handle,
+  HListener = HListener,
   objectManager = objectManager,
-  GameObject = GameObject
+  GameObject = GameObject,
+  StatTracker = StatTracker,
+  MultiTracker = MultiTracker,
+  copyObject = copyObject
 }

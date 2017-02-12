@@ -1,4 +1,3 @@
-local net = require("bz_net");
 local OOP = require("oop");
 local misc = require("misc");
 
@@ -68,9 +67,11 @@ local BzCoreModule = D(BzModule("BzCoreModule"),
         end
       end,
       onCommand = function(...)
+        local r = false;
         for i, v in pairs(self.modules) do
-          v:onCommand(...);
+          r = v:onCommand(...) or r;
         end
+        return r;
       end,
       onAddPlayer = function(...)
         for i, v in pairs(self.modules) do

@@ -1,10 +1,12 @@
 local OOP = require("oop");
+local rx = require("rx");
 local Interface = OOP.Interface;
 local Class = OOP.Class;
 
 local getClassRef = OOP.getClassRef;
 local getClass = OOP.getClass;
 
+local isIn = OOP.isIn;
 local Decorate = OOP.Decorate;
 local Implements = OOP.Implements;
 local Meta = OOP.Meta;
@@ -193,15 +195,16 @@ local odfHeader = Class("odfHeader",{
     getAsTable = function(varName,...)
       local ret = {};
       local c = 1;
+      local max = self:getAsInt(varName .. "Count",100);
       local n = self:getVar(varName .. c,...);
-      while n do
+      while n and (c <= max) do
         table.insert(ret,n);
         c = c + 1;
         n = self:getVar(varName .. c,...);
       end
       return ret;
     end
-}
+  }
 })
 
 local odfFile = Class("odfFile",{
@@ -209,7 +212,8 @@ local odfFile = Class("odfFile",{
     self.name = fileName;
     self.file = OpenODF(fileName);
     self.headers = {};
-    assert(self.file,"Could not open \"%s\"!",self.name);
+    print(self.file);
+    --assert(self.file,"Could not open \"%s\"!",self.name);
   end,
   methods = {
     getHeader = function(headerName)
@@ -235,10 +239,43 @@ local odfFile = Class("odfFile",{
     end,
     getVector = function(header,...)
       return self:getHeader(header):getAsVector(...);
+    end,
+    isValid = function()
+      return self.file ~= nil;
     end
   }
 })
 
+local function spawnInFormation(formation,location,dir,units,team,seperation)
+  if(seperation == nil) then 
+    seperation = 10;
+  end
+  local tempH = {};
+  local directionVec = Normalize(SetVector(dir.x,0,dir.z));
+  local formationAlign = Normalize(SetVector(-dir.z,0,dir.x));
+  for i2, v2 in ipairs(formation) do
+    local length = v2:len();
+    local i3 = 1;
+    for c in v2:gmatch(".") do
+      local n = tonumber(c);
+      if(n) then
+        local x = (i3-(length/2))*seperation;
+        local z = i2*seperation*2;
+        local pos = x*formationAlign + -z*directionVec + location;
+        local h = BuildObject(units[n],team,pos);
+        local t = BuildDirectionalMatrix(GetPosition(h),directionVec);
+        SetTransform(h,t);
+        table.insert(tempH,h);
+      end
+      i3 = i3+1;
+    end
+  end
+  return tempH;
+end
+
+local function spawnInFormation2(formation,location,units,team,seperation)
+    return spawnInFormation(formation,GetPosition(location,0),GetPosition(location,1) - GetPosition(location,0),units,team,seperation);
+end
 
 --Div interfaces
 local Serializable = Interface("Serializable",{"save","load"});
@@ -249,12 +286,13 @@ local ObjectListener = Interface("ObjectListener",{"onAddObject","onCreateObject
 local PlayerListener = Interface("PlayerListener",{"onAddPlayer","onCreatePlayer","onDeletePlayer"});
 local CommandListener = Interface("CommandListener",{"onCommand"});
 local NetworkListener = Interface("ReceiveListener",{"onReceive"});
+local MessageListener = Interface("MessageListener",{"onMessage"});
 local KeyListener = Interface("Key",{"onGameKey"});
 local StartListener = Interface("StartListener",{"onStart"});
 local BzInit = Interface("BzInit",{"onInit"});
 local BzDestroy = Interface("BzDestroy",{"onDestroy"});
 local BzRemove = Interface("BzRemove",{"onRemove"});
-local MpSyncable = Interface("MpSyncable",{"onMachineChange","mpSyncSend","mpSyncReceive"});
+local MpSyncable = Interface("MpSyncable",{"mpLoseObject","mpGainObject"});
 local BzAlive = Interface("BzAlive",{"isAlive"});
 
 
@@ -282,14 +320,14 @@ local DefaultRuntimeModule = Decorate(
   Class("DefaultRuntimeModule",{
     constructor = function(containers)
       self.all = containers.all or {};
-      self.afterSaveListeners = containers.afterSaveListeners or {};
-      self.afterLoadListeners = containers.afterLoadListeners or {};
-      self.netListeners = containers.netListeners or {};
-      self.objectListeners = containers.objectListeners or {};
-      self.playerListeners = containers.playerListeners or {};
-      self.commandListeners = containers.commandListeners or {};
-      self.keyListeners = containers.keyListeners or {};
-      self.startListeners = containers.startListeners or {};
+      self.afterSaveListeners = setmetatable(containers.afterSaveListeners or {}, {__mode=v});
+      self.afterLoadListeners = setmetatable(containers.afterLoadListeners or {}, {__mode=v});
+      self.netListeners = setmetatable(containers.netListeners or {}, {__mode=v});
+      self.objectListeners = setmetatable(containers.objectListeners or {}, {__mode=v});
+      self.playerListeners = setmetatable(containers.playerListeners or {}, {__mode=v});
+      self.commandListeners = setmetatable(containers.commandListeners or {}, {__mode=v});
+      self.keyListeners = setmetatable(containers.keyListeners or {}, {__mode=v});
+      self.startListeners = setmetatable(containers.startListeners or {}, {__mode=v});
       self.classes = containers.classes or {};
     end,
     methods = {
@@ -323,6 +361,7 @@ local DefaultRuntimeModule = Decorate(
           local c = getClass(v.class);
           local i = c:new();
           i:load(unpack(v.data));
+          self:registerInstance(i);
         end
       end,
       afterSave = function()
@@ -380,6 +419,9 @@ local DefaultRuntimeModule = Decorate(
           v:onReceive(...);
         end
       end,
+      unregisterInstance = function(obj)
+        table.remove(self.all,obj);
+      end,
       registerInstance = function(obj)
         table.insert(self.all,obj);
         if(NetworkListener:made(obj)) then
@@ -411,10 +453,89 @@ local DefaultRuntimeModule = Decorate(
   })
 );
 
+local normalWeps = {
+  "cannon", "machinegun", "thermallauncher", "imagelauncher"
+};
+--Maybe ignore these?
+--Can't count shot count of beam weapons
+local dispenserWeps = {
+  radarlauncher = {"RadarLauncherClass", "objectClass"}, 
+  dispenser = {"DispenserClass", "objectClass"}
+}
 
 
+local function getAmmoCost(weaponOdf)
+  local wepOdf = odfFile(weaponOdf);
+  local ctype = wepOdf:getProperty("WeaponClass","classLabel");
+  if(isIn(ctype,normalWeps)) then
+    local ord = wepOdf:getProperty("WeaponClass","ordName");
+    if(ord) then
+      local ordOdf = odfFile(ord);
+      return ordOdf:getInt("OrdnanceClass","ammoCost");
+    end
+  end
+  return 0;
+end
 
 
+local Timer = Decorate(
+  Implements(Updateable,Serializable),
+  Class("misc.Timer",{
+    constructor = function(limit,looping,...)
+      self.tsubject = rx.Subject.create();
+      self.count = 0;
+      self.looping = looping;
+      self.time = 0;
+      self.limit = limit;
+      self.running = false;
+    end,
+    methods = {
+      update = function(dtime)
+        if(self.running) then
+          self.time = self.time + dtime;
+          if(self.time >= self.limit) then
+            self.count = self.count + 1;
+            self.tsubject:onNext(self.count);
+            if(self.looping) then
+              self:restart();
+            else
+              self:stop();
+            end
+          end
+        end
+      end,
+      start = function()
+        self.running = true;
+      end,
+      restart = function()
+        self:stop();
+        self:start();
+      end,
+      stop = function()
+        self:pause();
+        self.time = 0;
+      end,
+      pause = function()
+        self.running = false;
+      end,
+      onAlarm = function()
+        return self.tsubject;
+      end,
+      save = function()
+        return self.time, self.count;
+      end,
+      load = function(...)
+        self.time,self.count = ...;
+      end,
+      getTime = function()
+        return self.time;
+      end,
+      getTotalTime = function()
+        return self:getTime() + self.count * self.limit;
+      end
+    }
+  })
+);
 
 
 
@@ -426,6 +547,7 @@ return {
   CommandListener = CommandListener,
   NetworkListener = NetworkListener,
   StartListener = StartListener,
+  BzMessage = BzMessage,
   KeyListener = KeyListener,
   AfterLoad = AfterLoad,
   AfterSave = AfterSave,
@@ -443,5 +565,9 @@ return {
   str2vec = str2vec,
   local2Global = local2Global,
   global2Local = global2Local,
-  DefaultRuntimeModule = DefaultRuntimeModule
+  DefaultRuntimeModule = DefaultRuntimeModule,
+  getAmmoCost = getAmmoCost,
+  spawnInFormation = spawnInFormation,
+  spawnInFormation2 = spawnInFormation2,
+  Timer = Timer
 }

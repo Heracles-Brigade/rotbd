@@ -326,17 +326,22 @@ ObjectiveInstance = {
             parentName = parent_name,
             parentRef = Objective:getObjective(parent_name),
             subTasks = {},
+            subCount = 0,
             alive = true,
             started = false
         },cls.mt);
         self.parentRef.child = self;
         self.parentRef.hasChild = true;
-        for i,v in pairs(subTasks) do
-            self.subTasks[i] = {
-                running = false,
-                done = false,
-                state = 0
-            };
+        if(subTasks) then
+            for i,v in pairs(subTasks) do
+                assert(self.subTasks[v] == nil, ("Task %s defined more than once!"):format(v));
+                self.subCount = self.subCount + 1;
+                self.subTasks[v] = {
+                    running = false,
+                    done = false,
+                    state = 0
+                };
+            end
         end
         for i,v in pairs(default) do
             self[i] = v;
@@ -351,6 +356,7 @@ ObjectiveInstance = {
         inst.started = save_data.started;
         inst.alive = save_data.alive;
         inst.subTasks = save_data.subTasks;
+        inst.subCount = inst.subCount;
         inst:load(save_data.userData);
         return inst;
     end,
@@ -399,12 +405,41 @@ ObjectiveInstance = {
         end,
         isTaskActive = function(self,name)
             if(self.subTasks[name]) then
-                return self.subTasks[name].running;
+                return self.subTasks[name].running and (not self:isTaskDone(name));
             end
         end,
         isTaskDone = function(self,name)
             if(self.subTasks[name]) then
                 return self.subTasks[name].done;
+            end
+        end,
+        _hasTasksState = function(self,state,...)
+            local all = true;
+            for i,v in pairs({...}) do
+                all = all and self:_hasTaskState(v,state);
+            end
+            return all;
+        end,
+        _hasTaskState = function(self,name,state)
+            if(self.subTasks[name]) then
+                return self.subTasks[name].state == state;
+            end
+        end,
+        hasTasksSucceeded = function(self,...)
+            return self:_hasTasksState(2,...)
+        end,
+        hasTaskSucceeded = function(self,name)
+            return self:_hasTaskState(name,2);
+        end,
+        hasTasksFailed = function(self,...)
+            return self:_hasTasksState(3,...)
+        end,
+        hasTaskFailed = function(self,name)
+            return self:_hasTaskState(name,3);
+        end,
+        hasTaskStarted = function(self,name)
+            if(self.subTasks[name]) then
+                return self.subTasks[name].state > 0;
             end
         end,
         startTask = function(self,name)
@@ -415,20 +450,48 @@ ObjectiveInstance = {
                 self:parentCall('task_start',name);
             end
         end,
+        _tasksWithState = function(self,state)
+            local c = 0;
+            for i,v in pairs(self.subTasks) do
+                if(v.state == state) then
+                    c = c + 1;
+                end
+            end
+            return c;
+        end,
+        countSucceeded = function(self)
+            return self:_tasksWithState(2);
+        end,
+        countFailed = function(self)
+            return self:_tasksWithState(3);
+        end,
+        taskCount = function(self)
+            return self.subCount;
+        end,
         taskSucceed = function(self,name)
             if(self.subTasks[name]) then
                 local t = self.subTasks[name];
+                local pstate = t.state;
                 t.done = true;
                 t.state = 2;
-                self:parentCall('task_success',name);
+                self:parentCall('task_success',name,pstate <= 3);
             end
+        end,
+        taskReset = function(self,name)
+            if(self.subTasks[name]) then
+                local t = self.subTasks[name];
+                t.done = false;
+                t.state = t.state + 3;
+                self:parentCall('task_reset',name);
+            end 
         end,
         taskFail = function(self,name)
             if(self.subTasks[name]) then
                 local t = self.subTasks[name];
+                local pstate = t.state;
                 t.done = true;
                 t.state = 3;
-                self:parentCall('task_fail',name);
+                self:parentCall('task_fail',name,pstate <= 3);
             end
         end,
         save = function(self,...)
@@ -437,7 +500,8 @@ ObjectiveInstance = {
                 alive = self.alive,
                 userData = {},
                 subTasks = self.subTasks,
-                started = self.started
+                started = self.started,
+                subCount = self.subCount
             };
             for i,v in pairs(self:parentCall('save',...)) do
                 table.insert(save_data.userData,v);
@@ -511,8 +575,8 @@ Objective = {
             end
             return self;
         end,
-        createTasks = function(self,tasks)
-            self.subTasks = tasks;
+        createTasks = function(self,...)
+            self.subTasks = {...};
             return self;
         end,
         getInstance = function(self)

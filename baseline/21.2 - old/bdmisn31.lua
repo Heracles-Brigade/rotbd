@@ -158,7 +158,7 @@ local makeOffensive = mission.Objective:define("make_offensive"):init({
     end,
     update = function(self)
         --Check if got 3 more tanks + 1 bomber, since mission start
-        if(self.tracker:gotOfOdf("bvtank",3) and self.tracker:gotOfOdf("bvhraz",1)) then
+        if(self.tracker:gotOfOdf("bvtank1",3) and self.tracker:gotOfOdf("bvhraz",1)) then
             self:success();
         end
     end,
@@ -503,7 +503,7 @@ local destroyComm = mission.Objective:define("destroyComm"):init({
         Goto(BuildObject("avtank",2,"spawn_tank2"),globals.comm);
         Goto(BuildObject("avtank",2,"spawn_tank3"),globals.comm);
         
-        for i,v in pairs(spawnAtPath("bvtank",1,"extra_tanks")) do
+        for i,v in pairs(spawnAtPath("bvtank1",1,"extra_tanks")) do
             Follow(v,GetPlayerHandle(),0);
         end   
     end,
@@ -593,8 +593,8 @@ local intermediate = mission.Objective:define("intermediate"):init({
         if((not self.recyspawned) and  (self.timer <= 0 or (not enemiesInRange(270,globals.nav[4]))) ) then
             self.recyspawned = true;
             local recy = BuildObject("bvrecy22",1,"recy_spawn");
-            local e1 = BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
-            local e2 = BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
+            local e1 = BuildObject("bvtank1",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
+            local e2 = BuildObject("bvtank1",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
             Defend2(e1,recy,0);
             Defend2(e2,recy,0);
             --Make recycler follow path

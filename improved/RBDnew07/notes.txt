@@ -1,0 +1,44 @@
+well, alright
+the idea I have in my head is there'll be two enemy bases, one NSDF and one CCA, on opposite corners of the map from the BDog base
+each relic will be in-between the BDogs and one of the enemy bases
+the player should probably have a Factory but with limited build capacity
+so only one Tug
+the player has to try to claim both relics, there'll be enemy patrols, a few attacking forces, basic stuff
+the fun part though will be when the NSDF and CCA send Tugs of their own after the relics
+maybe, every 3-6 minutes, semi-randomly, one of the bases will spawn a Tug and a force to protect it
+there'll be a short cinematic of the Tug leaving the base
+an audio message of "The ___ are sending a Tug after the relic! Intercept them!"
+and so the player will have to juggle between the two bases each trying to nab a relic
+and then as for the fake distress signal and ambush
+if we keep that element of the mission
+I imagine there'll be an offshoot path from both relics
+and whichever relic you go for first decides which path spawns the distress signal and ambush
+and whether the ambush is NSDF or CCA
+but there'll only be a single ambush attempt
+
+
+
+--Objectives
+Capture relic1
+Capture relic2
+
+--Events
+after x time or relic1 is taken:
+  send cca/nsdf tug + force to take relic2
+
+after x time or relic2 is taken:
+  send cca/nsdf tug + force to take relic1
+
+any relic taken:
+  cca/nsdf attacks tug
+  first time: distress signal (fancy shit?)
+
+after any relic has been "secured"
+  send attack forces against base
+  try to recapture relic
+
+both relic captured:
+  win
+
+any/both relics lost:
+  fail

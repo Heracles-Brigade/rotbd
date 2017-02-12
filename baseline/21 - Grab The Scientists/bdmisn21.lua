@@ -17,6 +17,20 @@ local function checkDead(handles)
     return true;
 end
 
+local function spawnAtPath(odf,team,path)
+    local handles = {};
+    local current = GetPosition(path);
+    local prev = nil;
+    local c = 0;
+    while current ~= prev do
+        c = c + 1;
+        table.insert(handles,BuildObject(odf,team,current));
+        prev = current;
+        current = GetPosition(path,c);
+    end
+    return handles;
+end
+
 local cinematic = mission.Objective:define("cinematic"):init({
     camOn = false,
     camTime = 20,
@@ -85,6 +99,7 @@ local destroySolar = mission.Objective:define("destorySolar"):init({
     target_l1 = {"power1_1","power1_2","power1_3","power1_4"},
     target_l2 = {"power2_1","power2_2","power2_3","power2_4"},
     power1_4 = true,
+    t1=3,
     power5_8init = false
 }):setListeners({
     start = function(self)
@@ -95,12 +110,13 @@ local destroySolar = mission.Objective:define("destorySolar"):init({
             self.handles[i] = GetHandle(v)
         end
     end,
-    update = function(self)
+    update = function(self,dtime)
         if(self.power1_4 and checkDead(self.handles)) then
             self.power1_4 = false;
             UpdateObjective(self.otf1,"green");
 			AudioMessage("bdmisn2103.wav");
-        elseif(not (self.power1_4 or self.power5_8init)) then
+        end
+        if(not (self.power1_4 or self.power5_8init)) then
             SetObjectiveOff(globals.nav[2]);
             SetObjectiveOn(globals.nav[3]);
             AddObjective(self.otf2,"white");
@@ -109,15 +125,18 @@ local destroySolar = mission.Objective:define("destorySolar"):init({
                 self.handles[i] = GetHandle(v);
             end
             self.power5_8init = true;
-        elseif(checkDead(self.handles)) then
-            self:success();
+        elseif(self.power5_8init) then
+            self.t1 = self.t1 - dtime;
+            if(checkDead(self.handles) and self.t1 <= 0) then
+                self:success();
+            end
         end
     end,
     save = function(self)
-        return self.handles,self.power1_4,self.power5_8init
+        return self.handles,self.power1_4,self.power5_8init,self.t1;
     end,
     load = function(self,...)
-        self.handles,self.power1_4,self.power5_8init = ...;
+        self.handles,self.power1_4,self.power5_8init,self.t1 = ...;
     end,
     success = function(self)
         SetObjectiveOff(globals.nav[3]);
@@ -143,7 +162,10 @@ local destroyComm = mission.Objective:define("destroyComm"):init({
         self.camOn = CameraReady();
         self.apc = BuildObject("avapc",2,"spawn_apc");
         self.tug = BuildObject("avhaul",2,"spawn_tug");
-        SetMaxHealth(self.tug,0);
+        SetMaxHealth(self.tug, 0); -- This is invincible.
+        SetMaxHealth(self.apc, 0); -- This is invincible.
+        SetPilotClass(self.tug, ""); -- This is invincible.
+        SetPilotClass(self.apc, ""); -- This is invincible.
         Follow(self.apc,self.tug);
         Pickup(self.tug,globals.relic);
         print("Pickup",self.tug,globals.relic);
@@ -151,6 +173,9 @@ local destroyComm = mission.Objective:define("destroyComm"):init({
         Goto(BuildObject("avtank",2,"spawn_tank2"),globals.comm);
         Goto(BuildObject("avtank",2,"spawn_tank3"),globals.comm);
         
+        for i,v in pairs(spawnAtPath("bvtank1",1,"extra_tanks")) do
+            Follow(v,GetPlayerHandle(),0);
+        end   
     end,
     update = function(self)
         if(self.camOn) then
@@ -180,6 +205,8 @@ local destroyComm = mission.Objective:define("destroyComm"):init({
         UpdateObjective(self.otf,"green");
         UpdateObjective(self.otf2,"green");
         SucceedMission(GetTime()+5,"bdmisn21wn.des");
+        --Start 22 - Preparations
+        --mission.Objective:Start("intermediate");
     end
 });
 
@@ -213,6 +240,7 @@ local patrolControl = mission.Objective:define("destoryNSDF"):init({
         UpdateObjective(self.otf,"green");
     end
 });
+
 function Start()
     globals.nav = {
         GetHandle("nav1"),

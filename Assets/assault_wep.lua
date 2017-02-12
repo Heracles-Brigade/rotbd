@@ -35,8 +35,7 @@ local ExtraWeapons = Decorate(
   Class("AssaultWeapons", {
     constructor = function(handle)
       self.handle = bzObjects.Handle(handle);
-      self.handle:bind("onDestroy",self);
-      self.mask = self.handle:getProperty("GameObjectClass",)
+      self.mask = self.handle:getProperty("GameObjectClass","mask")
       self.pweps = {};
       for i=0,4 do
         self.pweps[i] = self.handle:getWeaponClass(i);

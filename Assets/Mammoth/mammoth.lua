@@ -20,7 +20,7 @@ local ExtraWeapons = Decorate(
   --KeyListener requires: 'onGameKey' to be present in methods
   --BzDestroy requires: 'onDestroy' to be present in methods
   --GameObject requires: 'onInit', 'update', 'save' and 'load' load to be present
-  Implements(KeyListener, BzDestroy, MpSyncable),
+  Implements(KeyListener, MpSyncable),
   --[[
   GameObject adds metadata to our class, is required for objectManager to know
   what objects this class will be attached to
@@ -67,10 +67,7 @@ local ExtraWeapons = Decorate(
         end
       end,
       onInit = function()
-        print("Mammoth added", self.handle);
       --Called when object is added to the world
-      end,
-      onDestroy = function()
       end,
       save = function()
         --Return data you want to save for the object
@@ -103,35 +100,27 @@ local ExtraWeapons = Decorate(
         end
       end,
       --MP code, maybe pass some info about new owner?
-      onMachineChange = function()
-        print("No longer on this machine!");
-        print("Instance should be dead after this");
+      --Called for the machine losing the object
+      mpLoseObject = function(socket)
+        local p1 = socket:packet();
+        self:setWeaponPage(self.page);
+        --Queue the objects 'save' data in a packet
+        p1:queue(self:save());
+        --Send packet
+        socket:flush(p1);
       end,
-      mpSyncSend = function()
-        local d = {self.page,#self.wepPages,unpack(self.wepPages)};
-        local l = #d;
-        local weps = {};
-        for i=0,4 do
-          d[i+l+1] = self.handle:getWeaponClass(i);
-        end
-        --return {self:save()}, unpack(weps);]]
-        
-        return unpack(d);
+      --Method for handling syncing
+      sync_recieve = function(from,...)
+        self:load(...);
+        self:setWeaponPage(self.page,true);
       end,
-      mpSyncReceive = function(...)
-        local data = {...};
-        print("Data received",...);
-        self.page = data[0];
-        local pcount = data[1];
-        local di = 2;
-        for i=1,pcount do
-          self.wepPages[i] = data[di];
-          di = di + 1;
-        end
-        for i=0, 4 do
-          self.handle:giveWeapon(data[di],i);
-          di = di + 1;
-        end
+      --Called for the machine gaining the object
+      mpGainObject = function(socket)
+        --Subscribe to packets coming from the socket
+        socket:getPackets():subscribe(function(...)
+          --Call sync handler
+          self:sync_recieve(...);
+        end);
       end
     }
   })

@@ -6,7 +6,7 @@ local classId = 0;
 local _assert = _G["assert"];
 _G["assert"] = function(c,m,l)
   if(not c) then
-    error(m,(l~=nil and (l + 1)) or 1);
+    error(m,(l~=nil and (l + 1)) or 2);
   end
 end
 
@@ -54,10 +54,12 @@ local function applyMeta(obj,metadata)
 end
 
 local function getMeta(obj)
+  assert(obj,"Can't get meta of nil'",4);
   return copyTable(metaObj[obj] or {});
 end
 
 local function Meta(obj,oMetadata)
+  if(obj==nil) then return {}; end
   return oMetadata and applyMeta(obj,oMetadata) or getMeta(obj);
 end
 
@@ -76,7 +78,7 @@ end
 
 local function Implements(...)
   local interfaces = {...};
-  local allInterfaces = {...}
+  local allInterfaces = {...};
   local methods = {};
   while #interfaces > 0 do
     local n = {}
@@ -194,7 +196,7 @@ local instanceMeta = {
         local sc = Meta(class).super;
         --super instance
         local si = Meta(self).superinstance;
-        return callenv(class.__methods[k],{
+        local environment = {
           this = self,
           self = self,
           class = Meta(self).class,
@@ -212,7 +214,11 @@ local instanceMeta = {
               end
             end
           });
-        },...);
+        };
+        if(not sc) then
+          environment.super = nil;
+        end
+        return callenv(class.__methods[k],environment,...);
       end
     elseif(si2) then
       local m = si2[k];
@@ -258,8 +264,7 @@ local classmethods = {
     });
     --super class
     local sc = Meta(cls).super;
-    
-    callenv(Meta(cls).classmethods.constructor,{
+    local environment = {
       self = instance,
       this = instance,
       class = cls,
@@ -282,7 +287,11 @@ local classmethods = {
           });
         end
       });
-    },...);
+    };
+    if(not sc) then
+      environment.super = nil;
+    end
+    callenv(Meta(cls).classmethods.constructor,environment,...);
     return setmetatable(instance,assignObject({},cls.__mt,Meta(cls).mt));
   end
 }
