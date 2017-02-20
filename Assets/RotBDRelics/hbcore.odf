@@ -1,0 +1,15 @@
+[GameObjectClass]
+baseName = "hbcore"
+classLabel = "artifact"
+scrapCost = 9
+scrapValue = 5
+maxHealth = 2500
+maxAmmo = 0
+unitName = "Hadean Relic"
+heatSignature = 1.0
+imageSignature = 2.0
+radarSignature = 0.5
+
+[BuildingClass]
+soundAmbient = "pow_done.wav"
+

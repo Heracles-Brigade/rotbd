@@ -18,7 +18,7 @@ local Class = OOP.Class;
 local Routine = bzRoutine.Routine;
 
 local killOnNext = {};
-
+  
 GetMissionFilename = GetMissionFilename or GetMapTRNFilename;
 
 GetPathPointCount = GetPathPointCount or function(path)
@@ -106,8 +106,9 @@ end
 local ROUND_TIME = 60*5;
 local LOBBY_TIME = 10;
 local SURVIVE_TIME = 15;
---Games are based in rounds
+--Routine for handling the game logic
 local roundBasedGame = Decorate(
+  --We need to listne to players
   Implements(PlayerListener,ObjectListener),
   Routine({
     name = "roundBasedGame",
@@ -145,13 +146,10 @@ local roundBasedGame = Decorate(
         for i,v in pairs(net.netManager:playersInGame()) do
           self.playersLeft[i] = true;
         end
-
         local random_list = {};
         for i=1, GetPathCount(spawn_prefix) do
           table.insert(random_list,i);
         end
-
-
         for i,v in pairs(self.sockets) do
           local p = v:packet();
           p:queue("SPAWN",ROUND_TIME,table.remove(random_list,1 + math.floor(math.random()*#random_list)),self.playersLeft);
@@ -180,7 +178,6 @@ local roundBasedGame = Decorate(
           --just as the game is about to start
           if(not self.roundStarted) then
             --Spawn
-            --Might want to randomize location
             local timeleft,location,plef = ...;
             self.roundTimeLeft,self.playersLeft = timeleft,plef;
             StopCockpitTimer();
@@ -207,19 +204,23 @@ local roundBasedGame = Decorate(
         elseif(what == "SYNC") then
           self.roundStarted, self.timeUntilStart, self.roundTimeLeft,self.playersLeft = ...;
         elseif(what == "DEAD") then
-          self:_updatePlayersLeft(from);
+          local d_id = ...;
+          d_id = d_id or from;
+          self:_updatePlayersLeft(d_id);
         end
+      end,
+      _connectToAllPlayers = function()
+        for i,v in pairs(net.netManager:getRemotePlayers()) do
+          print(("  %d: %s"):format(i,v.name));
+          self:_connectPlayer(v.id);
+        end
+        self.host = true;
       end,
       _setHost = function(...)
         --Whenever host changes, check if I am new host
         self.hostPlayer = ...;
-        print("SetHost",...);
         if(IsHosting()) then
-          for i,v in pairs(net.netManager:getRemotePlayers()) do
-            print(("  %d: %s"):format(i,v.name));
-            self:_connectPlayer(v.id);
-          end
-          self.host = true;
+          self:_connectToAllPlayers();
         end
       end,
       _spawnIn = function(location)
@@ -277,7 +278,6 @@ local roundBasedGame = Decorate(
         self:_removeSquad();
       end,
       onInit = function()
-        --if host connect to all players
         net.netManager:getHosts():subscribe(function(...)
           self:_setHost(...);
         end);
@@ -286,16 +286,14 @@ local roundBasedGame = Decorate(
         self.localPlayer = player;
         print("Local player",player.id,player.name);
         if(IsHosting()) then
-          print("Players yet:");
-          for i,v in pairs(net.netManager:getRemotePlayers()) do
-            print(("  %d: %s"):format(i,v.name));
-            self:_connectPlayer(v.id);
-          end
+          self:_connectToAllPlayers();
         end
       end,
       update = function(dtime)
         self.playerHandle = GetPlayerHandle() or self.playerHandle;
+        --Make sure the player can't eject or hop out
         SetPilotClass(self.playerHandle,"");
+        --We have to wait for the localPlayer to be set before we do anything
         if(not self.localPlayer) then
           return;
         end
@@ -401,15 +399,13 @@ local roundBasedGame = Decorate(
         end
       end,
       onAddObject = function(h)
-
       end,
-      onDeleteObject = function()
+      onDeleteObject = function(h)
         if(self.playerHandle == h) then
           self.inRound = false;
         end
       end,
       onCreateObject = function()
-      
       end,
       save = function()
       end,
@@ -421,7 +417,7 @@ local roundBasedGame = Decorate(
 );
 
 bzRoutine.routineManager:registerClass(roundBasedGame);
-bzRoutine.routineManager:startRoutine("roundBasedGame");
+local routine = bzRoutine.routineManager:startRoutine("roundBasedGame");
 
 
 function Start(...)
@@ -458,20 +454,21 @@ function CreateObject(...)
 end
 
 function AddPlayer(...)
-
   bzUtils:onAddPlayer(...);
 end
 
 function CreatePlayer(...)
-
   bzUtils:onCreatePlayer(...);
 end
 
 function DeletePlayer(...)
-
   bzUtils:onDeletePlayer(...);
 end
 
 function Receive(...)
   bzUtils:onReceive(...);
 end
+
+return {
+  gameRoutine = routine;
+}
