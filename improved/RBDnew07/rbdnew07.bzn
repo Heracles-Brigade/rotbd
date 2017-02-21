@@ -32,11 +32,11 @@ transform [1] =
   right_x [1] =
 0.847329
   right_y [1] =
--1.4013e-045
+2.8026e-045
   right_z [1] =
 0.531076
   up_x [1] =
-1.4013e-045
+-2.8026e-045
   up_y [1] =
 1.00001
   up_z [1] =
@@ -44,7 +44,7 @@ transform [1] =
   front_x [1] =
 -0.531076
   front_y [1] =
-1.4013e-045
+-1.4013e-045
   front_z [1] =
 0.847329
   posit_x [1] =
@@ -70,34 +70,34 @@ euler =
  mass_inv [1] =
 0.000666667
  v_mag [1] =
-8.73991e-009
+7.18089e-008
  v_mag_inv [1] =
-1.14418e+008
+1.39258e+007
  I [1] =
 1500
  k_i [1] =
 1
  v [1] =
   x [1] =
-1.4013e-045
+0
   y [1] =
-8.73991e-009
+7.18089e-008
   z [1] =
--1.4013e-045
+0
  omega [1] =
   x [1] =
--2.8026e-045
+1.4013e-045
   y [1] =
 0
   z [1] =
--2.8026e-045
+2.8026e-045
  Accel [1] =
   x [1] =
--8.26766e-044
+0
   y [1] =
 9.51882e-008
   z [1] =
-8.26766e-044
+0
 seqNo [1] =
 1
 name = 
@@ -6497,7 +6497,7 @@ priority [1] =
 what = 03000000
 who [1] =
 0
-where = 0C430458
+where = 0C4468D0
 param [1] =
 0
 aiProcess [1] =
@@ -6511,7 +6511,7 @@ curPilot [1] =
 perceivedTeam [1] =
 1
 name = LuaMission
-sObject = 0BBA1898
+sObject = 0BBB19B0
 [AiMission]
 [AOIs]
 size [1] =
@@ -6520,7 +6520,7 @@ size [1] =
 count [1] =
 26
 [AiPath]
-old_ptr = 9003430c
+old_ptr = 3068440c
 size [1] =
 9
 label = edge_path
@@ -6537,7 +6537,7 @@ points [2] =
 101917
 pathType = 00000000
 [AiPath]
-old_ptr = 5804430c
+old_ptr = d068440c
 size [1] =
 9
 label = recy_path
@@ -6610,7 +6610,7 @@ points [16] =
 98587
 pathType = 00000000
 [AiPath]
-old_ptr = b803430c
+old_ptr = 2069440c
 size [1] =
 9
 label = nsdf_path
@@ -6739,7 +6739,7 @@ points [30] =
 99764.4
 pathType = 00000000
 [AiPath]
-old_ptr = 0804430c
+old_ptr = 8068440c
 size [1] =
 8
 label = cca_path
@@ -6864,7 +6864,7 @@ points [29] =
 99560.7
 pathType = 00000000
 [AiPath]
-old_ptr = 3004430c
+old_ptr = 8865440c
 size [1] =
 13
 label = nsdf_distress
@@ -6877,7 +6877,7 @@ points [1] =
 99483.4
 pathType = 00000000
 [AiPath]
-old_ptr = 3806430c
+old_ptr = c866440c
 size [1] =
 11
 label = nsdf_ambush
@@ -6894,7 +6894,7 @@ points [2] =
 99458.2
 pathType = 00000000
 [AiPath]
-old_ptr = 1006430c
+old_ptr = 106a440c
 size [1] =
 12
 label = cca_distress
@@ -6907,7 +6907,7 @@ points [1] =
 99319.7
 pathType = 00000000
 [AiPath]
-old_ptr = e805430c
+old_ptr = 606a440c
 size [1] =
 10
 label = cca_ambush
@@ -6924,7 +6924,7 @@ points [2] =
 99217.3
 pathType = 00000000
 [AiPath]
-old_ptr = 9805430c
+old_ptr = 9869440c
 size [1] =
 10
 label = nsdf_spawn
@@ -6941,7 +6941,7 @@ points [2] =
 101292
 pathType = 00000000
 [AiPath]
-old_ptr = c005430c
+old_ptr = a868440c
 size [1] =
 9
 label = cca_spawn
@@ -6958,7 +6958,7 @@ points [2] =
 101104
 pathType = 00000000
 [AiPath]
-old_ptr = a0f8420c
+old_ptr = 386a440c
 size [1] =
 11
 label = nsdf_attack
@@ -7002,12 +7002,12 @@ points [10] =
   z [1] =
 98468.2
   x [1] =
-2041.34
+2102.69
   z [1] =
-98534
+98519.8
 pathType = 00000000
 [AiPath]
-old_ptr = d0fa420c
+old_ptr = f066440c
 size [1] =
 10
 label = cca_attack
@@ -7064,7 +7064,7 @@ points [12] =
 98407.3
 pathType = 00000000
 [AiPath]
-old_ptr = 88f7420c
+old_ptr = f868440c
 size [1] =
 5
 label = wave2
@@ -7081,7 +7081,7 @@ points [2] =
 98522.5
 pathType = 00000000
 [AiPath]
-old_ptr = 18f9420c
+old_ptr = 4869440c
 size [1] =
 10
 label = wave2_path
@@ -7106,7 +7106,7 @@ points [4] =
 98519.2
 pathType = 00000000
 [AiPath]
-old_ptr = 08fa420c
+old_ptr = c069440c
 size [1] =
 5
 label = wave1
@@ -7123,7 +7123,7 @@ points [2] =
 98234
 pathType = 00000000
 [AiPath]
-old_ptr = 48fb420c
+old_ptr = 9067440c
 size [1] =
 10
 label = wave1_path
@@ -7148,7 +7148,7 @@ points [4] =
 98252.8
 pathType = 00000000
 [AiPath]
-old_ptr = c8f8420c
+old_ptr = 1867440c
 size [1] =
 5
 label = wave3
@@ -7165,7 +7165,7 @@ points [2] =
 98686.8
 pathType = 00000000
 [AiPath]
-old_ptr = 68f9420c
+old_ptr = e067440c
 size [1] =
 10
 label = wave3_path
@@ -7201,12 +7201,12 @@ points [8] =
   z [1] =
 98287.8
   x [1] =
-2166.58
+2150.06
   z [1] =
-98417.8
+98485
 pathType = 00000000
 [AiPath]
-old_ptr = d8f7420c
+old_ptr = 0868440c
 size [1] =
 5
 label = wave4
@@ -7223,7 +7223,7 @@ points [2] =
 97672
 pathType = 00000000
 [AiPath]
-old_ptr = 50f8420c
+old_ptr = d865440c
 size [1] =
 10
 label = wave4_path
@@ -7263,12 +7263,12 @@ points [9] =
   z [1] =
 98379.7
   x [1] =
-2050.7
+2096.71
   z [1] =
-98453.5
+98480.6
 pathType = 00000000
 [AiPath]
-old_ptr = f0f8420c
+old_ptr = 5868440c
 size [1] =
 5
 label = wave5
@@ -7285,7 +7285,7 @@ points [2] =
 97585.8
 pathType = 00000000
 [AiPath]
-old_ptr = 40f9420c
+old_ptr = e869440c
 size [1] =
 10
 label = wave5_path
@@ -7317,12 +7317,12 @@ points [7] =
   z [1] =
 98359.7
   x [1] =
-2234.71
+2172.18
   z [1] =
-98443.5
+98510.8
 pathType = 00000000
 [AiPath]
-old_ptr = b8f9420c
+old_ptr = 4067440c
 size [1] =
 9
 label = bdog_base
@@ -7335,7 +7335,7 @@ points [1] =
 98520.2
 pathType = 00000000
 [AiPath]
-old_ptr = 28f8420c
+old_ptr = 0066440c
 size [1] =
 0
 pointCount [1] =
@@ -7351,7 +7351,7 @@ points [2] =
 97984.1
 pathType = 00000000
 [AiPath]
-old_ptr = b0f7420c
+old_ptr = 2866440c
 size [1] =
 11
 label = nsdf_return
@@ -7472,7 +7472,7 @@ points [28] =
 101269
 pathType = 00000000
 [AiPath]
-old_ptr = e0f9420c
+old_ptr = 206e440c
 size [1] =
 10
 label = cca_return

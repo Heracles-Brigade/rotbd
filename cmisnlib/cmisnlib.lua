@@ -355,7 +355,9 @@ ObjectiveInstance = {
                 self.subTasks[v] = {
                     running = false,
                     done = false,
-                    state = 0
+                    state = 0,
+                    success_count = 0,
+                    fail_count = 0
                 };
             end
         end
@@ -490,7 +492,8 @@ ObjectiveInstance = {
                 local pstate = t.state;
                 t.done = true;
                 t.state = 2;
-                self:parentCall('task_success',name,pstate <= 3,...);
+                t.success_count = t.success_count + 1;
+                self:parentCall('task_success',name,pstate <= 3,t.success_count==1,...);
             end
         end,
         taskReset = function(self,name,...)
@@ -507,7 +510,8 @@ ObjectiveInstance = {
                 local pstate = t.state;
                 t.done = true;
                 t.state = 3;
-                self:parentCall('task_fail',name,pstate <= 3,...);
+                t.fail_count = t.fail_count + 1;
+                self:parentCall('task_fail',name,pstate <= 3,t.fail_count==0,...);
             end
         end,
         save = function(self,...)
