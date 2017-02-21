@@ -12,7 +12,7 @@ local TaskManager;
 local _GetOdf = GetOdf;
 
 function table.pack(...)
-  return { n = select("#", ...); ... };
+  return { n = select("#", ...), ... };
 end
 local old_unpack = unpack;
 
@@ -140,11 +140,27 @@ TaskSequencer = {
         clear = function(self)
             self.tasks = {};
         end,
+        push = function(self,...)
+            table.insert(self.tasks,1,{type=1,args{...}});
+        end,
+        push2 = function(self,fname,...)
+            table.insert(self.tasks,1,{type=2,fname=fname,args={...}});
+        end,
+        push3 = function(self,fname,...)
+            local args = {...};
+            table.insert(args,self);
+            table.insert(self.tasks,1,{type=2,fname=fname,args=args});
+        end,
         queue = function(self,...)
             table.insert(self.tasks,{type=1,args={...}});
         end,
         queue2 = function(self,fname,...)
             table.insert(self.tasks,{type=2,fname=fname,args={...}});
+        end,
+        queue3 = function(self,fname,...)
+            local args = {...};
+            table.insert(args,self);
+            table.insert(self.tasks,{type=2,fname=fname,args=args});
         end
     }
 }
@@ -253,7 +269,7 @@ UnitTracker = {
             return self:totalByOdf(odf,team) >= count;
         end,
         gotOfClass = function(self,class,count,team)
-            return self:countByClass(class,team) >= count;     
+            return self:countByClass(class,team) >= count;
         end,
         gotOfOdf = function(self,odf,count,team)
             return self:countByOdf(odf,team) >= count;
@@ -442,12 +458,12 @@ ObjectiveInstance = {
                 return self.subTasks[name].state > 0;
             end
         end,
-        startTask = function(self,name)
+        startTask = function(self,name,...)
             if(self.subTasks[name]) then
                 local t = self.subTasks[name];
                 t.state = 1;
                 t.running = true;
-                self:parentCall('task_start',name);
+                self:parentCall('task_start',name,...);
             end
         end,
         _tasksWithState = function(self,state)
@@ -468,30 +484,30 @@ ObjectiveInstance = {
         taskCount = function(self)
             return self.subCount;
         end,
-        taskSucceed = function(self,name)
+        taskSucceed = function(self,name,...)
             if(self.subTasks[name]) then
                 local t = self.subTasks[name];
                 local pstate = t.state;
                 t.done = true;
                 t.state = 2;
-                self:parentCall('task_success',name,pstate <= 3);
+                self:parentCall('task_success',name,pstate <= 3,...);
             end
         end,
-        taskReset = function(self,name)
+        taskReset = function(self,name,...)
             if(self.subTasks[name]) then
                 local t = self.subTasks[name];
                 t.done = false;
                 t.state = t.state + 3;
-                self:parentCall('task_reset',name);
+                self:parentCall('task_reset',name,...);
             end 
         end,
-        taskFail = function(self,name)
+        taskFail = function(self,name,...)
             if(self.subTasks[name]) then
                 local t = self.subTasks[name];
                 local pstate = t.state;
                 t.done = true;
                 t.state = 3;
-                self:parentCall('task_fail',name,pstate <= 3);
+                self:parentCall('task_fail',name,pstate <= 3,...);
             end
         end,
         save = function(self,...)
