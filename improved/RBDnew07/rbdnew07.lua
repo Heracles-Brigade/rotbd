@@ -1,3 +1,5 @@
+--Rev_1
+
 
 local mission = require('cmisnlib');
 local globals = {};
@@ -17,13 +19,15 @@ function TugPickup(handle,target,priority,sequencer)
   end
 end
 
-
+--All the otfs we use
 local otfs = {
   escort = "rbd0701.otf",
   relics = "rbd07ob1.otf",
   nsdf_distress = "rbd0703.otf",
   cca_distress = "rbd0704.otf"
 }
+
+--All the description files we use
 local des = {
   loseRecycler = "rbd07los.des",
   loseTug = "rbd07l04.des",
@@ -33,11 +37,18 @@ local des = {
   relic_destroyed = "rbd07l03.des"
 }
 
+--the tug's label
 local tugL = "relic_tug";
 
+--[[
+  TODO:
+    -Get feedback
+    -Adjust difficulty (wave size, timers, etc)
+    -Create cinematic for tugs
+]]
 
 
-
+--Objective for escorting recycler
 local escortRecycler = mission.Objective:define("escortRecycler"):createTasks(
   "escort","attack_wait1","attack_wait2","attack_wait3","kill_attackers"
 ):setListeners({
@@ -46,11 +57,15 @@ local escortRecycler = mission.Objective:define("escortRecycler"):createTasks(
     self.tug = GetHandle(tugL);
   end,
   start = function(self)
+    --How long do we wait before we spawn each wave?
     self.wave_wait = {2,25,1};
+    --Start all "tasks"
     self:startTask("attack_wait1");
     self:startTask("attack_wait2");
     self:startTask("attack_wait3");
     self:startTask("escort");
+    --List of attackers, will be populated as
+    --waves start
     self.attackers = {};
     AddObjective(otfs.escort,"white");
   end,
@@ -69,16 +84,13 @@ local escortRecycler = mission.Objective:define("escortRecycler"):createTasks(
       self:success();
     end
   end,
-  task_fail = function()
-    self:fail();
-  end,
   success = function(self)
     RemoveObjective(otfs.escort);
     mission.Objective:Start("reteriveRelics");
   end,
-  fail = function(self,c)
+  fail = function(self,reason)
     UpdateObjective(otfs.escort,"red");
-    FailMission(GetTime() + 5,des[c]);
+    FailMission(GetTime() + 5,des[reason]);
   end,
   delete_object = function(self,h)
     if(self:isTaskActive("kill_attackers") and mission.areAllDead(self.attackers)) then
@@ -117,7 +129,7 @@ local escortRecycler = mission.Objective:define("escortRecycler"):createTasks(
   end
 })
 
---setUpBase is not used
+--setUpBase objective that isn't currently used
 local setUpBase = mission.Objective:define("setUpBase"):setListeners({
   start = function()
     AddObjective(otfs.createBase);
@@ -138,6 +150,8 @@ local setUpBase = mission.Objective:define("setUpBase"):setListeners({
   end
 });
 
+
+--Objective for getting relic
 local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
   "relic_nsdf","relic_cca","relic_nsdf_pickup","relic_cca_pickup","distress"
 ):setListeners({
@@ -295,13 +309,11 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
     end
   end,
   task_success = function(self,name,first,first_s)
-    --If you pick up relic1 then make cca try to take relic2?
-    --also send attack forces after tug, try to take relic if tug is lost?
-    --Vise versa
-    print("Task succeeded",name,first);
+    
     if(name == "distress") then
       UpdateObjective(otfs[("%s_distress"):format(self.distress_faction)],"green");
     end
+
     if(first_s) then
       for i,v in pairs(self.relics) do
         local pickup_task = i .. "_pickup";
@@ -339,22 +351,32 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
       self:fail(("%s_loss"):format(name));
     end
     if(name == "relic_nsdf_pickup" or name == "relic_cca_pickup") then
+      --Paint the enemy tug carrying the relic
       SetObjectiveOn(a1);
+      --Unpaint the relic
       SetObjectiveOff(a2);
+      --Set relic's team to 2, so that the AI can attack
+      --the tug carrying it, might want to do this when the
+      --players tug also captures the relic
       SetTeamNum(a2,2);
     end
   end,
   task_reset = function(self,name,a1,a2)
     if(name == "relic_nsdf_pickup" or name == "relic_cca_pickup") then
+      --Unpain the tug carrying the relic
       SetObjectiveOff(a1);
+      --Pain the relic
       SetObjectiveOn(a2);
+      --Reset team of the relic to 0
       SetTeamNum(a2,0);
     end
   end,
   save = function(self)
+    --Vars we need to save
     return self.distress_faction, self.bufferTime;
   end,
   load = function(self,...)
+    --Vars we need to load
     self.distress_faction,self.bufferTime = ...;
   end,
   fail = function(self,kind)
@@ -370,15 +392,8 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
 
 function Start()
   SetScrap(1,16);
-
-  for h in AllCraft() do
-    if (GetTeamNum(h) == 2) then
-      Defend(h, 1);
-    end
-  end
+  --Start objective to escort recycler
   escortRecycler:start();
-  --fetch = getRelics:start();
-
 end
 
 function Update(dtime)
