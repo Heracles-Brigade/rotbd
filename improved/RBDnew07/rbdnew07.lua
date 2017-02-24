@@ -204,17 +204,47 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
     self:startTask("relic_nsdf_pickup");
     self:startTask("relic_cca_pickup");
     --Give the player some time to build units
-    --Timer will be set to 60 if the player
+    --Timer will be set to 30 if the player
     --picks up one of the relics
-    self.bufferTime = 500;
-    self.spawnedEnemyTugs = false;
+    local ranC = math.random(0,1);
+    self.bufferTime = {
+      cca = ranC*100 + 300,
+      nsdf = math.abs(ranC-1)*100 + 300
+    };
+    self.tugstate = 0;
+    self.spawnedEnemyTugs = {
+      cca = false,
+      nsdf = false
+    };
+    self.waveTimer = {
+      cca = ranC*60 + 60,
+      nsdf = math.abs(rancC-1)*60 + 60
+    }
     AddObjective(otfs.relics,"white",16);
   end,
   update = function(self,dtime)
-    self.bufferTime = self.bufferTime - dtime;
-    if((self.bufferTime <= 0) and (not self.spawnedEnemyTugs)) then
-      for i,v in pairs(self.relics) do
-        local f = self.enemies[i];
+
+    for i,v in pairs(self.relics) do
+      local f = self.enemies[i];
+      --Wave timer
+      self.waveTimer[f] = self.waveTimer[f] - dtime;
+      if(self.waveTimer[f] <= 0) then
+        self.waveTimer[f] = 60;
+        local possibleWaves = {{"1 3 1"},{"1 2 1"}};
+        local wave = possibleWaves[math.random(1,2)];
+        for i,v in pairs(mission.spawnInFormation2(wave,("%s_path"):format(f),self.vehicles[f],2,15)) do
+          local def_seq = mission.TaskManager:sequencer(v);
+          --Goto relic site
+          def_seq:queue2("Goto",("%s_path"):format(f));
+          --Attack players base
+          def_seq:queue2("Goto",("%s_attack"):format(f));
+        end
+      end
+      --Tug timer
+      self.bufferTime[f] = self.bufferTime[f] - dtime;
+      if((self.bufferTime[f] <= 0) and (not self.spawnedEnemyTugs[f])) then
+        
+        self.spawnedEnemyTugs[f]= true;
         local s = ("%s_spawn"):format(f);
         local tug = BuildObject(self.vehicles[f][4],2,s);
         --Create a sequence with all the tugs actions from creation to end
@@ -240,11 +270,8 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
           --Attack players base
           def_seq:queue2("Goto",("%s_attack"):format(f));
         end
-        
       end
-      self.spawnedEnemyTugs = true;
-    end
-    for i,v in pairs(self.relics) do
+      
       --Check which base the relics are in if any at all
       local bdog, cca, nsdf = GetDistance(v,"bdog_base") < 100,
                               GetDistance(v,"cca_base") < 100,
@@ -324,11 +351,12 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
         --If we have picked up one of the relics
         if(name == pickup_task) then
           --AI has no time to lose
-          self.bufferTime = math.min(self.bufferTime,60);
+          self.bufferTime[faction] = math.min(self.bufferTime[faction],30);
+          self.bufferTime[other_faction] = math.min(self.bufferTime[other_faction],30);
           --If there hasn't been a distress call yet
           if(not self:hasTaskStarted("distress")) then
             --The other faction should create a distress call
-            self:startTask("distress",other_faction);
+            self:startTask("distress",faction);
           end
         end
         if(name == i) then
@@ -373,11 +401,11 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
   end,
   save = function(self)
     --Vars we need to save
-    return self.distress_faction, self.bufferTime;
+    return self.distress_faction, self.bufferTime,self.spawnedEnemyTugs;
   end,
   load = function(self,...)
     --Vars we need to load
-    self.distress_faction,self.bufferTime = ...;
+    self.distress_faction,self.bufferTime,self.spawnedEnemyTugs = ...;
   end,
   fail = function(self,kind)
     FailMission(GetTime() + 5,des[kind]);
