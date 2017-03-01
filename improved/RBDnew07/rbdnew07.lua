@@ -1,9 +1,21 @@
---Rev_1
-
-
+--Rev_2
 local mission = require('cmisnlib');
 local globals = {};
 local tracker = mission.UnitTracker:new();
+
+
+--"Warming" up the RNG
+for i=1, math.random(100,1000) do
+  math.random();
+end
+
+--1.5 polyfill
+Formation = Formation or function(me,him,priority)
+  if(priority == nil) then
+    priority = 1;
+  end
+  SetCommand(me,AiCommand["FORMATION"],priority,him);
+end
 
 
 function TugPickup(handle,target,priority,sequencer)
@@ -12,7 +24,7 @@ function TugPickup(handle,target,priority,sequencer)
     --If another tug has the relic, goto the relic
     Goto(handle,target,priority);
     --When reached the relic, do a check again
-    sequencer:push2("TugPickup",target,priority);
+    sequencer:push3("TugPickup",target,priority);
   else
     --Else try to pickup the relic
     Pickup(handle,target,priority);
@@ -24,7 +36,9 @@ local otfs = {
   escort = "rbd0701.otf",
   relics = "rbd07ob1.otf",
   nsdf_distress = "rbd0703.otf",
-  cca_distress = "rbd0704.otf"
+  cca_distress = "rbd0704.otf",
+  nsdf_tug = "rbd0705.otf",
+  cca_tug = "rbd0706.otf"
 }
 
 --All the description files we use
@@ -158,7 +172,9 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
   init = function(self)
     self.enemies = {
       relic_nsdf = "nsdf",
-      relic_cca = "cca"
+      relic_cca = "cca",
+      relic_nsdf_pickup = "nsdf",
+      relic_cca_pickup = "cca"
     }
     self.other = {
       nsdf = "cca",
@@ -169,8 +185,8 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
       relic_cca = GetHandle("relic_cca")
     }
     self.vehicles = {
-      cca = {"svfigh","svtank","svrckt","svhaul","svwalk","svhraz"},
-      nsdf = {"avfigh","avtank","avltnk","avhaul","avwalk","avhraz"}
+      cca = {"svfigh","svtank","svrckt","svhaul","svltnk","svhraz"},
+      nsdf = {"avfigh","avtank","avltnk","avhaul","avrckt","avhraz"}
     }
     self.waves = {
       relic_nsdf = "wave5",
@@ -178,6 +194,7 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
     }
     self.tug = GetHandle(tugL);
     self.recy = GetRecyclerHandle();
+    self.waveInterval = 140;
   end,
   start = function(self)
     --Spawn attack @ nsdf_attack
@@ -194,7 +211,7 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
       def_seq:queue2("Goto",("nsdf_attack"):format(f));
     end
 
-    for i,v in pairs(mission.spawnInFormation2({"5 5"},("cca_attack"),self.vehicles.cca,2,15)) do
+    for i,v in pairs(mission.spawnInFormation2({" 1 ","5 5"},("cca_attack"),self.vehicles.cca,2,15)) do
       Goto(v,("cca_attack"));
     end
 
@@ -208,42 +225,53 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
     --picks up one of the relics
     local ranC = math.random(0,1);
     self.bufferTime = {
-      cca = ranC*100 + 300,
-      nsdf = math.abs(ranC-1)*100 + 300
+      cca = ranC*500 + 500,
+      nsdf = math.abs(ranC-1)*500 + 500
     };
-    self.tugstate = 0;
     self.spawnedEnemyTugs = {
       cca = false,
       nsdf = false
     };
     self.waveTimer = {
-      cca = ranC*60 + 60,
-      nsdf = math.abs(rancC-1)*60 + 60
-    }
+      cca = ranC*self.waveInterval + self.waveInterval,
+      nsdf = math.abs(ranC-1)*self.waveInterval + self.waveInterval
+    };
+    self.distressCountdown = 5;
     AddObjective(otfs.relics,"white",16);
   end,
   update = function(self,dtime)
 
     for i,v in pairs(self.relics) do
       local f = self.enemies[i];
+      local ptask = i .. "_pickup";
       --Wave timer
       self.waveTimer[f] = self.waveTimer[f] - dtime;
       if(self.waveTimer[f] <= 0) then
-        self.waveTimer[f] = 60;
-        local possibleWaves = {{"1 3 1"},{"1 2 1"}};
+        self.waveTimer[f] = self.waveInterval;
+        local possibleWaves = {{" 2 ","1 1"},{" 2 ","6 6"}};
         local wave = possibleWaves[math.random(1,2)];
+        local lead;
         for i,v in pairs(mission.spawnInFormation2(wave,("%s_path"):format(f),self.vehicles[f],2,15)) do
           local def_seq = mission.TaskManager:sequencer(v);
-          --Goto relic site
-          def_seq:queue2("Goto",("%s_path"):format(f));
-          --Attack players base
-          def_seq:queue2("Goto",("%s_attack"):format(f));
+          if(i~=1) then
+            def_seq:queue2("Formation",lead);
+            def_seq:queue2("Goto",("%s_attack"):format(f));
+          else
+            lead = v;
+            --Goto relic site
+            def_seq:queue2("Goto",("%s_path"):format(f));
+            --Attack players base
+            def_seq:queue2("Goto",("%s_attack"):format(f));
+          end
+
         end
       end
       --Tug timer
       self.bufferTime[f] = self.bufferTime[f] - dtime;
       if((self.bufferTime[f] <= 0) and (not self.spawnedEnemyTugs[f])) then
-        
+        if(not (self:hasTaskSucceeded(i) or self:hasTaskSucceeded(ptask)) ) then
+          AddObjective(otfs[("%s_tug"):format(f)],color);
+        end
         self.spawnedEnemyTugs[f]= true;
         local s = ("%s_spawn"):format(f);
         local tug = BuildObject(self.vehicles[f][4],2,s);
@@ -277,7 +305,6 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
                               GetDistance(v,"cca_base") < 100,
                               GetDistance(v,"nsdf_base") < 100;
       local tug = GetTug(v);
-      local ptask = i .. "_pickup";
       --If no one has capture the relic yet
       if(self:isTaskActive(i)) then
       --If bdog has it, set state to succeeded
@@ -319,16 +346,23 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
         end
         self:taskSucceed("distress");
       end
+    elseif(self.distress_faction and (not self:hasTaskStarted("distress")) ) then
+      self.distressCountdown = self.distressCountdown - dtime;
+      if(self.distressCountdown <= 0) then
+        self:startTask("distress",self.distress_faction);
+      end
     end
     if(not IsValid(self.tug)) then
       self:fail("loseTug");
     elseif(not IsValid(self.recy)) then
       self:fail("loseRecycler");
     end
+    if(mission.areAnyDead(self.relics)) then
+      self:fail("relic_destroyed");
+    end
   end,
   task_start = function(self,name,a1)
     if(name == "distress") then
-      self.distress_faction = a1;
       local distress_l = ("%s_distress"):format(a1); 
       local nav = BuildObject("apcamr",1,distress_l);
       SetObjectiveName(nav,"Distress Call");
@@ -336,7 +370,10 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
     end
   end,
   task_success = function(self,name,first,first_s)
-    
+    local fac = self.enemies[name];
+    if(name == "relic_cca" or name == "relic_nsdf") then
+      UpdateObjective(otfs[("%s_tug"):format(fac)],"green");
+    end
     if(name == "distress") then
       UpdateObjective(otfs[("%s_distress"):format(self.distress_faction)],"green");
     end
@@ -347,18 +384,20 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
         local faction = self.enemies[i];
         local other_faction = self.other[faction];
         local other_task = ("relic_%s"):format(other_faction);
+        local other_pickup_task = other_task .. "_pickup";
         local other_relic = self.relics[other_task];
         --If we have picked up one of the relics
         if(name == pickup_task) then
           --AI has no time to lose
           self.bufferTime[faction] = math.min(self.bufferTime[faction],30);
-          self.bufferTime[other_faction] = math.min(self.bufferTime[other_faction],30);
+          self.bufferTime[other_faction] = math.min(self.bufferTime[other_faction],180);
           --If there hasn't been a distress call yet
-          if(not self:hasTaskStarted("distress")) then
-            --The other faction should create a distress call
-            self:startTask("distress",faction);
+          if(self:hasTaskSucccededBefore(other_pickup_task) and (not self:hasTaskStarted("distress"))) then
+            --The same faction should create a distress call
+            self.distress_faction = faction;
           end
         end
+
         if(name == i) then
           --Spawn wave4 or wave5
           local p = self.waves[i];
@@ -370,15 +409,18 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
       end
     end
     --If we have both relics this objective succeeds
-    if(self:hasTasksSucceeded("relic_nsdf","relic_cca")) then
+    if(self:hasTasksSucceeded("relic_nsdf","relic_cca","distress")) then
       self:success();
     end
   end,
   task_fail = function(self,name,first,first_f,a1,a2)
+    local fac = self.enemies[name];
     if(name == "relic_nsdf" or name == "relic_cca") then
+      UpdateObjective(otfs[("%s_tug"):format(fac)],"red");
       self:fail(("%s_loss"):format(name));
     end
     if(name == "relic_nsdf_pickup" or name == "relic_cca_pickup") then
+      --UpdateObjective(otfs[("%s_tug"):format(fac)],"yellow");
       --Paint the enemy tug carrying the relic
       SetObjectiveOn(a1);
       --Unpaint the relic
@@ -390,6 +432,10 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
     end
   end,
   task_reset = function(self,name,a1,a2)
+    local fac = self.enemies[name];
+    if(name == "relic_nsdf" or name == "relic_cca") then
+      UpdateObjective(otfs[("%s_tug"):format(fac)],"white");
+    end
     if(name == "relic_nsdf_pickup" or name == "relic_cca_pickup") then
       --Unpain the tug carrying the relic
       SetObjectiveOff(a1);
@@ -401,11 +447,11 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
   end,
   save = function(self)
     --Vars we need to save
-    return self.distress_faction, self.bufferTime,self.spawnedEnemyTugs;
+    return self.distress_faction, self.bufferTime,self.spawnedEnemyTugs,self.waveTimer,self.distressCountdown;
   end,
   load = function(self,...)
     --Vars we need to load
-    self.distress_faction,self.bufferTime,self.spawnedEnemyTugs = ...;
+    self.distress_faction,self.bufferTime,self.spawnedEnemyTugs,self.waveTimer,self.distressCountdown = ...;
   end,
   fail = function(self,kind)
     FailMission(GetTime() + 5,des[kind]);
@@ -419,7 +465,8 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
 
 
 function Start()
-  SetScrap(1,16);
+  SetScrap(1,10);
+  SetPilot(1,25)
   --Start objective to escort recycler
   escortRecycler:start();
 end

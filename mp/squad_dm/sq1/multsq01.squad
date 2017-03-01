@@ -1,2 +1,2 @@
 [Meta]
-inherits="default.squads"
+parent="default.squads"

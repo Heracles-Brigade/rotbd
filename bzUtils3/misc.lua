@@ -49,7 +49,6 @@ end
 
 local function str2vec(str)
   local m = str:gmatch("%s*(%-?%d*%.?%d*)%a*%s*,?");
-  --return SetVector(0,0,0);
   return SetVector(m(),m(),m());
 end
 
@@ -206,39 +205,57 @@ local odfHeader = Class("odfHeader",{
     end
   }
 })
-
-local odfFile = Class("odfFile",{
+local odfFile;
+odfFile = Class("odfFile",{
   constructor = function(fileName)
     self.name = fileName;
     self.file = OpenODF(fileName);
     self.headers = {};
-    print(self.file);
+    local parent = self:getProperty("Meta","parent");
+    if(parent) then
+      self.parent =  odfFile(parent);
+    end
     --assert(self.file,"Could not open \"%s\"!",self.name);
   end,
   methods = {
     getHeader = function(headerName)
-      if(not self.headers[headerName]) then
-          self.headers[headerName] = odfHeader(self.file,headerName);
+      local this = self;
+      if(not this.headers[headerName]) then
+          this.headers[headerName] = odfHeader(this.file,headerName);
       end
-      return self.headers[headerName];
+      return this.headers[headerName];
     end,
     getInt = function(header,...)
-      return self:getHeader(header):getAsInt(...);
+      local this = self;
+      return (this:getHeader(header):getVar(...)~=nil and this:getHeader(header):getAsInt(...))
+              or (this.parent and this.parent:getInt(header,...));
     end,
     getFloat = function(header,...)
-      return self:getHeader(header):getAsFloat(...);
+      local this = self;
+      return (this:getHeader(header):getVar(...)~=nil and this:getHeader(header):getAsFloat(...))
+              or (this.parent and this.parent:getFloat(header,...));
     end,
     getProperty = function(header,...)
-      return self:getHeader(header):getVar(...);
+      local this = self;
+      return this:getHeader(header):getVar(...) or (this.parent and this.parent:getProperty(header,...));
     end,
     getBool = function(header,...)
-      return self:getHeader(header):getAsBool(...);
+      local this = self;
+      return (this:getHeader(header):getVar(...)~=nil and this:getHeader(header):getAsBool(...))
+              or (this.parent and this.parent:getBool(header,...));
     end,
     getTable = function(header,...)
-      return self:getHeader(header):getAsTable(...);
+      local this = self;
+      local t1 = this:getHeader(header):getAsTable(...);
+      if(#t1 <= 0) then
+        t1 = (this.parent and this.parent:getTable(header,...)) or t1;
+      end
+      return t1;
     end,
     getVector = function(header,...)
-      return self:getHeader(header):getAsVector(...);
+      local this = self;
+      return (this:getHeader(header):getVar(...)~=nil and this:getHeader(header):getAsVector(...))
+              or (this.parent and this.parent:getVector(header,...));
     end,
     isValid = function()
       return self.file ~= nil;
@@ -274,7 +291,7 @@ local function spawnInFormation(formation,location,dir,units,team,seperation)
 end
 
 local function spawnInFormation2(formation,location,units,team,seperation)
-    return spawnInFormation(formation,GetPosition(location,0),GetPosition(location,1) - GetPosition(location,0),units,team,seperation);
+  return spawnInFormation(formation,GetPosition(location,0),GetPosition(location,1) - GetPosition(location,0),units,team,seperation);
 end
 
 --Div interfaces
@@ -503,6 +520,9 @@ local Timer = Decorate(
             end
           end
         end
+      end,
+      setTime = function(time)
+        self.time = time;
       end,
       start = function()
         self.running = true;

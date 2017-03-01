@@ -1,0 +1,15 @@
+[GameObjectClass]
+baseName = "apcamr"
+classLabel = "camerapod"
+scrapCost = 1
+scrapValue = 0
+maxHealth = 0
+maxAmmo = 0
+unitName = "Nav"
+aiName = "PowerUpProcess"
+
+[CameraPodClass]
+omegaSpin = 1.0
+rangeScan = 0.0
+periodScan = 0.0
+

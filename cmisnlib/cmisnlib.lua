@@ -128,6 +128,9 @@ TaskSequencer = {
                     SetCommand(self.handle,unpack(next.args));
                 elseif(next.type == 2) then
                     _G[next.fname](self.handle,unpack(next.args));
+                elseif(next.type == 3) then
+                    table.insert(next.args,self);
+                    _G[next.fname](self.handle,unpack(next.args));
                 end
             end
         end,
@@ -148,8 +151,7 @@ TaskSequencer = {
         end,
         push3 = function(self,fname,...)
             local args = {...};
-            table.insert(args,self);
-            table.insert(self.tasks,1,{type=2,fname=fname,args=args});
+            table.insert(self.tasks,1,{type=3,fname=fname,args=args});
         end,
         queue = function(self,...)
             table.insert(self.tasks,{type=1,args={...}});
@@ -159,8 +161,7 @@ TaskSequencer = {
         end,
         queue3 = function(self,fname,...)
             local args = {...};
-            table.insert(args,self);
-            table.insert(self.tasks,{type=2,fname=fname,args=args});
+            table.insert(self.tasks,{type=3,fname=fname,args=args});
         end
     }
 }
@@ -448,6 +449,12 @@ ObjectiveInstance = {
         end,
         hasTaskSucceeded = function(self,name)
             return self:_hasTaskState(name,2);
+        end,
+        hasTaskSucccededBefore = function(self,name)
+            return self.subTasks[name].success_count > 0;
+        end,
+        hasTaskFailedBefore = function(self,name)
+            return self.subTasks[name].fail_count > 0;
         end,
         hasTasksFailed = function(self,...)
             return self:_hasTasksState(3,...)

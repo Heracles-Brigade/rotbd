@@ -4,12 +4,12 @@ binarySave [1] =
 false
 msn_filename = rbdnew07.bzn
 seq_count [1] =
-61
+64
 missionSave [1] =
 true
 TerrainName = rbdnew07
 size [1] =
-49
+52
 [GameObject]
 PrjID [1] =
 bvtank
@@ -30,23 +30,23 @@ isUser [1] =
 obj_addr = 00B01D68
 transform [1] =
   right_x [1] =
-0.847329
+0.847328
   right_y [1] =
-2.8026e-045
+1.26171e-012
   right_z [1] =
-0.531076
+0.531078
   up_x [1] =
--2.8026e-045
+1.40359e-006
   up_y [1] =
 1.00001
   up_z [1] =
--0
+-2.23942e-006
   front_x [1] =
--0.531076
+-0.531078
   front_y [1] =
--1.4013e-045
+2.64292e-006
   front_z [1] =
-0.847329
+0.847328
   posit_x [1] =
 2801.85
   posit_y [1] =
@@ -70,34 +70,34 @@ euler =
  mass_inv [1] =
 0.000666667
  v_mag [1] =
-7.18089e-008
+5.0129e-008
  v_mag_inv [1] =
-1.39258e+007
+1.99485e+007
  I [1] =
 1500
  k_i [1] =
 1
  v [1] =
   x [1] =
-0
+-2.59806e-014
   y [1] =
-7.18089e-008
+-5.0129e-008
   z [1] =
-0
+4.14518e-014
  omega [1] =
   x [1] =
-1.4013e-045
+1.35713e-005
   y [1] =
 0
   z [1] =
-2.8026e-045
+1.61385e-011
  Accel [1] =
   x [1] =
-0
+-3.38176e-012
   y [1] =
-9.51882e-008
+-1.81217e-006
   z [1] =
-0
+5.39556e-012
 seqNo [1] =
 1
 name = 
@@ -1812,7 +1812,7 @@ transform [1] =
   right_x [1] =
 -0.771423
   right_y [1] =
-0.232868
+0.232867
   right_z [1] =
 0.592189
   up_x [1] =
@@ -3841,7 +3841,7 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-985.276
+985.275
   y [1] =
 183.441
   z [1] =
@@ -5219,7 +5219,7 @@ isUser [1] =
 obj_addr = 00AF8168
 transform [1] =
   right_x [1] =
--0.560557
+-0.560556
   right_y [1] =
 0
   right_z [1] =
@@ -6034,7 +6034,7 @@ pos [1] =
   x [1] =
 2029.58
   y [1] =
-49.2513
+49.2514
   z [1] =
 99730.4
 euler =
@@ -6161,7 +6161,7 @@ pos [1] =
   x [1] =
 2029.76
   y [1] =
-49.2513
+49.2514
   z [1] =
 99670.2
 euler =
@@ -6432,7 +6432,7 @@ pos [1] =
   x [1] =
 2818.23
   y [1] =
-36.0924
+36.0925
   z [1] =
 97984.1
 euler =
@@ -6497,7 +6497,388 @@ priority [1] =
 what = 03000000
 who [1] =
 0
-where = 0C4468D0
+where = 0C516438
+param [1] =
+0
+aiProcess [1] =
+true
+isCargo [1] =
+false
+independence [1] =
+1
+curPilot [1] =
+
+perceivedTeam [1] =
+1
+[GameObject]
+PrjID [1] =
+apcmri
+seqno [1] =
+61
+pos [1] =
+  x [1] =
+2139.8
+  y [1] =
+42.3
+  z [1] =
+98559.6
+team [1] =
+1
+label = apcmri0_camerapod
+isUser [1] =
+0
+obj_addr = 00AF5968
+transform [1] =
+  right_x [1] =
+1
+  right_y [1] =
+0
+  right_z [1] =
+0
+  up_x [1] =
+0
+  up_y [1] =
+1
+  up_z [1] =
+0
+  front_x [1] =
+0
+  front_y [1] =
+0
+  front_z [1] =
+1.00001
+  posit_x [1] =
+2139.8
+  posit_y [1] =
+42.3
+  posit_z [1] =
+98559.6
+illumination [1] =
+1
+pos [1] =
+  x [1] =
+2139.8
+  y [1] =
+44.1579
+  z [1] =
+98559.7
+euler =
+ mass [1] =
+0
+ mass_inv [1] =
+1e+030
+ v_mag [1] =
+0
+ v_mag_inv [1] =
+1e+030
+ I [1] =
+1
+ k_i [1] =
+0
+ v [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ omega [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ Accel [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+seqNo [1] =
+61
+name = Geyser Site
+isObjective [1] =
+false
+isSelected [1] =
+false
+isVisible [1] =
+ffffffff
+seen [1] =
+0
+healthRatio [1] =
+1
+curHealth [1] =
+0
+maxHealth [1] =
+0
+ammoRatio [1] =
+0
+curAmmo [1] =
+0
+maxAmmo [1] =
+0
+priority [1] =
+0
+what = 00000000
+who [1] =
+0
+where = 00000000
+param [1] =
+0
+aiProcess [1] =
+true
+isCargo [1] =
+false
+independence [1] =
+1
+curPilot [1] =
+
+perceivedTeam [1] =
+1
+[GameObject]
+PrjID [1] =
+apcmri
+seqno [1] =
+62
+pos [1] =
+  x [1] =
+1883.24
+  y [1] =
+36
+  z [1] =
+99684.7
+team [1] =
+1
+label = apcmri1_camerapod
+isUser [1] =
+0
+obj_addr = 00AF5568
+transform [1] =
+  right_x [1] =
+1
+  right_y [1] =
+0
+  right_z [1] =
+0
+  up_x [1] =
+0
+  up_y [1] =
+1
+  up_z [1] =
+0
+  front_x [1] =
+0
+  front_y [1] =
+0
+  front_z [1] =
+1.00001
+  posit_x [1] =
+1883.24
+  posit_y [1] =
+36
+  posit_z [1] =
+99684.7
+illumination [1] =
+1
+pos [1] =
+  x [1] =
+1883.24
+  y [1] =
+37.8579
+  z [1] =
+99684.8
+euler =
+ mass [1] =
+0
+ mass_inv [1] =
+1e+030
+ v_mag [1] =
+0
+ v_mag_inv [1] =
+1e+030
+ I [1] =
+1
+ k_i [1] =
+0
+ v [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ omega [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ Accel [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+seqNo [1] =
+62
+name = West Relic
+isObjective [1] =
+false
+isSelected [1] =
+false
+isVisible [1] =
+ffffffff
+seen [1] =
+0
+healthRatio [1] =
+1
+curHealth [1] =
+0
+maxHealth [1] =
+0
+ammoRatio [1] =
+0
+curAmmo [1] =
+0
+maxAmmo [1] =
+0
+priority [1] =
+0
+what = 00000000
+who [1] =
+0
+where = 00000000
+param [1] =
+0
+aiProcess [1] =
+true
+isCargo [1] =
+false
+independence [1] =
+1
+curPilot [1] =
+
+perceivedTeam [1] =
+1
+[GameObject]
+PrjID [1] =
+apcmri
+seqno [1] =
+63
+pos [1] =
+  x [1] =
+3073.96
+  y [1] =
+45.9
+  z [1] =
+99534.5
+team [1] =
+1
+label = apcmri2_camerapod
+isUser [1] =
+0
+obj_addr = 00AF5168
+transform [1] =
+  right_x [1] =
+1
+  right_y [1] =
+0
+  right_z [1] =
+0
+  up_x [1] =
+0
+  up_y [1] =
+1
+  up_z [1] =
+0
+  front_x [1] =
+0
+  front_y [1] =
+0
+  front_z [1] =
+1.00001
+  posit_x [1] =
+3073.96
+  posit_y [1] =
+45.9
+  posit_z [1] =
+99534.5
+illumination [1] =
+1
+pos [1] =
+  x [1] =
+3073.96
+  y [1] =
+47.7579
+  z [1] =
+99534.6
+euler =
+ mass [1] =
+0
+ mass_inv [1] =
+1e+030
+ v_mag [1] =
+0
+ v_mag_inv [1] =
+1e+030
+ I [1] =
+1
+ k_i [1] =
+0
+ v [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ omega [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ Accel [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+seqNo [1] =
+63
+name = East Relic
+isObjective [1] =
+false
+isSelected [1] =
+false
+isVisible [1] =
+ffffffff
+seen [1] =
+0
+healthRatio [1] =
+1
+curHealth [1] =
+0
+maxHealth [1] =
+0
+ammoRatio [1] =
+0
+curAmmo [1] =
+0
+maxAmmo [1] =
+0
+priority [1] =
+0
+what = 00000000
+who [1] =
+0
+where = 00000000
 param [1] =
 0
 aiProcess [1] =
@@ -6511,16 +6892,16 @@ curPilot [1] =
 perceivedTeam [1] =
 1
 name = LuaMission
-sObject = 0BBB19B0
+sObject = 02F1D080
 [AiMission]
 [AOIs]
 size [1] =
 0
 [AiPaths]
 count [1] =
-26
+28
 [AiPath]
-old_ptr = 3068440c
+old_ptr = b866510c
 size [1] =
 9
 label = edge_path
@@ -6537,7 +6918,7 @@ points [2] =
 101917
 pathType = 00000000
 [AiPath]
-old_ptr = d068440c
+old_ptr = 3864510c
 size [1] =
 9
 label = recy_path
@@ -6610,7 +6991,7 @@ points [16] =
 98587
 pathType = 00000000
 [AiPath]
-old_ptr = 2069440c
+old_ptr = e066510c
 size [1] =
 9
 label = nsdf_path
@@ -6739,7 +7120,7 @@ points [30] =
 99764.4
 pathType = 00000000
 [AiPath]
-old_ptr = 8068440c
+old_ptr = 8864510c
 size [1] =
 8
 label = cca_path
@@ -6864,7 +7245,7 @@ points [29] =
 99560.7
 pathType = 00000000
 [AiPath]
-old_ptr = 8865440c
+old_ptr = 8067510c
 size [1] =
 13
 label = nsdf_distress
@@ -6877,7 +7258,7 @@ points [1] =
 99483.4
 pathType = 00000000
 [AiPath]
-old_ptr = c866440c
+old_ptr = 9868510c
 size [1] =
 11
 label = nsdf_ambush
@@ -6894,7 +7275,7 @@ points [2] =
 99458.2
 pathType = 00000000
 [AiPath]
-old_ptr = 106a440c
+old_ptr = 6064510c
 size [1] =
 12
 label = cca_distress
@@ -6907,7 +7288,7 @@ points [1] =
 99319.7
 pathType = 00000000
 [AiPath]
-old_ptr = 606a440c
+old_ptr = c068510c
 size [1] =
 10
 label = cca_ambush
@@ -6924,7 +7305,7 @@ points [2] =
 99217.3
 pathType = 00000000
 [AiPath]
-old_ptr = 9869440c
+old_ptr = 8869510c
 size [1] =
 10
 label = nsdf_spawn
@@ -6941,7 +7322,7 @@ points [2] =
 101292
 pathType = 00000000
 [AiPath]
-old_ptr = a868440c
+old_ptr = 1069510c
 size [1] =
 9
 label = cca_spawn
@@ -6958,7 +7339,7 @@ points [2] =
 101104
 pathType = 00000000
 [AiPath]
-old_ptr = 386a440c
+old_ptr = 6069510c
 size [1] =
 11
 label = nsdf_attack
@@ -7007,13 +7388,13 @@ points [10] =
 98519.8
 pathType = 00000000
 [AiPath]
-old_ptr = f066440c
+old_ptr = b069510c
 size [1] =
 10
 label = cca_attack
 pointCount [1] =
-12
-points [12] =
+16
+points [16] =
   x [1] =
 3051.92
   z [1] =
@@ -7059,12 +7440,28 @@ points [12] =
   z [1] =
 98237.7
   x [1] =
-2407.88
+2397.64
   z [1] =
-98407.3
+98417.5
+  x [1] =
+2365.45
+  z [1] =
+98448.7
+  x [1] =
+2328.88
+  z [1] =
+98470.7
+  x [1] =
+2261.59
+  z [1] =
+98486.8
+  x [1] =
+2122.63
+  z [1] =
+98539.4
 pathType = 00000000
 [AiPath]
-old_ptr = f868440c
+old_ptr = 3869510c
 size [1] =
 5
 label = wave2
@@ -7081,7 +7478,7 @@ points [2] =
 98522.5
 pathType = 00000000
 [AiPath]
-old_ptr = 4869440c
+old_ptr = 005b510c
 size [1] =
 10
 label = wave2_path
@@ -7101,12 +7498,12 @@ points [4] =
   z [1] =
 98504
   x [1] =
-2125.79
+2174.06
   z [1] =
-98519.2
+98525.1
 pathType = 00000000
 [AiPath]
-old_ptr = c069440c
+old_ptr = c05e510c
 size [1] =
 5
 label = wave1
@@ -7123,7 +7520,7 @@ points [2] =
 98234
 pathType = 00000000
 [AiPath]
-old_ptr = 9067440c
+old_ptr = 705e510c
 size [1] =
 10
 label = wave1_path
@@ -7148,7 +7545,7 @@ points [4] =
 98252.8
 pathType = 00000000
 [AiPath]
-old_ptr = 1867440c
+old_ptr = 285b510c
 size [1] =
 5
 label = wave3
@@ -7165,7 +7562,7 @@ points [2] =
 98686.8
 pathType = 00000000
 [AiPath]
-old_ptr = e067440c
+old_ptr = a85d510c
 size [1] =
 10
 label = wave3_path
@@ -7201,12 +7598,12 @@ points [8] =
   z [1] =
 98287.8
   x [1] =
-2150.06
+2145.67
   z [1] =
-98485
+98545
 pathType = 00000000
 [AiPath]
-old_ptr = 0868440c
+old_ptr = 805d510c
 size [1] =
 5
 label = wave4
@@ -7223,7 +7620,7 @@ points [2] =
 97672
 pathType = 00000000
 [AiPath]
-old_ptr = d865440c
+old_ptr = a05b510c
 size [1] =
 10
 label = wave4_path
@@ -7263,12 +7660,12 @@ points [9] =
   z [1] =
 98379.7
   x [1] =
-2096.71
+2162.54
   z [1] =
-98480.6
+98537.7
 pathType = 00000000
 [AiPath]
-old_ptr = 5868440c
+old_ptr = b85c510c
 size [1] =
 5
 label = wave5
@@ -7285,7 +7682,7 @@ points [2] =
 97585.8
 pathType = 00000000
 [AiPath]
-old_ptr = e869440c
+old_ptr = f05b510c
 size [1] =
 10
 label = wave5_path
@@ -7322,7 +7719,7 @@ points [7] =
 98510.8
 pathType = 00000000
 [AiPath]
-old_ptr = 4067440c
+old_ptr = 905c510c
 size [1] =
 9
 label = bdog_base
@@ -7335,7 +7732,7 @@ points [1] =
 98520.2
 pathType = 00000000
 [AiPath]
-old_ptr = 0066440c
+old_ptr = 405c510c
 size [1] =
 0
 pointCount [1] =
@@ -7351,7 +7748,7 @@ points [2] =
 97984.1
 pathType = 00000000
 [AiPath]
-old_ptr = 2866440c
+old_ptr = d85a510c
 size [1] =
 11
 label = nsdf_return
@@ -7472,7 +7869,7 @@ points [28] =
 101269
 pathType = 00000000
 [AiPath]
-old_ptr = 206e440c
+old_ptr = c85b510c
 size [1] =
 10
 label = cca_return
@@ -7587,4 +7984,30 @@ points [27] =
 3837.09
   z [1] =
 101140
+pathType = 00000000
+[AiPath]
+old_ptr = 185c510c
+size [1] =
+8
+label = cca_base
+pointCount [1] =
+1
+points [1] =
+  x [1] =
+3924.21
+  z [1] =
+100989
+pathType = 00000000
+[AiPath]
+old_ptr = 505b510c
+size [1] =
+9
+label = nsdf_base
+pointCount [1] =
+1
+points [1] =
+  x [1] =
+1043.33
+  z [1] =
+101368
 pathType = 00000000

@@ -1,0 +1,70 @@
+[GameObjectClass]
+baseName = "avhaul"
+classLabel = "tug"
+scrapValue = 5
+scrapCost = 6
+buildTime = 5.0
+maxHealth = 5000
+maxAmmo = 0
+unitName = "Tug"
+aiName = "TugFriend"
+aiName2 = "TugEnemy"
+
+heatSignature = 0.5
+imageSignature = 3.0
+radarSignature = 0.1
+
+pilotName = ""
+
+[CraftClass]
+rangeScan = 200.0
+periodScan = 0.0
+velocJam = 0.0
+
+selectWaitMsg = "avhaulv0.wav"
+selectGoMsg = "avhaulvc.wav"
+selectOtherMsg = "avhaulve.wav"
+
+followMsg = "avhaulv3.wav"
+repairMsg = "avhaulv4.wav"
+rescueMsg = "avhaulv5.wav"
+recycleMsg = "avhaulv6.wav"
+otherMsg = "avhaulvd.wav"
+diedMsg = "abetty3.wav"
+
+[HoverCraftClass]
+setAltitude = 1.5
+accelDragStop = 4.0
+accelDragFull = 1.0
+alphaTrack = 10.0
+alphaDamp = 3.0
+pitchPitch = 0.1
+pitchThrust = 0.1
+rollStrafe = 0.1
+rollSteer = 0.1
+
+velocForward = 8.0
+velocReverse = 8.0
+velocStrafe = 8.0
+accelThrust = 50.0
+accelBrake = 50.0
+omegaSpin = 2.0
+omegaTurn = 1.0
+alphaSteer = 5.0
+accelJump = 0.0
+
+flameParent1="aha11nrl"
+flameOffset1="0.2 -1.2 0.0"
+flameParent2="aha11nrr"
+flameOffset2="-0.2 -1.2 0.0"
+
+soundThrust = "avhaule3.wav"
+soundSteer = "avhaule5.wav"
+soundDeploy = "avhaule0.wav"
+soundUndeploy = "avhaule2.wav"
+
+[TugClass]
+selectCarryMsg = "avhaulvb.wav"
+pickupMsg = "avhaulv1.wav"
+dropoffMsg = "avhaulv2.wav"
+dockSpeed = 5.0

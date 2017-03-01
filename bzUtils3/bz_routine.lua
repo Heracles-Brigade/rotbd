@@ -32,7 +32,7 @@ local DefaultRuntimeModule = misc.DefaultRuntimeModule;
 
 local BzModule = misc.BzModule
 
-local RoutineInterface = Interface("RoutineInterface",{"isAlive"});
+local RoutineInterface = Interface("RoutineInterface",{"isAlive","onDestroy"});
 
 
 local function Routine(data)
@@ -124,7 +124,10 @@ local RoutineManager = D(
         Meta(self:getRoutine(routineId)).routine.running = true;
       end,
       killRoutine = function(routineId)
-        self.store.imap[routineId] = nil;
+        if(self.store.imap[routineId]) then
+          self.store.imap[routineId]:onDestroy();
+          self.store.imap[routineId] = nil;
+        end
       end,
       save = function()
         local objdata = {};

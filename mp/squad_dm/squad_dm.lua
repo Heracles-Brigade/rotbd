@@ -17,6 +17,7 @@ local Class = OOP.Class;
 
 local Routine = bzRoutine.Routine;
 
+
 local killOnNext = {};
   
 GetMissionFilename = GetMissionFilename or GetMapTRNFilename;
@@ -46,13 +47,13 @@ GetPathCount = function(path)
 end
 
 
-local missionBase = GetMissionFilename():match("%a+");
+local missionBase = GetMissionFilename():match("[^%p]+");
 
-local squadIni;-- = misc.odfFile(("%s.squads"):format(missionBase));
+local squadIni = misc.odfFile(("%s.squads"):format(missionBase));
 --print("Misn base:",missionBase);
 --print("Valid?",squadIni:isValid());
 --if(not squadIni:isValid()) then
-  squadIni = misc.odfFile("default.squads");
+  --squadIni = misc.odfFile("default.squads");
 --end
 if(EnableAllCloaking) then
   EnableAllCloaking(false);
@@ -106,6 +107,65 @@ end
 local ROUND_TIME = 60*5;
 local LOBBY_TIME = 10;
 local SURVIVE_TIME = 15;
+
+
+
+local roundBasedGame2 = Decorate(
+  Implements(PlayerListener, ObjectListener),
+  Routine({
+    name = "gameManager",
+    delay = 0.1
+  }),
+  Class("squaddm.gameManager",{
+    constructor = function()
+      self.playerHandle = GetPlayerHandle();
+      self.sockets = {};
+      self.roundStarted = false;
+      self.subscriptions = {};
+      
+      
+      net.netManager:getSockets("GAME.MG"):subscribe(function(...)
+        self:_onSocketCreate(...);
+      end);
+      net.netManager:onNetworkReady():subscribe(function(...)
+        self:_onNetworkReady(...);
+      end);
+    end,
+    methods = {
+      _onSocketCreate = function(socket,...)
+        print("Socket created!",...);
+        --When host connects
+        if(self.subscriptions["host"]) then
+          self.subscriptions["host"]:unsubscribe();
+        end
+        self.sockets.host = socket;
+        self.subscriptions["host"] = self.sockets.host:getPackets():subscribe(function(...)
+          self:_onSocketPacket(...);
+        end);
+      end,
+      _onNetworkReady = function()
+        --Called when network is ready
+        --We need to wait for this before doing any networking
+        
+
+      end,
+      _onSocketPacket = function(from,what,...)
+        if(what == "SPAWN") then
+
+        elseif(what == "ROUND_OVER") then
+
+        elseif(what == "SYNC") then
+          
+        elseif(what == "DEAD") then
+
+        end
+      end
+    }
+  })
+
+);
+
+
 --Routine for handling the game logic
 local roundBasedGame = Decorate(
   --We need to listne to players
@@ -128,6 +188,7 @@ local roundBasedGame = Decorate(
       self.psquad = "";
       self.squad = {};
       self.playerHandle = nil;
+      self.sp_r = nil;
       self.host = IsHosting();
       net.netManager:getSockets("GAME.MG"):subscribe(function(...)
         self:_onSocketCreate(...);
@@ -138,6 +199,10 @@ local roundBasedGame = Decorate(
     end,
     methods = {
       startRound = function()
+        if(self.sp_r) then
+          bzRoutine.routineManager:killRoutine(self.sp_r);
+          self.sp_r = nil;
+        end
         self.roundTimeLeft = ROUND_TIME;
         self.roundStarted = true;
         self.inRound = true;
@@ -298,6 +363,17 @@ local roundBasedGame = Decorate(
           return;
         end
         if(self.inRound and ((not IsValid(self.playerHandle)) or GetCurHealth(self.playerHandle) <= 0)) then
+          
+          local id;
+          local target;
+          for i,v in pairs(self.squad) do
+            target = v;--GetPlayerHandle(net.netManager:playersInGame()[i].team);
+            if(target) then
+              self.sp_r = bzRoutine.routineManager:startRoutine("spectateRoutine",target);
+              break;
+            end
+          end
+          
           if(IsHosting()) then
             self:_updatePlayersLeft(self.localPlayer.id);
           else
@@ -405,6 +481,8 @@ local roundBasedGame = Decorate(
           self.inRound = false;
         end
       end,
+      onDestroy = function()
+      end,
       onCreateObject = function()
       end,
       save = function()
@@ -413,10 +491,64 @@ local roundBasedGame = Decorate(
       end
     }
   })
-
 );
 
+local spectateRoutine = Decorate(
+  --We need to listne to players
+  Implements(KeyListener),
+  Routine({
+    name = "spectateRoutine",
+    delay = 0.0
+  }),
+  Class("spectateRoutine",{
+    constructor = function()
+      self.sp_target = nil;
+      self.alive = true;
+      self.cam = false;
+    end,
+    methods = {
+      onInit = function(...)
+        self.sp_target = ...;
+        print("Spectating started");
+      end,
+      update = function(dtime)
+        if(self.cam) then
+          if(IsValid(self.sp_target)) then
+            CameraObject(self.sp_target,0,1000,-3000,self.sp_target);
+          else
+            self:stop();
+          end
+        elseif(IsValid(GetPlayerHandle())) then
+          print("Cam start:",GetPlayerHandle(),GetLabel(GetPlayerHandle()));
+          self.cam = CameraReady();
+        end
+      end,
+      isAlive = function()
+        return self.alive;
+      end,
+      save = function()
+      end,
+      load = function()
+      end,
+      stop = function()
+        print("STOP!");
+        self.alive = false;
+      end,
+      onDestroy = function()
+        print("Spectating stoped");
+        CameraFinish();
+      end,
+      onGameKey = function(key)
+        print("Key: " .. key);
+      end
+    }
+  })
+);
+
+
 bzRoutine.routineManager:registerClass(roundBasedGame);
+bzRoutine.routineManager:registerClass(spectateRoutine);
+
 local routine = bzRoutine.routineManager:startRoutine("roundBasedGame");
 
 
