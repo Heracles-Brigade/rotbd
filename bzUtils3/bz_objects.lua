@@ -244,7 +244,7 @@ local Handle = Class("Obj.Handle", {
       return GetFront(self:getHandle());
     end,
     setTransform = function(...)
-      SetTransform(self:getHandle());
+      SetTransform(self:getHandle(),...);
     end,
     getTransform = function()
       return GetTransform(self:getHandle());

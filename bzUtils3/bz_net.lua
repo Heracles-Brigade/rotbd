@@ -32,6 +32,17 @@ local MpSyncable = misc.MpSyncable;
 local BzAlive = misc.BzAlive;
 local BzModule = misc.BzModule
 
+
+_unpack = unpack;
+
+unpack = function(t)
+  if(t.n ~= nil) then
+    return _unpack(t,1,t.n)
+  end
+  return _unpack(t)
+end
+
+
 function table.pack(...)
   return { n = select("#", ...), ... };
 end
@@ -160,6 +171,7 @@ local Socket = Class("MP.Socket",{
         p.size = p.size + 1;
         p.contents[p.size] = payload;
       elseif(type == 2) then
+        p.contents.n = p.size;
         self.r_subject:onNext(p.from,unpack(p.contents));
         self.r_queue[id] = nil;
       end
@@ -172,13 +184,18 @@ local NetworkManager = Decorate(BzModule("NetworkManagerModule"),
     constructor = function()
       self.sockets = setmetatable({},{__mode="v"});
       self.socketSubjects = {};
-      self.hostSubject = Rx.Subject.create();
+      self.hostSubject = Rx.ReplaySubject.create();
       self._current_id = 0;
       self.stardedAsHost = IsHosting();
       self._whoIsHost = 0;
       self.migrating = false;
       self.waitToMigrate = 30;
-      self.networkReadySubject = Rx.Subject.create();
+      self.networkIsReady = false;
+      self.playerHandles = {
+        me = GetPlayerHandle(),
+        remote = {}
+      }
+      self.networkReadySubject = Rx.ReplaySubject.create();
       self.players = {
         all = {},
         remote = {},
@@ -189,6 +206,26 @@ local NetworkManager = Decorate(BzModule("NetworkManagerModule"),
     end,
     methods = {
       update = function(...)
+        if(self.networkIsReady) then
+          local c = self.playerHandles.me;
+          self.playerHandles.me = (IsValid(GetPlayerHandle()) and GetPlayerHandle()) or c;
+          if(c ~= self.playerHandles.me) then
+            print("New handle!",c,self.playerHandles.me,GetPlayerHandle());
+            --New playerhandle, send it to the other users
+            Send(0,"Z",self.playerHandles.me,self.playerHandles.me == nil);
+          end
+        end
+        for i, v in pairs(self:getRemotePlayers()) do
+          local idx = v.team or "NON";
+          c = self.playerHandles.remote[idx];
+          self.playerHandles.remote[idx] = 
+            (IsValid(GetPlayerHandle(v.team)) and 
+              GetPlayerHandle(v.team)) or
+            (self.playerHandles.remote[idx]);
+          if(c ~= self.playerHandles.remote[idx]) then
+            Send(i,"Y",self.playerHandles.remote[idx]);
+          end
+        end
         if(self.migrating and IsHosting()) then
           self.waitToMigrate = self.waitToMigrate - 1;
           if(self.waitToMigrate <= 0) then
@@ -205,6 +242,16 @@ local NetworkManager = Decorate(BzModule("NetworkManagerModule"),
             self.sockets[i] = nil;
           end
         end
+      end,
+      getPlayerHandle = function(team)
+        local h;
+        if((team == nil) or (team == self:getLocalPlayer().team)) then
+          h = self.playerHandles.me;
+        else
+          h = self.playerHandles.remote[team];
+        end
+        return (IsValid(GetPlayerHandle(team)) and GetPlayerHandle(team)) or 
+          (IsValid(h) and h);
       end,
       onNetworkReady = function()
         return self.networkReadySubject;
@@ -237,6 +284,15 @@ local NetworkManager = Decorate(BzModule("NetworkManagerModule"),
             self.players.allInGame[myid] = self.players.l;
             self.networkReadySubject:onNext(self.players.l);
           end
+        elseif(type == "Z") then
+          local p = self.players.all[id];
+          if(p) then
+            self.playerHandles.remote[p.team or "NON"] = interface_id;
+          end
+        elseif(type == "Y") then
+          self.playerHandles.me = (IsValid(self.playerHandles.me) and self.playerHandles.me) or interface_id;
+        elseif(type == "R") then
+          Send(id,"Z",self.playerHandles.me,self.playerHandles.me == nil);
         end
       end,
       _createSocket = function(to,interface_id)
@@ -300,7 +356,6 @@ local NetworkManager = Decorate(BzModule("NetworkManagerModule"),
         return self.socketSubjects[name];
       end,
       getLocalPlayer = function()
-        print("getLocalPlayer");
         if(self.players.l) then
           return self.players.l;
         end
@@ -355,6 +410,7 @@ local NetworkManager = Decorate(BzModule("NetworkManagerModule"),
           self.players.l = self.players.all[myid];
           self.players.me = {self.players.l};
           self.players.allInGame[myid] = self.players.l;
+          self.networkIsReady = true;
           self.networkReadySubject:onNext(self.players.l);
         end
       end,
