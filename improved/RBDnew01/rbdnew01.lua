@@ -353,6 +353,7 @@ local TooFarFromRecy = mission.Objective:define("toofarfrom_recy"):setListeners(
     update = function(self)
         if not globals.keepGTsAtFullHealth then -- GBD 12/3/16. I thought this used to deactivate on this bool before, can't find it. Now self kill this function when this becomes false. (triggered in Destroy_Soviet)
 			self:finish();
+            return;
 		end
         if IsAlive(GetRecyclerHandle(1)) and GetDistance(GetPlayerHandle(), GetRecyclerHandle(1)) > 700.0 then
             print(self.alive);
