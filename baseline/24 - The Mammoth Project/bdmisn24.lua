@@ -1,4 +1,7 @@
 -- Battlezone: Rise of the Black Dogs, Black Dog Mission 24 written by General BlackDragon.
+
+
+require("bz_logging");
 local bzCore = require("bz_core");
 local mammoth = require("mammoth");
 

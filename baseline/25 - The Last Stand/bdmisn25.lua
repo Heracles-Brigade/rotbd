@@ -1,5 +1,8 @@
 -- Battlezone: Rise of the Black Dogs, Black Dog Mission 25 written by General BlackDragon.
 
+
+require("bz_logging");
+
 local M = {
 -- Bools
 UpdateObjectives = false,
