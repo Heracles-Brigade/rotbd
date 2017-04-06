@@ -216,6 +216,9 @@ local odfFile = Class("odfFile",{
   end,
   methods = {
     getHeader = function(headerName)
+      if(headerName == nil) then
+        error("Header was nil!");
+      end
       if(not self.headers[headerName]) then
           self.headers[headerName] = odfHeader(self.file,headerName);
       end

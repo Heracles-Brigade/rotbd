@@ -4,6 +4,10 @@
     --Jarle Trollebø(Mario)
     --General BlackDragon
 
+
+
+require("bz_logging");
+
 if not SetLabel then SetLabel = SettLabel end -- BZ1.5 backwards compatability.
 
 local M = {

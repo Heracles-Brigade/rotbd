@@ -4,6 +4,9 @@
     --General BlackDragon
     --The Deus Ex
 
+
+require("bz_logging");
+
 print("LOAD!",GetMissionFilename());
 
 local mission = require('cmisnlib');
@@ -141,7 +144,7 @@ local getScrap = mission.Objective:define('get_scrap'):init({
 });
 
 local makeFactory = mission.Objective:define("make_factory"):init({
-    next = 'make_offensive',
+    next = 'make_comm',
     otf = 'bdmisn2204.otf'
 }):setListeners({
     start = function(self)
@@ -170,7 +173,7 @@ local makeOffensive = mission.Objective:define("make_offensive"):init({
     end,
     update = function(self)
         --Check if got 3 more tanks + 1 bomber, since mission start
-        if(self.tracker:gotOfOdf("bvtank1",3) and self.tracker:gotOfOdf("bvhraz",1)) then
+        if(self.tracker:gotOfOdf("bvtank",3) and self.tracker:gotOfOdf("bvhraz",1)) then
             self:success();
         end
     end,
@@ -198,8 +201,6 @@ local makeDefensive = mission.Objective:define("make_defensive"):init({
 		createWave("svtank",{"spawn_w1"},"west_path"); 
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path"); -- Original Script did nothing with these 2. Possibly sent to guard Scavs instead? -GBD
         createWave("svscav",{"spawn_w2","spawn_w3"});
-		--Not really creating a wave, but spawns sbspow
-		createWave("sbspow",{"spawn_sbspow1","spawn_sbspow2"});
     end,
     update = function(self)
         if(tracker:gotOfClass("turrettank",3)) then
@@ -230,7 +231,7 @@ local destorySoviet = mission.Objective:define("destroy_soviet"):init({
             SetObjectiveOn(globals.sb_turr_2);
             SetObjectiveOn(GetRecyclerHandle(2));
             self.wait_done = true;
-            mission:getObjective("toofarfrom_recy"):success();
+            --mission:getObjective("toofarfrom_recy"):success();
         else
             if(not(IsAlive(globals.sb_turr_1) or IsAlive(globals.sb_turr_2))) then
                 self:success();
@@ -240,7 +241,6 @@ local destorySoviet = mission.Objective:define("destroy_soviet"):init({
         self.wait_timer = self.wait_timer - dtime;
     end,
     success = function(self)
-        SetObjectiveOff(GetRecyclerHandle(2));
         UpdateObjective(self.otf,"green");
         mission.Objective:Start(self.next);
     end,
@@ -254,7 +254,6 @@ local destorySoviet = mission.Objective:define("destroy_soviet"):init({
 
 local nsdfAttack = mission.Objective:define("nsdf_attack"):init({
     otf = 'bdmisn2208.otf',
-    next = 'make_comm',
     camOn = false,
     camTime = 10,
     targets = {},
@@ -265,8 +264,8 @@ local nsdfAttack = mission.Objective:define("nsdf_attack"):init({
 		AudioMessage("bdmisn2203.wav");
         AddObjective(self.otf,"white");
         local a,b,camTarget = createWave("avwalk",{"spawn_avwalk1","spawn_avwalk2","spawn_avwalk3"},"nsdf_path");
-        local c = createWave("avtank",{"spawn_avtank1","spawn_avtank2","spawn_avtank3"},"nsdf_path");
-        local d = createWave("avtank",{"spawn_w1","spawn_w2","spawn_w3"},"west_path");
+        local c,e,g = createWave("avtank",{"spawn_avtank1","spawn_avtank2","spawn_avtank3"},"nsdf_path");
+        local d,h,i = createWave("avtank",{"spawn_w1","spawn_w2","spawn_w3"},"west_path");
         local f = createWave("svtank",{"spawn_n4","spawn_n5"},"north_path");
         self.camTarget = camTarget;
         self.camOn = CameraReady();
@@ -275,7 +274,11 @@ local nsdfAttack = mission.Objective:define("nsdf_attack"):init({
             [b]=true,
             [camTarget]=true,
             [c]=true,
-            [d]=true
+            [d]=true,
+            [e]=true,
+            [g]=true,
+            [h]=true,
+            [i]=true
         };
         for i,v in pairs(self.targets) do
             SetObjectiveOn(i);
@@ -310,7 +313,7 @@ local nsdfAttack = mission.Objective:define("nsdf_attack"):init({
     end,
     success = function(self)
         UpdateObjective(self.otf,"green");
-        mission.Objective:Start(self.next);
+        SucceedMission(GetTime() + 5, "bdmisn22wn.des");
     end,
     save = function(self)
         return self.camTarget,self.camOn,self.camTime,self.targets,self.recycler_target;
@@ -321,10 +324,13 @@ local nsdfAttack = mission.Objective:define("nsdf_attack"):init({
 });
 
 local makeComm = mission.Objective:define("make_comm"):init({
-    otf = 'bdmisn2209.otf'
+    otf = 'bdmisn2209.otf',
+    next = 'destroy_soviet'
 }):setListeners({
     start = function(self)
         AddObjective(self.otf,"white");
+		createWave("svtank",{"spawn_w1"},"west_path"); 
+        createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path");
     end,
     update = function(self)
         if(tracker:gotOfClass("commtower",1)) then
@@ -333,7 +339,7 @@ local makeComm = mission.Objective:define("make_comm"):init({
     end,
     success = function(self)
         UpdateObjective(self.otf,"green");
-        SucceedMission(GetTime() + 5, "bdmisn22wn.des");
+        mission.Objective:Start(self.next);
     end
 });
 
@@ -353,10 +359,13 @@ local TooFarFromRecy = mission.Objective:define("toofarfrom_recy"):setListeners(
     update = function(self)
         if not globals.keepGTsAtFullHealth then -- GBD 12/3/16. I thought this used to deactivate on this bool before, can't find it. Now self kill this function when this becomes false. (triggered in Destroy_Soviet)
 			self:finish();
+            return;
 		end
-        if IsAlive(GetRecyclerHandle(1)) and GetDistance(GetPlayerHandle(), GetRecyclerHandle(1)) > 700.0 then
-            print(self.alive);
-            self:fail();
+        if(IsAlive(GetPlayerHandle())) then
+            if IsAlive(GetRecyclerHandle(1)) and GetDistance(GetPlayerHandle(), GetRecyclerHandle(1)) > 700.0 then
+                print(self.alive);
+                self:fail();
+            end
         end
     end,
     fail = function(self)
@@ -644,12 +653,14 @@ local intermediate = mission.Objective:define("intermediate"):init({
 		BuildObject("svmuf",2,"spawn_svmuf");
         globals.sb_turr_1 = BuildObject("sbtowe",2,"spawn_sbtowe1");
         globals.sb_turr_2 = BuildObject("sbtowe",2,"spawn_sbtowe2");
+		--Not really creating a wave, but spawns sbspow
+		createWave("sbspow",{"spawn_sbspow1","spawn_sbspow2"});
         --Start wave after a delay?
         createWave("svfigh",{"spawn_n1","spawn_n2","spawn_n3"},"north_path");
 		createWave("svtank",{"spawn_n4","spawn_n5"},"north_path"); 
         local instance = deployRecy:start();
         local instance2 = loseRecy:start();
-        local instance3 = TooFarFromRecy:start();
+        --local instance3 = TooFarFromRecy:start();
     end
 });
 

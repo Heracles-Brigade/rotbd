@@ -1,7 +1,12 @@
 --Rev_2
+
+require("bz_logging");
+
 local mission = require('cmisnlib');
 local globals = {};
 local tracker = mission.UnitTracker:new();
+
+
 
 
 --"Warming" up the RNG
