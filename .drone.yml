@@ -1,0 +1,22 @@
+pipeline:
+  deploy:
+    image: appleboy/drone-ssh
+    host: 188.166.61.106
+    user: root
+    username: root
+    port: 22
+    key: ${SSH_KEY}
+    when:
+      event: push
+      event: tag
+    script:
+      - cd ~/battlezone/rotbd
+      - git fetch
+      - git checkout ${DRONE_BRANCH}
+      - git pull
+      - mkdir ~/battlezone/rotbd/tmp_files
+      - rm ~/battlezone/rotbd/builds/${DRONE_BRANCH}_${DRONE_TAG}.zip
+      - find ~/battlezone/rotbd -not -iwholename '*.git*' -type f -exec rsync -rv {} ~/battlezone/tmp_files \;
+      - zip -r ~/battlezone/rotbd/builds/${DRONE_BRANCH}_${DRONE_TAG}.zip ./tmp_files/
+      - rm -rf ~/battlezone/rotbd/tmp_files
+
