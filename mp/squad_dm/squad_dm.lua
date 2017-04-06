@@ -17,7 +17,6 @@ local Class = OOP.Class;
 
 local Routine = bzRoutine.Routine;
 
-
 local killOnNext = {};
   
 GetMissionFilename = GetMissionFilename or GetMapTRNFilename;
@@ -47,9 +46,14 @@ GetPathCount = function(path)
 end
 
 
-local missionBase = GetMissionFilename():match("[^%p]+");
 
-local squadIni = misc.odfFile(("%s.squads"):format(missionBase));
+local missionBase = GetMissionFilename():match("[^%p]+");
+print("missionBase",missionBase);
+local squadIni = misc.odfFile(("%s.sqd"):format(missionBase));
+
+print("Parent:",squadIni:getProperty("Meta","parent"));
+print("Default:",squadIni:getProperty("SquadMatches","default"));
+
 --print("Misn base:",missionBase);
 --print("Valid?",squadIni:isValid());
 --if(not squadIni:isValid()) then
@@ -92,6 +96,9 @@ local function spawnSquad(handle,squad_name)
   else
     squad_name = squad_name or lastSquad;
   end
+  if(squad_name == nil or squad_name == "") then
+    error("No squad name!",handle);
+  end
   local units = squadIni:getTable(squad_name,"unit");
   lastSquad = squad_name;
   for i,v in pairs(units) do
@@ -109,7 +116,7 @@ local LOBBY_TIME = 10;
 local SURVIVE_TIME = 15;
 
 
-
+--[[
 local roundBasedGame2 = Decorate(
   Implements(PlayerListener, ObjectListener),
   Routine({
@@ -164,7 +171,7 @@ local roundBasedGame2 = Decorate(
   })
 
 );
-
+--]]
 
 --Routine for handling the game logic
 local roundBasedGame = Decorate(
@@ -176,6 +183,7 @@ local roundBasedGame = Decorate(
   }),
   Class("roundBasedGameController",{
     constructor = function()
+      --Variables for local player
       self.inRound = false;
       self.roundStarted = false;
       self.timeUntilStart = LOBBY_TIME;
@@ -292,7 +300,7 @@ local roundBasedGame = Decorate(
         local l = spawn_prefix:format(location);
         local dir = GetPosition(l,1) - GetPosition(l,0);
         local t = BuildDirectionalMatrix(GetPosition(l),dir);
-        local h = GetPlayerHandle() or self.playerHandle;
+        local h = net.netManager:getPlayerHandle() or self.playerHandle;
         SetCurAmmo(h,GetMaxAmmo(h));
         SetCurHealth(h,GetMaxHealth(h));
         SetTransform(h,t);
@@ -355,7 +363,7 @@ local roundBasedGame = Decorate(
         end
       end,
       update = function(dtime)
-        self.playerHandle = GetPlayerHandle() or self.playerHandle;
+        self.playerHandle = net.netManager:getPlayerHandle() or self.playerHandle;
         --Make sure the player can't eject or hop out
         SetPilotClass(self.playerHandle,"");
         --We have to wait for the localPlayer to be set before we do anything
@@ -366,13 +374,13 @@ local roundBasedGame = Decorate(
           
           local id;
           local target;
-          for i,v in pairs(self.squad) do
+          --[[for i,v in pairs(self.squad) do
             target = v;--GetPlayerHandle(net.netManager:playersInGame()[i].team);
             if(target) then
               self.sp_r = bzRoutine.routineManager:startRoutine("spectateRoutine",target);
               break;
             end
-          end
+          end]]
           
           if(IsHosting()) then
             self:_updatePlayersLeft(self.localPlayer.id);

@@ -2,7 +2,7 @@ local bzCore = require("bz_core");
 local misc = require("misc");
 local OOP = require("oop");
 local Rx = require("rx");
-
+local LogFile = require("bz_logging").LogFile;
 
 local Class = OOP.Class;
 local Decorate = OOP.Decorate;
@@ -33,24 +33,8 @@ local BzAlive = misc.BzAlive;
 local BzModule = misc.BzModule
 
 
-_unpack = unpack;
-
-unpack = function(t)
-  if(t.n ~= nil) then
-    return _unpack(t,1,t.n)
-  end
-  return _unpack(t)
-end
 
 
-function table.pack(...)
-  return { n = select("#", ...), ... };
-end
-
-local oSend = Send;
-function Send(...)
-  oSend(...);
-end
 
 
 local Packet = Class("MP.Packet",{
@@ -203,6 +187,13 @@ local NetworkManager = Decorate(BzModule("NetworkManagerModule"),
         allInGame = {},
         l = nil
       };
+      self.log_file = LogFile("lua_sockets");
+      self:onNetworkReady():subscribe(function(player)
+        self.log_file:print("Network ready:",player.id,player.name,player.team);
+      end);
+      self:getHosts():subscribe(function(player)
+        self.log_file:print("New host:", player.id,player.name,player.team);
+      end);
     end,
     methods = {
       update = function(...)
@@ -262,12 +253,14 @@ local NetworkManager = Decorate(BzModule("NetworkManagerModule"),
         return self._current_id + p*10000;
       end,
       onReceive = function(id,type,interface_id,a,...)
+        log_receive:print(id,type,interface_id,a,...);
         self.players.me[id] = nil;
         if(type == "S") then
           local args = {...};
           if(a == 0) then
-            local csock = self:_createSocket(id,interface_id);
             local name = table.remove(args,1);
+            self.log_file:print(("Received request for socket on %s from %d, interface_id: %d, data: "):format(name,id,interface_id),unpack(args));
+            local csock = self:_createSocket(id,interface_id);
             if(self.socketSubjects[name]) then
               self.socketSubjects[name]:onNext(csock,unpack(args));
             end
@@ -296,6 +289,7 @@ local NetworkManager = Decorate(BzModule("NetworkManagerModule"),
         end
       end,
       _createSocket = function(to,interface_id)
+        self.log_file:print(("Creating socket to %d with interface_id: %d"):format(to,interface_id));
         local i = SockInterface(to,interface_id);
         local player = self:getLocalPlayer();
         local socket = Socket(i,player.id);
@@ -345,11 +339,13 @@ local NetworkManager = Decorate(BzModule("NetworkManagerModule"),
         return c;
       end,
       createSocket = function(name,to,...)
+        self.log_file:print(("Requesting socket on channel %s to %d, data: "):format(name,to),...);
         local socket,sinterface = self:_createSocket(to,self:nextId());
         sinterface:send(0,name,...);
         return socket;
       end,
       getSockets = function(name)
+        self.log_file:print(("Listening for sockets on channel %s"):format(name));
         if(not self.socketSubjects[name]) then
           self.socketSubjects[name] = Rx.Subject.create();
         end

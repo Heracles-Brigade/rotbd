@@ -16,7 +16,9 @@ radarSignature = 0.2
 weaponHard1 = "GC1"
 weaponName1 = "handgun"
 weaponHard2 = "GC1"
-weaponName2 = "gsnipe23"
+weaponName2 = "grpg"
+weaponHard3 = "GC1"
+weaponName3 = "gsnipe"
 weaponMask = 00011
 
 [PersonClass]
