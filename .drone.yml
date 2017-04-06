@@ -18,6 +18,6 @@ pipeline:
       - mkdir ~/battlezone/rotbd/tmp_files
       - rm ~/battlezone/rotbd/builds/${DRONE_BRANCH}_${DRONE_TAG}.zip
       - find ~/battlezone/rotbd -not -iwholename '*.git*' -type f -exec rsync -rv {} ~/battlezone/tmp_files \;
-      - zip -r ~/battlezone/rotbd/builds/${DRONE_BRANCH}_${DRONE_TAG}.zip ./tmp_files/
+      - zip -r ~/battlezone/rotbd/builds/${DRONE_BRANCH}_${DRONE_TAG}.zip ~/battlezone/rotbd/tmp_files
       - rm -rf ~/battlezone/rotbd/tmp_files
 
