@@ -7,8 +7,9 @@ pipeline:
     port: 22
     key: ${SSH_KEY}
     when:
-      event: push
-      event: tag
+      event: 
+        - push
+        - tag
     script:
       - cd ~/battlezone/rotbd
       - git fetch
