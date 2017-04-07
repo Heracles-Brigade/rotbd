@@ -20,7 +20,7 @@ pipeline:
       - mkdir ~/battlezone/builds/${DRONE_BRANCH}
       - FILE_COUNT=$(ls ~/battlezone/builds/${DRONE_BRANCH} | wc -l)
       - mv ~/battlezone/builds/${DRONE_BRANCH}/rotbd_latest_${DRONE_TAG}.zip ~/battlezone/builds/${DRONE_BRANCH}/rotbd_"$FILE_COUNT"_${DRONE_TAG}.zip
-      - zip -r ~/battlezone/builds/${DRONE_BRANCH}/rotbd_latest_${DRONE_TAG}.zip ~/battlezone/tmp_files
+      - zip -j ~/battlezone/builds/${DRONE_BRANCH}/rotbd_latest_${DRONE_TAG}.zip ~/battlezone/tmp_files
       - rm -rf ~/battlezone/tmp_files
 
 
