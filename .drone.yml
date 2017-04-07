@@ -15,9 +15,10 @@ pipeline:
       - git fetch
       - git checkout ${DRONE_BRANCH}
       - git pull
-      - mkdir ~/battlezone/rotbd/tmp_files
-      - rm ~/battlezone/rotbd/builds/${DRONE_BRANCH}_${DRONE_TAG}.zip
+      - mkdir ~/battlezone/tmp_files
+      - rm ~/battlezone/builds/${DRONE_BRANCH}_${DRONE_TAG}.zip
       - find ~/battlezone/rotbd -not -iwholename '*.git*' -type f -exec rsync -rv {} ~/battlezone/tmp_files \;
-      - zip -r ~/battlezone/rotbd/builds/${DRONE_BRANCH}_${DRONE_TAG}.zip ~/battlezone/rotbd/tmp_files
-      - rm -rf ~/battlezone/rotbd/tmp_files
+      - zip -r ~/battlezone/builds/${DRONE_BRANCH}_${DRONE_TAG}.zip ~/battlezone/tmp_files
+      - rm -rf ~/battlezone/tmp_files
+
 
