@@ -16,11 +16,11 @@ pipeline:
       - git checkout ${DRONE_BRANCH}
       - git pull
       - mkdir ~/battlezone/tmp_files
-      - find ~/battlezone/rotbd -not -iwholename '*.git*' -type f -exec rsync -rv {} ~/battlezone/tmp_files \;
+      - find ~/battlezone/rotbd -not -iwholename '*/\.*' -type f -exec rsync -rv {} ~/battlezone/tmp_files \;
       - mkdir ~/battlezone/builds/${DRONE_BRANCH}
       - FILE_COUNT=$(ls ~/battlezone/builds/${DRONE_BRANCH} | wc -l)
       - mv ~/battlezone/builds/${DRONE_BRANCH}/rotbd_latest_${DRONE_TAG}.zip ~/battlezone/builds/${DRONE_BRANCH}/rotbd_"$FILE_COUNT"_${DRONE_TAG}.zip
-      - zip -j -r ~/battlezone/builds/${DRONE_BRANCH}/rotbd_latest_${DRONE_TAG}.zip ~/battlezone/tmp_files -x ".*"
+      - zip -j -r ~/battlezone/builds/${DRONE_BRANCH}/rotbd_latest_${DRONE_TAG}.zip ~/battlezone/tmp_files
       - rm -rf ~/battlezone/tmp_files
 
 
