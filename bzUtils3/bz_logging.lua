@@ -110,7 +110,7 @@ if pcall(requireIO) then
       local args = table.pack(...);
       local ret = nil;
       local status, message = xpcall(function()
-        ret = func(unpack(args));
+        ret = table.pack(func(unpack(args)));
       end,logTrace);
       if(not status) then
         log_error:print("Status:", status);
@@ -122,7 +122,7 @@ if pcall(requireIO) then
         log_error:print("End of Error.\n----------------------------------------------------------\n");
         error(("Error occured and has been logged @ frame %d\nPress <OK> or <CANCEL> to abort."):format(frame));
       end
-      return ret;
+      return unpack(ret);
     end
   end
   local function Update(dtime)

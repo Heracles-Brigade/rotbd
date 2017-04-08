@@ -253,7 +253,6 @@ local NetworkManager = Decorate(BzModule("NetworkManagerModule"),
         return self._current_id + p*10000;
       end,
       onReceive = function(id,type,interface_id,a,...)
-        log_receive:print(id,type,interface_id,a,...);
         self.players.me[id] = nil;
         if(type == "S") then
           local args = {...};

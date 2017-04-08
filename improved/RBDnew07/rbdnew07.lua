@@ -259,7 +259,7 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
         for i,v in pairs(mission.spawnInFormation2(wave,("%s_path"):format(f),self.vehicles[f],2,15)) do
           local def_seq = mission.TaskManager:sequencer(v);
           if(i~=1) then
-            def_seq:queue2("Formation",lead);
+            def_seq:queue2("Defend2",lead);
             def_seq:queue2("Goto",("%s_attack"):format(f));
           else
             lead = v;

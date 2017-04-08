@@ -13,6 +13,18 @@ local mission = require('cmisnlib');
 local globals = {};
 local tracker = mission.UnitTracker:new();
 
+local audio = {
+    intro = "rbd0101.wav",
+    inspect = "rbd0102.wav",
+    power1 = "rbd0103.wav",
+    power2 = "rbd0104.wav",
+    recycler = "rbd0105.wav",
+    attack = "rbd0106.wav",
+    nsdf = "rbd0107.wav",
+    win = "rbd0108.wav"
+}
+
+
 SetAIControl(2,false);
 
 function RemoveConvoy(...)
@@ -66,7 +78,6 @@ local deployRecy = mission.Objective:define("deploy_recycler"):init({
 }):setListeners({
     start = function(self)
         AddObjective(self.otf,"white");
-		AudioMessage("bdmisn2201.wav");
     end,
     update = function(self)
         if(IsDeployed(GetRecyclerHandle(1))) then
@@ -222,6 +233,7 @@ local destorySoviet = mission.Objective:define("destroy_soviet"):init({
     start = function()
         createWave("svfigh",{"spawn_e1","spawn_e2"},"east_path");
 		createWave("svtank",{"spawn_e3"},"east_path");
+        --AudioMessage(audio.attack);
     end,
     update = function(self,dtime)
         if((not self.wait_done) and self.wait_timer <= 0) then
@@ -241,7 +253,8 @@ local destorySoviet = mission.Objective:define("destroy_soviet"):init({
         self.wait_timer = self.wait_timer - dtime;
     end,
     success = function(self)
-        UpdateObjective(self.otf,"green");
+        --UpdateObjective(self.otf,"green");
+        SetObjectiveOff(GetRecyclerHandle(2));
         mission.Objective:Start(self.next);
     end,
     save = function(self)
@@ -260,8 +273,7 @@ local nsdfAttack = mission.Objective:define("nsdf_attack"):init({
     recycler_target = false
 }):setListeners({
     start = function(self)
-		ClearObjectives();
-		AudioMessage("bdmisn2203.wav");
+        --AudioMessage(audio.nsdf);
         AddObjective(self.otf,"white");
         local a,b,camTarget = createWave("avwalk",{"spawn_avwalk1","spawn_avwalk2","spawn_avwalk3"},"nsdf_path");
         local c,e,g = createWave("avtank",{"spawn_avtank1","spawn_avtank2","spawn_avtank3"},"nsdf_path");
@@ -282,6 +294,9 @@ local nsdfAttack = mission.Objective:define("nsdf_attack"):init({
         };
         for i,v in pairs(self.targets) do
             SetObjectiveOn(i);
+        end
+        if(not IsAlive(GetRecyclerHandle(2))) then
+            UpdateObjective(self.otf,"green");
         end
     end,
     update = function(self,dtime)
@@ -308,12 +323,16 @@ local nsdfAttack = mission.Objective:define("nsdf_attack"):init({
             if(not anyleft) then
                 self.recycler_target = true;
                 SetObjectiveOn(GetRecyclerHandle(2));
+                UpdateObjective(self.otf,"green");
             end
+        end
+        if(handle == GetRecyclerHandle(2)) then
+            UpdateObjective("bdmisn2207.otf","green");
         end
     end,
     success = function(self)
-        UpdateObjective(self.otf,"green");
-        SucceedMission(GetTime() + 5, "bdmisn22wn.des");
+        --AudioMessage(audio.win);
+        SucceedMission(GetTime() + 10, "bdmisn22wn.des");
     end,
     save = function(self)
         return self.camTarget,self.camOn,self.camTime,self.targets,self.recycler_target;
@@ -392,6 +411,7 @@ local cinematic = mission.Objective:define("cinematic"):init({
 }):setListeners({
     start = function(self)
         self.camOn = CameraReady();
+        --AudioMessage(audio.intro); 
     end,
     update = function(self,dtime)
         if(self.camOn) then
@@ -426,7 +446,6 @@ local checkCommand = mission.Objective:define("checkCommand"):init({
     end,
     update = function(self)
         if(GetDistance(GetPlayerHandle(), self.command) < 50.0) then
-			AudioMessage("bdmisn2102.wav");
             self:success();
         elseif(not IsAlive(self.command)) then
             self:fail();
@@ -436,6 +455,7 @@ local checkCommand = mission.Objective:define("checkCommand"):init({
         self.command = GetHandle("sbhqcp0_i76building");
     end,
     success = function(self)
+        --AudioMessage(audio.inspect);
         SetObjectiveOff(globals.nav[1]);
         UpdateObjective(self.otf,"green");
         mission.Objective:Start(self.next);
@@ -468,7 +488,7 @@ local destroySolar = mission.Objective:define("destorySolar"):init({
         if(self.power1_4 and checkDead(self.handles)) then
             self.power1_4 = false;
             UpdateObjective(self.otf1,"green");
-			AudioMessage("bdmisn2103.wav");
+			--AudioMessage(audio.power1);
         end
         if(not (self.power1_4 or self.power5_8init)) then
             SetObjectiveOff(globals.nav[2]);
@@ -496,6 +516,7 @@ local destroySolar = mission.Objective:define("destorySolar"):init({
         self.handles,self.power1_4,self.power5_8init,self.t1 = ...;
     end,
     success = function(self)
+        --AudioMessage(audio.power2);
         mission.Objective:Start(self.next);
     end
 });
@@ -509,7 +530,6 @@ local destroyComm = mission.Objective:define("destroyComm"):init({
     gotRelic = false
 }):setListeners({
     start = function(self)
-		AudioMessage("bdmisn2104.wav");
         --SetObjectiveOn(globals.nav[4]);
         SetObjectiveOn(globals.comm);
         AddObjective(self.otf,"white");
@@ -638,7 +658,7 @@ local intermediate = mission.Objective:define("intermediate"):init({
         self.timer, self.recy, self.recyspawned = ...;
     end,
     success = function(self)
-
+        --AudioMessage(audio.recycler);
         globals.keepGTsAtFullHealth = true;
         --Spawn in recycler
         --Recycler escort
@@ -685,7 +705,6 @@ function Start()
         SetObjectiveName(GetHandle("nav" .. i),"Navpoint " .. i);
         SetMaxHealth(v,0);
     end
-	AudioMessage("bdmisn2101.wav");
  
     local instance = cinematic:start();
     local instance2 = patrolControl:start();

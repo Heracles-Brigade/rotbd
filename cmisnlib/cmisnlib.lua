@@ -9,6 +9,7 @@ local TaskSequencer;
 local TaskManager;
 
 
+
 local _GetOdf = GetOdf;
 
 function table.pack(...)
@@ -124,6 +125,7 @@ TaskSequencer = {
         update = function(self,dtime)
             if((#self.tasks > 0) and (GetCurrentCommand(self.handle) == AiCommand["NONE"])) then
                 local next = table.remove(self.tasks, 1);
+                print(next.fname,next.type,GetLabel(self.handle),unpack(next.args));
                 if(next.type == 1) then
                     SetCommand(self.handle,unpack(next.args));
                 elseif(next.type == 2) then
@@ -144,24 +146,22 @@ TaskSequencer = {
             self.tasks = {};
         end,
         push = function(self,...)
-            table.insert(self.tasks,1,{type=1,args{...}});
+            table.insert(self.tasks,1,{type=1,args=table.pack(...)});
         end,
         push2 = function(self,fname,...)
-            table.insert(self.tasks,1,{type=2,fname=fname,args={...}});
+            table.insert(self.tasks,1,{type=2,fname=fname,table.pack(...)});
         end,
         push3 = function(self,fname,...)
-            local args = {...};
-            table.insert(self.tasks,1,{type=3,fname=fname,args=args});
+            table.insert(self.tasks,1,{type=3,fname=fname,args={...}});
         end,
         queue = function(self,...)
-            table.insert(self.tasks,{type=1,args={...}});
+            table.insert(self.tasks,{type=1,args=table.pack(...)});
         end,
         queue2 = function(self,fname,...)
-            table.insert(self.tasks,{type=2,fname=fname,args={...}});
+            table.insert(self.tasks,{type=2,fname=fname,args=table.pack(...)});
         end,
         queue3 = function(self,fname,...)
-            local args = {...};
-            table.insert(self.tasks,{type=3,fname=fname,args=args});
+            table.insert(self.tasks,{type=3,fname=fname,args={...}});
         end
     }
 }
