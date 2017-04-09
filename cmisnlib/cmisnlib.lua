@@ -9,6 +9,18 @@ local TaskSequencer;
 local TaskManager;
 
 
+local function createWave(odf,path_list,follow)
+    local ret = {};
+    for i,v in pairs(path_list) do
+        local h = BuildObject(odf,2,v);
+        if(follow) then
+            Goto(h,follow);
+        end
+        table.insert(ret,h);
+    end
+    return unpack(ret);
+end
+
 
 local _GetOdf = GetOdf;
 
@@ -787,5 +799,6 @@ return {
     enemiesInRange = enemiesInRange,
     areAllDead = areAllDead,
     areAnyDead = areAnyDead,
-    TaskManager = TaskManager
+    TaskManager = TaskManager,
+    createWave = createWave
 }
