@@ -1,11 +1,11 @@
 
 
 
-downgradeTo = "1045"
+DOWNGRADE_TO = "1045"
 
 
 
-purge = {
-  "cloak*": True,
-  ""
+PURGE_MAP = {
+    "cloak*": True,
+    "isCritical": True
 }
