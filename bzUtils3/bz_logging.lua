@@ -53,8 +53,8 @@ _G["CAN_LOG"] = false;
 
 
 
-
-if pcall(requireIO) then
+local s,e = pcall(requireIO);
+if s then
   _G["CAN_LOG"] = true;
   local old_print = _G["print"];
   local old_display = _G["DisplayMessage"];
@@ -203,7 +203,7 @@ if pcall(requireIO) then
   setmetatable(_G,p);
 
 else
-  print("Logging disabled");
+  print("Logging disabled",e);
 end
 
 
