@@ -346,11 +346,19 @@ local Handle = Class("Obj.Handle", {
     damage = function(...)
       Damage(self:getHandle(), ...);
     end,
-    canCommand = function()
-      return CanCommand(self:getHandle());
+    canCommand = function(...)
+      return CanCommand(self:getHandle(),...);
     end,
-    canBuild = function()
-      return CanBuild(self:getHandle());
+    canBuild = function(...)
+      return CanBuild(self:getHandle(),...);
+    end,
+    canMake = function(odf)
+      local c = self:getClassLabel();
+      if(c == "recycler" or c == "factory") then
+        local blist = self:getTable("ProducerClass","buildItem");
+        return isIn(odf,blist);
+      end
+      return self:canBuild();
     end,
     isBusy = function()
       return IsBusy(self:getHandle());

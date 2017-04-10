@@ -73,16 +73,32 @@ local AiManager = Decorate(
       end,
       save = function()
         local objdata = {};
+        local cdata = {};
+        for i, v in pairs(self.classes) do
+          if(v.save) then
+            cdata[v:getName()] = table.pack(v:save());
+          end
+        end
         for i, v in pairs(self.all) do
           objdata[i] = {};
           for i2, v2 in pairs(v) do
-            objdata[i][getClassRef(v2)] = {v2:save()};
+            objdata[i][getClassRef(v2)] = table.pack(v2:save());
           end
         end
-        return {objects = objdata};
+        return {objects = objdata,cdata=cdata};
       end,
       load = function(saveData)
         local objdata = saveData.objects;
+        local cdata = saveData.cdata;
+        for i, v in pairs(cdata) do
+          for i2, v2 in pairs(self.classes) do
+            if(v2.load) then
+              if(v2:getName() == i) then
+                v2:load(unpack(v or {}));
+              end
+            end
+          end
+        end
         --Use register handle?
         for h, v in pairs(objdata) do
           local objs = self:checkHandle(h);
