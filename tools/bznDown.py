@@ -15,18 +15,19 @@ V_NUM = "version \[1\] =\n\d*"
 ARR_PFIX = "{}\s*\[\d+\]\s*=\n.*\n"
 V_PFIX = "{}\s*=\s*.*\n"
 
-PURGE_MAP = [
-    "cloak\w*",
-    "isCritical"
-]
+PURGE_MAP = {
+    "cloak\w*": "",
+    "isCritical": "",
+    "param": "param [1] =\n0\n"
+}
 
 
 with open(args.file,"r") as f:
     content = f.read()
     content = re.sub(V_NUM,DOWNGRADE_TO,content)
-    for i, v in enumerate(PURGE_MAP):
-        content = re.sub(ARR_PFIX.format(v),"",content)
-        content = re.sub(V_PFIX.format(v),"",content)
+    for i, v in PURGE_MAP.items():
+        content = re.sub(ARR_PFIX.format(i),v,content)
+        content = re.sub(V_PFIX.format(i),v,content)
 
 with open(args.out or args.file,"w") as f:
     f.write(content)
