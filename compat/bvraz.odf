@@ -1,0 +1,69 @@
+[GameObjectClass]
+classLabel = "wingman"
+scrapValue = 5
+scrapCost = 8
+buildTime = 8.0
+maxHealth = 2000
+maxAmmo = 1000
+unitName = "Scout"
+aiName = "TankFriend"
+aiName2 = "TankEnemy"
+heatSignature = 2.0
+imageSignature = 1.5
+radarSignature = 0.1
+
+weaponHard1 = "GC1"
+weaponName1 = "gminigun"
+weaponHard2 = "GC2"
+weaponName2 = ""
+weaponHard3 = "GR1"
+weaponName3 = "gshadow"
+
+[CraftClass]
+rangeScan = 300.0f
+periodScan = 5.0f
+velocJam = 5.0f
+
+selectAttackMsg = "avfighvd.wav"
+selectWaitMsg = "avfighvf.wav"
+selectGoMsg = "avfighvg.wav"
+selectOtherMsg = "avfighvj.wav"
+
+goMsg = "avfighv0.wav"
+attackMsg = "avfighv2.wav"
+followMeMsg = "avfighv3.wav"
+followMsg = "avfighv7.wav"
+repairMsg = "avfighv4.wav"
+reloadMsg = "avfighv5.wav"
+rescueMsg = "avfighv8.wav"
+recycleMsg = "avfighv9.wav"
+otherMsg = "avfighvh.wav"
+
+user1Msg = "avfighv6.wav"
+killedMsg = "avfighvm.wav"
+diedMsg = "abetty3.wav"
+
+[HoverCraftClass]
+setAltitude = 1.0
+accelDragStop = 3.5
+accelDragFull = 1.
+alphaTrack = 20.0
+alphaDamp = 5.0
+pitchPitch = 0.25
+pitchThrust = 0.1
+rollStrafe = 0.1
+rollSteer = 0.1
+
+velocForward = 25.0
+velocReverse = 20.0
+velocStrafe = 20.0
+accelThrust = 20.0
+accelBrake = 75.0
+omegaSpin = 3.75
+omegaTurn = 2.75
+alphaSteer = 7.0
+accelJump = 20.0
+
+soundThrust = "avfighe0.wav"
+soundTurbo = "avfighe3.wav"
+

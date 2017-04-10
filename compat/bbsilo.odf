@@ -1,0 +1,16 @@
+[GameObjectClass]
+classLabel = "scrapsilo"
+scrapCost = 4
+scrapValue = 4
+maxHealth = 3000
+maxAmmo = 0
+unitName = "Silo"
+heatSignature = 0.8
+imageSignature = 8.0
+radarSignature = 1.0
+
+[BuildingClass]
+soundAmbient = "absiloe0.wav"
+
+[ScrapSiloClass]
+scrapHold = 20

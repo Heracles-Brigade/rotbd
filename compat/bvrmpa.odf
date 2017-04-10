@@ -1,0 +1,75 @@
+[GameObjectClass]
+baseName = "bvrdev"
+classLabel = "wingman"
+scrapValue = 4
+scrapCost = 6
+buildTime = 7.0
+maxHealth = 1800
+maxAmmo = 1750
+unitName = "Red Devil"
+aiName = "TankFriend"
+aiName2 = "TankEnemy"
+heatSignature = 1.6
+imageSignature = 2.7
+radarSignature = 0.3
+
+weaponHard1 = "GC1"
+weaponName1 = "grktbomb"
+weaponHard2 = "GR1"
+weaponName2 = "grktbomb"
+weaponHard3 = "GS1"
+weaponName3 = 
+weaponHard4 = "GM1"
+weaponName4 = 
+weaponMask =00001
+
+	
+[CraftClass]
+rangeScan = 300.0f
+periodScan = 5.0f
+velocJam = 5.0f
+
+selectAttackMsg = "bvrdevv0.wav"
+selectGoMsg = "bvrdevvf.wav"
+selectFollowMsg = "bvrdevvg.wav"
+selectOtherMsg = "bvrdevvm.wav"
+ 
+goMsg = "bvrdevv1.wav"
+attackMsg = "bvrdevv2.wav"
+followMeMsg = "bvrdevv4.wav"
+followMsg = "bvrdevvb.wav"
+repairMsg = "bvrdevv8.wav"
+reloadMsg = "bvrdevv9.wav"
+rescueMsg = "bvrdevvc.wav"
+recycleMsg = "bvrdevvd.wav"
+ 
+user1Msg = "bvrdevva.wav"
+killedMsg = "bvrdevv3.wav"
+diedMsg = "abetty3.wav"
+ 
+cloakAllowed = True
+
+[HoverCraftClass]
+setAltitude = 1.0
+accelDragStop = 3.5
+accelDragFull = 1.
+alphaTrack = 20.0
+alphaDamp = 5.0
+pitchPitch = 0.25
+pitchThrust = 0.1
+rollStrafe = 0.1
+rollSteer = 0.1
+
+velocForward = 35.0
+velocReverse = 20.0
+velocStrafe = 20.0
+accelThrust = 20.0
+accelBrake = 75.0
+omegaSpin = 3.75
+omegaTurn = 2.75
+alphaSteer = 7.0
+accelJump = 20.0
+
+soundThrust = "avltnke0.wav"
+soundTurbo = "avltnke3.wav"
+

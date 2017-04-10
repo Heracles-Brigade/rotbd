@@ -1,0 +1,5 @@
+SCRAP SILO:
+Provides both additional
+and local storage for scrap.
+Scavengers will drop at scrap
+silo if it is closer than Recycler.

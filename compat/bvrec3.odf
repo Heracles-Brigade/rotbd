@@ -1,0 +1,82 @@
+[GameObjectClass]
+baseName = "bvrecy"
+classLabel = "recycler"
+scrapValue = 10
+scrapCost = 0
+maxHealth = 12000
+maxAmmo = 0
+unitName = "Recycler"
+aiName = "RecyclerFriend"
+aiName2 = "RecyclerEnemy"
+heatSignature = 0.1
+imageSignature = 4.0
+radarSignature = 1.0
+
+[CraftClass]
+rangeScan = 1000.0
+periodScan = 5.0
+velocJam = 0.0
+
+selectWaitMsg = "avrecyv0.wav"
+selectUser1Msg = "avrecyvd.wav"
+selectGoMsg = "avrecyve.wav"
+selectReadyMsg = "avrecyvg.wav"
+selectUser2Msg = "avrecyvf.wav"
+
+goMsg = "avrecyv1.wav"
+repairMsg = "avrecyv9.wav"
+attackMsg = "avrecyvm.wav"
+followMsg = "avrecyv5.wav"
+reloadMsg = "avrecyv8.wav"
+rescueMsg = "avrecyv3.wav"
+
+deployedMsg = "avrecyv6.wav"
+packedMsg = "avrecyvc.wav"
+diedMsg = "abetty1.wav"
+
+[HoverCraftClass]
+setAltitude = 1.5
+accelDragStop = 4.0
+accelDragFull = 1.0
+alphaTrack = 20.0
+alphaDamp = 5.0
+pitchPitch = 0.1
+pitchThrust = 0.05
+rollStrafe = 0.05
+rollSteer = 0.05
+
+velocForward = 15.0
+velocReverse = 10.0
+velocStrafe = 10.0
+accelThrust = 50.0
+accelBrake = 20.0
+omegaSpin = 2.0
+omegaTurn = 1.0
+alphaSteer = 5.0
+accelJump = 5.0
+
+soundThrust = "avrecye6.wav"
+soundSteer = "avrecye7.wav"
+soundDeploy = "avrecye3.wav"
+soundUndeploy = "avrecye5.wav"
+
+[ProducerClass]
+timeDeploy = 5.0
+timeUndeploy = 5.0
+timeRepair = 1.0
+healthRepair = 100
+scrapHold = 30
+pilotHold = 30
+buildItem1 = "bvscav"
+buildItem2 = "aprepa"
+buildItem3 = "apammo"
+buildItem4 = "bvturr"
+buildItem5 = "bvraz"
+buildItem6 = ""
+buildItem7 = ""
+buildItem8 = ""
+buildItem9 = "bvrdev"
+
+blockedGeyserMsg = "avrecyvb.wav"
+soundBuild = "avrecye2.wav"
+soundFinish = "avrecye9.wav"

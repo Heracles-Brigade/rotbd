@@ -1,0 +1,71 @@
+[GameObjectClass]
+classLabel = "constructionrig"
+collisionRadius = 7.0
+scrapValue = 7
+scrapCost = 8
+buildTime = 10.0
+maxHealth = 2000
+maxAmmo = 0
+collisionRadius = 5.0
+unitName = "Constructor"
+aiName = "RigFriend"
+aiName2 = "RigEnemy"
+heatSignature = 2.2
+imageSignature = 5.0
+radarSignature = 0.1
+
+[CraftClass]
+rangeScan = 400.0f
+periodScan = 5.0f
+velocJam = 5.0f
+
+selectUser1Msg = "avconsv2.wav"
+selectUser2Msg = "avconsv6.wav"
+selectWaitMsg = "avconsv7.wav"
+selectGoMsg = "avconsv8.wav"
+selectOtherMsg = "avconsva.wav"
+
+attackMsg = "avconsv7.wav"
+goMsg = "avconsv0.wav"
+goObjectMsg = "avconsv0.wav"
+user1Msg = "avconsv2.wav"
+user2Msg = "avconsvb.wav"
+followMsg = "avconsv3.wav"
+otherMsg = "avconsv9.wav"
+diedMsg = "abetty1.wav"
+
+[HoverCraftClass]
+setAltitude = 1.0
+accelDragStop = 4.0
+accelDragFull = 1.0
+alphaTrack = 20.0
+alphaDamp = 5.0
+pitchPitch = 0.25
+pitchThrust = 0.1
+rollStrafe = 0.1
+rollSteer = 0.1
+
+velocForward = 12.0
+velocReverse = 12.0
+velocStrafe = 12.0
+accelThrust = 50.0
+accelBrake = 75.0
+omegaSpin = 2.0
+omegaTurn = 1.0
+alphaSteer = 5.0
+accelJump = 0.0
+
+soundThrust = "avcnste0.wav"
+soundSteer = "avcnste1.wav"
+soundDeploy = "avartle0.wav"
+soundUndeploy = "avartle4.wav"
+
+[ProducerClass]
+buildItem1 = "bbspow"
+buildItem2 = "bbtowe"
+buildItem3 = "bbcomm"
+buildItem4 = "bbbarr"
+buildItem5 = "bbsilo"
+buildItem6 = "bbsupp"
+buildItem7 = "bbhang"
+
