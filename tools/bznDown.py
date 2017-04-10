@@ -21,13 +21,15 @@ PURGE_MAP = {
     "param": "param [1] =\n0\n"
 }
 
+try:
+    with open(args.file,"r") as f:
+        content = f.read()
+        content = re.sub(V_NUM,DOWNGRADE_TO,content)
+        for i, v in PURGE_MAP.items():
+            content = re.sub(ARR_PFIX.format(i),v,content)
+            content = re.sub(V_PFIX.format(i),v,content)
 
-with open(args.file,"r") as f:
-    content = f.read()
-    content = re.sub(V_NUM,DOWNGRADE_TO,content)
-    for i, v in PURGE_MAP.items():
-        content = re.sub(ARR_PFIX.format(i),v,content)
-        content = re.sub(V_PFIX.format(i),v,content)
-
-with open(args.out or args.file,"w",newline="\r\n") as f:
-    f.write(content)
+    with open(args.out or args.file,"w",newline="\r\n") as f:
+        f.write(content)
+except:
+    print("Failed to convert {}".format(args.file))
