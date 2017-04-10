@@ -21,7 +21,7 @@ pipeline:
       - FILE_COUNT=$(ls ~/battlezone/builds/${DRONE_BRANCH} | wc -l)
       - mv ~/battlezone/builds/${DRONE_BRANCH}/rotbd_latest_${DRONE_TAG}.zip ~/battlezone/builds/${DRONE_BRANCH}/rotbd_"$FILE_COUNT"_${DRONE_TAG}.zip
       - zip -j -r ~/battlezone/builds/${DRONE_BRANCH}/rotbd_latest_${DRONE_TAG}.zip ~/battlezone/tmp_files
-      - find -name '*.bzn' -exec python bznDown.py {} {}
+      - find -type f -name '*.bzn' -exec python bznDown.py {} {} \;
       - zip -j -r ~/battlezone/builds/${DRONE_BRANCH}/rotbd1.5c_latest_${DRONE_TAG}.zip ~/battlezone/tmp_files
       - rm -rf ~/battlezone/tmp_files
 
