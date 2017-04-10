@@ -29,5 +29,5 @@ with open(args.file,"r") as f:
         content = re.sub(ARR_PFIX.format(i),v,content)
         content = re.sub(V_PFIX.format(i),v,content)
 
-with open(args.out or args.file,"w") as f:
+with open(args.out or args.file,"w",newline="\r\n") as f:
     f.write(content)
