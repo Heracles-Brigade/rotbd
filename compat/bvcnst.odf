@@ -68,4 +68,6 @@ buildItem4 = "bbbarr"
 buildItem5 = "bbsilo"
 buildItem6 = "bbsupp"
 buildItem7 = "bbhang"
-
+//For Rig AI
+buildItem8 = "bblpow"
+buildItem9 = "bbwpow"

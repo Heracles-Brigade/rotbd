@@ -99,11 +99,11 @@ local secondWave = mission.Objective:define("secondWave"):setListeners({
     success = function(self)
         --Spawn second wave
         for i = 1, 4 do
-			Attack(BuildObject("svfigh", 2, "patrol_path"), GetHandle("commtower"));
-		end
+          Attack(BuildObject("svfigh", 2, "patrol_path"), GetHandle("commtower"));
+       end
         for i = 1, 2 do
-			Attack(BuildObject("svtank", 2, "patrol_path"), GetHandle("commtower"));
-		end
+            Attack(BuildObject("svtank", 2, "patrol_path"), GetHandle("commtower"));
+        end
     end
 });
 --Lose condition:
@@ -125,7 +125,7 @@ local defendComm = mission.Objective:define("defendComm"):setListeners({
     load = function(self,...)
     end,
     fail = function(self)
-    	UpdateObjective("rbdnew3501.otf","red");
+        UpdateObjective("rbdnew3501.otf","red");
         FailMission(GetTime()+5.0, "bdmisn25l1.des");
         --Lose mission
     end
@@ -146,7 +146,7 @@ local destorySovietComm = mission.Objective:define("destorySovietComm"):setListe
             self.ktargets = {
                 BuildObject("svfigh", 2, "defense_spawn"),
                 BuildObject("svfigh", 2, "defense_spawn"),
-				BuildObject("svtank", 2, "defense_spawn"),
+                BuildObject("svtank", 2, "defense_spawn"),
                 BuildObject("svltnk", 2, "defense_spawn")
             };
             for i,v in pairs(self.ktargets) do
@@ -453,7 +453,7 @@ local escortAPCs = mission.Objective:define("escortAPCs"):setListeners({
     success = function(self)
         UpdateObjective("bdmisn2602.otf","green");
         UpdateObjective("bdmisn2603.otf","green");
-	    SucceedMission(GetTime()+5.0, "bdmisn26wn.des");
+        SucceedMission(GetTime()+5.0, "bdmisn26wn.des");
     end,
     fail = function(self)
         UpdateObjective("bdmisn2603.otf","red");
@@ -484,7 +484,7 @@ miss25setup = function()
     end
 
     Goto(walker,"walker_path",1);
-	SetObjectiveName (walker,"Cmdr. George");
+    SetObjectiveName (walker,"Cmdr. George");
     local swave = secondWave:start();
     local loseObjective = defendComm:start();
     local attackObjective = destorySovietComm:start();
@@ -521,9 +521,9 @@ function Start()
     SetPilot(1,5);
     SetScrap(1,8);
     miss25setup();
-	SetMaxHealth(GetHandle("abbarr2_barracks"),0);
-	SetMaxHealth(GetHandle("abbarr3_barracks"),0);
-	SetMaxHealth(GetHandle("abcafe3_i76building"),0)
+    SetMaxHealth(GetHandle("abbarr2_barracks"),0);
+    SetMaxHealth(GetHandle("abbarr3_barracks"),0);
+    SetMaxHealth(GetHandle("abcafe3_i76building"),0)
 end
 
 function Update(dtime)

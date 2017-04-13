@@ -396,7 +396,7 @@ ObjectiveInstance = {
             return self.parentRef:dispatchEvent(event,self,...)
         end,
         call = function(self,...)
-            return self:parentCall(event,...);
+            return self:parentCall(...);
         end,
         start = function(self,...)
             self:parentCall('start',...);

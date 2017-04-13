@@ -354,7 +354,7 @@ local Handle = Class("Obj.Handle", {
     end,
     canMake = function(odf)
       local c = self:getClassLabel();
-      if(c == "recycler" or c == "factory") then
+      if(c == "recycler" or c == "factory" or c == "constructionrig") then
         local blist = self:getTable("ProducerClass","buildItem");
         return isIn(odf,blist);
       end
@@ -383,6 +383,9 @@ local Handle = Class("Obj.Handle", {
     end,
     goto = function(...)
       Goto(self:getHandle(), ...);
+    end,
+    gotoGeyser = function(priority)
+      self:setCommand(AiCommand["GO_TO_GEYSER"],priority);
     end,
     mine = function(...)
       Mine(self:getHandle(), ...);

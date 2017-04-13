@@ -59,6 +59,7 @@ local AiManager = Decorate(
   Class("AiManagerModule",{
     constructor = function()
       self.all = {};
+      self.byClass = {};
       self.classes = {};
     end,
     methods = {
@@ -109,6 +110,9 @@ local AiManager = Decorate(
           end
         end
       end,
+      getUnitsByClass = function(cls)
+        return self.byClass[cls:getName()];
+      end,
       afterSave = function()
       end,
       afterLoad = function() 
@@ -132,6 +136,11 @@ local AiManager = Decorate(
         self:checkHandle(handle);
       end,
       onDeleteObject = function(handle,...)
+        if(self.all[handle]) then
+          for i,v in pairs(self.all[handle]) do
+            v:onReset();
+          end
+        end
         self.all[handle] = nil;
       end,
       onReceive = function(...)
@@ -147,7 +156,7 @@ local AiManager = Decorate(
                 suspended = false
               });
               v:onInit();
-            elseif(pt == t) then
+            elseif((not Meta(v).suspended) and (pt == t)) then
               if(not Meta(v).playerTeam) then
                 Meta(v,{
                   suspended = true
@@ -171,8 +180,9 @@ local AiManager = Decorate(
             if (m) then
               local aiC = v:new(handle);
               self.all[handle] = self.all[handle] or {};
+              self.byClass[v:getName()][handle] = aiC;
               table.insert(self.all[handle],aiC);
-              local s = not (objectMeta.playerTeam or p~=pt);
+              local s = not (objectMeta.playerTeam or t~=pt);
               Meta(aiC,{
                 suspended = s,
                 playerTeam = objectMeta.playerTeam
@@ -188,6 +198,7 @@ local AiManager = Decorate(
       end,
       declearClass = function(obj)
         table.insert(self.classes, obj);
+        self.byClass[obj:getName()] = setmetatable({},{__mode="v"});
       end
     }
   })
