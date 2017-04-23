@@ -20,41 +20,53 @@ SetAIControl(2,false);
 SetAIControl(3,false);
 
 
---First objective, go to base, get unit, etc
+--First objective, go to base, get unit and investigate relic site
 local intro = mission.Objective:define("introObjective"):createTasks(
   "rendezvous","wait_for_units","goto_relic"
 ):setListeners({
   init = function(self)
+    --otfs for each task
     self.otfs = {
       rendezvous = "rbd0521.otf",
       wait_for_units = "rbd0522.otf",
       goto_relic = "rbd0523.otf"
     };
+    --next task, for each task
+    --objective succeeded after goto_relic is completed
     self.next = {
       rendezvous = "wait_for_units",
       wait_for_units = "goto_relic"
     };
   end,
   start = function(self)
+    --Set up patrol paths
     local patrol_rid, patrol_r = bzRoutine.routineManager:startRoutine("PatrolRoutine");
+    --what are our `checkpoint` locations?
     patrol_r:registerLocations({"l_command","l_center","l_north","l_front"});
+    --l_command connects to l_center via p_command_center path
     patrol_r:defineRouts("l_command",{
       p_command_center = "l_center"
     });
+    --l_center connects to both l_front and l_north via p_center_front and p_center_north
     patrol_r:defineRouts("l_center",{
       p_center_front = "l_front",
       p_center_north = "l_north"
     });
+    --l_front connects to l_command via either p_front_command or p_front_patrol_command
     patrol_r:defineRouts("l_front",{
       p_front_command = "l_command",
       p_front_patrol_command = "l_command"
     });
+    --l_north only connects to l_center via p_north_center, slightly redundant, but there in case more paths are added
     patrol_r:defineRouts("l_north",{
       p_north_center = "l_center"
     });
+    --set patrol_id
     self.patrol_id = patrol_rid;
+    --Start first task, go to base
     self:startTask("rendezvous");
     self.endWait = 7;
+    --Let us queue some production jobs for Shaw to do
     ProducerAi:queueJob(ProductionJob("bvcnst",3));
     ProducerAi:queueJobs(ProductionJob:createMultiple(2,"bvscav",3));
     ProducerAi:queueJob(ProductionJob("bvslf",3));
@@ -64,13 +76,14 @@ local intro = mission.Objective:define("introObjective"):createTasks(
     for i,v in pairs(GetPathPoints("make_turrets")) do
       table.insert(turretJobs,ProductionJob("bvturr",3,v,1));
     end
-    --Tell AI to build patrol units
+    --Tell AI to build patrol units, 3 tanks and 3 fighters
     local tankJobs = {ProductionJob:createMultiple(3,"bvtank",3)};
     local scoutJobs = {ProductionJob:createMultiple(3,"bvraz",3)};
-
+    
     self.patrolProd = ProducerAi:queueJobs2(tankJobs,scoutJobs);
+    --Set up observer for patrol Production
     self:call("_setUpProdListeners",self.patrolProd,"_forEachPatrolUnit","_donePatrolUnit");
-
+    --Tell AI to build some guntowers for defence and a commtower
     for i,v in pairs(GetPathPoints("make_bblpow")) do
       ProducerAi:queueJob(ProductionJob("bblpow",3,v),0);
     end
@@ -80,10 +93,11 @@ local intro = mission.Objective:define("introObjective"):createTasks(
     ProducerAi:queueJob(ProductionJob("bbcomm",3,"make_bbcomm"));
     
     self.turrProd = ProducerAi:queueJobs2(turretJobs);
-    --Set up observing for turrets, when produced _forEachTurret will run
+    --Set up observer for turrets, when produced _forEachTurret will run
     self:call("_setUpProdListeners",self.turrProd,"_forEachTurret","_doneTurret");
-    --Set up tasks for constructor
+
   end,
+  --Helper function for connecting production job to observers
   _setUpProdListeners = function(self,id,each,done)
     local bundle = ProducerAi:getBundle(id);
     if(bundle) then
@@ -96,9 +110,11 @@ local intro = mission.Objective:define("introObjective"):createTasks(
     end
   end,
   _forEachProduced1 = function(self,job,handle)
+    --For each unit produced for the player, set the team number to 1
     SetTeamNum(handle,1);
   end,
   _doneProducing1 = function(self,bundle,handle)
+    --When all the player's units have been made, succeed wait_for_units
     self:taskSucceed("wait_for_units");
   end,
   _forEachTurret = function(self,job,handle)
@@ -106,6 +122,7 @@ local intro = mission.Objective:define("introObjective"):createTasks(
     Goto(handle,job:getLocation());
   end,
   _forEachPatrolUnit = function(self,job,handle)
+    --For each unit produced in order to patrol the base, add them to the patrol routine
     local patrol_r = bzRoutine.routineManager:getRoutine(self.patrol_id);
     patrol_r:addHandle(handle);
   end,
@@ -116,6 +133,7 @@ local intro = mission.Objective:define("introObjective"):createTasks(
     if(name == "wait_for_units") then
       --Make producer create units
       --               ProductionJob:createMultiple(count,odf,team)
+      --Queue Production Jobs for the player
       local tankJobs = {ProductionJob:createMultiple(3,"bvtank",3)};
       local rcktJobs = {ProductionJob:createMultiple(2,"bvrckt",3)};
       local scoutJobs = {ProductionJob:createMultiple(2,"bvraz",3)}; 
@@ -152,6 +170,7 @@ local intro = mission.Objective:define("introObjective"):createTasks(
     mission.Objective:Start("defendRelic",self.patrol_id);
   end,
   save = function(self)
+    --Save a bunch of stuff
     return {
       prodId = self.prodId,
       turrProd = self.turrProd,
@@ -161,6 +180,7 @@ local intro = mission.Objective:define("introObjective"):createTasks(
     };
   end,
   load = function(self,data)
+    --Load a bunch of stuff
     self.prodId = data.prodId;
     self.turrProd = data.turrProd;
     self.endWait = data.endWait;
