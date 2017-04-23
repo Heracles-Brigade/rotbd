@@ -302,7 +302,7 @@ local ProducerAi = Decorate(
       end,
       _requestJob = function()
         local job = class:requestJob(self.handle);
-        self.wait = 10;
+        self.wait = 60;
         if(job) then
           self.currentJob = job;
           self.buildState = 3;
