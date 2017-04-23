@@ -100,6 +100,7 @@ local function spawnInFormation(formation,location,dir,units,team,seperation)
         seperation = 10;
     end
     local tempH = {};
+    local lead;
     local directionVec = Normalize(SetVector(dir.x,0,dir.z));
     local formationAlign = Normalize(SetVector(-dir.z,0,dir.x));
     for i2, v2 in ipairs(formation) do
@@ -114,12 +115,15 @@ local function spawnInFormation(formation,location,dir,units,team,seperation)
             local h = BuildObject(units[n],team,pos);
             local t = BuildDirectionalMatrix(GetPosition(h),directionVec);
             SetTransform(h,t);
+            if(not lead) then
+                lead = h;
+            end
             table.insert(tempH,h);
         end
         i3 = i3+1;
         end
     end
-    return tempH;
+    return tempH, lead;
 end
 
 local function spawnInFormation2(formation,location,units,team,seperation)

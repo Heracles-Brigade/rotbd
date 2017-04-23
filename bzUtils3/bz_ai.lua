@@ -109,6 +109,9 @@ local AiManager = Decorate(
             end
           end
         end
+        for h in AllObjects() do
+          self:checkHandle(h);
+        end
       end,
       getUnitsByClass = function(cls)
         return self.byClass[cls:getName()];

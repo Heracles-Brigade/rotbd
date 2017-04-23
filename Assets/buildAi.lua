@@ -3,13 +3,13 @@ local misc = require("misc");
 local bzAi = require("bz_ai");
 local bzObjects = require("bz_objects");
 local bzObjective = require("bz_objt");
-local AiDecorator = bzAi.AiDecorator;
 local rx = require("rx");
 local Decorate = OOP.Decorate;
 local Implements = OOP.Implements;
+local AiDecorator = bzAi.AiDecorator;
 local Class = OOP.Class;
 local assignObject = OOP.assignObject;
-
+local odfFile = misc.odfFile;
 local ProductionJob;
 local JobBundle;
 
@@ -178,6 +178,10 @@ ProductionJob = Class("AI.ProductionJob",{
     isFinished = function()
       return self.finished;
     end,
+    getCost = function()
+      local c = odfFile(self.odf):getInt("GameObjectClass","scrapCost");
+      return c;
+    end,
     getAssignee = function()
       return self.assignee;
     end,
@@ -252,7 +256,7 @@ ProductionJob.nid = 0;
 local ProducerAi = Decorate(
   AiDecorator({
     name = "ProducerAi",
-    aiNames = {"RecyclerFriend","MUFFriend","RigFriend"},
+    aiNames = {"RecyclerFriend","MUFFriend","RigFriend","SLFFriend"},
     playerTeam = false
   }),
   Class("ProducerAi",{
@@ -298,6 +302,7 @@ local ProducerAi = Decorate(
       end,
       _requestJob = function()
         local job = class:requestJob(self.handle);
+        self.wait = 10;
         if(job) then
           self.currentJob = job;
           self.buildState = 3;
@@ -377,10 +382,14 @@ local ProducerAi = Decorate(
           if((not v:isFinished()) and (not v:isAssigned()) and (v:getTeam() == t) and me:canMake(v:getOdf())) then
             local nl = me:getDistance(v:getLocation());
             local relativePriority = v:getPriority()*10;
+            local scrapDiff = GetScrap(t) - v:getCost();
             if(v:getLocation() == "GLOBAL") then
               relativePriority = relativePriority + 100;
             else
               relativePriority = relativePriority + nl;
+            end
+            if(scrapDiff < 0) then
+              relativePriority = relativePriority - scrapDiff*5;
             end
             table.insert(filtered,{
               job = v,
@@ -389,15 +398,14 @@ local ProducerAi = Decorate(
           end
         end
         table.sort(filtered,function(a,b) return a.relativePriority < b.relativePriority end);
-        for i,v in pairs(filtered) do
-          print("Prio",v.relativePriority,v.job:getId(),v.job:getLocation(),v.job:getOdf());
-        end
         local jobPair = table.remove(filtered,1);
         if(jobPair) then
           --class.jobQueue[t][job.location][job.id] = nil;
           local job = jobPair.job;
-          job:assignTo(me:getHandle());
-          return jobPair.job;
+          if(GetScrap(t) >= job:getCost()) then
+            job:assignTo(me:getHandle());
+            return jobPair.job;
+          end
         end
       end,
       getJob = function(jobId)

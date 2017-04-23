@@ -354,11 +354,20 @@ local Handle = Class("Obj.Handle", {
     end,
     canMake = function(odf)
       local c = self:getClassLabel();
-      if(c == "recycler" or c == "factory" or c == "constructionrig") then
+      local cmake = false;
+      if(c == "armory" or c == "recycler" or c == "factory" or c == "constructionrig") then
         local blist = self:getTable("ProducerClass","buildItem");
-        return isIn(odf,blist);
+        cmake = cmake or isIn(odf,blist);
       end
-      return self:canBuild();
+      if(c == "armory") then
+        local cann = self:getTable("ArmoryClass","cannonItem");
+        local spec = self:getTable("ArmoryClass","rocketItem");
+        local rock = self:getTable("ArmoryClass","mortarItem");
+        local mort = self:getTable("ArmoryClass","specialItem");
+        cmake = cmake or isIn(odf,cann) or isIn(odf,spec) or isIn(odf,rock) or isIn(odf,mort); 
+      end
+      return cmake;
+      --return self:canBuild();
     end,
     isBusy = function()
       return IsBusy(self:getHandle());

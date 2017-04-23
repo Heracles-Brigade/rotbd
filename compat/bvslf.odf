@@ -80,6 +80,8 @@ buildItem1 = "aprepa"
 buildItem2 = "apammo"
 buildItem3 = "apcamr"
 buildItem4 = "apwrck"
+buildItem5 = "apwrckz"
+
 
 blockedGeyserMsg = "avslfvb.wav"
 
