@@ -1,0 +1,108 @@
+[OrdnanceClass]
+classLabel = "rocket"
+
+shotGeometry = "grckt00.geo"
+shotSound = "Ordin_e.wav"
+
+xplGround = "xrpgxpl"
+xplVehicle = "xrpgxpl"
+xplBuilding = "xrpgxpl"
+xplExpire = "xrpgxpl"
+
+renderName = "rpg.render"
+
+ammoCost = 1
+lifeSpan = 2.0
+shotSpeed = 300.0
+damageBallistic = 0
+damageConcussion = 0
+damageFlame = 0
+damageImpact = 750
+
+
+[Render]
+renderBase = "draw_multi"
+renderCount = 4
+renderName1 = "rpg.smoke"
+renderName2 = "rpg.smoke2"
+renderName3 = "rpg.light1"
+renderName4 = "rpg.light2"
+
+
+
+[Smoke]
+renderBase = "draw_twirl_trail"
+textureName = "flamealpha.tga" //"smokeflame2.tga"
+textureBlend = "srcalpha invsrcalpha modulatealpha"
+startColor = "153 153 153 191"
+finishColor = "153 153 153 0"
+startRadius = 0.60
+finishRadius = 0.40
+animateTime = 0.5
+emitDelay = 0.01
+emitVelocity = "0.0 0.0 -20.0"
+emitVariance = "1.0 1.0 0.5"
+emitLife = 0.5
+
+[Smoke2]
+renderBase = "draw_twirl_trail"
+textureName = "smoke2.tga"
+textureBlend = "srcalpha invsrcalpha modulatealpha"
+startColor = "153 153 153 191"
+finishColor = "153 153 153 0"
+startRadius = 0.5
+finishRadius = 0.7
+animateTime = 0.8
+emitDelay = 0.01
+emitVelocity = "0.0 0.0 -40.0"
+emitVariance = "3.0 3.0 1.0"
+emitLife = 0.8
+
+[Light1]
+simulateBase = "sim_smoke"
+lifeTime = 0.2
+renderBase = "draw_emit"
+emitName = "rpg.lightemit1"
+emitDelay = 0.2
+emitDelayVar = 0.0
+emitVelocity = "0.0 0.0 -2.0"
+emitVariance = "0.0 0.0 0.0"
+emitInherit = "1.0 1.0 1.0"
+
+[Lightemit1]
+simulateBase = "sim_smoke"
+lifeTime = 0.1
+renderBase = "draw_light"
+startColor = "255 200 255 255"
+finishColor = "255 200 255 255"
+startRadius = 50
+finishRadius = 30
+animateTime = 0.1
+attenuateConstant = 1.0
+attenuateLinear = 0.0
+attenuateQuadratic = 0.0
+
+[Light2]
+StartDelay = 0.1
+simulateBase = "sim_smoke"
+lifeTime = 0.2
+renderBase = "draw_emit"
+emitName = "rpg.lightemit2"
+emitDelay = 0.2
+emitDelayVar = 0.0
+emitVelocity = "0.0 0.0 -2.0"
+emitVariance = "0.0 0.0 0.0"
+emitInherit = "1.0 1.0 1.0"
+
+[Lightemit2]
+simulateBase = "sim_smoke"
+lifeTime = 0.1
+renderBase = "draw_light"
+startColor = "255 200 255 255"
+finishColor = "255 200 255 255"
+startRadius = 30
+finishRadius = 50
+animateTime = 0.1
+attenuateConstant = 1.0
+attenuateLinear = 0.0
+attenuateQuadratic = 0.0

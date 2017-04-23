@@ -1,0 +1,42 @@
+[GameObjectClass] // Special Sniper for RotBD BD mission 23. 
+baseName = "cspilo"
+classLabel = "person"
+scrapCost = 0
+scrapValue = 0
+pilotCost = 1
+maxHealth = 250
+maxAmmo = 50 //3
+unitName = "Player"
+aiName = "SoldierFriend"
+aiName2 = "SoldierEnemy"
+heatSignature = 0.2
+imageSignature = 0.3
+radarSignature = 0.2
+
+weaponHard1 = "GC1"
+weaponName1 = "handgun"
+weaponHard2 = "GC1"
+weaponName2 = "grpg"
+weaponHard3 = "GC1"
+weaponName3 = "gsnipe"
+weaponMask = 00001
+
+[PersonClass]
+painSound1 = "pain1.wav";
+painSound2 = "pain2.wav";
+painSound3 = "pain3.wav";
+painSound4 = "pain4.wav";
+painSound5 = "pain5.wav";
+painSound6 = "pain6.wav";
+burnSound1 = "lburn1.wav";
+burnSound2 = "lburn2.wav";
+dieSound1  = "death1.wav";
+dieSound2  = "death2.wav";
+dieSound3  = "death3.wav";
+dieSound4  = "death4.wav";
+dieSound5  = "death5.wav";
+crushSound = "squish.wav";
+jumpSound  = "jump.wav";
+landSound  = "land.wav";
+stepSound  = "running.wav"
+animRate = 5.0
