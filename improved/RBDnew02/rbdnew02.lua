@@ -187,14 +187,14 @@ function Update()
 		M.UpdateObjectives = true;
 	end
 	
-	-- Give player ammo every second. -- Cut, instead gave BZN a special bsuser22.odf with high powered sniper rifle and 100 ammo. -GBD
+	-- Give player ammo every second. -- Cut, instead gave BZN a special bsuser23.odf with high powered sniper rifle and 100 ammo. -GBD
 	--[[
 	if(GetTime() / GetFrame()) then -- Okay, so I also CBA to remember how to do BZ1's finicky timing thing, since code runs at FPS and not a static rate like it should. -GBD
 		AddAmmo(M.Player, 3);
 	end
 	--]]
 	
-	-- Radar Arrays, each one has a warning and a spawn trigger.
+	-- Radar Arrays, each one has a warning and a spawn trigger. (Warning temporarily disabled due to mission rewrite. Pending LUA rewrite.)
 	for i = 1, 3 do
 		if IsAlive(M.Radar[i].RadarHandle) then
 			if not M.Radar[i].RadarWarn and GetDistance(M.Player, M.Radar[i].RadarHandle) < 150.0 then
@@ -202,13 +202,13 @@ function Update()
 				M.Radar[i].RadarWarn = true;
 			end
 			
-			if not M.Radar[i].RadarSpawn and GetDistance(M.Player, M.Radar[i].RadarHandle) < 100.0 then
-				local Path = "spawn_radar" .. i;
-				Attack(BuildObject("svfigh", 2, Path), M.Player);
-				Attack(BuildObject("svhraz", 2, Path), M.Player);
-				Attack(BuildObject("svhraz", 2, Path), M.Player);
-				M.Radar[i].RadarSpawn = true;
-			end	
+			--if not M.Radar[i].RadarSpawn and GetDistance(M.Player, M.Radar[i].RadarHandle) < 100.0 then --Temporarily disabled pending lua rewrite
+			--	local Path = "spawn_radar" .. i;
+			--	Attack(BuildObject("svfigh", 2, Path), M.Player);
+			--	Attack(BuildObject("svhraz", 2, Path), M.Player);
+			--	Attack(BuildObject("svhraz", 2, Path), M.Player);
+			--	M.Radar[i].RadarSpawn = true;
+			--end	
 		end
 	end
 	

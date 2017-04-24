@@ -1,4 +1,4 @@
-[GameObjectClass] // Special Sniper for RotBD BD mission 23. 
+[GameObjectClass] // Black Dog in CCA Suit for Covert Ops ~Seqan 
 baseName = "cspilo"
 classLabel = "person"
 scrapCost = 0
@@ -16,9 +16,7 @@ radarSignature = 0.2
 weaponHard1 = "GC1"
 weaponName1 = "handgun"
 weaponHard2 = "GC1"
-weaponName2 = "grpg"
-weaponHard3 = "GC1"
-weaponName3 = "gsnipe"
+weaponName2 = "gsnipe"
 weaponMask = 00001
 
 [PersonClass]
