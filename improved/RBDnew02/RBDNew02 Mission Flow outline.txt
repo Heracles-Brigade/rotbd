@@ -1,0 +1,20 @@
+RBDNew02 Mission flow
+
+Spawn, first audio message, opening cinematic
+Assign first objective
+-On objective assign, highlight relevant Nav
+Approach Hanger
+When within 100m of Comm Tower, start 60s countdown before detection
+-On detection, spawn a patrol and play audio file
+When within 25m of hanger, play audio file and start next objective
+Go acquire tug
+Comm tower shit again
+On acquire tug, start next objective and play audio file, spawn nuke Armory
+Comm tower shit again at shield tower
+Nuke shield tower..run away
+On shield tower destroyed, start next objective and play audio file
+Approach mammoth
+When within 25m of Mammoth, start 30s timer and play audio file, assign "transmitting" objective text
+When timer completes, hell breaks loose, spawn patrols, target player, assign next objective, start 2m timer
+Run away to final nav
+Complete mission

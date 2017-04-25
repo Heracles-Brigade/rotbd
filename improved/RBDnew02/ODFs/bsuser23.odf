@@ -1,5 +1,5 @@
 [GameObjectClass] // Black Dog in CCA Suit for Covert Ops ~Seqan 
-baseName = "cspilo"
+baseName = "sspilo"
 classLabel = "person"
 scrapCost = 0
 scrapValue = 0

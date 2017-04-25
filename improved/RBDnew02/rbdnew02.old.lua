@@ -1,33 +1,51 @@
--- Battlezone: Rise of the Black Dogs, Improved Mission 2 coded by Seqan, derived from GBD's original script
+-- Battlezone: Rise of the Black Dogs, Black Dog Mission 23 written by General BlackDragon.
 
 
 require("bz_logging");
 
-local M = { --Sets mission flow and progression. Booleans will be changed to "true" as mission progresses. Necessary for save files to function as well as objective flow in later if statements.
+local M = {
+-- Bools
 UpdateObjectives = false,
-StartDone = false, 
-OpeningCinDone = false, --Forces intro to play
-IsDetected = false,
-HangarInfoed = false,
-SupplyReached = false,
-TugAquired = false,
-ShipAquired = false,
-ControlDead = false,
-MammothReached = false,
-MammothInfoed = false,
-SafetyReached = false,
-MissionOver = false,
-MammothTime = 0,
-RadarTime = 0,
--- Handles; values will be assigned during mission setup and play
+
+StartDone = false, -- Some things don't work in the actual "Start" function.
+OpeningCinDone = false, -- Intro cinimatic camera.
+
+HangarInfoed = false, -- Got intel?
+--Radar1Warn = false, -- Warning VO for Radar 1
+--Radar2Warn = false, -- Warning VO for Radar 2
+--Radar3Warn = false, -- Warning VO for Radar 3
+--Radar1Trigger = false, -- Triggered reinforcements for Radar 1.
+--Radar2Trigger = false, -- Triggered reinforcements for Radar 2.
+--Radar3Trigger = false, -- Triggered reinforcements for Radar 3.
+SupplyReached = false, -- Are we there yet?
+TugAquired = false, -- Are we in the tug? --NEW, you should get in the tug.
+ShipAquired = false, -- Similar to above, but allows you to not steal tug? flags for the IsPerson check in original code. -GBD
+ControlDead = false, -- Killed the Control Tower yet? --Why is it an sbmbld anyway? :P -GBD
+MammothReached = false, -- Are we in range of mammoth?
+MammothInfoed = false, -- We got it, now we run!
+SafetyReached = false, -- Are we safe yet?
+
+MissionOver = false, -- Yay!
+
+-- Floats (realy doubles in Lua)
+MammothTime = 0, -- Time to sit at Mammoth.
+
+-- Handles
 Player = nil,
 Nav = { },
-Tug = nil,
 Mammoth = nil,
+--Radar1 = nil,
+--Radar2 = nil,
+--Radar3 = nil,
 ControlTower = nil,
 Hangar = nil,
 Supply = nil,
+
+-- Radar Arrays.
+--Radar { RadarHandle = nil, RadarWarn = false, RadarTrigger = false, }
 Radar = { },
+
+-- Ints
 Aud1 = 0
 }
 
@@ -45,8 +63,19 @@ end
 
 function Start()
 
-    print("Black Dog Improved Mission 2 coded by Seqan");
+    print("Black Dog Mission 23 Lua created by General BlackDragon");
 
+end
+
+function AddObject(h)
+
+	local Team = GetTeamNum(h);
+
+end
+
+function DeleteObject(h)
+
+	
 end
 
 function Update()
@@ -56,56 +85,50 @@ function Update()
 	if not M.StartDone then
 		
 		M.Mammoth = GetHandle("mammoth");
-		SetIndependence(M.Mammoth, 0); -- Mammoth shouldn't respond or do anything in this mission.
+		SetIndependence(M.Mammoth, 0); -- Mammoth doesn't respond or do anything in this mission.
 		M.Hangar = GetHandle("hangar");
+		--SetMaxHealth(M.Hangar, 0); -- This is invincible. -- Omitted, made a lose condition instead. -GBD
 		M.Supply = GetHandle("supply");
-		M.Tug = GetHandle("tug");
-		KillPilot(M.Tug);
-		M.ControlTower = GetHandle("control");
-		SetPerceivedTeam(M.Player, 2); -- Make sure player isn't detected right away.
+		--SetMaxHealth(M.Supply, 0); -- This is invincible. -- Omitted, used GetDistance Nav 2 instead. -GBD
+		
 		for i = 1, 3 do 
 			M.Radar[i] = { RadarHandle = GetHandle("radar"..i), RadarWarn = false, RadarTrigger = false }
 		end
 		
-		for i = 1, 5 do
+		M.Tug = GetHandle("tug");
+		M.ControlTower = GetHandle("control");
+		
+		for i = 1, 5 do 
 			M.Nav[i] = GetHandle("nav" .. i);
 			if i == 5 then
-				SetObjectiveName(M.Nav[i], "Extraction Point");
+				SetObjectiveName(M.Nav[i], "Rendezvous Point");
 			else
-				SetObjectiveName(M.Nav[i], "Nav " .. i);
+				SetObjectiveName(M.Nav[i], "Navpoint " .. i);
 			end
 			SetMaxHealth(M.Nav[i], 0);
 		end
-		
-		-- Old script said the patrol units behave oddly. Patrol command here to make sure they behave as intended
+				
+		-- Units in BZN set to do wierd thing? Idk. Reset Patrols here. -GBD
 		Patrol(GetHandle("patrol1_1"), "patrol_1", 1);
-		for i =1, 4 do
+		for i = 1, 4 do
 			Patrol(GetHandle("patrol2_" .. i), "patrol_2", 1);
 		end
 		
-		
 		M.StartDone = true;
 		
-		-- Pre-play setup complete. Time to start the shit.
+		-- Start up the mission.
 		CameraReady();
 		Aud1 = AudioMessage("rbdnew0201.wav");
 	end
 	
-	if M.UpdateObjectives then --This entire function controls objective bubble and makes sure that objectives can flow in a linear order.
+	-- Handle Objectives.
+	if M.UpdateObjectives then
 	
 		ClearObjectives();
 		M.UpdateObjectives = false;
 		
-		if not M.IsDetected then
-			AddObjective("rbdnew0200.otf", "WHITE");
-		else
-			if not M.MammothReached then
-				AddObjective("rbdnew0200.otf", "RED");
-			end
-		end
-		
 		if not M.HangarInfoed then
-			-- NEW: If hanger dies before acquiring intel, just fail mission. Should be impossible unless we have cheating players. Joke's on them! They failed the mission! HA!
+			-- NEW: If hanger dies before intel, just fail mission.
 			if not IsAlive(M.Hangar) then
 				AddObjective("rbdnew0201.otf", "RED");
 			else
@@ -121,13 +144,14 @@ function Update()
 					AddObjective("rbdnew0203.otf", "WHITE");
 				end
 				
-				-- Tug Acquired
+				-- Are u in a ship? if so, continue.
 				if M.ShipAquired then
+					-- Congrats if u got in the tug, otherwise forget about it.
 					if M.TugAquired then
 						AddObjective("rbdnew0203.otf", "GREEN");
 					end
 					
-					-- Destroy Control Tower.
+					-- Destroy Cotnrol Tower.
 					if not M.ControlDead then
 						AddObjective("rbdnew0204.otf", "WHITE");
 					else
@@ -151,50 +175,44 @@ function Update()
 					end				
 				end
 			end
-		end	
+		end
+		
 	end
 	
-	if not M.IsDetected and GetPerceivedTeam(M.Player) == 1 then
-		M.IsDetected = true;
-		M.UpdateObjectives = true;
-	end
-	
-	--Opening Cinematic. Show off Deus Ex's wonderous creation!
+	-- Do the opening Camera. Reveal Deus Ex Ceteri's Beast! 
 	if not M.OpeningCinDone and CameraPath("camera_path", 1000, 2000, M.Mammoth) or CameraCancelled() then
 		CameraFinish();
-		SetObjectiveOn(M.Nav[1]);
+		SetObjectiveOn(M.Nav[1]); --SetUserTarget(M.Nav[1]);
 		M.OpeningCinDone = true;
 		M.UpdateObjectives = true;
 	end
 	
-	--Radar tower detection script
+	-- Give player ammo every second. -- Cut, instead gave BZN a special bsuser23.odf with high powered sniper rifle and 100 ammo. -GBD
+	--[[
+	if(GetTime() / GetFrame()) then -- Okay, so I also CBA to remember how to do BZ1's finicky timing thing, since code runs at FPS and not a static rate like it should. -GBD
+		AddAmmo(M.Player, 3);
+	end
+	--]]
+	
+	-- Radar Arrays, each one has a warning and a spawn trigger. (Warning temporarily disabled due to mission rewrite. Pending LUA rewrite.)
 	for i = 1, 3 do
 		if IsAlive(M.Radar[i].RadarHandle) then
-			if not M.Radar[i].RadarWarn and GetDistance(M.Player, M.Radar[i].RadarHandle) < 100.0 then
+			if not M.Radar[i].RadarWarn and GetDistance(M.Player, M.Radar[i].RadarHandle) < 150.0 then
 				M.Aud1 = AudioMessage("rbdnew0202.wav");
-				M.RadarTime = GetTime();
 				M.Radar[i].RadarWarn = true;
-				StartCockpitTimer(30, 15, 5);
-			else
-				if M.Radar[i].RadarWarn then
-					if GetDistance(M.Player, M.Radar[i].RadarHandle) > 100.0 then
-						Aud1 = AudioMessage("rbdnew0208.wav");
-						M.RadarTime = 0;
-						M.Radar[i].RadarWarn = false;
-						StopCockpitTimer();
-						HideCockpitTimer();
-					else
-						if GetTime() - M.RadarTime > 30.0 then
-							M.IsDetected = true;
-							M.UpdateObjectives = true;
-						end
-					end
-				end
 			end
 			
+			--if not M.Radar[i].RadarSpawn and GetDistance(M.Player, M.Radar[i].RadarHandle) < 100.0 then --Temporarily disabled pending lua rewrite
+			--	local Path = "spawn_radar" .. i;
+			--	Attack(BuildObject("svfigh", 2, Path), M.Player);
+			--	Attack(BuildObject("svhraz", 2, Path), M.Player);
+			--	Attack(BuildObject("svhraz", 2, Path), M.Player);
+			--	M.Radar[i].RadarSpawn = true;
+			--end	
 		end
 	end
 	
+	-- Inspect the Hangar.
 	if not M.HangarInfoed and IsAlive(M.Hangar) and GetDistance(M.Player, M.Hangar) < 50.0 then
 		Aud1 = AudioMessage("rbdnew0203.wav");
 		SetObjectiveOff(M.Nav[1]);
@@ -202,19 +220,26 @@ function Update()
 		M.HangarInfoed = true;
 		M.UpdateObjectives = true;
 	end
-		
-	if not M.TugAquired and M.Player == M.Tug then
-		BuildObject("bvslf", 1, "NukeSpawn", 1);
-		SetMaxScrap(1, 20);
-		SetScrap(1, 20);
-		M.TugAquired = true;
-		M.ShipAquired = true;
+	
+	-- Go to Supply.
+	if not M.SupplyReached and (not IsAlive(M.Tug) or GetDistance(M.Player, M.Tug) < 50.0) then --GetDistance(M.Player, M.Supply) < 50.0 -- Old code did this, and made it invulnerable. I prefer to allow pewpew all around. -GBD
+		M.SupplyReached = true;
 		M.UpdateObjectives = true;
+	end
+	-- New, old code just checked if IsPerson(M.Player) then. Now does the opposite, to see if you're in a ship, or stole tug.
+	if not M.TugAquired and M.Player == M.Tug then
+		M.TugAquired = true;
+	end
+	-- You got in the Tug, or had a Limo pick you up elsewhere...
+	if M.SupplyReached and not M.ShipAquired and not IsPerson(M.Player) then
 		Aud1 = AudioMessage("rbdnew0204.wav");
 		SetObjectiveOff(M.Nav[2]);
 		SetObjectiveOn(M.Nav[3]);
+		M.ShipAquired = true;
+		M.UpdateObjectives = true;
 	end
 	
+	-- Destroy Shield Control Tower.
 	if not M.ControlDead and M.ShipAquired and not IsAlive(M.ControlTower) then
 		Aud1 = AudioMessage("rbdnew0205.wav");
 		SetObjectiveOff(M.Nav[3]);
@@ -223,13 +248,15 @@ function Update()
 		M.UpdateObjectives = true;
 	end
 	
+	-- !! Improvement? Add in actual shield, do deactivation here?
+	
+	-- Reached mammoth, grab intel.
 	if M.ControlDead and not M.MammothReached and GetDistance(M.Player, M.Mammoth) < 75 then
 		M.MammothTime = GetTime() + 10.0; -- Wait 10 seconds to gather info.
 		M.MammothReached = true;
 		M.UpdateObjectives = true;
-		Aud1 = AudioMessage("rbdnew0209.wav");
 	end
-	
+	-- Times up, time to run away!
 	if M.MammothReached and not M.MammothInfoed and GetTime() > M.MammothTime then
 		Aud1 = AudioMessage("rbdnew0206.wav");
 		StartCockpitTimer(120, 60, 30);
@@ -237,17 +264,13 @@ function Update()
 		SetObjectiveOn(M.Nav[5]);
 		M.MammothInfoed = true;
 		M.UpdateObjectives = true;
-		SetPerceivedTeam(M.Player, 1);
 	end
-		
-		
 	
 	-- Win / Lose conditions.
 	if not M.MissionOver then
 	
 		-- Win Conditions:
 		if M.MammothInfoed and GetDistance(M.Player, M.Nav[5]) < 50.0 then
-			Aud1 = AudioMessage("rbdnew0210.wav");
 			SucceedMission(GetTime()+5.0, "rbdnew02wn.des");
 			M.MissionOver = true;
 			M.UpdateObjectives = true;
@@ -255,28 +278,21 @@ function Update()
 		end
 		
 		-- Lose Conditions:
-		
+		-- Kill Hanger too soon?
 		if not M.HangarInfoed and not IsAlive(M.Hangar) then
 			FailMission(GetTime()+5.0, "rbdnew02l3.des");
 			M.MissionOver = true;
 			M.UpdateObjectives = true;
 		end
-
+		-- Kill Mammoth too soon?
 		if  not IsAlive(M.Mammoth) then --not M.MammothInfoed and 
 			FailMission(GetTime()+5.0, "rbdnew02l1.des");
 			M.MissionOver = true;
 			M.UpdateObjectives = true;
 		end
-		
+		-- Fail to escape in time?
 		if M.MammothInfoed and GetCockpitTimer() == 0 then
 			FailMission(GetTime(), "rbdnew02l2.des");
-			M.MissionOver = true;
-			M.UpdateObjectives = true;
-		end
-		
-		if M.IsDetected and not M.MammothReached then
-			Aud1 = AudioMessage("rbdnew0207.wav");
-			FailMission(GetTime() + 5.0, "rbdnew02l4.des");
 			M.MissionOver = true;
 			M.UpdateObjectives = true;
 		end
