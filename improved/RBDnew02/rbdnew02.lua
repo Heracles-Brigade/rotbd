@@ -1,6 +1,8 @@
--- Battlezone: Rise of the Black Dogs, Improved Mission 2 coded by Seqan, derived from GBD's original script
-
-
+--[[
+	Contributors:
+   - Seqan
+	 - GBD
+--]]
 require("bz_logging");
 
 local M = { --Sets mission flow and progression. Booleans will be changed to "true" as mission progresses. Necessary for save files to function as well as objective flow in later if statements.
@@ -44,9 +46,6 @@ function Load(...)
     end
 end
 
-function Start()
-    print("Black Dog Improved Mission 2 coded by Seqan and Vemahk");
-end
 
 local function UpdateObjectives() --This entire function controls objective bubble and makes sure that objectives can flow in a linear order.
 	ClearObjectives();
