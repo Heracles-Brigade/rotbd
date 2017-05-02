@@ -1,0 +1,35 @@
+[ExplosionClass]
+baseName = "xminxpl"
+classLabel = "explosion" //"shockblast"
+
+damageRadius = 0.0
+damageBallistic = 0
+damageConcussion = 0
+damageFlame = 0
+damageImpact = 0
+
+particleTypes = 1
+
+particleClass1 = "sdome.sphere"
+particleCount1 = 1
+particleVeloc1 = "0.0 0.0 0.0"
+
+
+[Sphere]
+simulateBase = "sim_smoke"
+lifeTime = 3.5
+renderBase = "draw_sphere"
+textureName = "vsmoke.tga"
+startColor = "200 20 100 200"
+finishColor = "200 20 100 0"
+startRadius = 325.0
+finishRadius = 325.0
+animateTime = 3.5
+latitudeBands = 32
+longitudeSegments = 64
+InitialPitch = 0.0
+InitialYaw = 0.0
+InitialRoll = 0.0
+AddPitch = 10.0
+AddYaw = 100.0
+AddRoll = 10.0
