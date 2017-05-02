@@ -1,4 +1,4 @@
--- Battlezone: Rise of the Black Dogs, Improved Mission 2 coded by Seqan and Vemahk, derived from GBD's original script
+-- Battlezone: Rise of the Black Dogs, Improved Mission 2 coded by Seqan, derived from GBD's original script
 
 
 require("bz_logging");
@@ -45,10 +45,10 @@ function Load(...)
 end
 
 function Start()
-    print("Black Dog Improved Mission 2 coded by Seqan");
+    print("Black Dog Improved Mission 2 coded by Seqan and Vemahk");
 end
 
-function UpdateObjectives() --This entire function controls objective bubble and makes sure that objectives can flow in a linear order.
+function local UpdateObjectives() --This entire function controls objective bubble and makes sure that objectives can flow in a linear order.
 	ClearObjectives();
 	
 	if not M.IsDetected then
@@ -93,7 +93,7 @@ function UpdateObjectives() --This entire function controls objective bubble and
 	end	
 end
 
-function SpawnNav(num) -- Spawns the Nth Nav point.
+function local SpawnNav(num) -- Spawns the Nth Nav point.
 	local nav = BuildObject("apcamr", 1, M.NavCoord[num]); -- Make the nav from the harvested coordinates.
 	SetObjectiveName(nav, "Nav "..num); -- Set its name
 	if num == 5 then
@@ -107,7 +107,7 @@ function SpawnNav(num) -- Spawns the Nth Nav point.
 	ObjectiveNav = nav; -- Sets the new nav to the ObjectiveNav so that the next time this function is called, it can switch off of it.
 end
 
-function SpawnFromTo(odf, fp, fpp, tp)
+function local SpawnFromTo(odf, fp, fpp, tp)
 	local obj = BuildObject(odf, 2, fp, fpp)
 	Goto(obj, tp, 0);
 	SetLabel(obj, fp.."_"..M.NextDefender);
@@ -116,7 +116,7 @@ function SpawnFromTo(odf, fp, fpp, tp)
 end
 
 -- 
-function SpawnArmy()
+function local SpawnArmy()
 	SpawnFromTo("svfigh", "patrol_2", 13, "def1");
 	SpawnFromTo("svfigh", "patrol_2", 14, "def1");
 	SpawnFromTo("svltnk", "patrol_2", 13, "def1");
@@ -141,7 +141,7 @@ function SpawnArmy()
 	SpawnFromTo("svwalk", "def5", 1, "def5");
 end
 
-function keepOutside(h1,h2) -- This is the shield function for the Mammoth. Thank you, Mario
+function local keepOutside(h1,h2) -- This is the shield function for the Mammoth. Thank you, Mario
   local p = GetPosition(h2);
   local r = 625;
   local pp = GetPosition(h1);
@@ -279,14 +279,20 @@ function Update()
 		Aud1 = AudioMessage("rbdnew0209.wav");
 	end
 	
-	if M.MammothReached and not M.MammothInfoed and GetTime() > M.MammothTime then
-		Aud1 = AudioMessage("rbdnew0206.wav");
-		StartCockpitTimer(120, 60, 30);
-		SpawnNav(5);
-		M.MammothInfoed = true;
-		UpdateObjectives();
-		SetPerceivedTeam(M.Player, 1);
-	end
+    if M.MammothReached and not M.MammothInfoed and GetTime() > M.MammothTime then
+        Aud1 = AudioMessage("rbdnew0206.wav");
+        StartCockpitTimer(120, 60, 30);
+        SpawnNav(5);
+        M.MammothInfoed = true;
+        UpdateObjectives();
+        SetPerceivedTeam(M.Player, 1);
+        for i=1, 18 do
+            local tmp = M.Defenders[i];
+            if GetOdf(tmp) ~= "svwalk" then
+                Attack(tmp, M.Player);
+            end
+        end
+    end
 	
 	-- Win / Lose conditions.
 	if not M.MissionOver then
