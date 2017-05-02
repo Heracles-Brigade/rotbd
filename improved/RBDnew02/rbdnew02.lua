@@ -48,7 +48,7 @@ function Start()
     print("Black Dog Improved Mission 2 coded by Seqan and Vemahk");
 end
 
-function local UpdateObjectives() --This entire function controls objective bubble and makes sure that objectives can flow in a linear order.
+local function UpdateObjectives() --This entire function controls objective bubble and makes sure that objectives can flow in a linear order.
 	ClearObjectives();
 	
 	if not M.IsDetected then
@@ -93,7 +93,7 @@ function local UpdateObjectives() --This entire function controls objective bubb
 	end	
 end
 
-function local SpawnNav(num) -- Spawns the Nth Nav point.
+local function SpawnNav(num) -- Spawns the Nth Nav point.
 	local nav = BuildObject("apcamr", 1, M.NavCoord[num]); -- Make the nav from the harvested coordinates.
 	SetObjectiveName(nav, "Nav "..num); -- Set its name
 	if num == 5 then
@@ -107,7 +107,7 @@ function local SpawnNav(num) -- Spawns the Nth Nav point.
 	ObjectiveNav = nav; -- Sets the new nav to the ObjectiveNav so that the next time this function is called, it can switch off of it.
 end
 
-function local SpawnFromTo(odf, fp, fpp, tp)
+local function SpawnFromTo(odf, fp, fpp, tp)
 	local obj = BuildObject(odf, 2, fp, fpp)
 	Goto(obj, tp, 0);
 	SetLabel(obj, fp.."_"..M.NextDefender);
@@ -116,7 +116,7 @@ function local SpawnFromTo(odf, fp, fpp, tp)
 end
 
 -- 
-function local SpawnArmy()
+local function SpawnArmy()
 	SpawnFromTo("svfigh", "patrol_2", 13, "def1");
 	SpawnFromTo("svfigh", "patrol_2", 14, "def1");
 	SpawnFromTo("svltnk", "patrol_2", 13, "def1");
@@ -141,7 +141,7 @@ function local SpawnArmy()
 	SpawnFromTo("svwalk", "def5", 1, "def5");
 end
 
-function local keepOutside(h1,h2) -- This is the shield function for the Mammoth. Thank you, Mario
+local function keepOutside(h1,h2) -- This is the shield function for the Mammoth. Thank you, Mario
   local p = GetPosition(h2);
   local r = 625;
   local pp = GetPosition(h1);
