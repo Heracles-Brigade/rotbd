@@ -9,6 +9,14 @@ local TaskSequencer;
 local TaskManager;
 
 
+local function fixTugs()
+    for v in AllCraft() do
+        if(HasCargo(v)) then
+            Deploy(v);
+        end
+    end
+end
+
 local function createWave(odf,path_list,follow)
     local ret = {};
     for i,v in pairs(path_list) do
@@ -804,5 +812,6 @@ return {
     areAllDead = areAllDead,
     areAnyDead = areAnyDead,
     TaskManager = TaskManager,
-    createWave = createWave
+    createWave = createWave,
+    fixTugs = fixTugs
 }
