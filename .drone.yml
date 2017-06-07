@@ -14,6 +14,7 @@ pipeline:
       - cd ~/battlezone/rotbd
       - git fetch
       - git checkout ${DRONE_BRANCH}
+      - git reset --hard
       - git pull
       - mkdir ~/battlezone/tmp_files
       - find ~/battlezone/rotbd -not -iwholename '*/\.*' -type f -exec rsync -rv {} ~/battlezone/tmp_files \;
