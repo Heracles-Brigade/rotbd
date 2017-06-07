@@ -1,0 +1,62 @@
+[GameObjectClass]
+classLabel = "scavenger"
+collisionRadius=5.0
+scrapValue = 2
+scrapCost = 4
+buildTime = 5.0
+maxHealth = 3000
+maxAmmo = 0
+unitName = "Scavenger"
+aiName = "ScavengerFriend"
+aiName2 = "ScavengerEnemy"
+heatSignature = 0.2
+imageSignature = 1.5
+radarSignature = 0.1
+
+[CraftClass]
+rangeScan = 200.0
+periodScan = 0.0
+velocJam = 0.0
+
+selectGoMsg = "avscavn.wav"
+selectPickupMsg = "avscavk.wav"
+selectDropoffMsg = "avscavm.wav"
+selectOtherMsg = "avscav0.wav"
+
+goMsg = "avscav1.wav"
+stopMsg = "avscav7.wav"
+followMsg = "avscav6.wav"
+rescueMsg = "avscavb.wav"
+repairMsg = "avscava.wav"
+recycleMsg = "avscavc.wav"
+otherMsg = "avscavj.wav"
+
+diedMsg = "abetty4.wav"
+
+[HoverCraftClass]
+setAltitude = 0.6
+accelDragStop = 4.0
+accelDragFull = 1.0
+alphaTrack = 10.0
+alphaDamp = 3.0
+pitchPitch = 0.3
+pitchThrust = 0.1
+rollStrafe = 0.1
+rollSteer = 0.1
+
+velocForward = 15.0
+velocReverse = 15.0
+velocStrafe = 15.0
+accelThrust = 50.0
+accelBrake = 50.0
+omegaSpin = 3.5
+omegaTurn = 1.5
+alphaSteer = 5.0
+accelJump = 0.0
+
+soundThrust = "avscave3.wav"
+soundTurbo = "avscave6.wav"
+
+[ScavengerClass]
+maxScrap = 3
+soundPickup = "suck.wav"

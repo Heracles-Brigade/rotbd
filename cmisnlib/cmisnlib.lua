@@ -9,6 +9,26 @@ local TaskSequencer;
 local TaskManager;
 
 
+local function fixTugs()
+    for v in AllCraft() do
+        if(HasCargo(v)) then
+            Deploy(v);
+        end
+    end
+end
+
+local function createWave(odf,path_list,follow)
+    local ret = {};
+    for i,v in pairs(path_list) do
+        local h = BuildObject(odf,2,v);
+        if(follow) then
+            Goto(h,follow);
+        end
+        table.insert(ret,h);
+    end
+    return unpack(ret);
+end
+
 
 local _GetOdf = GetOdf;
 
@@ -88,6 +108,7 @@ local function spawnInFormation(formation,location,dir,units,team,seperation)
         seperation = 10;
     end
     local tempH = {};
+    local lead;
     local directionVec = Normalize(SetVector(dir.x,0,dir.z));
     local formationAlign = Normalize(SetVector(-dir.z,0,dir.x));
     for i2, v2 in ipairs(formation) do
@@ -102,12 +123,15 @@ local function spawnInFormation(formation,location,dir,units,team,seperation)
             local h = BuildObject(units[n],team,pos);
             local t = BuildDirectionalMatrix(GetPosition(h),directionVec);
             SetTransform(h,t);
+            if(not lead) then
+                lead = h;
+            end
             table.insert(tempH,h);
         end
         i3 = i3+1;
         end
     end
-    return tempH;
+    return tempH, lead;
 end
 
 local function spawnInFormation2(formation,location,units,team,seperation)
@@ -384,7 +408,7 @@ ObjectiveInstance = {
             return self.parentRef:dispatchEvent(event,self,...)
         end,
         call = function(self,...)
-            return self:parentCall(event,...);
+            return self:parentCall(...);
         end,
         start = function(self,...)
             self:parentCall('start',...);
@@ -787,5 +811,7 @@ return {
     enemiesInRange = enemiesInRange,
     areAllDead = areAllDead,
     areAnyDead = areAnyDead,
-    TaskManager = TaskManager
+    TaskManager = TaskManager,
+    createWave = createWave,
+    fixTugs = fixTugs
 }

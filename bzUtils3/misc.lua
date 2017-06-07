@@ -24,6 +24,44 @@ GetOdf = function(...)
     --return _GetOdf(...):gmatch("[^%c]+")();
 end
 
+GetPathPointCount = GetPathPointCount or function(path)
+  local p = GetPosition(path, 0)
+  local lp = SetVector(0, 0, 0)
+  local c = 0
+  while p ~= lp do
+    lp = p
+    c = c + 1
+    p = GetPosition(path, c)
+  end
+  return c
+end
+GetPathPoints = function(path)
+  local _accum_0 = { }
+  local _len_0 = 1
+  for i = 0, GetPathPointCount(path)-1 do
+    _accum_0[_len_0] = GetPosition(path, i)
+    _len_0 = _len_0 + 1
+  end
+  return _accum_0
+end
+GetCenterOfPolygon = function(vertecies)
+  local center = SetVector(0, 0, 0)
+  local signedArea = 0
+  local a = 0
+  for i, v in ipairs(vertecies) do
+    local v2 = vertecies[i % #vertecies + 1]
+    a = v.x * v2.z - v2.x * v.z
+    signedArea = signedArea + a
+    center = center + (SetVector(v.x + v2.x, 0, v.z + v2.z) * a)
+  end
+  signedArea = signedArea / 2
+  center = center / (6 * signedArea)
+  return center
+end
+GetCenterOfPath = function(path)
+  return GetCenterOfPolygon(GetPathPoints(path))
+end
+
 local function global2Local(vec,t)
   local up = SetVector(t.up_x,t.up_y,t.up_z);
   local front = SetVector(t.front_x,t.front_y,t.front_z);

@@ -1,0 +1,11 @@
+[GameObjectClass]
+classLabel = "i76building"
+scrapCost = 0
+scrapValue = 0
+maxHealth = 500
+maxAmmo = 0
+unitName = "Storage"
+heatSignature = 0.8
+imageSignature = 8.0
+radarSignature = 1.0
+

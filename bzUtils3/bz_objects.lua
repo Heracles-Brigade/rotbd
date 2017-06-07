@@ -346,11 +346,28 @@ local Handle = Class("Obj.Handle", {
     damage = function(...)
       Damage(self:getHandle(), ...);
     end,
-    canCommand = function()
-      return CanCommand(self:getHandle());
+    canCommand = function(...)
+      return CanCommand(self:getHandle(),...);
     end,
-    canBuild = function()
-      return CanBuild(self:getHandle());
+    canBuild = function(...)
+      return CanBuild(self:getHandle(),...);
+    end,
+    canMake = function(odf)
+      local c = self:getClassLabel();
+      local cmake = false;
+      if(c == "armory" or c == "recycler" or c == "factory" or c == "constructionrig") then
+        local blist = self:getTable("ProducerClass","buildItem");
+        cmake = cmake or isIn(odf,blist);
+      end
+      if(c == "armory") then
+        local cann = self:getTable("ArmoryClass","cannonItem");
+        local spec = self:getTable("ArmoryClass","rocketItem");
+        local rock = self:getTable("ArmoryClass","mortarItem");
+        local mort = self:getTable("ArmoryClass","specialItem");
+        cmake = cmake or isIn(odf,cann) or isIn(odf,spec) or isIn(odf,rock) or isIn(odf,mort); 
+      end
+      return cmake;
+      --return self:canBuild();
     end,
     isBusy = function()
       return IsBusy(self:getHandle());
@@ -375,6 +392,9 @@ local Handle = Class("Obj.Handle", {
     end,
     goto = function(...)
       Goto(self:getHandle(), ...);
+    end,
+    gotoGeyser = function(priority)
+      self:setCommand(AiCommand["GO_TO_GEYSER"],priority);
     end,
     mine = function(...)
       Mine(self:getHandle(), ...);

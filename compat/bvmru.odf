@@ -1,0 +1,68 @@
+[GameObjectClass]
+classLabel = "minelayer"
+scrapValue = 2
+scrapCost = 8
+maxHealth = 3000
+maxAmmo = 2000
+unitName = "Mobile Repair Unit"
+aiName = "MineLayerFriend"
+aiName2 = "MineLayerEnemy"
+heatSignature = 1.0
+imageSignature = 2.0
+radarSignature = 0.1
+
+weaponHard1 = "GS1"
+weaponName1 = "grepa"
+weaponHard2 = "GS1"
+weaponName2 = "gammo"
+
+[CraftClass]
+rangeScan = 200.0
+periodScan = 0.0
+velocJam = 0.0
+
+selectWaitMsg = "avminev9.wav"
+selectUser1Msg = "avminevc.wav"
+selectGoMsg = "avmineve.wav"
+selectOtherMsg = "avminevg.wav"
+selectUser2Msg = "avminevd.wav"
+
+user1Msg = "avminev0.wav"
+followMsg = "avminevf.wav"
+followMeMsg = "avminev2.wav"
+repairMsg = "avminev3.wav"
+reloadMsg = "avminev4.wav"
+rescueMsg = "avminev5.wav"
+recycleMsg = "avminev6.wav"
+otherMsg = "avminevf.wav"
+
+user2Msg = "avminevb.wav"
+diedMsg = "abetty2.wav"
+
+[HoverCraftClass]
+setAltitude = 0.5
+accelDragStop = 4.0
+accelDragFull = 1.0
+alphaTrack = 10.0
+alphaDamp = 3.0
+pitchPitch = 0.5
+pitchThrust = 0.1
+rollStrafe = 0.1
+rollSteer = 0.1
+
+velocForward = 15.0
+velocReverse = 10.0
+velocStrafe = 15.0
+accelThrust = 50.0
+accelBrake = 50.0
+omegaSpin = 5.0
+omegaTurn = 2.0
+alphaSteer = 10.0
+accelJump = 0.0
+
+soundThrust = "avminee0.wav"
+soundSteer = "avminee3.wav"
+
+[MineLayerClass]
+mineRad = 100.0
+mineStep = 20.0

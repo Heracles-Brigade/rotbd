@@ -1,0 +1,16 @@
+[GameObjectClass]
+classLabel = "powerplant"
+scrapCost = 7
+scrapValue = 4
+maxHealth = 4000
+maxAmmo = 0
+unitName = "L-Power"
+heatSignature = 0.8
+imageSignature = 8.0
+radarSignature = 1.0
+
+[BuildingClass]
+soundAmbient = "ablplane0.wav"
+
+[PowerPlantClass]
+powerRange = 100.0

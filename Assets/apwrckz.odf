@@ -1,0 +1,13 @@
+[GameObjectClass]
+classLabel = "daywrecker"
+baseName = "apwrck"
+scrapCost = 20
+scrapValue = 0
+maxHealth = 300
+maxAmmo = 0
+unitName = "Day Wrecker"
+aiName = "PowerUpProcess"
+
+[DayWreckerClass]
+damageConcussion = 2000000
+xplBlast = "xbmbxpl"
