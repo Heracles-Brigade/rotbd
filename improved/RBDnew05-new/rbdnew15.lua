@@ -5,11 +5,14 @@
 local pwers = {};
 
 require("bz_logging");
+local orig15setup = require("orig15p");
 local core = require("bz_core");
-local bzObjects = require("bz_objects");
+local OOP = require("oop");
 local buildAi = require("buildAi");
 local bzRoutine = require("bz_routine");
 
+
+local IsIn = OOP.isIn;
 local ConstructorAi = buildAi.ConstructorAi;
 local ProducerAi = buildAi.ProducerAi;
 local ProductionJob = buildAi.ProductionJob;
@@ -18,6 +21,12 @@ local mission = require('cmisnlib');
 
 SetAIControl(2,false);
 SetAIControl(3,false);
+
+--[[
+TODO:
+  * add fail for leaving relic too early
+  * might be better to check relics health instead of using GetWhoShotMe
+]]
 
 
 --First objective, go to base, get unit and investigate relic site
@@ -71,6 +80,10 @@ local intro = mission.Objective:define("introObjective"):createTasks(
     ProducerAi:queueJobs(ProductionJob:createMultiple(2,"bvscav",3));
     ProducerAi:queueJob(ProductionJob("bvslf",3));
     ProducerAi:queueJob(ProductionJob("bvmuf",3));
+    
+    self.relic_camera_id = ProducerAi:queueJobs(ProductionJob("apcamr",3,"relic_site"));
+    self:call("_setUpProdListeners",self.relic_camera_id,"_forCamera");
+    
     local turretJobs = {};
     --Tell AI to build turrets
     for i,v in pairs(GetPathPoints("make_turrets")) do
@@ -91,7 +104,6 @@ local intro = mission.Objective:define("introObjective"):createTasks(
       ProducerAi:queueJob(ProductionJob("bbtowe",3,v),1);
     end
     ProducerAi:queueJob(ProductionJob("bbcomm",3,"make_bbcomm"));
-    
     self.turrProd = ProducerAi:queueJobs2(turretJobs);
     --Set up observer for turrets, when produced _forEachTurret will run
     self:call("_setUpProdListeners",self.turrProd,"_forEachTurret","_doneTurret");
@@ -126,19 +138,28 @@ local intro = mission.Objective:define("introObjective"):createTasks(
     local patrol_r = bzRoutine.routineManager:getRoutine(self.patrol_id);
     patrol_r:addHandle(handle);
   end,
+  _forCamera = function(self,job,handle)
+    SetObjectiveName(handle,"Relic Site");
+    self.camera_handle = handle;
+    if(self:isTaskActive("goto_relic")) then
+      SetTeamNum(self.camera_handle,1);
+    end
+  end,
   task_start = function(self,name)
     if(self.otfs[name]) then
       AddObjective(self.otfs[name]);
     end
     if(name == "wait_for_units") then
       --Make producer create units
-      --               ProductionJob:createMultiple(count,odf,team)
+      --ProductionJob:createMultiple(count,odf,team)
       --Queue Production Jobs for the player
       local tankJobs = {ProductionJob:createMultiple(3,"bvtank",3)};
       local rcktJobs = {ProductionJob:createMultiple(2,"bvrckt",3)};
       local scoutJobs = {ProductionJob:createMultiple(2,"bvraz",3)}; 
       self.prodId = ProducerAi:queueJobs2(tankJobs,rcktJobs,scoutJobs);
       self:call("_setUpProdListeners",self.prodId,"_forEachProduced1","_doneProducing1");
+    elseif(name == "goto_relic") then
+      SetTeamNum(self.camera_handle,1);
     end
   end,
   task_success = function(self,name)
@@ -176,7 +197,9 @@ local intro = mission.Objective:define("introObjective"):createTasks(
       turrProd = self.turrProd,
       endWait = self.endWait,
       patrol_id = self.patrol_id,
-      patrolProd = self.patrolProd
+      patrolProd = self.patrolProd,
+      relic_camera_id = self.relic_camera_id,
+      camera_handle = self.camera_handle
     };
   end,
   load = function(self,data)
@@ -186,25 +209,36 @@ local intro = mission.Objective:define("introObjective"):createTasks(
     self.endWait = data.endWait;
     self.patrol_id = data.patrol_id;
     self.patrolProd = data.patrolProd;
+    self.relic_camera_id = data.relic_camera_id;
+    self.camera_handle = data.camera_handle;
     if(self.turrProd) then
       self:call("_setUpProdListeners",self.turrProd,"_forEachTurret","_doneTurret");
     end
     if(self.patrolProd) then
-    self:call("_setUpProdListeners",self.patrolProd,"_forEachPatrolUnit","_donePatrolUnit");
+      self:call("_setUpProdListeners",self.patrolProd,"_forEachPatrolUnit","_donePatrolUnit");
     end
     if(self:isTaskActive("wait_for_units")) then
       self:call("_setUpProdListeners",self.prodId,"_forEachProduced1","_doneProducing1");
+    end
+    if(self.relic_camera_id) then
+      self:call("_setUpProdListeners",self.relic_camera_id,"_forCamera");
     end
   end
 });
 
 local defendRelic = mission.Objective:define("defendRelic"):createTasks(
-  "destroy_relic","nuke","return_to_base"
+  "destroy_relic","cca_attack_base","nuke"
 ):setListeners({
   init = function(self)
     self.next = {
-      destroy_relic = "nuke",
-      nuke = "return_to_base"
+      destroy_relic = "nuke"
+    };
+    self.otfs = {
+      destroy_relic = "rbd0524.otf",
+      nuke = "rbd0525.otf"
+    };
+    self.failCauses = {
+
     };
     self.relic = GetHandle("relic_1");
   end,
@@ -217,18 +251,22 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
     end
   end,
   start = function(self,patrol_id)
-    self:startTask("destroy_relic");
-    self.wait_while_shooting = 2;
     self.patrol_id = patrol_id;
+    self.wait_while_shooting = 2;
+    self.nuke_wait_t1 = 5;
+    self.nuke_wait_t2 = 2;
+    self.nuke_state = 0;
     self.t = 0;
+    self:startTask("destroy_relic");
+    self:startTask("cca_attack_base");
   end,
   task_start = function(self,name)
-    if(name == "destroy_relic") then
-      AddObjective("rbd0524.otf");
-    elseif(name == "nuke") then
-      AddObjective("rbd0525.otf");
-      self.dayId = ProducerAi:queueJob(ProductionJob("apwrckz",3,self.relic));
-      self:call("_setUpProdListeners",self.dayId,"_setDayWrecker");
+    if(self.otfs[name]) then
+      AddObjective(self.otfs[name]);
+    end
+    if(name == "nuke") then
+      self.day_id = ProducerAi:queueJob(ProductionJob("apwrckz",3,self.relic));
+      self:call("_setUpProdListeners",self.day_id,"_setDayWrecker");
       local units, lead = mission.spawnInFormation2({"   1   "," 22222 ", "3333333"},"cca_relic_attack",{"svtank","svrckt","svfigh"},2,15);
       for i, v in pairs(units) do
         if(v ~= lead) then
@@ -238,25 +276,70 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
         s:queue2("Goto","cca_relic_attack");
         s:queue2("Defend");
       end
+    elseif(name == "cca_attack_base") then
+      local patrol = bzRoutine.routineManager:getRoutine(self.patrol_id);
+      for i,v in pairs(patrol:getHandles()) do
+        Defend(v);
+      end
+      bzRoutine.routineManager:killRoutine(self.patrol_id);
+      self.attack_timers = {30,15,5};
+      self.attack_waves = {
+        {loc = "base_attack2",formation={"4 4 4","1 1 1"}},
+        {loc = "base_attack2",formation={"2 2 3","1 5 1"}},
+        {loc = "base_attack1",formation={"4 4 4","1 1 1"}}
+      };
+      self.attack_timer = nil;
     end
   end,
   _setDayWrecker = function(self,job,handle)
     SetMaxHealth(handle,0);
+    SetObjectiveOn(handle);
     self.daywrecker = handle;
   end,
   task_fail = function(self,name)
+    if(name == "nuke") then
+      UpdateObjective(self.otfs[name],"red");
+    end
     self:fail();
   end,
   task_success = function(self,name)
     if(name == "destroy_relic") then
       UpdateObjective("rbd0524.otf","red");
+    elseif(name == "nuke") then
+      ClearObjectives();
+      self:success();
     end
     if(self.next[name]) then
       self:startTask(self.next[name]);
     end
   end,
+  fail = function(self,cause)
+    FailMission(GetTime()+5.0,self.failCauses[cause or "NONE"]);
+  end,
+  success = function(self)
+    mission.Objective:Start("rtbAssumeControl");
+  end,
   update = function(self,dtime)
-    self.t = self.t + dtime;
+    if(self:isTaskActive("cca_attack_base")) then
+      if(self.attack_timer == nil) then
+        if(#self.attack_timers <= 0) then
+          self:taskSucceed("cca_attack_base");
+        else
+          self.attack_timer = table.remove(self.attack_timers,1);
+        end
+      end
+      if(self.attack_timer ~= nil) then
+        self.attack_timer = self.attack_timer - dtime;
+        if(self.attack_timer <= 0) then
+          --spawn an attack wave
+          local wave = table.remove(self.attack_waves,1);
+          for i,v in pairs(mission.spawnInFormation2(wave.formation,wave.loc,{"svfigh","svtank","svrckt","svhraz","svltnk"},2,15)) do
+            Goto(v,wave.loc);
+          end
+          self.attack_timer = nil;
+        end
+      end
+    end
     if(self:isTaskActive("destroy_relic")) then
       if(GetWhoShotMe(self.relic) == GetPlayerHandle()) then
         self.wait_while_shooting = self.wait_while_shooting - dtime;
@@ -265,7 +348,35 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
         self:taskSucceed("destroy_relic");
       end
     elseif(self:isTaskActive("nuke")) then
+      if(IsAlive(GetPlayerHandle()) and (self.nuke_state < 4) and (GetDistance(GetPlayerHandle(),"relic_site") > 200)) then
+        RemoveObjective(self.nuke_state < 2 and "rbd0530.otf" or "rbd0531.otf");
+        AddObjective("rbd0533.otf","red");
+        self:taskFail("nuke");
+        self.nuke_state = 4;
+      else
+        if(self.nuke_state == 0) then
+          self.nuke_wait_t1 = self.nuke_wait_t1 - dtime;
+          if(self.nuke_wait_t1 <= 0) then
+            AddObjective("rbd0530.otf");
+            self.nuke_state = 1;
+          end
+        elseif(self.nuke_state == 1) then
+          self.nuke_wait_t2 = self.nuke_wait_t2 - dtime;
+          if(self.nuke_wait_t2 <= 0) then
+            RemoveObjective("rbd0530.otf");
+            AddObjective("rbd0531.otf");
+            self.nuke_state = 3;
+          end
+        elseif(self.nuke_state == 3) then
+          if(Length(GetPosition(self.daywrecker) - GetPosition(self.relic)) < 50) then
+            RemoveObjective(self.nuke_state < 2 and "rbd0530.otf" or "rbd0531.otf");
+            AddObjective("rbd0534.otf","green");
+            self.nuke_state = 5;
+          end
+        end
+      end
       if(not IsValid(self.daywrecker) and self.daywrecker) then
+        print(IsValid(self.relic));
         if(not IsValid(self.relic)) then
           self:taskSucceed("nuke");
         else
@@ -278,15 +389,78 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
     return {
       wait1 = self.wait_while_shooting,
       daywrecker = self.daywrecker,
-      patrol_id = self.patrol_id
+      patrol_id = self.patrol_id,
+      attack_waves = self.attack_waves,
+      attack_timer = self.attack_timer,
+      attack_timers = self.attack_timers,
+      day_id = self.day_id,
+      nuke_wait_t1 = 5,
+      nuke_wait_t2 = 2,
+      nuke_state = self.nuke_state
     };
   end,
   load = function(self,data)
     self.wait_while_shooting = data.wait1;
     self.daywrecker = data.daywrecker;
     self.patrol_id = data.patrol_id;
+    self.attack_waves = data.attack_waves;
+    self.attack_timer = data.attack_timer;
+    self.attack_timers = data.attack_timers;
+    self.day_id = data.day_id;
+    self.nuke_wait_t1 = data.nuke_wait_t1;
+    self.nuke_wait_t2 = data.nuke_wait_t2;
+    self.nuke_state = data.nuke_state;
+    self:call("_setUpProdListeners",self.day_id,"_setDayWrecker");
   end
 });
+
+local RtbAssumeControl = mission.Objective:define("rtbAssumeControl"):createTasks(
+  "fix_base", "reclaim"
+):setListeners({
+  init = function(self)
+  end,
+  start = function(self)
+    AddObjective("rbd0532.otf");
+    self:startTask("fix_base");
+    self.waitToSuccess = 5;
+  end,
+  success = function(self)
+    ClearObjectives();
+    orig15setup();
+  end,
+  update = function(self,dtime)
+    if(self:isTaskActive("reclaim")) then
+      self.waitToSuccess = self.waitToSuccess - dtime;
+      if(self.waitToSuccess <= 0) then
+        self:taskSucceed("reclaim");
+        self:success();
+      end 
+    end
+    if((not self:hasTaskStarted("reclaim")) and GetDistance(GetPlayerHandle(),"bdog_base") < 200) then 
+      self:startTask("reclaim");
+    end
+    if(self:isTaskActive("fix_base") and GetDistance(GetPlayerHandle(),"bdog_base") < 700) then 
+      --wait a bit, success
+      local hasComm = false;
+      for v in ObjectsInRange(400,"bdog_base") do
+        if((GetTeamNum(v) == 2) or (GetTeamNum(v) == 3 and (not IsBuilding(v) ))) then
+          Damage(v,100000);
+        elseif(GetTeamNum(v) == 3) then
+          SetTeamNum(v,1);
+        end
+      end
+      self:taskSucceed("fix_base");
+    end
+  end,
+  save = function(self)
+    return self.waitToSuccess;
+  end,
+  load = function(self,...)
+    self.waitToSuccess = ...;
+  end
+});
+
+
 
 function Start()
   core:onStart();
@@ -300,8 +474,13 @@ function Start()
   SetScrap(3,2000);
   SetMaxPilot(3,5000);
   SetPilot(3,1000);
+  local h = GetHandle("relic_1");
+  SetMaxHealth(h,900000);
+  SetCurHealth(h,900000); 
   intro:start();
-
+  for i = 1, 13 do
+    Patrol(GetHandle("patrol_" .. i), "patrol_path");
+  end
   --ConstructorAi:addFromPath("make_bblpow",3,"bblpow");
 end
 
@@ -320,7 +499,7 @@ function CreateObject(handle)
   core:onCreateObject(handle);
   mission:CreateObject(handle);
   local l = GetClassLabel(handle);
-  if(l == "ammopack" or l == "repairkit" or l == "daywrecker" or l == "wpnpower") then
+  if(IsIn(l,{"ammopack","repairkit","daywrecker","wpnpower","camerapod"})) then
     table.insert(pwers,{h=handle,t=GetTeamNum(handle)});
     SetTeamNum(handle,1);
   end

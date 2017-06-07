@@ -304,6 +304,7 @@ local ProducerAi = Decorate(
         local job = class:requestJob(self.handle);
         self.wait = 60;
         if(job) then
+          self.wait = 0;
           self.currentJob = job;
           self.buildState = 3;
           self.handle:buildAt(job:getOdf(),(job:getLocation()~="GLOBAL" and job:getLocation()) or self.handle:getPosition());
@@ -457,6 +458,7 @@ local ProducerAi = Decorate(
     }
   })
 );
+
 
 ProducerAi.jobs = {};
 ProducerAi.bundled = {};

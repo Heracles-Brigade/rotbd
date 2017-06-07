@@ -1,20 +1,13 @@
+--Objectives from the original rbdnew05, put it here to not clutter rbdnew15 too much
+
 --Combination of The Last Stand and Evacuate Venus
 --Contributors:
     --Jarle Trollebø(Mario)
     --General BlackDragon
     --Deus Ex Ceteri
 
-
-require("bz_logging");
-
-local miss25setup;
 local miss26setup;
-
 local mission = require('cmisnlib');
-local globals = {};
-local tracker = mission.UnitTracker:new();
-
-SetAIControl(2,false);
 
 local function spawnAtPath(odf,team,path)
     local handles = {};
@@ -63,63 +56,12 @@ local function checkAnyDead(handles)
     return false;
 end
 --Define all objectives for mission 25
---Second wave:
-local secondWave = mission.Objective:define("secondWave"):setListeners({
-    start = function(self)
-        self.time = 135
-    end,
-    update = function(self,dtime)
-        self.time = self.time - dtime;
-        if(self.time <= 0) then
-            self:success();
-        end
-    end,
-    save = function(self)
-        return self.time;
-    end,
-    load = function(self,...)
-        self.time = ...;
-    end,
-    success = function(self)
-        --Spawn second wave
-        for i = 1, 4 do
-          Attack(BuildObject("svfigh", 2, "patrol_path"), GetHandle("commtower"));
-       end
-        for i = 1, 2 do
-            Attack(BuildObject("svtank", 2, "patrol_path"), GetHandle("commtower"));
-        end
-    end
-});
---Lose condition:
-local defendComm = mission.Objective:define("defendComm"):setListeners({
-    init = function(self)
-        self.comm = GetHandle("commtower");
-    end,
-    start = function(self)
-        AddObjective("rbdnew3501.otf","white");
-        AddObjective("rbdnew3502.otf","white");
-    end,
-    update = function(self,dtime)
-        if(not IsAlive(self.comm)) then
-            self:fail();
-        end
-    end,
-    save = function(self)
-    end,
-    load = function(self,...)
-    end,
-    fail = function(self)
-        UpdateObjective("rbdnew3501.otf","red");
-        FailMission(GetTime()+5.0, "bdmisn25l1.des");
-        --Lose mission
-    end
-});
-
 local destorySovietComm = mission.Objective:define("destorySovietComm"):setListeners({
     init = function(self)
         self.scomm = GetHandle("sovietcomm");
     end,
     start = function(self)
+        AddObjective("rbdnew3502.otf");
         self.spawnDef = false;
         self.scc = false;
         self.t1 = 30;
@@ -156,18 +98,12 @@ local destorySovietComm = mission.Objective:define("destorySovietComm"):setListe
     end,
     success = function(self)
         --Start mission 26
-        --End defend mission?
-        --You don't have to defend the comm tower anymore after this
-        mission:getObjective("defendComm"):success();
-        --Base will be obliterated so don't send any more force
-        local sw = mission:getObjective("secondWave");
-        if(sw) then
-            sw:success();
-        end
-        mission.Objective:Start("baseDestroyCin",self.ktargets);
+        
+        miss26setup();
+        --mission.Objective:Start("baseDestroyCin",self.ktargets);
     end
 });
---Cinematic of attack on base
+--Cinematic of attack on base (unused)
 local baseDestroyCin = mission.Objective:define("baseDestroyCin"):setListeners({
     init = function(self)
         self.targets = {
@@ -298,7 +234,7 @@ local baseDestroyCin = mission.Objective:define("baseDestroyCin"):setListeners({
 
 --Mission 26 objectives:
 
-local apcMeatup = mission.Objective:define("apcMeatup"):setListeners({
+local apcMeetup = mission.Objective:define("apcMeetup"):setListeners({
     init = function(self)
         self.apcs = {GetHandle("apc1"),GetHandle("apc2")};
     end,
@@ -329,7 +265,6 @@ local pickupSurvivors = mission.Objective:define("pickupSurvivors"):setListeners
         self.nav = GetHandle("nav1");
     end,
     start = function(self)
-        RemoveObjective("rbdnew3501.otf");
         AddObjective("rbdnew3503.otf", "WHITE");
         self.t1 = 30;
         self.arived = false;
@@ -447,40 +382,9 @@ local escortAPCs = mission.Objective:define("escortAPCs"):setListeners({
 });
 
 
---setup for miss 25 and 26
-miss25setup = function()
-    local walker = GetHandle("george");
-    local comm = GetHandle("commtower");
-    --SetMaxHealth(comm,GetMaxHealth(comm)*2.5);
-    --SetCurHealth(comm,GetMaxHealth(comm));
-    --Set units to patrol
-    for i = 1, 13 do
-        Patrol(GetHandle("patrol_" .. i), "patrol_path");
-    end
-
-    --First wave
-    for i = 1, 8 do
-        if i == 2 then
-            Attack(GetHandle("attacker_" .. i), GetHandle("george"));
-        else
-            Attack(GetHandle("attacker_" .. i), GetHandle("commtower"));
-        end
-    end
-
-    Goto(walker,"walker_path",1);
-    SetObjectiveName (walker,"Cmdr. George");
-    local swave = secondWave:start();
-    local loseObjective = defendComm:start();
-    local attackObjective = destorySovietComm:start();
-
-end
-
-
-
 
 miss26setup = function()
     --Spawns inital objects
-    UpdateObjective("rbdnew3501.otf","red");
     RemoveObjective("rbdnew3502.otf");
     spawnAtPath("proxminb",2,"spawn_prox");
     spawnAtPath("svfigh",2,"26spawn_figh");
@@ -498,39 +402,12 @@ miss26setup = function()
         Goto(v,"26apc_meatup",1);
     end
     Goto(spawnAtPath("bvhraz",1,"26spawn_bomber")[1],"26bomber_rev",1);
-    apcMeatup:start();
+    apcMeetup:start();
 end
 
-function Start()
-    SetPilot(1,5);
-    SetScrap(1,8);
-    miss25setup();
-    SetMaxHealth(GetHandle("abbarr2_barracks"),0);
-    SetMaxHealth(GetHandle("abbarr3_barracks"),0);
-    SetMaxHealth(GetHandle("abcafe3_i76building"),0)
-end
 
-function Update(dtime)
-    mission:Update(dtime);
-end
 
-function CreateObject(handle)
-    mission:CreateObject(handle);
-end
-
-function AddObject(handle)
-    mission:AddObject(handle);
-end
-
-function DeleteObject(handle)
-    mission:DeleteObject(handle);
-end
-
-function Save()
-    return mission:Save(), globals;
-end
-
-function Load(misison_date,g)
-    mission:Load(misison_date);
-    globals = g;
+return function()
+  --start up old missions
+  destorySovietComm:start();
 end

@@ -9,5 +9,5 @@ unitName = "Day Wrecker"
 aiName = "PowerUpProcess"
 
 [DayWreckerClass]
-damageConcussion = 200000
+damageConcussion = 2000000
 xplBlast = "xbmbxpl"
