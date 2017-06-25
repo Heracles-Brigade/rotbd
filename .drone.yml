@@ -1,5 +1,33 @@
 pipeline:
-  deploy:
+  pre-process:
+    image: builder:latest
+    when:
+      event:
+        - push
+        - tag
+    commands:
+      - mkdir ./tmp_files
+      - find ./rotbd -not -iwholename '*/\.*' -type f -exec rsync -rv {} ./tmp_files \;
+      - mkdir -p /output
+      - zip -j -r /output/bundle.zip ./tmp_files
+      - find -type f -name '*.bzn' -exec python3 ~/battlezone/tmp_files/bznDown.py {} {} \;
+      - zip -j -r /output/bundle1.5.zip ./tmp_files
+
+  snapshot-branch:
+    image: ubuntu:latest
+    when:
+      event:
+        - push
+    commands:
+      - FILE_COUNT=$(ls /deploy/${DRONE_BRANCH} | wc -l)
+      - mv /deploy/${DRONE_BRANCH}/rotbd_latest.zip /deploy/${DRONE_BRANCH}/rotbd_"$FILE_COUNT".zip
+      - cp /output/bundle.zip /deploy/${DRONE_BRANCH}/rotbd_latest.zip
+      - mv /deploy/${DRONE_BRANCH}/rotbd_latest1.5c.zip /deploy/${DRONE_BRANCH}/rotbd1.5c_"$FILE_COUNT".zip
+      - cp /output/bundle1.5.zip /deploy/${DRONE_BRANCH}/rotbd1.5c_latest.zip
+    volumes:
+      - /root/studynator/nginx-fs/private/rotbd/builds/deploy/branches:/deploy
+
+  old:
     image: appleboy/drone-ssh
     host: 188.166.61.106
     user: root
@@ -8,8 +36,7 @@ pipeline:
     key: ${SSH_KEY}
     when:
       event: 
-        - push
-        - tag
+
     script:
       - cd ~/battlezone/rotbd
       - git fetch
