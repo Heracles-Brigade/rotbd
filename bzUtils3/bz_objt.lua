@@ -124,7 +124,8 @@ end
 
 
 local FormatedObjective = Class("FormatedObjective",{
-  constructor = function(name,color,text,speed)
+  constructor = function(name,color,text,speed,dummy)
+    self.dummy = dummy;
     self.name = name;
     self.text = text or UseItem(name);
     self.dispText = self.text:gsub("%[%d+%]","");
@@ -151,10 +152,13 @@ local FormatedObjective = Class("FormatedObjective",{
     self.started = false;
     self.alive = true;
     self.timer = 0;
+    self.ctext = "";
   end,
   methods = {
     onInit = function()
-      AddObjective(self.name,self.color,8,"");
+      if(not self.dummy) then
+        AddObjective(self.name,self.color,8,"");
+      end
       self.started = true;
     end,
     update = function(dtime)
@@ -179,7 +183,10 @@ local FormatedObjective = Class("FormatedObjective",{
           end
         end
         if(not self:isDone()) then
-          UpdateObjective(self.name,self.color,1,self.dispText:sub(1,pindex));  
+          if(not self.dummy) then
+            UpdateObjective(self.name,self.color,1,self.dispText:sub(1,pindex));  
+          end
+          self.ctext = self.dispText:sub(1,pindex);
         end
       end
     end,
@@ -188,6 +195,9 @@ local FormatedObjective = Class("FormatedObjective",{
     end,
     getIndex = function()
       return (self.timer*self.speed)/60; --i = x*s/60 <=> x = i*60/s
+    end,
+    getText = function()
+      return self.ctext;
     end,
     isDone = function()
       return self.timer >= self.totalTime;--(self:getIndex() > #self.dispText) and (not self.cooldown);

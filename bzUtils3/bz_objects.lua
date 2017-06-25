@@ -42,7 +42,8 @@ if ((not SetLabel) and SettLabel) then
 end
 
 
-local function copyObject(handle,odf)
+local function copyObject(handle,odf,kill)
+  print("Replacing object!");
   local nObject = BuildObject(odf,GetTeamNum(handle),GetTransform(handle));
   local pilot = GetPilotClass(handle) or "";
   local hp = GetCurHealth(handle) or 0;
@@ -72,9 +73,10 @@ local function copyObject(handle,odf)
   --SetMaxHealth(nObject,mhp);
   SetCurHealth(nObject,hp);
   SetCurAmmo(nObject,hp);
+  print("Kill?",kill);
   if(IsAliveAndPilot(handle)) then
     SetPilotClass(nObject,pilot);
-  elseif(not IsAlive(handle)) then
+  elseif((not IsAlive(handle)) and kill) then
     RemovePilot(handle);
   end
   SetLabel(nObject,label);
@@ -288,9 +290,9 @@ local Handle = Class("Obj.Handle", {
     getObjectiveName = function()
       return GetObjectiveName(self:getHandle());
     end,
-    copyObject = function(odf)
+    copyObject = function(odf,...)
       odf = odf or self:getOdf();
-      return copyObject(self.handle,odf);
+      return copyObject(self.handle,odf,...);
     end,
     getDistance = function(...)
       return GetDistance(self:getHandle(), ...);
@@ -826,7 +828,6 @@ local ObjectManager = D(BzModule("ObjectManagerModule"),
           for i, v in pairs(self.classes) do
             local objectMeta = Meta(v).GameObject;
             local customTest = objectMeta.customTest;
-            
             local m = isIn(odf, objectMeta.odfs or {})
               or isIn(classLabel, objectMeta.classLabels or {})
               or isIn(objectMeta.customClass, customClasses or {});
