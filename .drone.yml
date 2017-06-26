@@ -1,3 +1,7 @@
+workspace:
+  base: /rotbd
+  path: src/${DRONE_REPO_SLUG}
+
 pipeline:
   deploy:
     image: appleboy/drone-ssh
