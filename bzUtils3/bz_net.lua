@@ -375,6 +375,7 @@ local NetworkManager = Decorate(BzModule("NetworkManagerModule"),
       end,
       onDeletePlayer = function(id,name,team)
         --Remove player
+        print("Deleting player!",id,name,team);
         if(self:getHostId() == id) then
           DisplayMessage("Host left, migrating...");
           self.migrating = true;
