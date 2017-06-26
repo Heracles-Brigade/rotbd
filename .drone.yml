@@ -25,12 +25,12 @@ pipeline:
         - push
         
     commands:
-      - mkdir -p /drone/deploy/${DRONE_BRANCH} 2>/dev/null
-      - FILE_COUNT=$(ls /drone/deploy/${DRONE_BRANCH} | wc -l) 2>/dev/null
-      - mv /drone/deploy/${DRONE_BRANCH}/rotbd_latest.zip /drone/deploy/${DRONE_BRANCH}/rotbd_"$FILE_COUNT".zip 2>/dev/null
-      - cp /rotbd/output/bundle.zip /drone/deploy/${DRONE_BRANCH}/rotbd_latest.zip 2>/dev/null
-      - mv /drone/deploy/${DRONE_BRANCH}/rotbd_latest1.5c.zip /drone/deploy/${DRONE_BRANCH}/rotbd1.5c_"$FILE_COUNT".zip 2>/dev/null
-      - cp /rotbd/output/bundle1.5.zip /drone/deploy/${DRONE_BRANCH}/rotbd1.5c_latest.zip 2>/dev/null
+      - mkdir -p /drone/deploy/${DRONE_BRANCH} || true
+      - FILE_COUNT=$(ls /drone/deploy/${DRONE_BRANCH} | wc -l) || true
+      - mv /drone/deploy/${DRONE_BRANCH}/rotbd_latest.zip /drone/deploy/${DRONE_BRANCH}/rotbd_"$FILE_COUNT".zip || true
+      - cp /rotbd/output/bundle.zip /drone/deploy/${DRONE_BRANCH}/rotbd_latest.zip || true
+      - mv /drone/deploy/${DRONE_BRANCH}/rotbd_latest1.5c.zip /drone/deploy/${DRONE_BRANCH}/rotbd1.5c_"$FILE_COUNT".zip || true
+      - cp /rotbd/output/bundle1.5.zip /drone/deploy/${DRONE_BRANCH}/rotbd1.5c_latest.zip || true
     volumes:
       - /root/studynator/nginx-fs/private/rotbd/builds/branches:/drone/deploy
 
