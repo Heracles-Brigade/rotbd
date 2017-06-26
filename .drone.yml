@@ -19,6 +19,7 @@ pipeline:
       - zip -j -r /rotbd/output/bundle1.5.zip ./tmp_files
 
   snapshot-branch:
+    group: deploy
     image: ubuntu
     when:
       event:
@@ -34,4 +35,14 @@ pipeline:
     volumes:
       - /root/studynator/nginx-fs/private/rotbd/builds/branches:/drone/deploy
 
-
+  release:
+    group: deploy
+    image: ubuntu
+    when:
+      event:
+        - tag
+  commands:
+      - \cp -f /rotbd/output/bundle.zip /drone/deploy/rotbd_${DRONE_TAG}.zip || true
+      - \cp -f /rotbd/output/bundle1.5.zip /drone/deploy/rotbd1.5c_${DRONE_TAG}.zip || true
+    volumes:
+      - /root/studynator/nginx-fs/private/rotbd/builds/releases:/drone/deploy
