@@ -8,6 +8,8 @@ pipeline:
     when:
       event:
         - push
+        - tag
+        
     commands:
       - mkdir ./tmp_files
       - find /rotbd -not -iwholename '*/\.*' -type f -exec rsync -rv {} ./tmp_files \;
@@ -21,6 +23,7 @@ pipeline:
     when:
       event:
         - push
+        
     commands:
       - FILE_COUNT=$(ls /drone/deploy/${DRONE_BRANCH} | wc -l)
       - mv /drone/deploy/${DRONE_BRANCH}/rotbd_latest.zip /drone/deploy/${DRONE_BRANCH}/rotbd_"$FILE_COUNT".zip
