@@ -1,30 +1,37 @@
+workspace:
+  base: /rotbd
+  path: src/${DRONE_REPO_SLUG}
+
 pipeline:
-  deploy:
-    image: appleboy/drone-ssh
-    host: 188.166.61.106
-    user: root
-    username: root
-    port: 22
-    key: ${SSH_KEY}
+  pre-process:
+    image: builder
     when:
-      event: 
+      event:
         - push
         - tag
-    script:
-      - cd ~/battlezone/rotbd
-      - git fetch
-      - git checkout ${DRONE_BRANCH}
-      - git reset --hard
-      - git pull
-      - mkdir ~/battlezone/tmp_files
-      - find ~/battlezone/rotbd -not -iwholename '*/\.*' -type f -exec rsync -rv {} ~/battlezone/tmp_files \;
-      - mkdir -p ~/battlezone/builds/${DRONE_BRANCH}
-      - FILE_COUNT=$(ls ~/battlezone/builds/${DRONE_BRANCH} | wc -l)
-      - mv ~/battlezone/builds/${DRONE_BRANCH}/rotbd_latest_${DRONE_TAG}.zip ~/battlezone/builds/${DRONE_BRANCH}/rotbd_"$FILE_COUNT"_${DRONE_TAG}.zip
-      - zip -j -r ~/battlezone/builds/${DRONE_BRANCH}/rotbd_latest_${DRONE_TAG}.zip ~/battlezone/tmp_files
-      - find -type f -name '*.bzn' -exec python3 ~/battlezone/tmp_files/bznDown.py {} {} \;
-      - mv ~/battlezone/builds/${DRONE_BRANCH}/rotbd1.5c_latest_${DRONE_TAG}.zip ~/battlezone/builds/${DRONE_BRANCH}/rotbd1.5c_"$FILE_COUNT"_${DRONE_TAG}.zip
-      - zip -j -r ~/battlezone/builds/${DRONE_BRANCH}/rotbd1.5c_latest_${DRONE_TAG}.zip ~/battlezone/tmp_files
-      - rm -rf ~/battlezone/tmp_files
+        
+    commands:
+      - mkdir ./tmp_files
+      - find /rotbd -not -iwholename '*/\.*' -type f -exec rsync -rv {} ./tmp_files \;
+      - mkdir -p /rotbd/output
+      - zip -j -r /rotbd/output/bundle.zip ./tmp_files
+      - find -type f -name '*.bzn' -exec python3 ./tmp_files/bznDown.py {} {} \;
+      - zip -j -r /rotbd/output/bundle1.5.zip ./tmp_files
+
+  snapshot-branch:
+    image: ubuntu
+    when:
+      event:
+        - push
+        
+    commands:
+      - mkdir -p /drone/deploy/${DRONE_BRANCH} || true
+      - FILE_COUNT=$(ls /drone/deploy/${DRONE_BRANCH} | wc -l) || true
+      - mv /drone/deploy/${DRONE_BRANCH}/rotbd_latest.zip /drone/deploy/${DRONE_BRANCH}/rotbd_"$FILE_COUNT".zip || true
+      - cp /rotbd/output/bundle.zip /drone/deploy/${DRONE_BRANCH}/rotbd_latest.zip || true
+      - mv /drone/deploy/${DRONE_BRANCH}/rotbd_latest1.5c.zip /drone/deploy/${DRONE_BRANCH}/rotbd1.5c_"$FILE_COUNT".zip || true
+      - cp /rotbd/output/bundle1.5.zip /drone/deploy/${DRONE_BRANCH}/rotbd1.5c_latest.zip || true
+    volumes:
+      - /root/studynator/nginx-fs/private/rotbd/builds/branches:/drone/deploy
 
 
