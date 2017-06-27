@@ -8,7 +8,7 @@ local KeyListener = misc.KeyListener;
 local MpSyncable = misc.MpSyncable;
 local PlayerListener = misc.PlayerListener;
 local ObjectListener = misc.ObjectListener;
-
+local CommandListener = misc.CommandListener;
 local Decorate = OOP.Decorate;
 local Implements = OOP.Implements;
 local KeyListener = misc.KeyListener;
@@ -176,7 +176,7 @@ local roundBasedGame2 = Decorate(
 --Routine for handling the game logic
 local roundBasedGame = Decorate(
   --We need to listne to players
-  Implements(PlayerListener,ObjectListener),
+  Implements(PlayerListener,ObjectListener,CommandListener),
   Routine({
     name = "roundBasedGame",
     delay = 0.1
@@ -211,6 +211,8 @@ local roundBasedGame = Decorate(
           bzRoutine.routineManager:killRoutine(self.sp_r);
           self.sp_r = nil;
         end
+
+
         self.roundTimeLeft = ROUND_TIME;
         self.roundStarted = true;
         self.inRound = true;
@@ -249,6 +251,10 @@ local roundBasedGame = Decorate(
         if(what == "SPAWN") then
           --"SPAWN" can be sent twice if host leaves
           --just as the game is about to start
+          if(self.sp_r) then
+            bzRoutine.routineManager:killRoutine(self.sp_r);
+            self.sp_r = nil;
+          end
           if(not self.roundStarted) then
             --Spawn
             local timeleft,location,plef = ...;
@@ -262,6 +268,10 @@ local roundBasedGame = Decorate(
         elseif(what == "ROUND_OVER") then
           StopCockpitTimer();
           StartCockpitTimer(0);
+          if(self.sp_r) then
+            bzRoutine.routineManager:killRoutine(self.sp_r);
+            self.sp_r = nil;
+          end
           self.roundStarted = false;
           self.inRound = false;
           local winner;
@@ -301,8 +311,13 @@ local roundBasedGame = Decorate(
         local dir = GetPosition(l,1) - GetPosition(l,0);
         local t = BuildDirectionalMatrix(GetPosition(l),dir);
         local h = net.netManager:getPlayerHandle() or self.playerHandle;
-        SetCurAmmo(h,GetMaxAmmo(h));
-        SetCurHealth(h,GetMaxHealth(h));
+        local of = misc.odfFile(GetOdf(self.playerHandle));
+        local maxHp = of:getInt("GameObjectClass","maxHealth");
+        local maxAmmo = of:getInt("GameObjectClass","maxAmmo");
+        SetMaxHealth(self.playerHandle,maxHp);
+        SetMaxAmmo(self.playerHandle,maxAmmo);
+        SetCurAmmo(h,maxAmmo);
+        SetCurHealth(h,maxHp);
         SetTransform(h,t);
         self.squad = spawnSquad(h);
         for i,v in pairs(self.squad) do
@@ -320,7 +335,7 @@ local roundBasedGame = Decorate(
         if(IsHosting()) then
           for i,v in pairs(self.sockets) do
             local p = v:packet();
-            p:queue("DEAD",id);
+            p:queue("DEAD",pdead);
             v:flush(p);
           end
         end
@@ -337,6 +352,10 @@ local roundBasedGame = Decorate(
         self.inRound = false;
         self.roundStarted = false;
         self.timeUntilStart = LOBBY_TIME;
+        if(self.sp_r) then
+          bzRoutine.routineManager:killRoutine(self.sp_r);
+          self.sp_r = nil;
+        end
         local wplayer = net.netManager.players.all[winner];
         if(wplayer) then
           DisplayMessage(("Winner was %s"):format(wplayer.name));
@@ -373,15 +392,28 @@ local roundBasedGame = Decorate(
         if(self.inRound and ((not IsValid(self.playerHandle)) or GetCurHealth(self.playerHandle) <= 0)) then
           
           local id;
-          local target;
-          --[[for i,v in pairs(self.squad) do
-            target = v;--GetPlayerHandle(net.netManager:playersInGame()[i].team);
-            if(target) then
-              self.sp_r = bzRoutine.routineManager:startRoutine("spectateRoutine",target);
-              break;
+          local targets = {};
+          local anyPlayers = false;
+          for i,v in pairs(self.playersLeft) do
+            local p = net.netManager:playersInGame()[i];
+            local target = net.netManager:getPlayerHandle(p.team);
+            print("Player left",i,p.team,target);
+            if(IsValid(target)) then
+              targets[i] = target;
+              anyTargets = true;
             end
-          end]]
-          
+          end
+          if(not anyTargets) then
+            for i,v in pairs(self.squad) do
+              if(IsValid(v)) then
+                table.insert(targets,v);
+                break;
+              end
+            end
+          end
+          if(anyTargets) then
+            self.sp_r = bzRoutine.routineManager:startRoutine("spectateRoutine",targets);
+          end
           if(IsHosting()) then
             self:_updatePlayersLeft(self.localPlayer.id);
           else
@@ -394,7 +426,7 @@ local roundBasedGame = Decorate(
           for i,v in pairs(self.squad) do
             local c = AiCommand[GetCurrentCommand(v)];
             if(OOP.isIn(c,{"FOLLOW","FORMATION","DEFEND","RESCUE","GOTO","NONE"})) then
-              Defend(v);
+              SetCommand(v, AiCommand.HUNT);
             else
               SetCommand(v,AiCommand[c],1,GetCurrentWho(v));
             end
@@ -407,8 +439,8 @@ local roundBasedGame = Decorate(
         if(self.inRound) then
           keepInside(self.playerHandle,"battleground");
         else
-          SetCurAmmo(self.playerHandle,0);
-          SetCurHealth(self.playerHandle,GetMaxHealth(self.playerHandle));
+          SetMaxAmmo(self.playerHandle,0);
+          SetMaxHealth(self.playerHandle,0);
           keepInside(self.playerHandle,"lobby");
         end
 
@@ -496,6 +528,30 @@ local roundBasedGame = Decorate(
       save = function()
       end,
       load = function()
+      end,
+      onCommand = function(cmd,...)
+        cmd = cmd:lower();
+        if(cmd == "spectate") then
+          if((not self.inRound) and self.roundStarted) then
+            local player = tonumber(... or "1");
+            local key;
+            local targets = {};
+            if(self.sp_r) then
+              bzRoutine.routineManager:killRoutine(self.sp_r);
+            end
+            for i,v in pairs(self.playersLeft) do
+              local p = net.netManager:playersInGame()[i];
+              local target = net.netManager:getPlayerHandle(p.team);
+              if(player == p.team) then
+                key = player;
+              end
+              if(IsValid(target)) then
+                targets[i] = target;
+              end
+            end
+            self.sp_r = bzRoutine.routineManager:startRoutine("spectateRoutine",targets,key);
+          end
+        end
       end
     }
   })
@@ -510,24 +566,53 @@ local spectateRoutine = Decorate(
   }),
   Class("spectateRoutine",{
     constructor = function()
-      self.sp_target = nil;
+      self.sp_targets = nil;
       self.alive = true;
       self.cam = false;
     end,
     methods = {
       onInit = function(...)
-        self.sp_target = ...;
-        print("Spectating started");
+        local ts, key = ...;
+        self.sp_targets = ts;
+        self.key_list = {};
+        self.key_i = 1;
+        for i, v in pairs(self.sp_targets) do
+          table.insert(self.key_list,i);
+          if(i == key) then
+            self.key_i = #self.key_list;
+          end
+        end
+        if(#self.key_list > 0) then
+          print("Spectating started");
+        else
+          self:stop();
+        end
+      end,
+      watchNext = function()
+        if(#self.key_list <= 0) then
+          return false;
+        end
+        self.key_i = (self.key_i%#self.key_list) + 1;
+        return true;
       end,
       update = function(dtime)
         if(self.cam) then
-          if(IsValid(self.sp_target)) then
-            CameraObject(self.sp_target,0,1000,-3000,self.sp_target);
-          else
+          if(CameraCancelled()) then
             self:stop();
+            return;
+          end
+          local h = self.sp_targets[self.key_list[self.key_i]];
+          if(IsValid(h)) then
+            --TODO: add smoothing
+            CameraObject(h,0,1000,-3000,h);
+          else
+            self.sp_targets[self.key_list[self.key_i]] = nil;
+            table.remove(self.key_list,key_i);
+            if not self:watchNext() then
+              self:stop();
+            end
           end
         elseif(IsValid(GetPlayerHandle())) then
-          print("Cam start:",GetPlayerHandle(),GetLabel(GetPlayerHandle()));
           self.cam = CameraReady();
         end
       end,
@@ -547,7 +632,9 @@ local spectateRoutine = Decorate(
         CameraFinish();
       end,
       onGameKey = function(key)
-        print("Key: " .. key);
+        if(key == "Tab") then
+          self:watchNext();
+        end
       end
     }
   })
@@ -563,6 +650,10 @@ local routine = bzRoutine.routineManager:startRoutine("roundBasedGame");
 function Start(...)
   --Spawn squad
   bzUtils:onStart(...);
+end
+
+function GameKey(...)
+  bzUtils:onGameKey(...);
 end
 
 function Update(...)
@@ -608,6 +699,16 @@ end
 function Receive(...)
   bzUtils:onReceive(...);
 end
+
+function Command(command,args)
+  local a = {};
+  for i in string.gmatch(args or "", "%S+") do
+    table.insert(a,i);
+  end
+  bzUtils:onCommand(command,unpack(a));
+  return true;
+end
+
 
 return {
   gameRoutine = routine;
