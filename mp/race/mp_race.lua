@@ -686,11 +686,13 @@ local gameManagerRoutine = Decorate(
             DisplayMessage("Commands:");
             DisplayMessage("/helprace - show this list");
             DisplayMessage("/afk - enable/disable afk mode");
+            DisplayMessage("/show - show host settings");
             DisplayMessage("Host commands:");
             DisplayMessage("/start - get ready for next round");
             DisplayMessage("/disable [autostart]");
             DisplayMessage("/enable [autostart]");
             DisplayMessage("  autostart - starts new round automatically after 30 sec");
+            DisplayMessage("  ex_physics - starts new round automatically after 30 sec");
             DisplayMessage("/set [laps|timelimit|minplayers] number");
             DisplayMessage("  laps - how many laps");
             DisplayMessage("  timelimit - how long should a round last");
@@ -703,6 +705,11 @@ local gameManagerRoutine = Decorate(
             if(not self.host) then
               self:_send("AFK",self.userSettings.afk);
             end
+          elseif(command == "show") then 
+            for i, v in pairs(self.hostSettings) do
+              DisplayMessage(("%s: %s"):format(i,tostring(v)));
+            end
+            validCommand = true;
           end
           if(not validCommand) then
             DisplayMessage("Invalid command or arguments.");
