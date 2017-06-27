@@ -14,12 +14,13 @@ local Implements = OOP.Implements;
 local KeyListener = misc.KeyListener;
 local BzDestroy = misc.BzDestroy;
 local Class = OOP.Class;
-
+local playerNavs = {};
 local Routine = bzRoutine.Routine;
 
 local killOnNext = {};
   
 GetMissionFilename = GetMissionFilename or GetMapTRNFilename;
+
 
 GetPathPointCount = GetPathPointCount or function(path)
   local c = 1;
@@ -325,6 +326,13 @@ local roundBasedGame = Decorate(
         end
       end,
       _removeSquad = function()
+        --Remove Cameras
+        for i=TeamSlot.MIN_BEACON, TeamSlot.MAX_BEACON do
+          local cam = GetTeamSlot(i);
+          if(IsValid(cam)) then
+            RemoveObject(cam);
+          end
+        end
         for i,v in pairs(self.squad) do
           RemoveObject(v);
         end
