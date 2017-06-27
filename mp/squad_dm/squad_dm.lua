@@ -52,9 +52,6 @@ local missionBase = GetMissionFilename():match("[^%p]+");
 print("missionBase",missionBase);
 local squadIni = misc.odfFile(("%s.sqd"):format(missionBase));
 
-print("Parent:",squadIni:getProperty("Meta","parent"));
-print("Default:",squadIni:getProperty("SquadMatches","default"));
-
 --print("Misn base:",missionBase);
 --print("Valid?",squadIni:isValid());
 --if(not squadIni:isValid()) then
