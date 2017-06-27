@@ -1,0 +1,11 @@
+[WeaponClass]
+classLabel = "machinegun"
+ordName = NULL
+wpnName = "Random"
+fireSound = "gdumm00.wav"
+wpnReticle = "octagon"
+wpnPriority = 100
+wpnCategory = "SPEC"
+
+[CannonClass]
+shotDelay = 1000000

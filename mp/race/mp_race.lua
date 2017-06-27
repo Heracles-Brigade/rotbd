@@ -23,6 +23,14 @@ local slotsTemplate = {"A","B","C","D","E","F","G","H","I"}
 
 local ODFS = {};
 
+GetMissionFilename = GetMissionFilename or GetMapTRNFilename;
+
+local missionBase = GetMissionFilename():match("[^%p]+");
+print("missionBase",missionBase);
+local raceSettings = misc.odfFile(("%s.race"):format(missionBase));
+
+
+
 local function closestPathPoints(paths,pos)
   local path, lop, closestPoints, pindex;
   local minDist = math.huge;
@@ -104,11 +112,10 @@ local gameManagerRoutine = Decorate(
         afk = false
       }
       self.hostSettings = {
-        laps = 3,
-        autostart = false,
-        timelimit = 60*10,
-        wait = 30,
-        minplayers = 2
+        laps = raceState:getInt("Settings","laps",3),
+        autostart = raceSettings:getBool("Settings","autostart",false),
+        timelimit = raceSettings:getInt("Settings","timelimit",60*10),
+        minplayers = raceSettings:getInt("Settings","minplayers",2)
       }
 
       self.startInit = false;
@@ -150,6 +157,9 @@ local gameManagerRoutine = Decorate(
           end
         end);
         self.calcTimer:start();
+
+        --check powerups
+
       end,
       _calcPlayerPositions = function()
         local sortedPositions = {};
@@ -168,6 +178,7 @@ local gameManagerRoutine = Decorate(
           table.insert(sortedPositions,{player=net.netManager:playersInGame()[i],distance=v.distance});
         end
         table.sort(sortedPositions,function(a,b) return a.distance > b.distance end);
+        self.localState.lastSortedPositions = sortedPositions;
         return sortedPositions;
       end,
       _onSocketCreate = function(socket,...)
@@ -471,6 +482,7 @@ local gameManagerRoutine = Decorate(
             });
           end
           self.checkpoints = newChecks;
+          AddObjective("SCORE_BOARD","yellow",0,"");
         end
 
         if(not self.localPlayer) then
@@ -552,6 +564,12 @@ local gameManagerRoutine = Decorate(
               SetObjectiveOff(v);
             end
           end
+          local score_board = self.localState.lastSortedPositions or {};
+          local out = "Player positions:\n";
+          for i, v in ipairs(score_board) do
+            out = out .. ("%d. %s"):format(i,v.player.name);
+          end
+          UpdateObjective("SCORE_BOARD","yellow",1,out);
         end
         if(not self.localState.inRace) then
           --Keep player in starting area

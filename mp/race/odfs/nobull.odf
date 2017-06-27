@@ -1,0 +1,22 @@
+[OrdnanceClass]
+classLabel = "tracer"
+
+shotGeometry = NULL
+xplGround = NULL
+xplVehicle = NULL
+xplBuilding = NULL
+
+ammoCost = 1000000000
+lifeSpan = 0.0
+shotSpeed = 0.0
+damageBallistic = 0
+damageConcussion = 0
+damageFlame = 0
+damageImpact = 0
+
+[TracerClass]
+tracerTexture = "bullet_b.1"
+shotColor = 227
+lodShift = 30.0
+tracerLength = 5.0
+tracerRadius = 0.09
