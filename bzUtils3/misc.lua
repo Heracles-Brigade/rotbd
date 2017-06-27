@@ -114,7 +114,7 @@ DoBoundingBoxesIntersect = function(p1,p2,p3,p4)
   );
 end
 IsInsideArea = IsInsideArea or function()
-  return false;
+  return true;
 end 
 IsPointOnLine = function(a1,a2,b)
   local aTmp = a2-a1;
@@ -333,17 +333,22 @@ local odfHeader = Class("odfHeader",{
         c = c + 1;
         n = self:getVar(varName .. c,...);
       end
-      return ret;
+      return ret, true;
     end
   }
 })
-
-local odfFile = Class("odfFile",{
+local odfFile;
+odfFile = Class("odfFile",{
   constructor = function(fileName)
     self.name = fileName;
     self.file = OpenODF(fileName);
     self.headers = {};
     assert(self.file,"Could not open \"%s\"!",self.name);
+    local parent, exists = self:getProperty("Meta","parent");
+    print(parent, exists);
+    if(exists) then
+      self.parent = odfFile(parent);
+    end
   end,
   methods = {
     getHeader = function(headerName)
@@ -351,27 +356,51 @@ local odfFile = Class("odfFile",{
         error("Header was nil!");
       end
       if(not self.headers[headerName]) then
-          self.headers[headerName] = odfHeader(self.file,headerName);
+        self.headers[headerName] = odfHeader(self.file,headerName);
       end
       return self.headers[headerName];
     end,
     getInt = function(header,...)
-      return self:getHeader(header):getAsInt(...);
+      local v, found = self:getHeader(header):getAsInt(...);
+      if self.parent and (not found) then
+        v, found = self.parent:getInt(header,...);
+      end
+      return v, found;
     end,
     getFloat = function(header,...)
-      return self:getHeader(header):getAsFloat(...);
+      local v, found = self:getHeader(header):getAsFloat(...);
+      if self.parent and (not found) then
+        v, found = self.parent:getFloat(header,...);
+      end
+      return v, found;
     end,
     getProperty = function(header,...)
-      return self:getHeader(header):getVar(...);
+      local v, found = self:getHeader(header):getVar(...);
+      if self.parent and (not found) then
+        v, found = self.parent:getProperty(header,...);
+      end
+      return v, found;
     end,
     getBool = function(header,...)
-      return self:getHeader(header):getAsBool(...);
+      local v, found = self:getHeader(header):getAsBool(...);
+      if self.parent and (not found) then
+        v, found = self.parent:getBool(header,...);
+      end
+      return v, found;
     end,
     getTable = function(header,...)
-      return self:getHeader(header):getAsTable(...);
+      local v, found = self:getHeader(header):getAsTable(...);
+      if self.parent and (not found) then
+        v, found = self.parent:getTable(header,...);
+      end
+      return v, found;
     end,
     getVector = function(header,...)
-      return self:getHeader(header):getAsVector(...);
+      local v, found = self:getHeader(header):getAsVector(...);
+      if self.parent and (not found) then
+        v, found = self.parent:getVector(header,...);
+      end
+      return v, found;
     end
   }
 })
