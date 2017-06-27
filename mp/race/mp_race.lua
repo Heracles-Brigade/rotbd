@@ -19,8 +19,11 @@ local CommandListener = misc.CommandListener;
 local Routine = bzRoutine.Routine;
 
 --should optimize
-local slotsTemplate = {"A","B","C","D","E","F","G","H","I"}
+local slotsTemplate = {"A","B","C","D","E","F","G","H","I","J","K","M","L"}
 
+local MAX_AMMO = 300;
+local MAX_HEALTH = 3000;
+local IM = 0;
 local ODFS = {};
 
 local function closestPathPoints(paths,pos)
@@ -55,9 +58,9 @@ local function positionToDistance(pos,check)
     local pval = DotProduct(vec1,vec2/Length(vec2));
     local plen = (pval + GetPathLength(path,false,pindex))/lop;
     distance = distance + plen;
-    np = pval * vec2/Length(vec2);
+    np = pval * vec2/Length(vec2) + closestPoints[1];
   end
-  return distance, np;
+  return distance, np, closestPoints;
 end
 
 local function keepInside(handle,path)
@@ -80,8 +83,8 @@ end
 
 local function stayInLobby(handle,...)
   keepInside(handle,...);
-  SetCurAmmo(handle,GetMaxAmmo(handle));
-  SetCurHealth(handle,GetMaxHealth(handle));
+  SetMaxAmmo(handle,IM);
+  SetMaxHealth(handle,IM);
 end
 
 
@@ -107,6 +110,7 @@ local gameManagerRoutine = Decorate(
         laps = 3,
         autostart = false,
         timelimit = 60*10,
+        ex_physics = true,
         wait = 30,
         minplayers = 2
       }
@@ -154,15 +158,21 @@ local gameManagerRoutine = Decorate(
       _calcPlayerPositions = function()
         local sortedPositions = {};
         for i, v in pairs(self.raceState.players) do
-          local pH = net.netManager:getPlayerHandle(v.team);
-          v.distance = v.checkpoint*10 + (v.lap-1) * (((#self.checkpoints+1)*20))
-          if(IsValid(pH)) then
-            local playerP = GetPosition(pH);
-            local tempD,lastPP = positionToDistance(playerP,self.checkpoints[v.checkpoint]);
-            v.lastValidPos = lastPP;
-            v.distance = v.distance + tempD
-            if(self:_hasPlayerFinished(v)) then
-              v.distance = v.distance/v.time;
+          if not(i == self.localPlayer.id and self.localState.respawning) then
+            local pH = net.netManager:getPlayerHandle(v.team);
+            v.distance = v.checkpoint*10 + (v.lap-1) * (((#self.checkpoints+1)*20))
+            if(IsValid(pH)) then
+              local playerP = GetPosition(pH);
+              local tempD,lastPP, closestPoints = positionToDistance(playerP,self.checkpoints[v.checkpoint]);
+              if(closestPoints) then
+                lastPP = GetPositionNear(lastPP,5,25); 
+                lastPP.y = (GetTerrainHeightAndNormal(lastPP)) + 15;
+                v.lastValidTransform = BuildDirectionalMatrix(lastPP,Normalize(closestPoints[2]-closestPoints[1]));
+              end
+              v.distance = v.distance + tempD
+              if(self:_hasPlayerFinished(v)) then
+                v.distance = v.distance/v.time;
+              end
             end
           end
           table.insert(sortedPositions,{player=net.netManager:playersInGame()[i],distance=v.distance});
@@ -242,6 +252,13 @@ local gameManagerRoutine = Decorate(
           if(p) then
             DisplayMessage(("%s is %s"):format(p.name,afk and "is afk" or "is no longer afk"))
           end
+        elseif(what == "TELL") then
+          DisplayMessage(...);
+          if(self.host) then
+            self:_send("TELL",...);
+          end
+        elseif(what == "SETTINGS") then
+          self.hostSettings = ...;
         end
       end,
       --Check if everyone have reached goal
@@ -377,6 +394,12 @@ local gameManagerRoutine = Decorate(
         self.localState.slot = nil;
         self:_hostSyncAll();
       end,
+      _tell = function(what)
+        if(self.host) then
+          DisplayMessage(what);
+        end
+        self:_send("TELL",what);
+      end,
       _sendTo = function(socket,...)
         print("Sending to",socket,...);
         if(socket) then
@@ -437,17 +460,34 @@ local gameManagerRoutine = Decorate(
       update = function(dtime)
         self.calcTimer:update(dtime);
         local newPh = net.netManager:getPlayerHandle() or self.playerHandle;
-        if(newPh ~= self.playerHandle) then
-          if(self.localState.inRace) then
-            --find closest point on path
+        if(not IsValid(newPh) and self.localState.inRace) then
+          self.localState.respawning = true;
+          self.localState.respawning_countdown = 2;
+        elseif(self.localState.inRace and self.localState.respawning) then
+          self.localState.respawning_countdown = self.localState.respawning_countdown - dtime;
+          if(self.localState.respawning_countdown < 0) then
+            self.localState.respawning = false;
+            SetMaxHealth(handle,MAX_HEALTH);
+            SetCurHealth(handle,MAX_HEALTH);
+          else
+            local p = self.raceState.players[self.localPlayer.id];
+            if(p and p.lastValidTransform) then
+              SetTransform(newPh,p.lastValidTransform);
+              SetVelocity(newPh,SetVector(0,0,0));
+              SetMaxHealth(handle,IM);
+              SetCurAmmo(handle,0);
+            end
           end
+        end
+        if(newPh ~= self.playerHandle) then
           self.lastPlayerPosition = GetPosition(newPh);
         end
         self.playerHandle = newPh;
         --Make sure the player can't eject or hop out
         SetPilotClass(self.playerHandle,"");
         --We have to wait for the localPlayer to be set before we do anything
-
+        local pps1 = GetPathPoints("test_1");
+        local pps2 = GetPathPoints("test_2");
         if(not self.startInit) then
           self.startInit = true;
           --calculate race path
@@ -492,6 +532,7 @@ local gameManagerRoutine = Decorate(
         elseif(self.raceState.raceStarted == 1) then
           self.raceState.countdown = self.raceState.countdown - dtime;
           if(self.localState.inRace) then
+            SetCurAmmo(self.playerHandle,0);
             local t = misc.moveInFormation(self.playerHandle,self.localState.slot,{"A B C D","E F G H"},"race_start");
             SetTransform(self.playerHandle,t);
           end
@@ -510,15 +551,16 @@ local gameManagerRoutine = Decorate(
             end
           end
         elseif(self.raceState.raceStarted == 2) then
-          if(self.localState.inRace and IsValid(self.playerHandle)) then
+          if((not self.localState.respawning) and self.localState.inRace and IsValid(self.playerHandle)) then
             --check if player has crossed the checkpoint
+            SetMaxHealth(self.playerHandle,MAX_HEALTH);
             if(self.raceState.players[self.localPlayer.id].finished) then
               self.localState.inRace = false;
             end
             self.raceState.players[self.localPlayer.id].time = self.raceState.players[self.localPlayer.id].time + dtime;
             local v = GetVelocity(self.playerHandle);
             local pp = GetPosition(self.playerHandle) + v*dtime;
-            local moveVec = GetPosition(self.playerHandle) - self.lastPlayerPosition;
+            local moveVec = pp - self.lastPlayerPosition;
             local cpI = (self.raceState.players[self.localPlayer.id].checkpoint%#self.checkpoints)+1;
             local pathPoints = GetPathPoints(self.checkpoints[cpI].name);
             local odf = ODFS[GetOdf(self.playerHandle)] or misc.odfFile(GetOdf(self.playerHandle));
@@ -533,9 +575,12 @@ local gameManagerRoutine = Decorate(
                 end
               end
             end
-            pp.y = math.max(g + h,pp.y);
-            SetPosition(self.playerHandle,pp)
-            SetVelocity(self.playerHandle,v + SetVector(0,-math.pow(d,2)/4,0)*dtime);
+            --Experimental physics
+            if(self.hostSettings.ex_physics) then
+              pp.y = math.max(g + h,pp.y);
+              SetPosition(self.playerHandle,pp)
+              SetVelocity(self.playerHandle,v + SetVector(0,-math.pow(d,2)/4,0)*dtime);
+            end
             if DoLinesIntersect(pp,pathPoints[1],moveVec,pathPoints[2]-pathPoints[1]) then
               self:_incLocalCheckpoint();
             end
@@ -556,6 +601,8 @@ local gameManagerRoutine = Decorate(
         if(not self.localState.inRace) then
           --Keep player in starting area
           stayInLobby(self.playerHandle,"lobby_area");
+        else
+          SetMaxAmmo(newPh,MAX_AMMO);
         end
         self.lastPlayerPosition = GetPosition(self.playerHandle);
       end,
@@ -603,55 +650,65 @@ local gameManagerRoutine = Decorate(
       onCommand = function(command,...)
         command = command:lower();
         local validCommand = false;
-        if(self.host) then
-          if(command == "start") then
-            self:_setUpRace();
+        if(not self.localState.inRace) then
+          if(self.host and self.raceState.raceStarted == 0) then
+            if(command == "start") then
+              self:_setUpRace();
+              validCommand = true;
+            elseif(command == "enable") then
+              local key = ...;
+              if(type(self.hostSettings[key]) == "boolean") then
+                self.hostSettings[key] = true;
+                validCommand = true;
+                self:_tell(("%s enabled %s"):format(self.localPlayer.name,key));
+              end
+            elseif(command == "disable") then
+              local key = ...;
+              if(type(self.hostSettings[key]) == "boolean") then
+                self.hostSettings[key] = false;
+                validCommand = true;
+                self:_tell(("%s disabled %s"):format(self.localPlayer.name,key));
+              end
+            elseif(command == "set") then
+              local key, val = ...;
+              print(type(self.hostSettings[key]),key,val,tonumber(val) or 0);
+              if(type(self.hostSettings[key]) == "number") then
+                self.hostSettings[key] = tonumber(val) or 1;
+                validCommand = true;
+                self:_tell(("%s set %s to %d"):format(self.localPlayer.name,key,self.hostSettings[key]));
+              end
+            end
+            if(validCommand) then
+              self:_send("SETTINGS",self.hostSettings);
+            end
+          end
+          if(command == "helprace") then
+            DisplayMessage("Commands:");
+            DisplayMessage("/helprace - show this list");
+            DisplayMessage("/afk - enable/disable afk mode");
+            DisplayMessage("Host commands:");
+            DisplayMessage("/start - get ready for next round");
+            DisplayMessage("/disable [autostart]");
+            DisplayMessage("/enable [autostart]");
+            DisplayMessage("  autostart - starts new round automatically after 30 sec");
+            DisplayMessage("/set [laps|timelimit|minplayers] number");
+            DisplayMessage("  laps - how many laps");
+            DisplayMessage("  timelimit - how long should a round last");
+            DisplayMessage("  minplayers - min players required to race");
             validCommand = true;
-          elseif(command == "enable") then
-            local key = ...;
-            if(type(self.hostSettings[key]) == "boolean") then
-              self.hostSettings[key] = true;
-              validCommand = true;
-            end
-          elseif(command == "disable") then
-            local key = ...;
-            if(type(self.hostSettings[key]) == "boolean") then
-              self.hostSettings[key] = false;
-              validCommand = true;
-            end
-          elseif(command == "set") then
-            local key, val = ...;
-            print(type(self.hostSettings[key]),key,val,tonumber(val) or 0);
-            if(type(self.hostSettings[key]) == "number") then
-              self.hostSettings[key] = tonumber(val) or 1;
-              validCommand = true;
+          elseif(command == "afk") then
+            self.userSettings.afk = not self.userSettings.afk;
+            self.afkPlayers[self.localPlayer.id] = self.userSettings.afk;
+            validCommand = true;
+            if(not self.host) then
+              self:_send("AFK",self.userSettings.afk);
             end
           end
-        end
-        if(command == "helprace") then
-          DisplayMessage("Commands:");
-          DisplayMessage("/helprace - show this list");
-          DisplayMessage("/afk - enable/disable afk mode");
-          DisplayMessage("Host commands:");
-          DisplayMessage("/start - get ready for next round");
-          DisplayMessage("/disable [autostart]");
-          DisplayMessage("/enable [autostart]");
-          DisplayMessage("  autostart - starts new round automatically after 30 sec");
-          DisplayMessage("/set [laps|timelimit|minplayers] number");
-          DisplayMessage("  laps - how many laps");
-          DisplayMessage("  timelimit - how long should a round last");
-          DisplayMessage("  minplayers - min players required to race");
-          validCommand = true;
-        elseif(command == "afk") then
-          self.userSettings.afk = not self.userSettings.afk;
-          self.afkPlayers[self.localPlayer.id] = self.userSettings.afk;
-          validCommand = true;
-          if(not self.host) then
-            self:_send("AFK",self.userSettings.afk);
+          if(not validCommand) then
+            DisplayMessage("Invalid command or arguments.");
           end
-        end
-        if(not validCommand) then
-          DisplayMessage("Invalid command or arguments.");
+        else
+          DisplayMessage("Commands are disabled while in race");
         end
       end
     }
