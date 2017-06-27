@@ -7,13 +7,14 @@ tier_count = 3
 # timelimit - how long should a round last in seconds
 # minplayers - what are the minimum players required to start a round
 # botcount - how many bots? (bots will only be able to occupy empty slots) "MAX" = as many as possible
-
+# ex_physics - use experimental physics while in race? (tries to improve ground contact and traction)
 [Settings]
 laps = 3
 autostart = false
 timelimit = 600
 minplayers = 2
 botcount = "MAX"
+ex_physics = true
 
 # chanceMod - relative rairness
 # weapon# - weapon odf
