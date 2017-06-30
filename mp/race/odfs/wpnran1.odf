@@ -13,4 +13,4 @@ soundPickup = "apcann.wav"
 soundReject = "mnu_buzz.wav"
 
 [WeaponPowerupClass]
-weaponName = "nobull"
+weaponName = "grand"

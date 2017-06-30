@@ -6,7 +6,7 @@ xplGround = NULL
 xplVehicle = NULL
 xplBuilding = NULL
 
-ammoCost = 1000000000
+ammoCost = 0
 lifeSpan = 0.0
 shotSpeed = 0.0
 damageBallistic = 0

@@ -1,0 +1,72 @@
+[GameObjectClass]
+baseName="svhraz"
+classLabel = "wingman"
+scrapValue = 7
+scrapCost = 9
+buildTime = 15.0
+maxHealth = 3000
+maxAmmo = 1500
+unitName = "Bomber"
+aiName = "RocketTankFriend"
+aiName2 = "RocketTankEnemy"
+heatSignature = 0.9
+imageSignature = 3.5
+radarSignature = 0.1
+
+weaponHard1 = "GS1"
+weaponName1 = ""
+
+
+[CraftClass]
+rangeScan = 6000.0f
+periodScan = 5.0f
+velocJam = 2.5f
+
+selectAttackMsg = "svhrazvd.wav"
+selectWaitMsg = "svhrazvf.wav"
+selectFollowMsg = "svhrazvh.wav"
+selectGoMsg = "svhrazvg.wav"
+selectOtherMsg = "svhrazvj.wav"
+
+goMsg = "svhrazv0.wav"
+goObjectMsg = "svhrazvb.wav"
+attackMsg = "svhrazv2.wav"
+followMsg = "svhrazv7.wav"
+followMeMsg = "svhrazv3.wav"
+repairMsg = "svhrazv4.wav"
+reloadMsg = "svhrazv5.wav"
+rescueMsg = "svhrazv8.wav"
+recycleMsg = "svhrazv9.wav"
+otherMsg = "svhrazvi.wav"
+
+user1Msg = "svhrazv6.wav"
+killedMsg = "svhrazvk.wav"
+diedMsg = "sbetty3.wav"
+
+
+[HoverCraftClass]
+setAltitude = 1.5
+accelDragStop = 4.0
+accelDragFull = .5
+alphaTrack = 20.0
+alphaDamp = 5.0
+pitchPitch = 0.25
+pitchThrust = 0.1
+rollStrafe = 0.1
+rollSteer = 0.1
+
+velocForward = 25.0
+velocReverse = 20.0
+velocStrafe = 20.0
+accelThrust = 20.0
+accelBrake = 50.0
+omegaSpin = 1.0
+omegaTurn = 0.4
+alphaSteer = 2.0
+accelJump = 10.0
+
+soundThrust = "svhraze1.wav"
+soundTurbo = "svhraze3.wav"
+
+
+

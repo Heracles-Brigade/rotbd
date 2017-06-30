@@ -1,0 +1,24 @@
+[WeaponClass]
+classLabel = "radarlauncher"
+wpnName = "Comet"
+fireSound = "gcome00.wav"
+wpnReticle = "gcomet.0"
+wpnPriority = 0
+wpnCategory = "ROCK"
+
+[LauncherClass]
+lockRange = 500.0
+shotDelay = 1.0
+lockDelay = 0.5
+coneAngle = 0.075
+lockingReticle = "gcomet.A"
+lockingSound = "locking1.wav"
+lockedReticle = "gcomet.B"
+lockedSound = "locked1.wav"
+targetCount = 3
+targetReticle01 = "gcomet.1"
+targetReticle02 = "gcomet.2"
+targetReticle03 = "gcomet.3"
+
+[RadarLauncherClass]
+objectClass = "rcmsl"

@@ -12,4 +12,9 @@ for i=1, 8 do
   table.insert(deathtraps,("death_area%d"):format(i));
 end
 
-game(checkpointPaths,deathtraps);
+local weaponPickups = {};
+for i=1, 5 do
+  table.insert(weaponPickups,("wpn_pickup_%d"):format(i));
+end
+
+game(checkpointPaths,deathtraps,weaponPickups,{"lobby_pickup1","lobby_pickup2","lobby_pickup3","lobby_pickup4"});

@@ -23,6 +23,14 @@ GetOdf = function(...)
   return r;
     --return _GetOdf(...):gmatch("[^%c]+")();
 end
+local _GetWeaponClass = GetWeaponClass;
+GetWeaponClass  = function(...)
+  local r = _GetWeaponClass(...);
+  if(r) then
+    return r:gmatch("[^%c]+")();
+  end
+  return r;
+end
 
 GetPathPointCount = GetPathPointCount or function(path)
   local p = GetPosition(path, 0)
@@ -114,7 +122,7 @@ DoBoundingBoxesIntersect = function(p1,p2,p3,p4)
   );
 end
 IsInsideArea = IsInsideArea or function()
-  return true;
+  return false;
 end 
 IsPointOnLine = function(a1,a2,b)
   local aTmp = a2-a1;
@@ -333,7 +341,7 @@ local odfHeader = Class("odfHeader",{
         c = c + 1;
         n = self:getVar(varName .. c,...);
       end
-      return ret, true;
+      return ret, c > 1;
     end
   }
 })
@@ -345,7 +353,6 @@ odfFile = Class("odfFile",{
     self.headers = {};
     assert(self.file,"Could not open \"%s\"!",self.name);
     local parent, exists = self:getProperty("Meta","parent");
-    print(parent, exists);
     if(exists) then
       self.parent = odfFile(parent);
     end
@@ -603,16 +610,12 @@ local DefaultRuntimeModule = Decorate(
         end
       end,
       onAddPlayer = function(...)
-        print("misc onAddPlayer");
         for i,v in pairs(self.playerListeners) do
-          print("proxy onAddPlayer");
           v:onAddPlayer(...);
         end
       end,
       onDeletePlayer = function(...)
-        print("misc onDeletePlayer");
         for i,v in pairs(self.playerListeners) do
-          print("proxy onDeletePlayer");
           v:onDeletePlayer(...);
         end
       end,
@@ -747,7 +750,7 @@ local Timer = Decorate(
       end,
       stop = function()
         self:pause();
-        self.time = 0;
+        self:setTime(0);
       end,
       pause = function()
         self.running = false;

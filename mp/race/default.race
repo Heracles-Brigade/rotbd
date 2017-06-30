@@ -1,6 +1,3 @@
-[Meta]
-tier_count = 3
-
 # all settings can be changed by host
 # laps - default lap count
 # autostart - should a round start by default after waiting in lobby for [wait] seconds
@@ -12,24 +9,36 @@ tier_count = 3
 laps = 3
 autostart = false
 timelimit = 600
-minplayers = 2
+minplayers = 3
 botcount = "MAX"
 ex_physics = true
 
-# chanceMod - relative rairness
+# chance - relative rairness
+# center - 0 higher chance for last place, 1 higher chance for first place
 # weapon# - weapon odf
 
+[Tiers]
+tier_count = 1
+
+
+
 [Tier1]
-chanceMod=1.0
-weapon1="grcboost"
-weapon2="grcmine"
+chance = 1
+center = 0
+weapon1 = "grcomet"
+weapon2 = "grcwasp"
 
-[Tier2]
-chanceMod=0.75
-weapon1="grccomet"
-weapon2="grcwasp"
+# [Tier1]
+# chanceMod=1.0
+# weapon1="grcboost"
+# weapon2="grcmine"
 
-[Tier3]
-chanceMod=0.5
-weapon1="grclight"
-weapon2="grchunt"
+# [Tier2]
+# chanceMod=0.75
+# weapon1="grccomet"
+# weapon2="grcwasp"
+
+# [Tier3]
+# chanceMod=0.5
+# weapon1="grclight"
+# weapon2="grchunt"
