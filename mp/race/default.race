@@ -1,9 +1,9 @@
 # all settings can be changed by host
 # laps - default lap count
-# autostart - should a round start by default after waiting in lobby for [wait] seconds
+# autostart - should a round start by default after waiting in lobby for 30 seconds
 # timelimit - how long should a round last in seconds
 # minplayers - what are the minimum players required to start a round
-# botcount - how many bots? (bots will only be able to occupy empty slots) "MAX" = as many as possible
+# botcount - how many bots? (bots will only be able to occupy empty slots) "MAX" = as many as possible (not implemented yet)
 # ex_physics - use experimental physics while in race? (tries to improve ground contact and traction)
 [Settings]
 laps = 3
@@ -19,8 +19,6 @@ ex_physics = true
 
 [Tiers]
 tier_count = 1
-
-
 
 [Tier1]
 chance = 1
