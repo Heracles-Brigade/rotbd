@@ -814,7 +814,7 @@ local ObjectManager = D(BzModule("ObjectManagerModule"),
         if(not self.all[handle]) then
           Meta(handle, {
             dead = false,
-            truelocal = not (IsNetGame() and IsRemote(handle));
+            truelocal = not (IsNetGame() and IsRemote(handle))
           });
         end
       end,

@@ -1,0 +1,29 @@
+[GameObjectClass]
+classLabel = "torpedo"
+baseName = "hvrckt"
+scrapValue = 0
+scrapCost = 0
+maxHealth = 600
+maxAmmo = 300
+unitName = "Torpedo"
+aiName = "TorpedoProcess"
+aiName2 = "TorpedoProcess"
+
+[CraftClass]
+rangeScan = 0.0f
+periodScan = 0.0f
+velocJam = 0.0f
+
+[TorpedoClass]
+setAltitude = 1.0
+alphaTrack = 0.5
+alphaDamp = 0.5
+velocForward = 95.0
+accelThrust = 100.0
+omegaTurn = 5.0
+alphaSteer = 5.0
+lifeSpan = 20.0
+xplBlast = "xrcxpl"
+
+soundThrust = "waspmsl.wav"
+

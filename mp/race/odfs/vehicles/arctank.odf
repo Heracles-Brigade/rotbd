@@ -1,25 +1,27 @@
 [GameObjectClass]
+baseName="avtank"
 classLabel = "wingman"
 scrapValue = 5
 scrapCost = 8
 buildTime = 10.0
-maxHealth = 20000
-maxAmmo = 3
+maxHealth = 3000
+maxAmmo = 1200
 weaponMask=00001
 unitName = "Tank"
 aiName = "TankFriend"
 aiName2 = "TankEnemy"
 heatSignature = 1.2
 imageSignature = 3.0
-radarSignature = 2.0
+radarSignature = 0.2
 
-weaponHard1 = "GC1"
-weaponName1 = "gatstab"
+weaponHard1 = "GS1"
+weaponName1 = ""
+
 
 [CraftClass]
-rangeScan = 400.0f
-periodScan = 2.0f
-velocJam = 5.0f
+rangeScan = 6000.0f
+periodScan = 5.0f
+velocJam = 2.5f
 
 selectWaitMsg = "avtankv0.wav"
 selectAttackMsg = "avtankvj.wav"
@@ -42,25 +44,25 @@ killedMsg = "avtankv3.wav"
 diedMsg = "abetty3.wav"
 
 [HoverCraftClass]
-setAltitude = 0.5
-accelDragStop = 0.1
-accelDragFull = 0.1
-alphaTrack = 50.0
-alphaDamp = 10.0
+setAltitude = 1.0
+accelDragStop = 4.0
+accelDragFull = 1.0
+alphaTrack = 30.0
+alphaDamp = 7.0
 pitchPitch = 0.25
 pitchThrust = 0.1
 rollStrafe = 0.1
 rollSteer = 0.1
 
-velocForward = 200.0
+velocForward = 100.0
 velocReverse = 15.0
 velocStrafe = 20.0
 accelThrust = 100.0
-accelBrake = 60.0
-omegaSpin = 1.0
+accelBrake = 75.0
+omegaSpin = 3.5
 omegaTurn = 1.5
 alphaSteer = 5.0
-accelJump = 5.0
+accelJump = 20.0
 
 soundThrust = "avtanke0.wav"
 soundTurbo = "avtanke3.wav"

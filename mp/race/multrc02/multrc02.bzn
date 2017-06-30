@@ -17,9 +17,9 @@ seqno [1] =
 1
 pos [1] =
   x [1] =
-280.002
+280.553
   y [1] =
-72.6003
+72.5892
   z [1] =
 100152
 team [1] =
@@ -30,27 +30,27 @@ isUser [1] =
 obj_addr = 00B01D68
 transform [1] =
   right_x [1] =
-0.999059
+0.996354
   right_y [1] =
--0.00678903
+-0.0066415
   right_z [1] =
--0.0429359
+-0.0851089
   up_x [1] =
-0.00679533
+0.00666571
   up_y [1] =
 0.999986
   up_z [1] =
--8.53836e-010
+-2.95394e-010
   front_x [1] =
-0.0429349
+0.085107
   front_y [1] =
--0.00029176
+-0.000567306
   front_z [1] =
-0.999082
+0.996376
   posit_x [1] =
-280.002
+280.553
   posit_y [1] =
-72.6003
+72.5892
   posit_z [1] =
 100152
 abandoned [1] =
@@ -59,9 +59,9 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-279.996
+280.532
   y [1] =
-73.9645
+73.9536
   z [1] =
 100152
 euler =
@@ -70,34 +70,34 @@ euler =
  mass_inv [1] =
 0.000666667
  v_mag [1] =
-0.00334002
+0.0033188
  v_mag_inv [1] =
-299.4
+301.314
  I [1] =
 1500
  k_i [1] =
 1
  v [1] =
   x [1] =
-0.00329617
+0.00331811
   y [1] =
--0.000539435
+-6.75914e-005
   z [1] =
-1.55946e-011
+3.09033e-011
  omega [1] =
   x [1] =
-0.000183206
+6.96665e-011
   y [1] =
 0
   z [1] =
--0.00426312
+-1.44538e-008
  Accel [1] =
   x [1] =
-0.00193524
+0.000775109
   y [1] =
-0.00212849
+1.40524e-005
   z [1] =
-5.45247e-010
+8.42274e-010
 seqNo [1] =
 1
 name = 
@@ -540,9 +540,9 @@ isUser [1] =
 obj_addr = 00B00D68
 transform [1] =
   right_x [1] =
--0.0480593
+-0.0480591
   right_y [1] =
-0.25854
+0.258539
   right_z [1] =
 0.964809
   up_x [1] =
@@ -556,7 +556,7 @@ transform [1] =
   front_y [1] =
 0.135692
   front_z [1] =
--0.085529
+-0.0855289
   posit_x [1] =
 425.249
   posit_y [1] =
@@ -921,7 +921,7 @@ isUser [1] =
 obj_addr = 00B00168
 transform [1] =
   right_x [1] =
--0.0627288
+-0.0627286
   right_y [1] =
 -0.112371
   right_z [1] =
@@ -937,7 +937,7 @@ transform [1] =
   front_y [1] =
 0.501485
   front_z [1] =
-0.00209859
+0.00209885
   posit_x [1] =
 1106.05
   posit_y [1] =
@@ -1048,9 +1048,9 @@ isUser [1] =
 obj_addr = 00AFFD68
 transform [1] =
   right_x [1] =
--0.0698828
+-0.0698824
   right_y [1] =
--0.395952
+-0.395953
   right_z [1] =
 0.915613
   up_x [1] =
@@ -1064,7 +1064,7 @@ transform [1] =
   front_y [1] =
 0.21602
   front_z [1] =
-0.0189088
+0.0189092
   posit_x [1] =
 1134.25
   posit_y [1] =
@@ -2953,7 +2953,7 @@ isUser [1] =
 obj_addr = 00AFC168
 transform [1] =
   right_x [1] =
--0.0666239
+-0.0666237
   right_y [1] =
 -0.241077
   right_z [1] =
@@ -2969,7 +2969,7 @@ transform [1] =
   front_y [1] =
 0.164732
   front_z [1] =
--0.0268293
+-0.0268292
   posit_x [1] =
 2337.19
   posit_y [1] =
@@ -3588,7 +3588,7 @@ isUser [1] =
 obj_addr = 00AFAD68
 transform [1] =
   right_x [1] =
--0.0652394
+-0.0652393
   right_y [1] =
 -0.191321
   right_z [1] =
@@ -3604,7 +3604,7 @@ transform [1] =
   front_y [1] =
 0.346021
   front_z [1] =
-0.00509723
+0.0050973
   posit_x [1] =
 1969.51
   posit_y [1] =
@@ -6236,16 +6236,16 @@ curPilot [1] =
 perceivedTeam [1] =
 0
 name = MultDMMission
-sObject = 0A029EA0
+sObject = 0B851288
 [AiMission]
 [AOIs]
 size [1] =
 0
 [AiPaths]
 count [1] =
-48
+57
 [AiPath]
-old_ptr = 28792d0c
+old_ptr = 088afb0b
 size [1] =
 6
 label = path_1
@@ -6334,7 +6334,7 @@ points [20] =
 100156
 pathType = 00000000
 [AiPath]
-old_ptr = 187a2d0c
+old_ptr = d88cfb0b
 size [1] =
 9
 label = edge_path
@@ -6351,7 +6351,7 @@ points [2] =
 102234
 pathType = 00000000
 [AiPath]
-old_ptr = f87b2d0c
+old_ptr = 008dfb0b
 size [1] =
 12
 label = check_point1
@@ -6368,7 +6368,7 @@ points [2] =
 100030
 pathType = 00000000
 [AiPath]
-old_ptr = 78792d0c
+old_ptr = 6889fb0b
 size [1] =
 12
 label = check_point2
@@ -6385,7 +6385,7 @@ points [2] =
 100394
 pathType = 00000000
 [AiPath]
-old_ptr = 687a2d0c
+old_ptr = 488bfb0b
 size [1] =
 12
 label = check_point3
@@ -6402,7 +6402,7 @@ points [2] =
 100810
 pathType = 00000000
 [AiPath]
-old_ptr = a87b2d0c
+old_ptr = 708bfb0b
 size [1] =
 12
 label = check_point4
@@ -6419,7 +6419,7 @@ points [2] =
 101329
 pathType = 00000000
 [AiPath]
-old_ptr = 207c2d0c
+old_ptr = f08dfb0b
 size [1] =
 12
 label = check_point5
@@ -6436,7 +6436,7 @@ points [2] =
 101789
 pathType = 00000000
 [AiPath]
-old_ptr = 907a2d0c
+old_ptr = 888cfb0b
 size [1] =
 12
 label = check_point6
@@ -6453,7 +6453,7 @@ points [2] =
 101975
 pathType = 00000000
 [AiPath]
-old_ptr = 60782d0c
+old_ptr = 388cfb0b
 size [1] =
 12
 label = check_point7
@@ -6470,7 +6470,7 @@ points [2] =
 101735
 pathType = 00000000
 [AiPath]
-old_ptr = 48772d0c
+old_ptr = 808afb0b
 size [1] =
 12
 label = check_point8
@@ -6487,7 +6487,7 @@ points [2] =
 101108
 pathType = 00000000
 [AiPath]
-old_ptr = 70772d0c
+old_ptr = c88dfb0b
 size [1] =
 12
 label = check_point9
@@ -6504,7 +6504,7 @@ points [2] =
 101515
 pathType = 00000000
 [AiPath]
-old_ptr = e8772d0c
+old_ptr = 288dfb0b
 size [1] =
 13
 label = check_point10
@@ -6521,7 +6521,7 @@ points [2] =
 102018
 pathType = 00000000
 [AiPath]
-old_ptr = 10782d0c
+old_ptr = 988bfb0b
 size [1] =
 13
 label = check_point11
@@ -6538,7 +6538,7 @@ points [2] =
 101988
 pathType = 00000000
 [AiPath]
-old_ptr = a0792d0c
+old_ptr = 508dfb0b
 size [1] =
 13
 label = check_point12
@@ -6555,7 +6555,7 @@ points [2] =
 101652
 pathType = 00000000
 [AiPath]
-old_ptr = d8782d0c
+old_ptr = a08dfb0b
 size [1] =
 13
 label = check_point13
@@ -6572,7 +6572,7 @@ points [2] =
 101402
 pathType = 00000000
 [AiPath]
-old_ptr = b87a2d0c
+old_ptr = 188efb0b
 size [1] =
 13
 label = check_point14
@@ -6589,7 +6589,7 @@ points [2] =
 101338
 pathType = 00000000
 [AiPath]
-old_ptr = e07a2d0c
+old_ptr = 788dfb0b
 size [1] =
 13
 label = check_point15
@@ -6606,7 +6606,7 @@ points [2] =
 100668
 pathType = 00000000
 [AiPath]
-old_ptr = b0782d0c
+old_ptr = 308afb0b
 size [1] =
 13
 label = check_point16
@@ -6623,7 +6623,7 @@ points [2] =
 100327
 pathType = 00000000
 [AiPath]
-old_ptr = 98772d0c
+old_ptr = c08bfb0b
 size [1] =
 13
 label = check_point17
@@ -6640,7 +6640,7 @@ points [2] =
 100731
 pathType = 00000000
 [AiPath]
-old_ptr = c0772d0c
+old_ptr = 9089fb0b
 size [1] =
 13
 label = check_point18
@@ -6657,7 +6657,7 @@ points [2] =
 100455
 pathType = 00000000
 [AiPath]
-old_ptr = 38782d0c
+old_ptr = 608cfb0b
 size [1] =
 8
 label = p_check2
@@ -6690,7 +6690,7 @@ points [6] =
 100371
 pathType = 00000000
 [AiPath]
-old_ptr = 00792d0c
+old_ptr = f88afb0b
 size [1] =
 8
 label = p_check3
@@ -6715,7 +6715,7 @@ points [4] =
 100778
 pathType = 00000000
 [AiPath]
-old_ptr = 407f2d0c
+old_ptr = 4089fb0b
 size [1] =
 8
 label = p_check4
@@ -6748,7 +6748,7 @@ points [6] =
 101320
 pathType = 00000000
 [AiPath]
-old_ptr = 187f2d0c
+old_ptr = a88afb0b
 size [1] =
 8
 label = p_check5
@@ -6777,7 +6777,7 @@ points [5] =
 101806
 pathType = 00000000
 [AiPath]
-old_ptr = 387d2d0c
+old_ptr = b889fb0b
 size [1] =
 8
 label = p_check6
@@ -6806,7 +6806,7 @@ points [5] =
 102053
 pathType = 00000000
 [AiPath]
-old_ptr = 687f2d0c
+old_ptr = 208bfb0b
 size [1] =
 8
 label = p_check7
@@ -6831,7 +6831,7 @@ points [4] =
 101743
 pathType = 00000000
 [AiPath]
-old_ptr = c07c2d0c
+old_ptr = e88bfb0b
 size [1] =
 8
 label = p_check8
@@ -6864,7 +6864,7 @@ points [6] =
 101138
 pathType = 00000000
 [AiPath]
-old_ptr = b07d2d0c
+old_ptr = 108cfb0b
 size [1] =
 8
 label = p_check9
@@ -6893,7 +6893,7 @@ points [5] =
 101515
 pathType = 00000000
 [AiPath]
-old_ptr = a07e2d0c
+old_ptr = b08cfb0b
 size [1] =
 9
 label = p_check10
@@ -6930,7 +6930,7 @@ points [7] =
 102052
 pathType = 00000000
 [AiPath]
-old_ptr = e87c2d0c
+old_ptr = d891fb0b
 size [1] =
 9
 label = p_check11
@@ -6959,7 +6959,7 @@ points [5] =
 102016
 pathType = 00000000
 [AiPath]
-old_ptr = 58802d0c
+old_ptr = 688efb0b
 size [1] =
 9
 label = p_check12
@@ -6984,7 +6984,7 @@ points [4] =
 101661
 pathType = 00000000
 [AiPath]
-old_ptr = 107d2d0c
+old_ptr = f092fb0b
 size [1] =
 9
 label = p_check13
@@ -7009,7 +7009,7 @@ points [4] =
 101443
 pathType = 00000000
 [AiPath]
-old_ptr = 987c2d0c
+old_ptr = 5092fb0b
 size [1] =
 9
 label = p_check14
@@ -7026,7 +7026,7 @@ points [2] =
 101391
 pathType = 00000000
 [AiPath]
-old_ptr = 80802d0c
+old_ptr = 3891fb0b
 size [1] =
 9
 label = p_check15
@@ -7063,7 +7063,7 @@ points [7] =
 100676
 pathType = 00000000
 [AiPath]
-old_ptr = d0802d0c
+old_ptr = 7090fb0b
 size [1] =
 9
 label = p_check16
@@ -7092,7 +7092,7 @@ points [5] =
 100358
 pathType = 00000000
 [AiPath]
-old_ptr = 887d2d0c
+old_ptr = b88efb0b
 size [1] =
 9
 label = p_check17
@@ -7121,7 +7121,7 @@ points [5] =
 100768
 pathType = 00000000
 [AiPath]
-old_ptr = c87e2d0c
+old_ptr = b091fb0b
 size [1] =
 9
 label = p_check18
@@ -7162,7 +7162,7 @@ points [8] =
 100452
 pathType = 00000000
 [AiPath]
-old_ptr = 007e2d0c
+old_ptr = 7892fb0b
 size [1] =
 8
 label = p_check1
@@ -7191,7 +7191,7 @@ points [5] =
 100115
 pathType = 00000000
 [AiPath]
-old_ptr = 907f2d0c
+old_ptr = 908efb0b
 size [1] =
 10
 label = lobby_area
@@ -7208,7 +7208,7 @@ points [2] =
 100175
 pathType = 00000000
 [AiPath]
-old_ptr = 287e2d0c
+old_ptr = 588ffb0b
 size [1] =
 10
 label = race_start
@@ -7225,7 +7225,7 @@ points [2] =
 100202
 pathType = 00000000
 [AiPath]
-old_ptr = 507e2d0c
+old_ptr = 408efb0b
 size [1] =
 11
 label = death_area1
@@ -7334,7 +7334,7 @@ points [25] =
 100121
 pathType = 00000000
 [AiPath]
-old_ptr = e07f2d0c
+old_ptr = e08efb0b
 size [1] =
 11
 label = death_area2
@@ -7379,7 +7379,7 @@ points [9] =
 100613
 pathType = 00000000
 [AiPath]
-old_ptr = 787e2d0c
+old_ptr = d08ffb0b
 size [1] =
 11
 label = death_area3
@@ -7408,7 +7408,7 @@ points [5] =
 101130
 pathType = 00000000
 [AiPath]
-old_ptr = f07e2d0c
+old_ptr = 0092fb0b
 size [1] =
 11
 label = death_area4
@@ -7449,7 +7449,7 @@ points [8] =
 101525
 pathType = 00000000
 [AiPath]
-old_ptr = 08802d0c
+old_ptr = 8891fb0b
 size [1] =
 11
 label = death_area5
@@ -7486,7 +7486,7 @@ points [7] =
 101973
 pathType = 00000000
 [AiPath]
-old_ptr = a8802d0c
+old_ptr = 4890fb0b
 size [1] =
 11
 label = death_area6
@@ -7527,7 +7527,7 @@ points [8] =
 101599
 pathType = 00000000
 [AiPath]
-old_ptr = f8802d0c
+old_ptr = c892fb0b
 size [1] =
 11
 label = death_area7
@@ -7632,7 +7632,7 @@ points [24] =
 101343
 pathType = 00000000
 [AiPath]
-old_ptr = 20812d0c
+old_ptr = f88ffb0b
 size [1] =
 11
 label = death_area8
@@ -7679,4 +7679,157 @@ points [10] =
 385.015
   z [1] =
 101975
+pathType = 00000000
+[AiPath]
+old_ptr = 2090fb0b
+size [1] =
+12
+label = wpn_pickup_1
+pointCount [1] =
+2
+points [2] =
+  x [1] =
+333.403
+  z [1] =
+100673
+  x [1] =
+393.2
+  z [1] =
+100677
+pathType = 00000000
+[AiPath]
+old_ptr = 1893fb0b
+size [1] =
+12
+label = wpn_pickup_2
+pointCount [1] =
+2
+points [2] =
+  x [1] =
+352.5
+  z [1] =
+101792
+  x [1] =
+421.497
+  z [1] =
+101753
+pathType = 00000000
+[AiPath]
+old_ptr = 808ffb0b
+size [1] =
+12
+label = wpn_pickup_3
+pointCount [1] =
+2
+points [2] =
+  x [1] =
+1027.68
+  z [1] =
+101887
+  x [1] =
+988.587
+  z [1] =
+101880
+pathType = 00000000
+[AiPath]
+old_ptr = 088ffb0b
+size [1] =
+12
+label = wpn_pickup_4
+pointCount [1] =
+2
+points [2] =
+  x [1] =
+1209.45
+  z [1] =
+101151
+  x [1] =
+1228.61
+  z [1] =
+101105
+pathType = 00000000
+[AiPath]
+old_ptr = 308ffb0b
+size [1] =
+12
+label = wpn_pickup_5
+pointCount [1] =
+2
+points [2] =
+  x [1] =
+2020.14
+  z [1] =
+102012
+  x [1] =
+2053.87
+  z [1] =
+102086
+pathType = 00000000
+[AiPath]
+old_ptr = 1091fb0b
+size [1] =
+13
+label = lobby_pickup2
+pointCount [1] =
+2
+points [2] =
+  x [1] =
+2199.58
+  z [1] =
+100125
+  x [1] =
+2166.33
+  z [1] =
+100083
+pathType = 00000000
+[AiPath]
+old_ptr = a88ffb0b
+size [1] =
+13
+label = lobby_pickup1
+pointCount [1] =
+2
+points [2] =
+  x [1] =
+2266.53
+  z [1] =
+100007
+  x [1] =
+2294.72
+  z [1] =
+100046
+pathType = 00000000
+[AiPath]
+old_ptr = 9890fb0b
+size [1] =
+13
+label = lobby_pickup3
+pointCount [1] =
+2
+points [2] =
+  x [1] =
+2159.81
+  z [1] =
+100035
+  x [1] =
+2209.13
+  z [1] =
+100002
+pathType = 00000000
+[AiPath]
+old_ptr = c090fb0b
+size [1] =
+13
+label = lobby_pickup4
+pointCount [1] =
+2
+points [2] =
+  x [1] =
+2302.41
+  z [1] =
+100093
+  x [1] =
+2251.48
+  z [1] =
+100130
 pathType = 00000000

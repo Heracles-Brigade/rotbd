@@ -23,6 +23,14 @@ GetOdf = function(...)
   return r;
     --return _GetOdf(...):gmatch("[^%c]+")();
 end
+local _GetWeaponClass = GetWeaponClass;
+GetWeaponClass  = function(...)
+  local r = _GetWeaponClass(...);
+  if(r) then
+    return r:gmatch("[^%c]+")();
+  end
+  return r;
+end
 
 GetPathPointCount = GetPathPointCount or function(path)
   local p = GetPosition(path, 0)
@@ -333,17 +341,21 @@ local odfHeader = Class("odfHeader",{
         c = c + 1;
         n = self:getVar(varName .. c,...);
       end
-      return ret;
+      return ret, c > 1;
     end
   }
 })
-
-local odfFile = Class("odfFile",{
+local odfFile;
+odfFile = Class("odfFile",{
   constructor = function(fileName)
     self.name = fileName;
     self.file = OpenODF(fileName);
     self.headers = {};
     assert(self.file,"Could not open \"%s\"!",self.name);
+    local parent, exists = self:getProperty("Meta","parent");
+    if(exists) then
+      self.parent = odfFile(parent);
+    end
   end,
   methods = {
     getHeader = function(headerName)
@@ -351,27 +363,51 @@ local odfFile = Class("odfFile",{
         error("Header was nil!");
       end
       if(not self.headers[headerName]) then
-          self.headers[headerName] = odfHeader(self.file,headerName);
+        self.headers[headerName] = odfHeader(self.file,headerName);
       end
       return self.headers[headerName];
     end,
     getInt = function(header,...)
-      return self:getHeader(header):getAsInt(...);
+      local v, found = self:getHeader(header):getAsInt(...);
+      if self.parent and (not found) then
+        v, found = self.parent:getInt(header,...);
+      end
+      return v, found;
     end,
     getFloat = function(header,...)
-      return self:getHeader(header):getAsFloat(...);
+      local v, found = self:getHeader(header):getAsFloat(...);
+      if self.parent and (not found) then
+        v, found = self.parent:getFloat(header,...);
+      end
+      return v, found;
     end,
     getProperty = function(header,...)
-      return self:getHeader(header):getVar(...);
+      local v, found = self:getHeader(header):getVar(...);
+      if self.parent and (not found) then
+        v, found = self.parent:getProperty(header,...);
+      end
+      return v, found;
     end,
     getBool = function(header,...)
-      return self:getHeader(header):getAsBool(...);
+      local v, found = self:getHeader(header):getAsBool(...);
+      if self.parent and (not found) then
+        v, found = self.parent:getBool(header,...);
+      end
+      return v, found;
     end,
     getTable = function(header,...)
-      return self:getHeader(header):getAsTable(...);
+      local v, found = self:getHeader(header):getAsTable(...);
+      if self.parent and (not found) then
+        v, found = self.parent:getTable(header,...);
+      end
+      return v, found;
     end,
     getVector = function(header,...)
-      return self:getHeader(header):getAsVector(...);
+      local v, found = self:getHeader(header):getAsVector(...);
+      if self.parent and (not found) then
+        v, found = self.parent:getVector(header,...);
+      end
+      return v, found;
     end
   }
 })
@@ -574,16 +610,12 @@ local DefaultRuntimeModule = Decorate(
         end
       end,
       onAddPlayer = function(...)
-        print("misc onAddPlayer");
         for i,v in pairs(self.playerListeners) do
-          print("proxy onAddPlayer");
           v:onAddPlayer(...);
         end
       end,
       onDeletePlayer = function(...)
-        print("misc onDeletePlayer");
         for i,v in pairs(self.playerListeners) do
-          print("proxy onDeletePlayer");
           v:onDeletePlayer(...);
         end
       end,
@@ -718,7 +750,7 @@ local Timer = Decorate(
       end,
       stop = function()
         self:pause();
-        self.time = 0;
+        self:setTime(0);
       end,
       pause = function()
         self.running = false;

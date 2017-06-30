@@ -1,0 +1,44 @@
+# all settings can be changed by host
+# laps - default lap count
+# autostart - should a round start by default after waiting in lobby for [wait] seconds
+# timelimit - how long should a round last in seconds
+# minplayers - what are the minimum players required to start a round
+# botcount - how many bots? (bots will only be able to occupy empty slots) "MAX" = as many as possible
+# ex_physics - use experimental physics while in race? (tries to improve ground contact and traction)
+[Settings]
+laps = 3
+autostart = false
+timelimit = 600
+minplayers = 3
+botcount = "MAX"
+ex_physics = true
+
+# chance - relative rairness
+# center - 0 higher chance for last place, 1 higher chance for first place
+# weapon# - weapon odf
+
+[Tiers]
+tier_count = 1
+
+
+
+[Tier1]
+chance = 1
+center = 0
+weapon1 = "grcomet"
+weapon2 = "grcwasp"
+
+# [Tier1]
+# chanceMod=1.0
+# weapon1="grcboost"
+# weapon2="grcmine"
+
+# [Tier2]
+# chanceMod=0.75
+# weapon1="grccomet"
+# weapon2="grcwasp"
+
+# [Tier3]
+# chanceMod=0.5
+# weapon1="grclight"
+# weapon2="grchunt"
