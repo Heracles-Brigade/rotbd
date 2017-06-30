@@ -59,10 +59,11 @@ velocReverse = 15.0
 velocStrafe = 20.0
 accelThrust = 100.0
 accelBrake = 75.0
-omegaSpin = 3.5
-omegaTurn = 1.5
+omegaSpin = 1.5
+omegaTurn = 0.5
 alphaSteer = 5.0
 accelJump = 20.0
+
 
 soundThrust = "avtanke0.wav"
 soundTurbo = "avtanke3.wav"

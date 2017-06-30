@@ -1,5 +1,5 @@
 [GameObjectClass]
-baseName="svhraz"
+baseName = "svhraz"
 classLabel = "wingman"
 scrapValue = 7
 scrapCost = 9
@@ -47,23 +47,24 @@ diedMsg = "sbetty3.wav"
 [HoverCraftClass]
 setAltitude = 1.5
 accelDragStop = 4.0
-accelDragFull = .5
-alphaTrack = 20.0
-alphaDamp = 5.0
+accelDragFull = 1.0
+alphaTrack = 30.0
+alphaDamp = 7.0
 pitchPitch = 0.25
 pitchThrust = 0.1
 rollStrafe = 0.1
 rollSteer = 0.1
 
-velocForward = 25.0
-velocReverse = 20.0
+velocForward = 100.0
+velocReverse = 15.0
 velocStrafe = 20.0
-accelThrust = 20.0
-accelBrake = 50.0
-omegaSpin = 1.0
-omegaTurn = 0.4
-alphaSteer = 2.0
-accelJump = 10.0
+accelThrust = 100.0
+accelBrake = 75.0
+omegaSpin = 1.5
+omegaTurn = 0.5
+alphaSteer = 5.0
+accelJump = 20.0
+
 
 soundThrust = "svhraze1.wav"
 soundTurbo = "svhraze3.wav"

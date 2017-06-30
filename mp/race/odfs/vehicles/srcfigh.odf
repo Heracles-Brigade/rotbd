@@ -1,4 +1,5 @@
 [GameObjectClass]
+baseName = "svfigh"
 classLabel = "wingman"
 scrapValue = 4
 scrapCost = 6
@@ -44,24 +45,25 @@ diedMsg = "sbetty3.wav"
 
 [HoverCraftClass]
 setAltitude = 1.5
-accelDragStop = 3.5
+accelDragStop = 4.0
 accelDragFull = 1.0
-alphaTrack = 20.0
-alphaDamp = 5.0
+alphaTrack = 30.0
+alphaDamp = 7.0
 pitchPitch = 0.25
 pitchThrust = 0.1
 rollStrafe = 0.1
 rollSteer = 0.1
 
-velocForward = 25.0
-velocReverse = 20.0
+velocForward = 100.0
+velocReverse = 15.0
 velocStrafe = 20.0
-accelThrust = 20.0
+accelThrust = 100.0
 accelBrake = 75.0
-omegaSpin = 3.75
-omegaTurn = 2.75
+omegaSpin = 1.5
+omegaTurn = 0.5
 alphaSteer = 5.0
-accelJump = 25.0
+accelJump = 20.0
+
 
 soundThrust = "svfighe0.wav"
 soundTurbo = "svfighe3.wav"
