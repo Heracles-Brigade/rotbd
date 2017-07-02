@@ -1,3 +1,18 @@
+# all settings can be changed by host
+# autostart - should a round start by default
+# minplayers - what are the minimum players required to start a round
+# timelimit - how long should a round last in seconds
+# survivetime - how long should a player have to survive after everyone have been killed
+# botcontrol - should a player be able to assume control of one of their bots?
+
+[Settings]
+autostart = true
+minplayers = 2
+timelimit = 300
+survivetime = 15
+botcontrol = false
+
+
 [SquadMatches]
 avtank = "Squad_NSDF1"
 avltnk = "Squad_NSDF2"
