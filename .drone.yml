@@ -4,7 +4,7 @@ workspace:
 
 pipeline:
   pre-process:
-    image: builder
+    image: localhost:5000/builder
     when:
       event:
         - push
