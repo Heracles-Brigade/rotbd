@@ -17,6 +17,8 @@ local Class = OOP.Class;
 local playerNavs = {};
 local Routine = bzRoutine.Routine;
 
+require("spectate_r");
+
 local killOnNext = {};
   
 GetMissionFilename = GetMissionFilename or GetMapTRNFilename;
@@ -72,8 +74,8 @@ local function keepInside(handle,path)
   local dv = Normalize(pp-p);
   local d = Length(pp-p);
   local vel = GetVelocity(handle);
-  local dprod = DotProduct(Normalize(vel),dv);
-  local nvel = vel - dprod*dv;
+  local dprod = DotProduct(vel,-dv);
+  local nvel = vel + dprod*dv*(1+GetTimeStep());
   if(d > r) then
     local newp = (p + dv*r);
     local h = GetTerrainHeightAndNormal(newp);
@@ -95,7 +97,7 @@ local function spawnSquad(handle,squad_name)
     squad_name = squad_name or lastSquad;
   end
   if(squad_name == nil or squad_name == "") then
-    error("No squad name!",handle);
+    error("No squad name!",tostring(handle));
   end
   local units = squadIni:getTable(squad_name,"unit");
   lastSquad = squad_name;
@@ -196,6 +198,12 @@ local roundBasedGame = Decorate(
       self.playerHandle = nil;
       self.sp_r = nil;
       self.host = IsHosting();
+      self.hostSettings = {
+        minplayers = squadIni:getInt("Settings","minplayers",2),
+        autostart = squadIni:getBool("Settings","autostart",true),
+        survivetime = squadIni:getInt("Settings","survivetime",15),
+        timelimit = squadIni:getInt("Settings","timelimit",300)
+      }
       net.netManager:getSockets("GAME.MG"):subscribe(function(...)
         self:_onSocketCreate(...);
       end);
@@ -211,7 +219,7 @@ local roundBasedGame = Decorate(
         end
 
 
-        self.roundTimeLeft = ROUND_TIME;
+        self.roundTimeLeft = self.hostSettings.timelimit;
         self.roundStarted = true;
         self.inRound = true;
         --Tell everyone to spawn in
@@ -283,11 +291,18 @@ local roundBasedGame = Decorate(
           DisplayMessage(("Next round starts in %d seconds."):format(self.timeUntilStart));
           self:_removeSquad();
         elseif(what == "SYNC") then
-          self.roundStarted, self.timeUntilStart, self.roundTimeLeft,self.playersLeft = ...;
+          self.roundStarted, self.timeUntilStart, self.roundTimeLeft,self.playersLeft, self.hostSettings = ...;
         elseif(what == "DEAD") then
           local d_id = ...;
           d_id = d_id or from;
           self:_updatePlayersLeft(d_id);
+        elseif(what == "TELL") then
+          DisplayMessage(...);
+          if(self.host) then
+            self:_send("TELL",...);
+          end
+        elseif(what == "SETTINGS") then
+          self.hostSettings = ...;
         end
       end,
       _connectToAllPlayers = function()
@@ -349,7 +364,7 @@ local roundBasedGame = Decorate(
           l = l + 1;
         end
         if(l <= 1) then
-          self.roundTimeLeft = SURVIVE_TIME;
+          self.roundTimeLeft = self.hostSettings.survivetime;
           DisplayMessage(("Last player alive, has to survive for %d seconds"):format(self.roundTimeLeft));
         end
       end,
@@ -451,12 +466,14 @@ local roundBasedGame = Decorate(
 
         if(self.roundStarted) then
           self.roundTimeLeft = self.roundTimeLeft - dtime;
-        else
+        elseif(self.hostSettings.autostart) then
           self.timeUntilStart = self.timeUntilStart - dtime;
+        else
+          self.timeUntilStart = LOBBY_TIME;
         end
         if(self.host) then
           if(not self.roundStarted) then
-            if(net.netManager:getPlayerCount() > 1) then
+            if(net.netManager:getPlayerCount() > self.hostSettings.minplayers) then
               if(self.timeUntilStart <= 0) then
                 self:startRound();
               end
@@ -488,7 +505,7 @@ local roundBasedGame = Decorate(
           print("connecting to player",id);
           local s = net.netManager:createSocket("GAME.MG",id);
           local p = s:packet();
-          p:queue("SYNC",self.roundStarted,self.timeUntilStart,self.roundTimeLeft,self.playersLeft);
+          p:queue("SYNC",self.roundStarted,self.timeUntilStart,self.roundTimeLeft,self.playersLeft,self.hostSettings);
           s:flush(p);
           self.sockets[id] = s;
           s:getPackets():subscribe(function(...)
@@ -534,8 +551,45 @@ local roundBasedGame = Decorate(
       end,
       load = function()
       end,
+      _tell = function(what)
+        if(self.host) then
+          DisplayMessage(what);
+        end
+        self:_send("TELL",what);
+      end,
       onCommand = function(cmd,...)
         cmd = cmd:lower();
+        local validCommand = false;
+        if(self.host) then
+          if(command == "start" and (not self.roundStarted)) then
+            self:startRound();
+            validCommand = true;
+          elseif(command == "enable") then
+            local key = ...;
+            if(type(self.hostSettings[key]) == "boolean") then
+              self.hostSettings[key] = true;
+              validCommand = true;
+              self:_tell(("%s enabled %s"):format(self.localPlayer.name,key));
+            end
+          elseif(command == "disable") then
+            local key = ...;
+            if(type(self.hostSettings[key]) == "boolean") then
+              self.hostSettings[key] = false;
+              validCommand = true;
+              self:_tell(("%s disabled %s"):format(self.localPlayer.name,key));
+            end
+          elseif(command == "set") then
+            local key, val = ...;
+            if(type(self.hostSettings[key]) == "number") then
+              self.hostSettings[key] = tonumber(val) or 1;
+              validCommand = true;
+              self:_tell(("%s set %s to %d"):format(self.localPlayer.name,key,self.hostSettings[key]));
+            end
+          end
+          if(validCommand) then
+            self:_send("SETTINGS",self.hostSettings);
+          end
+        end
         if(cmd == "spectate") then
           if((not self.inRound) and self.roundStarted) then
             local player = tonumber(... or "1");
@@ -557,6 +611,10 @@ local roundBasedGame = Decorate(
             self.sp_r = bzRoutine.routineManager:startRoutine("spectateRoutine",targets,key);
           end
         end
+        if(not validCommand) then
+          DisplayMessage("Command is not valid, or not applicable at this time.")
+        end
+        return validCommand;
       end
     }
   })

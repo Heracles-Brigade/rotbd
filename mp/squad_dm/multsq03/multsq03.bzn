@@ -1,0 +1,167 @@
+version [1] =
+1045
+binarySave [1] =
+false
+msn_filename = multsq03.bzn
+seq_count [1] =
+4
+missionSave [1] =
+true
+TerrainName = multsq03
+size [1] =
+1
+[GameObject]
+PrjID [1] =
+player
+seqno [1] =
+1
+pos [1] =
+  x [1] =
+259.162
+  y [1] =
+0.999994
+  z [1] =
+256.0
+team [1] =
+1
+label = player0_wingman
+isUser [1] =
+1
+obj_addr = 00B01D68
+transform [1] =
+  right_x [1] =
+0.868414
+  right_y [1] =
+6.14375e-006
+  right_z [1] =
+-0.495848
+  up_x [1] =
+-0.000225575
+  up_y [1] =
+1.00001
+  up_z [1] =
+-0.000382675
+  front_x [1] =
+0.495848
+  front_y [1] =
+0.000444167
+  front_z [1] =
+0.868414
+  posit_x [1] =
+259.162
+  posit_y [1] =
+0.999994
+  posit_z [1] =
+256.0
+abandoned [1] =
+0
+illumination [1] =
+1
+pos [1] =
+  x [1] =
+258.982
+  y [1] =
+2.36402
+  z [1] =
+256.0
+euler =
+ mass [1] =
+1750
+ mass_inv [1] =
+0.000666667
+ v_mag [1] =
+1.17847e-005
+ v_mag_inv [1] =
+84855.9
+ I [1] =
+1500
+ k_i [1] =
+1
+ v [1] =
+  x [1] =
+-3.71986e-009
+  y [1] =
+1.17847e-005
+  z [1] =
+-6.37789e-009
+ omega [1] =
+  x [1] =
+-0.0115942
+  y [1] =
+0.0189651
+  z [1] =
+-1.49281e-005
+ Accel [1] =
+  x [1] =
+6.50565e-008
+  y [1] =
+1.34468e-005
+  z [1] =
+1.14533e-007
+seqNo [1] =
+1
+name = 
+isObjective [1] =
+false
+isSelected [1] =
+false
+isVisible [1] =
+ffffffff
+seen [1] =
+0
+healthRatio [1] =
+1
+curHealth [1] =
+3000
+maxHealth [1] =
+3000
+ammoRatio [1] =
+1
+curAmmo [1] =
+1200
+maxAmmo [1] =
+1200
+priority [1] =
+0
+what = 00000000
+who [1] =
+0
+where = 00000000
+param [1] =
+0
+aiProcess [1] =
+true
+isCargo [1] =
+false
+independence [1] =
+1
+curPilot [1] =
+asuser
+perceivedTeam [1] =
+1
+name = MultDMMission
+sObject = 0BA2B128
+[AiMission]
+[AOIs]
+size [1] =
+0
+[AiPaths]
+count [1] =
+1
+[AiPath]
+old_ptr = 30f3ec0b
+size [1] =
+9
+label = edge_path
+pointCount [1] =
+2
+points [2] =
+  x [1] =
+0
+  z [1] =
+0
+  x [1] =
+2560
+  z [1] =
+2560
+pathType = 00000000

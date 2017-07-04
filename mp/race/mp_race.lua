@@ -92,8 +92,8 @@ local function keepInside(handle,path)
   local dv = Normalize(pp-p);
   local d = Length(pp-p);
   local vel = GetVelocity(handle);
-  local dprod = DotProduct(Normalize(vel),dv);
-  local nvel = vel - dprod*dv;
+  local dprod = DotProduct(vel,-dv);
+  local nvel = vel + dprod*dv*(1+GetTimeStep());
   if(d > r) then
     local newp = (p + dv*r);
     local h = GetTerrainHeightAndNormal(newp);
@@ -319,12 +319,15 @@ local gameManagerRoutine = Decorate(
         inRace = false,
         slot = nil
       }
+
       self.lobbyState = {
         lobbyTimer = 30
       }
+      
       self.userSettings = {
         afk = false
       }
+
       self.hostSettings = {
         laps = raceSettings:getInt("Settings","laps",3),
         autostart = raceSettings:getBool("Settings","autostart",false),
@@ -641,7 +644,8 @@ local gameManagerRoutine = Decorate(
           countdown = self.hostSettings.countdown,
           players = {},
           totalLaps = self.hostSettings.laps,
-          avaliableSlots = {}
+          avaliableSlots = {},
+          timelimit = self.hostSettings.timelimit
         }
         self:_send("END_RACE");
         self.localState.inRace = false;

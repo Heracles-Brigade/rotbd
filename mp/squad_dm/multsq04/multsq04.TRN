@@ -1,0 +1,126 @@
+[Size]
+MinX=0
+MinZ=101120
+Width=1280
+Depth=1280
+Height=0
+
+[NormalView]
+Time=0900
+FogStart=60
+FogEnd=130
+FogBreak=30
+VisibilityRange=130
+Intensity=40
+Ambient=0
+FlatRange=250
+ShadowLuma=0
+FogDirection=1
+TerrainShadowLuma=20
+CarAmbient=10
+
+[World]
+MusicTrack=12
+
+
+[Sky]
+SunTexture=sun.0
+SkyType=0
+SkyHeight = 110
+SkyTexture= venus.map
+
+
+BackdropDistance= 400
+BackdropWidth   = 800
+BackdropHeight  = 100
+
+[LightningBolt]
+minDelay=5000
+maxDelay=30000
+Bolts=3
+Duration=100
+Color=20
+Distance=75
+Sound=lstart.wav
+
+[Color]
+Palette=venus.ACT
+Luma=venus.LUM
+Translucency=venus.TBL
+Alpha=venus.ALB
+
+[World]
+MusicTrack=3
+
+[TextureType0] // Sulphur Deposits
+FlatColor= 124
+SolidA0        = ve00sA0.map
+SolidA1        = ve00sA1.map
+SolidA2        = ve00sA2.map
+SolidA3        = ve00sA3.map
+
+CapTo1_A0      = ve01cA0.map
+CapTo1_A1      = ve01cA1.map
+CapTo1_A2      = ve01cA2.map
+CapTo1_A3      = ve01cA3.map
+
+DiagonalTo1_A0 = ve01dA0.map
+DiagonalTo1_A1 = ve01dA1.map
+DiagonalTo1_A2 = ve01dA2.map
+DiagonalTo1_A3 = ve01dA3.map
+
+CapTo2_A0      = ve02cA0.map
+CapTo2_A1      = ve02cA1.map
+CapTo2_A2      = ve02cA2.map
+CapTo2_A3      = ve02cA3.map
+CapTo2_B0      = ve02cB0.map
+CapTo2_B1      = ve02cB1.map
+CapTo2_B2      = ve02cB2.map
+CapTo2_B3      = ve02cB3.map
+
+DiagonalTo2_A0 = ve02dA0.map
+DiagonalTo2_A1 = ve02dA1.map
+DiagonalTo2_A2 = ve02dA2.map
+DiagonalTo2_A3 = ve02dA3.map
+
+CapTo3_A0      = ve03cA0.map
+CapTo3_A1      = ve03cA1.map
+CapTo3_A2      = ve03cA2.map
+CapTo3_A3      = ve03cA3.map
+
+DiagonalTo3_A0 = ve03dA0.map
+DiagonalTo3_A1 = ve03dA1.map
+DiagonalTo3_A2 = ve03dA2.map
+DiagonalTo3_A3 = ve03dA3.map
+
+[TextureType1] Liquid Sulphur
+FlatColor= 96
+SolidA0        = ve11sA0.map
+SolidA1        = ve11sA1.map
+SolidA2        = ve11sA2.map
+SolidA3        = ve11sA3.map
+
+[TextureType2] Base
+FlatColor= 167
+SolidA0        = ve22sA0.map
+SolidA1        = ve22sA1.map
+SolidA2        = ve22sA2.map
+SolidA3        = ve22sA3.map
+SolidB0        = ve22sB0.map
+SolidB1        = ve22sB1.map
+SolidB2        = ve22sB2.map
+SolidB3        = ve22sB3.map
+
+[TextureType3] Hardened Sulphur
+FlatColor= 203
+SolidA0        = ve33sA0.map
+SolidA1        = ve33sA1.map
+SolidA2        = ve33sA2.map
+SolidA3        = ve33sA3.map
+
+[TextureType4] Geyser
+FlatColor= 207
+SolidA0        = ve44sA0.map
+SolidA1        = ve44sA1.map
+SolidA2        = ve44sA2.map
+SolidA3        = ve44sA3.map
