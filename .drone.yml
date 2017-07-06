@@ -13,7 +13,7 @@ pipeline:
     commands:
       - mkdir ./tmp_files
       - find /rotbd -not -iwholename '*/\.*' -type f -exec rsync -rv {} ./tmp_files \;
-      - python3 ./tmp_files crlf_fixer.py ./tmp_files
+      - python3 ./tmp_files/crlf_fixer.py ./tmp_files
       - mkdir -p /rotbd/output
       - zip -j -r /rotbd/output/bundle.zip ./tmp_files
       - find -type f -name '*.bzn' -exec python3 ./tmp_files/bznDown.py {} {} \;

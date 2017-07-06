@@ -81,6 +81,9 @@ local spectateRoutine = Decorate(
         print("STOP!");
         self.alive = false;
       end,
+      removeHandle = function(handle)
+      
+      end,
       onDestroy = function()
         print("Spectating stoped");
         CameraFinish();
