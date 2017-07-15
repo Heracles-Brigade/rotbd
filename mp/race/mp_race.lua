@@ -406,9 +406,10 @@ local gameManagerRoutine = Decorate(
                 lastPP.y = (GetTerrainHeightAndNormal(lastPP)) + 15;
                 v.lastValidTransform = BuildDirectionalMatrix(lastPP,Normalize(closestPoints[2]-closestPoints[1]));
               end
-              v.distance = v.distance + tempD
-              if(self:_hasPlayerFinished(v)) then
+              if(v.finished) then
                 v.distance = v.distance/v.time;
+              else
+                v.distance = v.distance + tempD;
               end
             end
           end
@@ -477,7 +478,9 @@ local gameManagerRoutine = Decorate(
             self:_send("CHECKPOINT",...);
             self:_checkIfDone();
           end
-          --check if player has won
+          if(self.sp_r) then
+            bzRoutine.routineManager:getRoutine(self.sp_r):removeKey(player);
+          end
         elseif(what == "NAVPOINT_MISSING") then
           local missing = ...;
           local nav = self.navPoints[missing];
@@ -497,7 +500,7 @@ local gameManagerRoutine = Decorate(
           end
           local p = net.netManager:playersInGame()[id];
           if(p) then
-            DisplayMessage(("%s is %s"):format(p.name,afk and "is afk" or "is no longer afk"))
+            DisplayMessage(("%s is %s"):format(p.name,afk and "afk" or "no longer afk"));
           end
         elseif(what == "TELL") then
           DisplayMessage(...);
@@ -648,6 +651,8 @@ local gameManagerRoutine = Decorate(
           timelimit = self.hostSettings.timelimit
         }
         self:_send("END_RACE");
+        local winner = self.localState.lastSortedPositions[1];
+        self:_tell(("Race ended, %s won!"):format(winner.player.name));
         self.localState.inRace = false;
         self.localState.slot = nil;
         if(self.sp_r) then
@@ -929,6 +934,7 @@ local gameManagerRoutine = Decorate(
           local targets = {};
           if(self.sp_r) then
             bzRoutine.routineManager:killRoutine(self.sp_r);
+            self.sp_r = nil;
           end
           for i,v in pairs(self.raceState.players) do
             local p = net.netManager:playersInGame()[i];
