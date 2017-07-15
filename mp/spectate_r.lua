@@ -81,8 +81,25 @@ local spectateRoutine = Decorate(
         print("STOP!");
         self.alive = false;
       end,
-      removeHandle = function(handle)
-      
+      removeKey = function(key)
+        if(self.sp_targets[key] ~= nil) then
+          local c_key = self.key_list[self.key_i];
+          for i, v in ipairs(self.key_list) do
+            if(key == v) then
+              table.remove(i);
+              break;
+            end
+          end
+          self.sp_targets[key] = nil;
+          if(key == c_key) then
+            self:watchNext();
+          else
+            self.key_i = math.min(1,self.key_i-1);
+          end
+          if(#self.key_list <= 0) then
+            self:stop();
+          end
+        end
       end,
       onDestroy = function()
         print("Spectating stoped");
