@@ -5,6 +5,9 @@ workspace:
 pipeline:
   pre-process:
     image: docker.studynator.me/bzone/bztools
+    auth_config:
+      username: ${DOCKER_USERNAME}
+      password: ${DOCKER_PASSWORD}
     when:
       event:
         - push
