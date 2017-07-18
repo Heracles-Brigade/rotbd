@@ -13,7 +13,7 @@ pipeline:
     commands:
       - mkdir ./tmp_files
       - find /rotbd -not -ipath '*/\.*' -type f -exec rsync -rv {} ./tmp_files \;
-      - python3 /bztools/textToSpeech ./tmp_files
+      - python3 /bztools/textToSpeech.py ./tmp_files
       - python3 /bztools/crlf_fixer.py ./tmp_files
       - mkdir -p /rotbd/output
       - zip -j -r /rotbd/output/bundle.zip ./tmp_files
