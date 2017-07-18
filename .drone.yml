@@ -5,6 +5,7 @@ workspace:
 pipeline:
   pre-process:
     image: docker.studynator.me/bzone/bztools:latest
+    pull: true
     when:
       event:
         - push
