@@ -1,7 +1,0 @@
-PARENT diag.voices
-START
-SHAW: Hello [200] How are you doing
-[200] doing well;
-GRIG: Yeah [250] I am doing very well [1000]
-how about you [100];
-SHAW: Same [100] Same; 
