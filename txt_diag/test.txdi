@@ -1,4 +1,5 @@
-PARENT ./diag.voices
+VOICE SHAW english
+VOICE GRIG en-scottish
 START
 SHAW: Hello [200] How are you doing
 [200] doing well;
