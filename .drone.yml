@@ -4,7 +4,7 @@ workspace:
 
 pipeline:
   pre-process:
-    image: docker.studynator.me/bzone/bztools:1.1.11
+    image: docker.studynator.me/bzone/bztools:1.1.12
     pull: true
     when:
       event:
