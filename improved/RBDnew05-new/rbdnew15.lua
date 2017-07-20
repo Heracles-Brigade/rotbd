@@ -28,6 +28,13 @@ TODO:
   * might be better to check relics health instead of using GetWhoShotMe
 ]]
 
+local audio = {
+  intro = "rbd0501.wav",
+  inspect = "rbd0502.wav",
+  destroy_f = "rbd0503.wav",
+  done_d = "rbd0504.wav",
+  back_to_base = "rbd0505.wav"
+}
 
 --First objective, go to base, get unit and investigate relic site
 local intro = mission.Objective:define("introObjective"):createTasks(
@@ -160,6 +167,7 @@ local intro = mission.Objective:define("introObjective"):createTasks(
       self:call("_setUpProdListeners",self.prodId,"_forEachProduced1","_doneProducing1");
     elseif(name == "goto_relic") then
       SetTeamNum(self.camera_handle,1);
+      AudioMessage(audio.intro);
     end
   end,
   task_success = function(self,name)
@@ -258,7 +266,7 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
     self.nuke_state = 0;
     self.t = 0;
     self:startTask("destroy_relic");
-    self:startTask("cca_attack_base");
+    AudioMessage(audio.inspect);
   end,
   task_start = function(self,name)
     if(self.otfs[name]) then
@@ -341,10 +349,10 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
       end
     end
     if(self:isTaskActive("destroy_relic")) then
-      if(GetWhoShotMe(self.relic) == GetPlayerHandle()) then
-        self.wait_while_shooting = self.wait_while_shooting - dtime;
-      end
-      if(self.wait_while_shooting <= 0) then
+      if((GetMaxHealth(self.relic) - GetCurHealth(self.relic) >= 1000) and (not self:hasTaskStarted("cca_attack_base"))) then
+        self:startTask("cca_attack_base");
+        self.destroy_audio = AudioMessage(audio.destroy_f);
+      elseif(self:hasTaskStarted("cca_attack_base") and ((not self.destroy_audio) or IsAudioMessageDone(self.destroy_audio))) then
         self:taskSucceed("destroy_relic");
       end
     elseif(self:isTaskActive("nuke")) then
@@ -371,6 +379,7 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
           if(Length(GetPosition(self.daywrecker) - GetPosition(self.relic)) < 50) then
             RemoveObjective(self.nuke_state < 2 and "rbd0530.otf" or "rbd0531.otf");
             AddObjective("rbd0534.otf","green");
+            AudioMessage(audio.done_d);
             self.nuke_state = 5;
           end
         end
@@ -396,7 +405,8 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
       day_id = self.day_id,
       nuke_wait_t1 = 5,
       nuke_wait_t2 = 2,
-      nuke_state = self.nuke_state
+      nuke_state = self.nuke_state,
+      destroy_audio = self.destroy_audio
     };
   end,
   load = function(self,data)
@@ -410,6 +420,7 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
     self.nuke_wait_t1 = data.nuke_wait_t1;
     self.nuke_wait_t2 = data.nuke_wait_t2;
     self.nuke_state = data.nuke_state;
+    self.destroy_audio = data.destroy_audio;
     self:call("_setUpProdListeners",self.day_id,"_setDayWrecker");
   end
 });
@@ -425,6 +436,7 @@ local RtbAssumeControl = mission.Objective:define("rtbAssumeControl"):createTask
     self.waitToSuccess = 5;
   end,
   success = function(self)
+    AudioMessage(audio.back_to_base);
     ClearObjectives();
     orig15setup();
   end,

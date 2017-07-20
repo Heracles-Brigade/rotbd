@@ -9,6 +9,12 @@
 local miss26setup;
 local mission = require('cmisnlib');
 
+local audio = {
+    apc_spawn = "rbd0506.wav",
+    pickup_done = "rbd0507.wav",
+    win = "rbd0508.wav"
+}
+
 local function spawnAtPath(odf,team,path)
     local handles = {};
     local current = GetPosition(path);
@@ -276,6 +282,9 @@ local pickupSurvivors = mission.Objective:define("pickupSurvivors"):setListeners
         end
         SetObjectiveName(navs[1],"NSDF Outpost");
         SetObjectiveName(navs[2],"Rendezvous Point");
+        for i, v in pairs(self.apcs) do
+            Goto(v,"apc_follow_path");
+        end
         self.nav = navs[1];
     end,
     update = function(self,dtime)
@@ -334,6 +343,7 @@ local pickupSurvivors = mission.Objective:define("pickupSurvivors"):setListeners
         self.pilots,self.arived,self.t1 = ...;
     end,
     success = function(self)
+        AudioMessage(audio.pickup_done);
         for i,v in pairs(self.apcs) do
             Stop(v,0);
         end  
@@ -372,6 +382,7 @@ local escortAPCs = mission.Objective:define("escortAPCs"):setListeners({
     success = function(self)
         UpdateObjective("bdmisn2602.otf","green");
         UpdateObjective("bdmisn2603.otf","green");
+        AudioMessage(audio.win);
         SucceedMission(GetTime()+5.0, "bdmisn26wn.des");
     end,
     fail = function(self)
@@ -385,6 +396,7 @@ local escortAPCs = mission.Objective:define("escortAPCs"):setListeners({
 
 miss26setup = function()
     --Spawns inital objects
+    AudioMessage(audio.apc_spawn);
     RemoveObjective("rbdnew3502.otf");
     spawnAtPath("proxminb",2,"spawn_prox");
     spawnAtPath("svfigh",2,"26spawn_figh");
