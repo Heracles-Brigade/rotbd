@@ -1,4 +1,4 @@
 PARENT diag.voices
 START
-GRIG:	Thank God you made it back in one piece sir [250];
-BAKR:	Looks like the Soviet assault is being coordinated from a base to the north [100] If you can knock out their communications it should soften the assault;
+GRIG:	Thank God you made it back in one piece sir [250][200];
+BAKR:	Looks like the Soviet assault is being coordinated from a base to the north [100] If you can knock out their communications it should soften the assault[200];

@@ -1,6 +1,6 @@
 PARENT diag.voices
 START
-GRIG:	All aboard Cobra One [200] Time to get outta here;
+GRIG:	All aboard Cobra One [200] Time to get outta here[200];
 SHAW:	Dammit [100] the Soviets have just secured our landing zone [200] 
 Looks like the relic site is our best shot at getting you out of there [500] 
-get everyone there and we will pick you up;
+get everyone there and we will pick you up[200];

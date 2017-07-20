@@ -1,16 +1,16 @@
 PARENT diag.voices
 START
 NTRG: So your [125] escapade on the moon led you to the Mammoth Project [100] correct [210] 
-Why was Shaw so interested in that;
+Why was Shaw so interested in that[200];
 CBRA: Baker figured out pretty quickly that the whole thing was a weapons project [100] 
 We are not idiots [50] we all knew what it would be used for [75] 
 Who it would be used against [100] 
-Why do you think Shaw had so much interest in it [175];
-NTRG: He was afraid the Mammoth would be used against America;
+Why do you think Shaw had so much interest in it [175][200];
+NTRG: He was afraid the Mammoth would be used against America[200];
 CBRA:	Of course he was [110] A Soviet super-tank with armour six inches thick and 
-firepower double anything we could come up with [100] Damn right he was afraid of it [50] We all were;
+firepower double anything we could come up with [100] Damn right he was afraid of it [50] We all were[200];
 NTRG: And he not once suggested the USA had anything to do with the project [80] That it might have been a
-collaborative effort;
+collaborative effort[200];
 CBRA: That is ridiculous [50] If Command knew anything about it they would have 
 told us well before we went in on the moon [100] Hell [50] 
-if it was anything to do with them we would never have been deployed at all;
+if it was anything to do with them we would never have been deployed at all[200];

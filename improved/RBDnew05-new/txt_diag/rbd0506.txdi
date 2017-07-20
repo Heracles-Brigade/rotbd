@@ -1,4 +1,4 @@
 PARENT diag.voices
 START
-SHAW:	I am dropping two APCs to the east of you Lieutenant [100] 
-Escort them back to base and get those men out of there;
+SHAW: I am dropping two APCs to the east of you Lieutenant [100]
+Escort them back to base and get those men out of there[200];

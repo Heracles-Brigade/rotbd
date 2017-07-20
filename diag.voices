@@ -1,6 +1,6 @@
-VOICE SHAW english-north
-VOICE GRIG english-us
-VOICE CBRA english_rp
-VOICE HRLY en-westindies
-VOICE BAKR english_wmids
-VOICE NTRG english
+VOICE SHAW GOOGLE en
+VOICE GRIG ESPEAK english-us
+VOICE CBRA ESPEAK english_rp
+VOICE HRLY ESPEAK en-westindies
+VOICE BAKR ESPEAK english_wmids
+VOICE NTRG ESPEAK english

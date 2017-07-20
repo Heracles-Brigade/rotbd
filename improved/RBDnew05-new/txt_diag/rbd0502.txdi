@@ -1,8 +1,8 @@
 PARENT diag.voices
 START
-BAKR: Thats it sir [100] Starting the scan now [50] stay close [3000];
+BAKR: Thats it sir [100] Starting the scan now [50] stay close [3000][200];
 SHAW: Looks like they’re onto us Lieutenant [100]
-There is a wing of CCA forces incoming [50] Baker [100] how is that transmission coming;
-GRIG: Hostiles closing on the base as well sir [500] lots of them;
-BAKR: Slowly sir 250] I dont know how much longer its going to take but we have got the basics [100];
-SHAW:	Damnit. [1000] Cobra One [50] destroy that relic [100] We need everything we can get from it but we cannot let it fall into enemy hands;
+There is a wing of CCA forces incoming [50] Baker [100] how is that transmission coming[200];
+GRIG: Hostiles closing on the base as well sir [500] lots of them[200];
+BAKR: Slowly sir [250] I dont know how much longer its going to take but we have got the basics [100][200];
+SHAW:	Damnit. [1000] Cobra One [50] destroy that relic [100] We need everything we can get from it but we cannot let it fall into enemy hands[200];

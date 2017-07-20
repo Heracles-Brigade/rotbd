@@ -1,4 +1,4 @@
 PARENT diag.voices
 START
-GRIG: Soviets incoming sir;
-SHAW: Cobra One [25] there is a major attack force on the way [100] Destroy the defectors;
+GRIG: Soviets incoming sir[200];
+SHAW: Cobra One [25] there is a major attack force on the way [100] Destroy the defectors[200];
