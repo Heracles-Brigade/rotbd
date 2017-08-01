@@ -1,0 +1,176 @@
+[NormalView]
+Time=1500
+FogStart=175
+FogEnd=250
+FogBreak=60
+VisibilityRange=250
+Intensity=90
+Ambient=0
+FlatRange=300
+ShadowLuma=0
+FogDirection=0
+TerrainShadowLuma=20
+CarAmbient=30
+
+[Atlases]
+MaterialName	= eu_detail_atlas
+
+
+[World]
+MusicTrack=6
+
+[Sky]
+SunTexture= sun.0
+SkyType= 0
+SkyHeight = 110
+SkyTexture= 
+
+BackdropTexture = 
+BackdropDistance= 400
+BackdropWidth   = 800
+BackdropHeight  = 100
+
+[Stars]
+Radius		= 1000
+
+Texture00   = smjovian.map
+Alpha00     = 0
+Size00      = 350
+Azimuth00   = 210
+Elevation00 = 35
+Roll00      = 300
+
+[StarList]
+
+Solid       = 0
+LayerHeight = 15
+Texture     = stars.map
+Radius      = 1000
+
+Start0      = 0
+End0        = 360
+Size0       = 350
+Count0      = 13
+
+Start1      = 220
+End1        = 560
+Size1       = 350
+Count1      = 10 
+
+Start2      = 220
+End2        = 560
+Size2       = 350
+Count2      = 11
+
+[Color]
+Palette=europa.ACT
+Luma=europa.LUM
+Translucency=europa.TBL
+Alpha=europa.ALB
+
+[Size]
+MinX=0
+MinZ=97280
+Width=5120
+Depth=5120
+Height=0
+
+[TextureType0] // Thin Ice
+FlatColor= 201
+SolidA0        = eu00sA0.map
+SolidA1        = eu00sA1.map
+SolidA2        = eu00sA2.map
+SolidA3        = eu00sA3.map
+
+Solidb0        = eu00sA0.map
+Solidb1        = eu00sA1.map
+Solidb2        = eu00sA2.map
+Solidb3        = eu00sA3.map
+
+Solidc0        = eu00sB0.map
+Solidc1        = eu00sB1.map
+Solidc2        = eu00sB2.map
+Solidc3        = eu00sB3.map
+
+Solidd0        = eu00sA0.map
+Solidd1        = eu00sA1.map
+Solidd2        = eu00sA2.map
+Solidd3        = eu00sA3.map
+
+CapTo1_A0      = eu01cA0.map
+CapTo1_A1      = eu01cA1.map
+CapTo1_A2      = eu01cA2.map
+CapTo1_A3      = eu01cA3.map
+
+DiagonalTo1_A0 = eu01dA0.map
+DiagonalTo1_A1 = eu01dA1.map
+DiagonalTo1_A2 = eu01dA2.map
+DiagonalTo1_A3 = eu01dA3.map
+
+CapTo4_A0      = eu04cA0.map
+CapTo4_A1      = eu04cA1.map
+CapTo4_A2      = eu04cA2.map
+CapTo4_A3      = eu04cA3.map
+
+DiagonalTo4_A0 = eu04dA0.map
+DiagonalTo4_A1 = eu04dA1.map
+DiagonalTo4_A2 = eu04dA2.map
+DiagonalTo4_A3 = eu04dA3.map
+
+[TextureType1] // Frozen Tundra
+FlatColor= 131
+SolidA0        = eu11sA0.map
+SolidA1        = eu11sA1.map
+SolidA2        = eu11sA2.map
+SolidA3        = eu11sA3.map
+
+CapTo2_A0      = eu12cA0.map
+CapTo2_A1      = eu12cA1.map
+CapTo2_A2      = eu12cA2.map
+CapTo2_A3      = eu12cA3.map
+
+DiagonalTo2_A0 = eu12dA0.map
+DiagonalTo2_A1 = eu12dA1.map
+DiagonalTo2_A2 = eu12dA2.map
+DiagonalTo2_A3 = eu12dA3.map
+
+[TextureType2] // Snowy Rock
+FlatColor= 101
+SolidA0        = eu22sA0.map
+SolidA1        = eu22sA1.map
+SolidA2        = eu22sA2.map
+SolidA3        = eu22sA3.map
+
+CapTo3_A0      = eu23cA0.map
+CapTo3_A1      = eu23cA1.map
+CapTo3_A2      = eu23cA2.map
+CapTo3_A3      = eu23cA3.map
+
+DiagonalTo3_A0 = eu23dA0.map
+DiagonalTo3_A1 = eu23dA1.map
+DiagonalTo3_A2 = eu23dA2.map
+DiagonalTo3_A3 = eu23dA3.map
+
+[TextureType3] // Glacial
+FlatColor= 177
+SolidA0        = eu33sA0.map
+SolidA1        = eu33sA1.map
+SolidA2        = eu33sA2.map
+SolidA3        = eu33sA3.map
+
+[TextureType4] // Base
+FlatColor= 206
+SolidA0        = eu44sA0.map
+SolidA1        = eu44sA1.map
+SolidA2        = eu44sA2.map
+SolidA3        = eu44sA3.map
+
+Solidb0        = eu44sB0.map
+Solidb1        = eu44sB1.map
+Solidb2        = eu44sB2.map
+Solidb3        = eu44sB3.map
+
+Solidc0        = eu44sC0.map
+Solidc1        = eu44sC1.map
+Solidc2        = eu44sC2.map
+Solidc3        = eu44sC3.map

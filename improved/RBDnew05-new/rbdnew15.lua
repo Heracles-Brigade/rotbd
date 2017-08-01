@@ -10,7 +10,7 @@ local core = require("bz_core");
 local OOP = require("oop");
 local buildAi = require("buildAi");
 local bzRoutine = require("bz_routine");
-
+local bzObjects = require("bz_objects");
 
 local IsIn = OOP.isIn;
 local ConstructorAi = buildAi.ConstructorAi;
@@ -28,6 +28,13 @@ TODO:
   * might be better to check relics health instead of using GetWhoShotMe
 ]]
 
+local audio = {
+  intro = "rbd0501.wav",
+  inspect = "rbd0502.wav",
+  destroy_f = "rbd0503.wav",
+  done_d = "rbd0504.wav",
+  back_to_base = "rbd0505.wav"
+}
 
 --First objective, go to base, get unit and investigate relic site
 local intro = mission.Objective:define("introObjective"):createTasks(
@@ -78,7 +85,7 @@ local intro = mission.Objective:define("introObjective"):createTasks(
     --Let us queue some production jobs for Shaw to do
     ProducerAi:queueJob(ProductionJob("bvcnst",3));
     ProducerAi:queueJobs(ProductionJob:createMultiple(2,"bvscav",3));
-    ProducerAi:queueJob(ProductionJob("bvslf",3));
+    ProducerAi:queueJob(ProductionJob("bvslfz",3));
     ProducerAi:queueJob(ProductionJob("bvmuf",3));
     
     self.relic_camera_id = ProducerAi:queueJobs(ProductionJob("apcamr",3,"relic_site"));
@@ -160,6 +167,7 @@ local intro = mission.Objective:define("introObjective"):createTasks(
       self:call("_setUpProdListeners",self.prodId,"_forEachProduced1","_doneProducing1");
     elseif(name == "goto_relic") then
       SetTeamNum(self.camera_handle,1);
+      AudioMessage(audio.intro);
     end
   end,
   task_success = function(self,name)
@@ -258,7 +266,7 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
     self.nuke_state = 0;
     self.t = 0;
     self:startTask("destroy_relic");
-    self:startTask("cca_attack_base");
+    AudioMessage(audio.inspect);
   end,
   task_start = function(self,name)
     if(self.otfs[name]) then
@@ -279,14 +287,15 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
     elseif(name == "cca_attack_base") then
       local patrol = bzRoutine.routineManager:getRoutine(self.patrol_id);
       for i,v in pairs(patrol:getHandles()) do
-        Defend(v);
+        local s = mission.TaskManager:sequencer(v);
+        s:queue2("Goto","front_line");
+        s:queue2("Defend");
       end
       bzRoutine.routineManager:killRoutine(self.patrol_id);
-      self.attack_timers = {30,15,5};
+      self.attack_timers = {30,15};
       self.attack_waves = {
-        {loc = "base_attack2",formation={"4 4 4","1 1 1"}},
-        {loc = "base_attack2",formation={"2 2 3","1 5 1"}},
-        {loc = "base_attack1",formation={"4 4 4","1 1 1"}}
+        {loc = "base_attack1",formation={"4 4 4","1 1"}},
+        {loc = "base_attack2",formation={"2 2","1 1"}}
       };
       self.attack_timer = nil;
     end
@@ -341,10 +350,10 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
       end
     end
     if(self:isTaskActive("destroy_relic")) then
-      if(GetWhoShotMe(self.relic) == GetPlayerHandle()) then
-        self.wait_while_shooting = self.wait_while_shooting - dtime;
-      end
-      if(self.wait_while_shooting <= 0) then
+      if((GetMaxHealth(self.relic) - GetCurHealth(self.relic) >= 1000) and (not self:hasTaskStarted("cca_attack_base"))) then
+        self:startTask("cca_attack_base");
+        self.destroy_audio = AudioMessage(audio.destroy_f);
+      elseif(self:hasTaskStarted("cca_attack_base") and ((not self.destroy_audio) or IsAudioMessageDone(self.destroy_audio))) then
         self:taskSucceed("destroy_relic");
       end
     elseif(self:isTaskActive("nuke")) then
@@ -371,6 +380,7 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
           if(Length(GetPosition(self.daywrecker) - GetPosition(self.relic)) < 50) then
             RemoveObjective(self.nuke_state < 2 and "rbd0530.otf" or "rbd0531.otf");
             AddObjective("rbd0534.otf","green");
+            AudioMessage(audio.done_d);
             self.nuke_state = 5;
           end
         end
@@ -396,7 +406,8 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
       day_id = self.day_id,
       nuke_wait_t1 = 5,
       nuke_wait_t2 = 2,
-      nuke_state = self.nuke_state
+      nuke_state = self.nuke_state,
+      destroy_audio = self.destroy_audio
     };
   end,
   load = function(self,data)
@@ -410,6 +421,7 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
     self.nuke_wait_t1 = data.nuke_wait_t1;
     self.nuke_wait_t2 = data.nuke_wait_t2;
     self.nuke_state = data.nuke_state;
+    self.destroy_audio = data.destroy_audio;
     self:call("_setUpProdListeners",self.day_id,"_setDayWrecker");
   end
 });
@@ -425,6 +437,14 @@ local RtbAssumeControl = mission.Objective:define("rtbAssumeControl"):createTask
     self.waitToSuccess = 5;
   end,
   success = function(self)
+    AudioMessage(audio.back_to_base);
+    SetMaxScrap(1,50);
+    SetScrap(1,30);
+    for v in ObjectsInRange(500,"bdog_base") do
+      if(GetTeamNum(v) == 3) then
+        SetTeamNum(v,1);
+      end
+    end
     ClearObjectives();
     orig15setup();
   end,
@@ -442,21 +462,26 @@ local RtbAssumeControl = mission.Objective:define("rtbAssumeControl"):createTask
     if(self:isTaskActive("fix_base") and GetDistance(GetPlayerHandle(),"bdog_base") < 700) then 
       --wait a bit, success
       local hasComm = false;
-      for v in ObjectsInRange(400,"bdog_base") do
-        if((GetTeamNum(v) == 2) or (GetTeamNum(v) == 3 and (not IsBuilding(v) ))) then
-          Damage(v,100000);
-        elseif(GetTeamNum(v) == 3) then
-          SetTeamNum(v,1);
+      Damage(GetFactoryHandle(3),10000);
+      local oldRecy = GetRecyclerHandle(3);
+      self.recy = bzObjects.copyObject(oldRecy,"bvrecx",false);
+      RemoveObject(oldRecy);
+      for v in ObjectsInRange(500,"bdog_base") do
+        if(GetClassLabel(v) == "wingman" and GetTeamNum(v) ~= 1) then
+          Damage(v,2500);
+        end
+        if(IsBuilding(v)) then
+          Damage(v,math.random()*1000 + 100);
         end
       end
       self:taskSucceed("fix_base");
     end
   end,
   save = function(self)
-    return self.waitToSuccess;
+    return self.waitToSuccess, self.recy;
   end,
   load = function(self,...)
-    self.waitToSuccess = ...;
+    self.waitToSuccess, self.recy = ...;
   end
 });
 

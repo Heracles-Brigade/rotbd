@@ -1,0 +1,18 @@
+PARENT diag.voices
+START
+NTRG: Case NZEO June third nineteen seventy [250] Subject Lieutenant James Rhodes [100] 
+callsign Cobra One [1000] Lieutenant you have landed yourself in quite a mess [175] 
+I am Lieutenant Michaelson from Commander Braddock’s office [50] 
+I am here to debrief you pending transfer to our custody [150][200];
+CBRA: Piss off[200];
+NTRG: I dont think you realise how much trouble you are in [75] 
+If you dont want to find yourself facing a firing squad [50] 
+or worse [10] I suggest you start co-operating [100] Tell me about Shaw [10] 
+starting with your deployment on the moon[200];
+CBRA: Fine [500] The Justice picked up a distress call from a research base on the moon and we
+deployed with the Jackson to clear it up [100] Some scientists had been captured by the commies and we were
+the only reinforcements Command could spare while they chased after ancient history [125] They had
+no idea what they were doing [25] the whole damn war fell apart the moment they started chasing those
+things[200];
+NTRG: And when you landed[200];
+CBRA: [100] We did our jobs [275] We upheld American interests in space[200];

@@ -1,0 +1,16 @@
+PARENT diag.voices
+START
+NTRG: To Venus then [250] We know what you went there looking for [50] and we know what you found [100]
+What we dont know is what information you made off with [50] or why [100] Perhaps you can tell us[200];
+CBRA:	I dont know [100] I never found out [100] 
+Maybe you should ask Baker he was the one in charge of studying the damn thing[200];
+NTRG: Baker has been [50] cooperative but even he hasnt been able to shed any light on precisely what your 
+commanding officer hoped to gain from all this [210] Taken alone we might say
+he was just trying to take out the roots of the Mammoth project [10] 
+but with everything that has happened since [100]
+Not so much[200];
+CBRA:	Wait [200] you are asking me why Shaw was doing what he was doing [100] 
+After everything thats happened[200]; 
+NTRG: Yes [500][200];
+NTRG: Come on Lieutenant [50] You are brighter than that [100] We both know Shaw wasnt just trying to 
+stop the Mammoth project [200] He wanted something else [50] didnt he[200];

@@ -233,7 +233,7 @@ local destorySoviet = mission.Objective:define("destroy_soviet"):init({
     start = function()
         createWave("svfigh",{"spawn_e1","spawn_e2"},"east_path");
 		createWave("svtank",{"spawn_e3"},"east_path");
-        --AudioMessage(audio.attack);
+        AudioMessage(audio.attack);
     end,
     update = function(self,dtime)
         if((not self.wait_done) and self.wait_timer <= 0) then
@@ -273,7 +273,7 @@ local nsdfAttack = mission.Objective:define("nsdf_attack"):init({
     recycler_target = false
 }):setListeners({
     start = function(self)
-        --AudioMessage(audio.nsdf);
+        AudioMessage(audio.nsdf);
         AddObjective(self.otf,"white");
         local a,b,camTarget = createWave("avwalk",{"spawn_avwalk1","spawn_avwalk2","spawn_avwalk3"},"nsdf_path");
         local c,e,g = createWave("avtank",{"spawn_avtank1","spawn_avtank2","spawn_avtank3"},"nsdf_path");
@@ -331,7 +331,7 @@ local nsdfAttack = mission.Objective:define("nsdf_attack"):init({
         end
     end,
     success = function(self)
-        --AudioMessage(audio.win);
+        AudioMessage(audio.win);
         SucceedMission(GetTime() + 10, "bdmisn22wn.des");
     end,
     save = function(self)
@@ -411,7 +411,7 @@ local cinematic = mission.Objective:define("cinematic"):init({
 }):setListeners({
     start = function(self)
         self.camOn = CameraReady();
-        --AudioMessage(audio.intro); 
+        AudioMessage(audio.intro); 
     end,
     update = function(self,dtime)
         if(self.camOn) then
@@ -455,7 +455,7 @@ local checkCommand = mission.Objective:define("checkCommand"):init({
         self.command = GetHandle("sbhqcp0_i76building");
     end,
     success = function(self)
-        --AudioMessage(audio.inspect);
+        AudioMessage(audio.inspect);
         SetObjectiveOff(globals.nav[1]);
         UpdateObjective(self.otf,"green");
         mission.Objective:Start(self.next);
@@ -488,7 +488,7 @@ local destroySolar = mission.Objective:define("destorySolar"):init({
         if(self.power1_4 and checkDead(self.handles)) then
             self.power1_4 = false;
             UpdateObjective(self.otf1,"green");
-			--AudioMessage(audio.power1);
+			AudioMessage(audio.power1);
         end
         if(not (self.power1_4 or self.power5_8init)) then
             SetObjectiveOff(globals.nav[2]);
@@ -516,7 +516,7 @@ local destroySolar = mission.Objective:define("destorySolar"):init({
         self.handles,self.power1_4,self.power5_8init,self.t1 = ...;
     end,
     success = function(self)
-        --AudioMessage(audio.power2);
+        AudioMessage(audio.power2);
         mission.Objective:Start(self.next);
     end
 });
@@ -658,7 +658,7 @@ local intermediate = mission.Objective:define("intermediate"):init({
         self.timer, self.recy, self.recyspawned = ...;
     end,
     success = function(self)
-        --AudioMessage(audio.recycler);
+        AudioMessage(audio.recycler);
         globals.keepGTsAtFullHealth = true;
         --Spawn in recycler
         --Recycler escort

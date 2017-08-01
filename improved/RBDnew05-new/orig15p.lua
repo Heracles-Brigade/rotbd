@@ -9,6 +9,12 @@
 local miss26setup;
 local mission = require('cmisnlib');
 
+local audio = {
+    apc_spawn = "rbd0506.wav",
+    pickup_done = "rbd0507.wav",
+    win = "rbd0508.wav"
+}
+
 local function spawnAtPath(odf,team,path)
     local handles = {};
     local current = GetPosition(path);
@@ -55,6 +61,36 @@ local function checkAnyDead(handles)
     end
     return false;
 end
+
+
+--Second wave
+local secondWave = mission.Objective:define("secondWave"):setListeners({
+    start = function(self)
+        self.time = 10;
+    end,
+    update = function(self,dtime)
+        self.time = self.time - dtime;
+        if(self.time <= 0) then
+            self:success();
+        end
+    end,
+    save = function(self)
+        return self.time;
+    end,
+    load = function(self,...)
+        self.time = ...;
+    end,
+    success = function(self)
+        --Spawn second wave
+        for i = 1, 4 do
+            Goto(BuildObject("svfigh", 2, "patrol_path"),"wave2");
+        end
+        for i = 1, 2 do
+            Goto(BuildObject("svtank", 2, "patrol_path"),"wave2");
+        end
+    end
+});
+
 --Define all objectives for mission 25
 local destorySovietComm = mission.Objective:define("destorySovietComm"):setListeners({
     init = function(self)
@@ -99,13 +135,13 @@ local destorySovietComm = mission.Objective:define("destorySovietComm"):setListe
     success = function(self)
         --Start mission 26
         
-        miss26setup();
-        --mission.Objective:Start("baseDestroyCin",self.ktargets);
+        --miss26setup();
+        mission.Objective:Start("baseDestroyCin",self.ktargets);
     end
 });
 --Cinematic of attack on base (unused)
 local baseDestroyCin = mission.Objective:define("baseDestroyCin"):setListeners({
-    init = function(self)
+    init = function(self,targets)
         self.targets = {
             "turr1",
             "turr2",
@@ -128,13 +164,17 @@ local baseDestroyCin = mission.Objective:define("baseDestroyCin"):setListeners({
         self.waitleft = self.minwait;
         self.attackers = mission.spawnInFormation2({
             "1 2 3 2 3 2 1",
-            "1 3 1 3 1 3 1"
-        },"25cin_attack",{"svfigh","svrckt","svltnk"},2,20);
+            "1 3 1 3 1 3 1",
+            "4 4 4 4 4 4 4"
+        },"base_attack1",{"svfigh","svrckt","svltnk","svhraz"},2,20);
+        for i, v in pairs(self.attackers) do
+            Goto(v,"base_attack1");
+        end
     end,
     update = function(self,dtime)
         for i,v in pairs(self.attackers) do
             local task = GetCurrentCommand(v) ~= AiCommand["NONE"];
-            if(not task) then
+            --[[if(not task) then
                 for i2,v2 in pairs(self.targets) do
                     if( i<=(i2*3) and (not task) ) then
                         local t = GetHandle(v2);
@@ -144,9 +184,9 @@ local baseDestroyCin = mission.Objective:define("baseDestroyCin"):setListeners({
                         end
                     end
                 end
-            end
+            end--]]
             if(not task) then
-                Goto(v,"26bomber_rev");
+                Goto(v,"bdog_base");
             end
         end
         self.waitleft = self.waitleft - dtime;
@@ -157,7 +197,7 @@ local baseDestroyCin = mission.Objective:define("baseDestroyCin"):setListeners({
             if(self.cam) then
                 self.cam = not CameraFinish();
             end
-            for v in ObjectsInRange(500,"nsdf_base") do
+            for v in ObjectsInRange(500,"bdog_base") do
                 if(GetPlayerHandle() ~= v) then
                     if(GetTeamNum(v) == 1) then
                         Damage(v,GetMaxHealth(v)/12 * dtime * (math.random()*1.5 + 0.5));
@@ -276,6 +316,9 @@ local pickupSurvivors = mission.Objective:define("pickupSurvivors"):setListeners
         end
         SetObjectiveName(navs[1],"NSDF Outpost");
         SetObjectiveName(navs[2],"Rendezvous Point");
+        for i, v in pairs(self.apcs) do
+            Goto(v,"apc_follow_path");
+        end
         self.nav = navs[1];
     end,
     update = function(self,dtime)
@@ -334,6 +377,7 @@ local pickupSurvivors = mission.Objective:define("pickupSurvivors"):setListeners
         self.pilots,self.arived,self.t1 = ...;
     end,
     success = function(self)
+        AudioMessage(audio.pickup_done);
         for i,v in pairs(self.apcs) do
             Stop(v,0);
         end  
@@ -372,6 +416,7 @@ local escortAPCs = mission.Objective:define("escortAPCs"):setListeners({
     success = function(self)
         UpdateObjective("bdmisn2602.otf","green");
         UpdateObjective("bdmisn2603.otf","green");
+        AudioMessage(audio.win);
         SucceedMission(GetTime()+5.0, "bdmisn26wn.des");
     end,
     fail = function(self)
@@ -385,6 +430,7 @@ local escortAPCs = mission.Objective:define("escortAPCs"):setListeners({
 
 miss26setup = function()
     --Spawns inital objects
+    AudioMessage(audio.apc_spawn);
     RemoveObjective("rbdnew3502.otf");
     spawnAtPath("proxminb",2,"spawn_prox");
     spawnAtPath("svfigh",2,"26spawn_figh");
@@ -409,5 +455,6 @@ end
 
 return function()
   --start up old missions
+  secondWave:start();
   destorySovietComm:start();
 end
