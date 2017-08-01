@@ -10,7 +10,7 @@ local core = require("bz_core");
 local OOP = require("oop");
 local buildAi = require("buildAi");
 local bzRoutine = require("bz_routine");
-
+local bzObjects = require("bz_objects");
 
 local IsIn = OOP.isIn;
 local ConstructorAi = buildAi.ConstructorAi;
@@ -85,7 +85,7 @@ local intro = mission.Objective:define("introObjective"):createTasks(
     --Let us queue some production jobs for Shaw to do
     ProducerAi:queueJob(ProductionJob("bvcnst",3));
     ProducerAi:queueJobs(ProductionJob:createMultiple(2,"bvscav",3));
-    ProducerAi:queueJob(ProductionJob("bvslf",3));
+    ProducerAi:queueJob(ProductionJob("bvslfz",3));
     ProducerAi:queueJob(ProductionJob("bvmuf",3));
     
     self.relic_camera_id = ProducerAi:queueJobs(ProductionJob("apcamr",3,"relic_site"));
@@ -287,14 +287,15 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
     elseif(name == "cca_attack_base") then
       local patrol = bzRoutine.routineManager:getRoutine(self.patrol_id);
       for i,v in pairs(patrol:getHandles()) do
-        Defend(v);
+        local s = mission.TaskManager:sequencer(v);
+        s:queue2("Goto","front_line");
+        s:queue2("Defend");
       end
       bzRoutine.routineManager:killRoutine(self.patrol_id);
-      self.attack_timers = {30,15,5};
+      self.attack_timers = {30,15};
       self.attack_waves = {
-        {loc = "base_attack2",formation={"4 4 4","1 1 1"}},
-        {loc = "base_attack2",formation={"2 2 3","1 5 1"}},
-        {loc = "base_attack1",formation={"4 4 4","1 1 1"}}
+        {loc = "base_attack1",formation={"4 4 4","1 1"}},
+        {loc = "base_attack2",formation={"2 2","1 1"}}
       };
       self.attack_timer = nil;
     end
@@ -437,6 +438,13 @@ local RtbAssumeControl = mission.Objective:define("rtbAssumeControl"):createTask
   end,
   success = function(self)
     AudioMessage(audio.back_to_base);
+    SetMaxScrap(1,50);
+    SetScrap(1,30);
+    for v in ObjectsInRange(500,"bdog_base") do
+      if(GetTeamNum(v) == 3) then
+        SetTeamNum(v,1);
+      end
+    end
     ClearObjectives();
     orig15setup();
   end,
@@ -454,21 +462,26 @@ local RtbAssumeControl = mission.Objective:define("rtbAssumeControl"):createTask
     if(self:isTaskActive("fix_base") and GetDistance(GetPlayerHandle(),"bdog_base") < 700) then 
       --wait a bit, success
       local hasComm = false;
-      for v in ObjectsInRange(400,"bdog_base") do
-        if((GetTeamNum(v) == 2) or (GetTeamNum(v) == 3 and (not IsBuilding(v) ))) then
-          Damage(v,100000);
-        elseif(GetTeamNum(v) == 3) then
-          SetTeamNum(v,1);
+      Damage(GetFactoryHandle(3),10000);
+      local oldRecy = GetRecyclerHandle(3);
+      self.recy = bzObjects.copyObject(oldRecy,"bvrecx",false);
+      RemoveObject(oldRecy);
+      for v in ObjectsInRange(500,"bdog_base") do
+        if(GetClassLabel(v) == "wingman" and GetTeamNum(v) ~= 1) then
+          Damage(v,2500);
+        end
+        if(IsBuilding(v)) then
+          Damage(v,math.random()*1000 + 100);
         end
       end
       self:taskSucceed("fix_base");
     end
   end,
   save = function(self)
-    return self.waitToSuccess;
+    return self.waitToSuccess, self.recy;
   end,
   load = function(self,...)
-    self.waitToSuccess = ...;
+    self.waitToSuccess, self.recy = ...;
   end
 });
 

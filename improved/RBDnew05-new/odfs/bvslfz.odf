@@ -1,4 +1,5 @@
 [GameObjectClass]
+baseName="bvslf"
 classLabel = "armory"
 collisionRadius = 5.0
 scrapValue = 5
@@ -79,7 +80,7 @@ pilotHold = 0
 buildItem1 = "aprepa"
 buildItem2 = "apammo"
 buildItem3 = "apcamr"
-buildItem4 = "apwrck"
+buildItem4 = "apwrckz"
 
 
 blockedGeyserMsg = "avslfvb.wav"

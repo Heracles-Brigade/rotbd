@@ -83,7 +83,7 @@ local function copyObject(handle,odf,kill)
   SetVelocity(nObject,vel);
   SetOmega(nObject,omega);
   if(not IsBusy(handle)) then
-    SetCommand(nObject,currentCommand,0,currentWho,transform,0);
+    --SetCommand(nObject,currentCommand,0,currentWho,transform,0);
   end
   if(d) then
     Deploy(nObject);

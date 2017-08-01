@@ -1,7 +1,7 @@
 [GameObjectClass]
 classLabel = "daywrecker"
 baseName = "apwrck"
-scrapCost = 20
+scrapCost = 200
 scrapValue = 0
 maxHealth = 300
 maxAmmo = 0
