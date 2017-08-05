@@ -174,7 +174,7 @@ local destroyComms = mission.Objective:define("misison"):createTasks(
       self.grigg = BuildObject("avtank",1,"spawn_griggs");
       self.grigg_t = false;
       SetObjectiveName(self.grigg, "Pvt. Grigg");
-      
+      SetObjectiveOn(self.grigg);
       --Dropoff(self.grigg,GetPosition(self.grigg));
       local s = mission.TaskManager:sequencer(self.grigg);
       local pp = GetPathPoints("grigg_in");
