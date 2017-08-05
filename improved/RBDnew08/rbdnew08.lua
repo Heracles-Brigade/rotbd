@@ -258,7 +258,6 @@ local destroyComms = mission.Objective:define("misison"):createTasks(
     if(self:isTaskActive("evacuate")) then
       local d1 = Length(GetPosition(GetPlayerHandle()) - GetPosition("spawn_griggs"));
       local d2 = Length(GetPosition(self.grigg) - GetPosition("spawn_griggs"));
-      print(d1,d2);
       if(d1 < 100 and d2 < 100) then
         self:taskSucceed("evacuate");
       end
