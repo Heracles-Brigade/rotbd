@@ -62,7 +62,7 @@ local introCinematic = mission.Objective:define("intoCinematic"):createTasks(
       end
     end
     if(self:isTaskActive("focus_base")) then
-      if((not self.cam) or CameraPath("pan_4",1500,2000,GetFactoryHandle(2))) then
+      if((not self.cam) or CameraPath("pan_4",1500,2000,GetHandle("ubtart0_i76building"))) then
         self:taskSucceed("focus_base");
       end
     end
@@ -108,23 +108,53 @@ local introCinematic = mission.Objective:define("intoCinematic"):createTasks(
   end
 });
 
-local avoidBase = mission.Objective:define("avoidBase"):setListeners({
+local avoidBase = mission.Objective:define("avoidBase"):createTasks(
+  "warning", "wayTooClose"
+):setListeners({
   start = function(self)
     AddObjective("rbd0804.otf");
+    self:startTask("warning");
+    self:startTask("wayTooClose");
   end,
   fail = function(self)
     UpdateObjective("rbd0804.otf","red");
     FailMission(GetTime() + 5.0, "rbd08l01.des");
   end,
-  update = function(self)
-    if IsWithin(GetPlayerHandle(),"base",Length(GetPosition("base",1) - GetPosition("base",0))) then
+  task_reset = function(self,name)
+    if(name == "warning") then
+      UpdateObjective("rbd0804.otf","white");
+    end
+  end,
+  task_fail = function(self,name,first)
+    if(name == "wayTooClose") then
       self:fail();
+    elseif(name == "warning") then
+      if(first) then
+        --Warning audio
+      end
+      UpdateObjective("rbd0804.otf","dkyellow");
+    end
+  end,
+  update = function(self)
+    local d = GetDistance(GetPlayerHandle(),"base_warning");
+    local l = Length(GetPosition("base_warning",1) - GetPosition("base_warning",0));
+    if(self:isTaskActive("warning") and (d < l)) then
+      self:taskFail("warning");
+    elseif((d > l) and (not self:isTaskActive("warning"))) then
+      self:taskReset("warning");
+    end
+    if(self:isTaskActive("wayTooClose")) then
+      local d = GetDistance(GetPlayerHandle(),"base");
+      local l = Length(GetPosition("base",1) - GetPosition("base",0));
+      if d < l then
+        self:taskFail("wayTooClose");
+      end
     end
   end
 });
 
 local destroyComms = mission.Objective:define("misison"):createTasks(
-  "destroyComms","evacuate"
+  "destroyComms","wait","evacuate"
 ):setListeners({
   init = function(self)
     self.comms = {
@@ -136,19 +166,34 @@ local destroyComms = mission.Objective:define("misison"):createTasks(
   task_start = function(self,name)
     if(name == "destroyComms") then
       AddObjective("rbd0801.otf");
+    elseif(name == "wait") then
+      self.wait_1 = 10;
+      self.grigg = BuildObject("avtank",1,"spawn_griggs");
+      SetObjectiveName(self.grigg, "Pvt. Grigg");
+      Dropoff(self.grigg,GetPosition(self.grigg));
+      --Spawn nsdf forces
+      for i,v in pairs(mission.spawnInFormation2({"3","2 2 2 2","3 3","1"},"spawn_nsdf",{"avrckt","avtank","avhraz"},2)) do
+        Attack(v,GetPlayerHandle());
+      end
     elseif(name == "evacuate") then
-      self.grig = BuildObject("avtank",1,"spawn_griggs");
-      Dropoff(self.grig,GetPosition(self.grig));
       AddObjective("rbd0803.otf");
     end
   end,
   task_success = function(self,name)
     if(name == "destroyComms") then
       UpdateObjective("rbd0801.otf","green");
+      self:startTask("wait");
+    elseif(name == "wait") then
       self:startTask("evacuate");
     elseif(name == "evacuate") then
       UpdateObjective("rbd0803.otf","green");
       self:success();
+    end
+  end,
+  task_fail = function(self,name)
+    if(name == "destroyComms") then
+      UpdateObjective("rbd0801.otf","red");
+      self:fail();
     end
   end,
   start = function(self)
@@ -157,24 +202,42 @@ local destroyComms = mission.Objective:define("misison"):createTasks(
       SetObjectiveName(v,("Tower %d"):format(i));
     end
     self:startTask("destroyComms");
+    self.timer = 60*8;
+    StartCockpitTimer(self.timer,self.timer*0.5,self.timer*0.1);
   end,
   update = function(self,dtime)
     if(self:isTaskActive("destroyComms")) then
       if(mission.areAllDead(self.comms)) then
         self:taskSucceed("destroyComms");
       end
+      self.timer = self.timer - dtime;
+      if(self.timer < 0) then
+        self:taskFail();
+      end
+    end
+    if(self:isTaskActive("wait")) then
+      self.wait_1 = self.wait_1 - dtime;
+      if(self.wait_1 < 0) then
+        self:taskSucceed("wait");
+      end
     end
     if(self:isTaskActive("evacuate")) then
-      if(IsWithin(GetPlayerHandle(),self.grig,200)) then
+      if(IsWithin(GetPlayerHandle(),self.grigg,200)) then
         self:taskSucceed("evacuate");
       end
     end
   end,
+  success = function(self)
+    SucceedMission(GetTime()+5.0,"rbd08w01.des");
+  end,
+  fail = function(self)
+    FailMission(GetTime()+5.0,"rbd08l02.des");
+  end,
   save = function(self)
-    return self.grig;
+    return self.timer, self.wait_1, self.grigg;
   end,
   load = function(self,...)
-    self.grig = ...;
+    self.timer, self.wait_1, self.grigg = ...;
   end
 });
 
@@ -182,6 +245,13 @@ local destroyComms = mission.Objective:define("misison"):createTasks(
 function Start()
   introCinematic:start();
   avoidBase:start();
+  for i = 1, 6 do
+    BuildObject("avartl", 2, ("spawn_artl%d"):format(i));
+  end
+  SetPathLoop("walker1_path");
+  SetPathLoop("walker2_path");
+  Goto(GetHandle("avwalk1"),"walker1_path");
+  Goto(GetHandle("avwalk2"),"walker2_path");
 end
 local pwers = {};
 function Update(dtime)
