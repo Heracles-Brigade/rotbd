@@ -131,6 +131,11 @@ local intro = mission.Objective:define("introObjective"):createTasks(
     --For each unit produced for the player, set the team number to 1
     SetTeamNum(handle,1);
   end,
+  destroy_object = function(self,handle)
+    if(not IsValid(GetConstructorHandle(3))) then
+      ProducerAi:queueJob(ProductionJob("bvcnst",3));
+    end
+  end,
   _doneProducing1 = function(self,bundle,handle)
     --When all the player's units have been made, succeed wait_for_units
     self:taskSucceed("wait_for_units");
