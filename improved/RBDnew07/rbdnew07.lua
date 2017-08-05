@@ -56,6 +56,21 @@ local des = {
   relic_destroyed = "rbd07l03.des"
 }
 
+local audio = {
+  intro = "rbd0701.wav",
+  surrender = "rbd0702.wav",
+  relic = "rbd0703.wav",
+  relic_secured_1 = "rbd0704.wav",
+  distress = "rbd0705.wav",
+  trap = "rbd0706.wav",
+  win = "rbd07wn.wav",
+  tug_loss = "rbd0701L.wav",
+  enemy_tug = "rbd0701W.wav",
+  attack_wave = "rbd0702W.wav",
+  enemy_got_relic = "rbd0703W.wav",
+  enemy_captured_relic = "rbd0702L.wav"
+}
+
 --the tug's label
 local tugL = "relic_tug";
 
@@ -87,6 +102,7 @@ local escortRecycler = mission.Objective:define("escortRecycler"):createTasks(
     --waves start
     self.attackers = {};
     AddObjective(otfs.escort,"white");
+    AudioMessage(audio.intro);
   end,
   task_success = function(self,name,first,first_s,a1,a2)
     if(a1 == "attack_wait") then
@@ -151,6 +167,7 @@ local escortRecycler = mission.Objective:define("escortRecycler"):createTasks(
 --setUpBase objective that isn't currently used
 local setUpBase = mission.Objective:define("setUpBase"):setListeners({
   start = function()
+    AudioMessage(audio.surrender);
     AddObjective(otfs.createBase);
   end,
   update = function(self)
@@ -242,6 +259,7 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
       nsdf = math.abs(ranC-1)*self.waveInterval + self.waveInterval
     };
     self.distressCountdown = 5;
+    self.audio_played = false;
     AddObjective(otfs.relics,"white",16);
   end,
   update = function(self,dtime)
@@ -378,6 +396,10 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
     local fac = self.enemies[name];
     if(name == "relic_cca" or name == "relic_nsdf") then
       UpdateObjective(otfs[("%s_tug"):format(fac)],"green");
+      if(not self.audio_played) then
+        AudioMessage(audio.relic_secured_1);
+        self.audio_played = true;
+      end
     end
     if(name == "distress") then
       UpdateObjective(otfs[("%s_distress"):format(self.distress_faction)],"green");
@@ -452,11 +474,22 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
   end,
   save = function(self)
     --Vars we need to save
-    return self.distress_faction, self.bufferTime,self.spawnedEnemyTugs,self.waveTimer,self.distressCountdown;
+    return 
+      self.distress_faction, 
+      self.bufferTime,
+      self.spawnedEnemyTugs,
+      self.waveTimer,
+      self.distressCountdown,
+      self.audio_played;
   end,
   load = function(self,...)
     --Vars we need to load
-    self.distress_faction,self.bufferTime,self.spawnedEnemyTugs,self.waveTimer,self.distressCountdown = ...;
+    self.distress_faction,
+    self.bufferTime,
+    self.spawnedEnemyTugs,
+    self.waveTimer,
+    self.distressCountdown,
+    self.audio_played = ...;
   end,
   fail = function(self,kind)
     FailMission(GetTime() + 5,des[kind]);

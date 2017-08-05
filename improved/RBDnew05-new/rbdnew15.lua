@@ -13,7 +13,6 @@ local bzRoutine = require("bz_routine");
 local bzObjects = require("bz_objects");
 
 local IsIn = OOP.isIn;
-local ConstructorAi = buildAi.ConstructorAi;
 local ProducerAi = buildAi.ProducerAi;
 local ProductionJob = buildAi.ProductionJob;
 local PatrolController = require("patrolc");
