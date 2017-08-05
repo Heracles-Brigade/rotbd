@@ -7,6 +7,7 @@ local OOP = require("oop");
 local mission = require("cmisnlib");
 local buildAi = require("buildAi");
 local core = require("bz_core");
+local misc = require("misc");
 local ProducerAi = buildAi.ProducerAi;
 local ProductionJob = buildAi.ProductionJob;
 local IsIn = OOP.isIn;
@@ -67,7 +68,7 @@ local introCinematic = mission.Objective:define("intoCinematic"):createTasks(
       end
     end
   end,
-  save = function()
+  save = function(self)
     return {
       howizJobs = self.howizJobs,
       cam = self.cam
@@ -132,7 +133,7 @@ local avoidBase = mission.Objective:define("avoidBase"):createTasks(
       if(first) then
         --Warning audio
       end
-      UpdateObjective("rbd0804.otf","dkyellow");
+      UpdateObjective("rbd0804.otf","yellow");
     end
   end,
   update = function(self)
@@ -158,22 +159,33 @@ local destroyComms = mission.Objective:define("misison"):createTasks(
 ):setListeners({
   init = function(self)
     self.comms = {
-      GetHandle("comm1"),
-      GetHandle("comm2"),
-      GetHandle("comm3")
+      GetHandle("power1"),
+      GetHandle("power2"),
+      GetHandle("power3"),
+      GetHandle("abtowe3_turret"),
+      GetHandle("abtowe2_turret")
     };
   end,
   task_start = function(self,name)
     if(name == "destroyComms") then
       AddObjective("rbd0801.otf");
     elseif(name == "wait") then
-      self.wait_1 = 10;
+      self.wait_1 = 45;
       self.grigg = BuildObject("avtank",1,"spawn_griggs");
+      self.grigg_t = false;
       SetObjectiveName(self.grigg, "Pvt. Grigg");
-      Dropoff(self.grigg,GetPosition(self.grigg));
+      
+      --Dropoff(self.grigg,GetPosition(self.grigg));
+      local s = mission.TaskManager:sequencer(self.grigg);
+      local pp = GetPathPoints("grigg_in");
+      SetIndependence(self.grigg,0);
+      s:queue2("Goto","grigg_in");
+      s:queue2("Dropoff",pp[#pp]);
       --Spawn nsdf forces
       for i,v in pairs(mission.spawnInFormation2({"3","2 2 2 2","3 3","1"},"spawn_nsdf",{"avrckt","avtank","avhraz"},2)) do
-        Attack(v,GetPlayerHandle());
+        local s2 = mission.TaskManager:sequencer(v);
+        s2:queue2("Attack",GetPlayerHandle());
+        s2:queue2("Attack",self.grigg);
       end
     elseif(name == "evacuate") then
       AddObjective("rbd0803.otf");
@@ -182,8 +194,13 @@ local destroyComms = mission.Objective:define("misison"):createTasks(
   task_success = function(self,name)
     if(name == "destroyComms") then
       UpdateObjective("rbd0801.otf","green");
+      StopCockpitTimer();
+      HideCockpitTimer();
       self:startTask("wait");
     elseif(name == "wait") then
+      Goto(self.grigg,"grigg_out");
+      RemoveObjective("rbd0801i.otf");
+      AddObjective("rbd0802i.otf","green");
       self:startTask("evacuate");
     elseif(name == "evacuate") then
       UpdateObjective("rbd0803.otf","green");
@@ -194,12 +211,18 @@ local destroyComms = mission.Objective:define("misison"):createTasks(
     if(name == "destroyComms") then
       UpdateObjective("rbd0801.otf","red");
       self:fail();
+    else
+      self:fail("grigg");
     end
   end,
   start = function(self)
+    SetObjectiveOn(self.comms[1]);
     for i, v in ipairs(self.comms) do
-      SetObjectiveOn(v);
-      SetObjectiveName(v,("Tower %d"):format(i));
+      if(IsBuilding(v)) then
+        SetObjectiveName(v,("Power %d"):format(i));
+      else
+        SetObjectiveName(v,("Gun Tower"):format(i));
+      end
     end
     self:startTask("destroyComms");
     self.timer = 60*8;
@@ -220,24 +243,62 @@ local destroyComms = mission.Objective:define("misison"):createTasks(
       if(self.wait_1 < 0) then
         self:taskSucceed("wait");
       end
+      if(not IsAlive(self.grigg)) then
+        self:taskFail("wait");
+      end
+      if(not self.grigg_t) then
+        local pp = GetPathPoints("grigg_in");
+        local d = Length(GetPosition(self.grigg)-pp[#pp]);
+        if(d < 50) then
+          self.grigg_t = true;
+          AddObjective("rbd0801i.otf");
+        end
+      end
     end
     if(self:isTaskActive("evacuate")) then
-      if(IsWithin(GetPlayerHandle(),self.grigg,200)) then
+      local d1 = Length(GetPosition(GetPlayerHandle()) - GetPosition("spawn_griggs"));
+      local d2 = Length(GetPosition(self.grigg) - GetPosition("spawn_griggs"));
+      print(d1,d2);
+      if(d1 < 100 and d2 < 100) then
         self:taskSucceed("evacuate");
       end
+      if(not IsAlive(self.grigg)) then
+        self:taskFail("evacuate");
+      end  
     end
   end,
   success = function(self)
     SucceedMission(GetTime()+5.0,"rbd08w01.des");
   end,
-  fail = function(self)
-    FailMission(GetTime()+5.0,"rbd08l02.des");
+  delete_object = function(self,handle)
+    local m = nil;
+    for i=1, 2 do
+      if(self.comms[i] == handle) then
+        m = {self.comms[i+1]};
+        break;
+      end
+    end
+    if(self.comms[3] ==  handle) then
+      m = {self.comms[4],self.comms[5]};
+    end
+    if(m) then
+      for i, v in pairs(m) do
+        SetObjectiveOn(v);
+      end
+    end
+  end,
+  fail = function(self,what)
+    if(what == "grigg") then
+      FailMission(GetTime()+5.0,"rbd08l05.des");
+    else
+      FailMission(GetTime()+5.0,"rbd08l02.des");
+    end
   end,
   save = function(self)
-    return self.timer, self.wait_1, self.grigg;
+    return self.timer, self.wait_1, self.grigg, self.grigg_t;
   end,
   load = function(self,...)
-    self.timer, self.wait_1, self.grigg = ...;
+    self.timer, self.wait_1, self.grigg, self.grigg_t = ...;
   end
 });
 
@@ -252,6 +313,19 @@ function Start()
   SetPathLoop("walker2_path");
   Goto(GetHandle("avwalk1"),"walker1_path");
   Goto(GetHandle("avwalk2"),"walker2_path");
+  for i = 1, 4 do
+    local nav = GetHandle("nav" .. i);
+    if i == 4 then
+      SetObjectiveName(nav, "Pickup Zone");
+    else
+      SetObjectiveName(nav, "Navpoint " .. i);
+    end
+    SetMaxHealth(nav, 0);
+  end
+  for i = 1, 3 do
+    local comm = GetHandle("comm" .. i);
+    SetMaxHealth(comm, 0); -- These can't be killed.
+  end
 end
 local pwers = {};
 function Update(dtime)
