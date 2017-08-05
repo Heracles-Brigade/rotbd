@@ -304,6 +304,7 @@ local destroyComms = mission.Objective:define("misison"):createTasks(
 
 
 function Start()
+  core:onStart();
   introCinematic:start();
   avoidBase:start();
   for i = 1, 6 do
