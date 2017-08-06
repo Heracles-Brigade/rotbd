@@ -23,8 +23,11 @@ SetAIControl(3,false);
 
 --[[
 TODO:
-  * add fail for leaving relic too early
-  * might be better to check relics health instead of using GetWhoShotMe
+  * split CCA in two forces
+    - the first one arrives and attacks the player's forces
+    - the second one arrives as the DW is landing and is set to just be near the relics
+    
+
 ]]
 
 local audio = {
