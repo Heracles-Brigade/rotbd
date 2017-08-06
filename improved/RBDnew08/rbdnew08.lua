@@ -13,6 +13,12 @@ local ProductionJob = buildAi.ProductionJob;
 local IsIn = OOP.isIn;
 
 
+--[[ 
+  TODO:
+    - Grigg precieved team 2
+    - Grigg goes in at start
+--]]
+
 local introCinematic = mission.Objective:define("intoCinematic"):createTasks(
   "focus_comm1","focus_comm2","focus_comm3","focus_base","build_howiz"
 ):setListeners({
@@ -63,7 +69,7 @@ local introCinematic = mission.Objective:define("intoCinematic"):createTasks(
       end
     end
     if(self:isTaskActive("focus_base")) then
-      if((not self.cam) or CameraPath("pan_4",1500,2000,GetHandle("ubtart0_i76building"))) then
+      if((not self.cam) or CameraPath("pan_4",500,2000,GetHandle("ubtart0_i76building"))) then
         self:taskSucceed("focus_base");
       end
     end
@@ -168,26 +174,26 @@ local destroyComms = mission.Objective:define("misison"):createTasks(
   end,
   task_start = function(self,name)
     if(name == "destroyComms") then
-      AddObjective("rbd0801.otf");
-    elseif(name == "wait") then
-      self.wait_1 = 45;
       self.grigg = BuildObject("avtank",1,"spawn_griggs");
-      self.grigg_t = false;
       SetObjectiveName(self.grigg, "Pvt. Grigg");
       SetObjectiveOn(self.grigg);
-      --Dropoff(self.grigg,GetPosition(self.grigg));
       local s = mission.TaskManager:sequencer(self.grigg);
       local pp = GetPathPoints("grigg_in");
       SetIndependence(self.grigg,0);
+      SetPerceivedTeam(self.grigg,2);
       s:queue2("Goto","grigg_in");
       s:queue2("Dropoff",pp[#pp]);
-      --Spawn nsdf forces
+      AddObjective("rbd0801.otf");
+    elseif(name == "wait") then
+      self.wait_1 = 15;
+      self.grigg_t = false;
+    elseif(name == "evacuate") then
+       --Spawn nsdf forces
       for i,v in pairs(mission.spawnInFormation2({"3","2 2 2 2","3 3","1"},"spawn_nsdf",{"avrckt","avtank","avhraz"},2)) do
         local s2 = mission.TaskManager:sequencer(v);
         s2:queue2("Attack",GetPlayerHandle());
         s2:queue2("Attack",self.grigg);
       end
-    elseif(name == "evacuate") then
       AddObjective("rbd0803.otf");
     end
   end,
