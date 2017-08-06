@@ -7,7 +7,10 @@ local globals = {};
 local tracker = mission.UnitTracker:new();
 
 
-
+--[[
+  Make escort smaller:
+    two scouts/fighters
+]]
 
 --"Warming" up the RNG
 for i=1, math.random(100,1000) do

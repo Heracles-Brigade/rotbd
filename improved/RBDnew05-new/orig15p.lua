@@ -83,10 +83,10 @@ local secondWave = mission.Objective:define("secondWave"):setListeners({
     success = function(self)
         --Spawn second wave
         for i = 1, 4 do
-            Goto(BuildObject("svfigh", 2, "patrol_path"),"wave2");
+            Goto(BuildObject("svfigh", 2, "patrol_path"),"wave_2");
         end
         for i = 1, 2 do
-            Goto(BuildObject("svtank", 2, "patrol_path"),"wave2");
+            Goto(BuildObject("svtank", 2, "patrol_path"),"wave_2");
         end
     end
 });

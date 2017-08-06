@@ -91,6 +91,7 @@ local defendSite = mission.Objective:define("defendSite"):createTasks(
     p.y = GetTerrainHeightAndNormal(p) + 500;
     self.recy = BuildObject("bvrecy",1,p);
     SetPosition(self.recy,p);
+    SetScrap(1,30);
     self.fury_units = {};
     self.wave = 0;
     self:startTask("waves");

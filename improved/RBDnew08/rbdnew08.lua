@@ -12,12 +12,15 @@ local ProducerAi = buildAi.ProducerAi;
 local ProductionJob = buildAi.ProductionJob;
 local IsIn = OOP.isIn;
 
+local audio = {
+  intro = "rbd0801.wav",
+  tower1 = "rbd0802.wav",
+  tower2 = "rbd0803.wav",
+  going_in = "rbd0804.wav",
+  evacuate = "rbd0805.wav",
+  too_close = "rbd0801L.wav"
+}
 
---[[ 
-  TODO:
-    - Grigg precieved team 2
-    - Grigg goes in at start
---]]
 
 local introCinematic = mission.Objective:define("intoCinematic"):createTasks(
   "focus_comm1","focus_comm2","focus_comm3","focus_base","build_howiz"
@@ -50,6 +53,7 @@ local introCinematic = mission.Objective:define("intoCinematic"):createTasks(
     self.cam = CameraReady();
     self:startTask("focus_comm1");
     self:startTask("build_howiz");
+    AudioMessage(audio.intro);
   end,
   _forEachHowie = function(self,job,handle)
     Goto(handle,job:getLocation());
@@ -167,9 +171,11 @@ local destroyComms = mission.Objective:define("misison"):createTasks(
     self.comms = {
       GetHandle("power1"),
       GetHandle("power2"),
-      GetHandle("power3"),
-      GetHandle("abtowe3_turret"),
-      GetHandle("abtowe2_turret")
+      GetHandle("power3")
+    };
+    self.audio = {
+      audio.tower1,
+      audio.tower2
     };
   end,
   task_start = function(self,name)
@@ -185,10 +191,11 @@ local destroyComms = mission.Objective:define("misison"):createTasks(
       s:queue2("Dropoff",pp[#pp]);
       AddObjective("rbd0801.otf");
     elseif(name == "wait") then
+      AudioMessage(audio.going_in); 
+      AddObjective("rbd0801i.otf");
       self.wait_1 = 15;
-      self.grigg_t = false;
     elseif(name == "evacuate") then
-       --Spawn nsdf forces
+      AudioMessage(audio.evacuate);
       for i,v in pairs(mission.spawnInFormation2({"3","2 2 2 2","3 3","1"},"spawn_nsdf",{"avrckt","avtank","avhraz"},2)) do
         local s2 = mission.TaskManager:sequencer(v);
         s2:queue2("Attack",GetPlayerHandle());
@@ -224,14 +231,11 @@ local destroyComms = mission.Objective:define("misison"):createTasks(
   start = function(self)
     SetObjectiveOn(self.comms[1]);
     for i, v in ipairs(self.comms) do
-      if(IsBuilding(v)) then
-        SetObjectiveName(v,("Power %d"):format(i));
-      else
-        SetObjectiveName(v,("Gun Tower"):format(i));
-      end
+      SetObjectiveName(v,("Power %d"):format(i));
     end
     self:startTask("destroyComms");
     self.timer = 60*8;
+    self.nextAudio = 0;
     StartCockpitTimer(self.timer,self.timer*0.5,self.timer*0.1);
   end,
   update = function(self,dtime)
@@ -252,14 +256,6 @@ local destroyComms = mission.Objective:define("misison"):createTasks(
       if(not IsAlive(self.grigg)) then
         self:taskFail("wait");
       end
-      if(not self.grigg_t) then
-        local pp = GetPathPoints("grigg_in");
-        local d = Length(GetPosition(self.grigg)-pp[#pp]);
-        if(d < 50) then
-          self.grigg_t = true;
-          AddObjective("rbd0801i.otf");
-        end
-      end
     end
     if(self:isTaskActive("evacuate")) then
       local d1 = Length(GetPosition(GetPlayerHandle()) - GetPosition("spawn_griggs"));
@@ -277,18 +273,16 @@ local destroyComms = mission.Objective:define("misison"):createTasks(
   end,
   delete_object = function(self,handle)
     local m = nil;
-    for i=1, 2 do
-      if(self.comms[i] == handle) then
-        m = {self.comms[i+1]};
-        break;
+    if(IsIn(handle,self.comms)) then
+      self.nextAudio = self.nextAudio + 1;
+      if(self.audio[self.nextAudio]) then
+        AudioMessage(self.audio[self.nextAudio]);
       end
     end
-    if(self.comms[3] ==  handle) then
-      m = {self.comms[4],self.comms[5]};
-    end
-    if(m) then
-      for i, v in pairs(m) do
+    for i, v in ipairs(self.comms) do
+      if(IsAlive(v)) then
         SetObjectiveOn(v);
+        break;
       end
     end
   end,
@@ -300,10 +294,10 @@ local destroyComms = mission.Objective:define("misison"):createTasks(
     end
   end,
   save = function(self)
-    return self.timer, self.wait_1, self.grigg, self.grigg_t;
+    return self.timer, self.wait_1, self.grigg, self.nextAudio;
   end,
   load = function(self,...)
-    self.timer, self.wait_1, self.grigg, self.grigg_t = ...;
+    self.timer, self.wait_1, self.grigg, self.nextAudio = ...;
   end
 });
 

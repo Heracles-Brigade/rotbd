@@ -17,9 +17,9 @@ seqno [1] =
 3
 pos [1] =
   x [1] =
-789.052
+789.271
   y [1] =
-35.2596
+35.2465
   z [1] =
 100317
 team [1] =
@@ -40,7 +40,7 @@ transform [1] =
   up_y [1] =
 0.999809
   up_z [1] =
-9.8506e-009
+1.02696e-008
   front_x [1] =
 0.785987
   front_y [1] =
@@ -48,9 +48,9 @@ transform [1] =
   front_z [1] =
 0.618051
   posit_x [1] =
-789.052
+789.271
   posit_y [1] =
-35.2596
+35.2465
   posit_z [1] =
 100317
 abandoned [1] =
@@ -59,9 +59,9 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-788.796
+789.014
   y [1] =
-36.6292
+36.616
   z [1] =
 100317
 euler =
@@ -70,34 +70,34 @@ euler =
  mass_inv [1] =
 0.000666667
  v_mag [1] =
-0.00933573
+0.009754
  v_mag_inv [1] =
-107.115
+102.522
  I [1] =
 1500
  k_i [1] =
 1
  v [1] =
   x [1] =
-0.00931898
+0.00973654
   y [1] =
--0.00055905
+-0.000583384
   z [1] =
-1.29666e-009
+1.15658e-009
  omega [1] =
   x [1] =
-2.50171e-008
+3.24663e-008
   y [1] =
 0
   z [1] =
-3.04534e-008
+2.67289e-008
  Accel [1] =
   x [1] =
--0.0692097
+0.0143774
   y [1] =
-0.00411232
+-0.000833193
   z [1] =
-8.29777e-009
+1.92013e-009
 seqNo [1] =
 3
 name = 
@@ -2433,15 +2433,15 @@ transform [1] =
   right_z [1] =
 -0.708036
   up_x [1] =
--1.44541e-006
+-1.44542e-006
   up_y [1] =
 1
   up_z [1] =
-1.48169e-006
+1.4817e-006
   front_x [1] =
 0.708039
   front_y [1] =
-2.06974e-006
+2.06975e-006
   front_z [1] =
 -0.706185
   posit_x [1] =
@@ -2554,7 +2554,7 @@ isUser [1] =
 obj_addr = 00AFD168
 transform [1] =
   right_x [1] =
-0.00192679
+0.00192678
   right_y [1] =
 0
   right_z [1] =
@@ -2570,7 +2570,7 @@ transform [1] =
   front_y [1] =
 -0
   front_z [1] =
-0.00192679
+0.00192678
   posit_x [1] =
 1413.26
   posit_y [1] =
@@ -4594,7 +4594,7 @@ isUser [1] =
 obj_addr = 00AF9568
 transform [1] =
   right_x [1] =
-0.00182658
+0.00182657
   right_y [1] =
 0
   right_z [1] =
@@ -4610,7 +4610,7 @@ transform [1] =
   front_y [1] =
 -0
   front_z [1] =
-0.00182658
+0.00182657
   posit_x [1] =
 1409.71
   posit_y [1] =
@@ -6031,7 +6031,7 @@ transform [1] =
   right_y [1] =
 0
   right_z [1] =
-0.00220529
+0.00220528
   up_x [1] =
 0
   up_y [1] =
@@ -6039,7 +6039,7 @@ transform [1] =
   up_z [1] =
 0
   front_x [1] =
--0.0022053
+-0.00220529
   front_y [1] =
 0
   front_z [1] =
@@ -7651,7 +7651,7 @@ priority [1] =
 what = 03000000
 who [1] =
 0
-where = 0A7339F8
+where = 0A72C8E0
 param [1] =
 0
 aiProcess [1] =
@@ -7780,7 +7780,7 @@ priority [1] =
 what = 03000000
 who [1] =
 0
-where = 0A7339F8
+where = 0A72C8E0
 param [1] =
 0
 aiProcess [1] =
@@ -7909,7 +7909,7 @@ priority [1] =
 what = 03000000
 who [1] =
 0
-where = 0A7339D0
+where = 0A72CA98
 param [1] =
 0
 aiProcess [1] =
@@ -8038,7 +8038,7 @@ priority [1] =
 what = 03000000
 who [1] =
 0
-where = 0A7339D0
+where = 0A72CA98
 param [1] =
 0
 aiProcess [1] =
@@ -8167,7 +8167,7 @@ priority [1] =
 what = 03000000
 who [1] =
 0
-where = 0A7339D0
+where = 0A72CA98
 param [1] =
 0
 aiProcess [1] =
@@ -8181,7 +8181,7 @@ sspilo
 perceivedTeam [1] =
 2
 name = LuaMission
-sObject = 0A44F6E8
+sObject = 0A4333D0
 [AiMission]
 [AOIs]
 size [1] =
@@ -8190,7 +8190,7 @@ size [1] =
 count [1] =
 20
 [AiPath]
-old_ptr = 683d730a
+old_ptr = 80c9720a
 size [1] =
 11
 label = spawn_artl1
@@ -8203,7 +8203,7 @@ points [1] =
 101547
 pathType = 00000000
 [AiPath]
-old_ptr = e03d730a
+old_ptr = 70ca720a
 size [1] =
 11
 label = spawn_artl2
@@ -8216,7 +8216,7 @@ points [1] =
 101673
 pathType = 00000000
 [AiPath]
-old_ptr = 103b730a
+old_ptr = 90cd720a
 size [1] =
 11
 label = spawn_artl3
@@ -8229,7 +8229,7 @@ points [1] =
 101497
 pathType = 00000000
 [AiPath]
-old_ptr = 003c730a
+old_ptr = 58c9720a
 size [1] =
 11
 label = spawn_artl4
@@ -8242,7 +8242,7 @@ points [1] =
 101573
 pathType = 00000000
 [AiPath]
-old_ptr = 403d730a
+old_ptr = f0cc720a
 size [1] =
 12
 label = walker1_path
@@ -8335,7 +8335,7 @@ points [21] =
 101101
 pathType = 00000000
 [AiPath]
-old_ptr = 383b730a
+old_ptr = 50cc720a
 size [1] =
 12
 label = walker2_path
@@ -8392,7 +8392,7 @@ points [12] =
 100366
 pathType = 00000000
 [AiPath]
-old_ptr = 183d730a
+old_ptr = c0ca720a
 size [1] =
 10
 label = spawn_nsdf
@@ -8400,16 +8400,16 @@ pointCount [1] =
 2
 points [2] =
   x [1] =
-842.787
+145.024
   z [1] =
-101217
+101295
   x [1] =
-783.054
+424.937
   z [1] =
-100917
+101116
 pathType = 00000000
 [AiPath]
-old_ptr = 483a730a
+old_ptr = f8c9720a
 size [1] =
 12
 label = spawn_griggs
@@ -8422,7 +8422,7 @@ points [1] =
 100286
 pathType = 00000000
 [AiPath]
-old_ptr = 883b730a
+old_ptr = d8cb720a
 size [1] =
 9
 label = edge_path
@@ -8439,7 +8439,7 @@ points [2] =
 100162
 pathType = 00000000
 [AiPath]
-old_ptr = a03c730a
+old_ptr = 78cc720a
 size [1] =
 4
 label = base
@@ -8456,7 +8456,7 @@ points [2] =
 100708
 pathType = 00000000
 [AiPath]
-old_ptr = b03b730a
+old_ptr = 18cd720a
 size [1] =
 14
 label = base_artillery
@@ -8481,7 +8481,7 @@ points [4] =
 100711
 pathType = 00000000
 [AiPath]
-old_ptr = c83c730a
+old_ptr = d0c9720a
 size [1] =
 5
 label = pan_1
@@ -8498,7 +8498,7 @@ points [2] =
 101489
 pathType = 00000000
 [AiPath]
-old_ptr = 583e730a
+old_ptr = 48ca720a
 size [1] =
 5
 label = pan_2
@@ -8515,7 +8515,7 @@ points [2] =
 101250
 pathType = 00000000
 [AiPath]
-old_ptr = f03c730a
+old_ptr = 40cd720a
 size [1] =
 5
 label = pan_3
@@ -8532,7 +8532,7 @@ points [2] =
 100378
 pathType = 00000000
 [AiPath]
-old_ptr = 903d730a
+old_ptr = 20ca720a
 size [1] =
 5
 label = pan_4
@@ -8549,7 +8549,7 @@ points [2] =
 100579
 pathType = 00000000
 [AiPath]
-old_ptr = 083e730a
+old_ptr = b8cd720a
 size [1] =
 12
 label = base_warning
@@ -8566,7 +8566,7 @@ points [2] =
 100665
 pathType = 00000000
 [AiPath]
-old_ptr = 803e730a
+old_ptr = a0cc720a
 size [1] =
 8
 label = grigg_in
@@ -8631,7 +8631,7 @@ points [14] =
 100817
 pathType = 00000000
 [AiPath]
-old_ptr = a83e730a
+old_ptr = a8c9720a
 size [1] =
 9
 label = grigg_out
@@ -8664,7 +8664,7 @@ points [6] =
 100293
 pathType = 00000000
 [AiPath]
-old_ptr = d039730a
+old_ptr = 98ca720a
 size [1] =
 8
 label = patrol_1
@@ -8709,7 +8709,7 @@ points [9] =
 100852
 pathType = 02000000
 [AiPath]
-old_ptr = f839730a
+old_ptr = e0c8720a
 size [1] =
 8
 label = patrol_2
