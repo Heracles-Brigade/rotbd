@@ -2,12 +2,12 @@ version [1] =
 1045
 binarySave [1] =
 false
-msn_filename = bdmisn24.bzn
+msn_filename = rbdnew03.bzn
 seq_count [1] =
 289
 missionSave [1] =
 true
-TerrainName = bdmisn24
+TerrainName = rbdnew03
 size [1] =
 74
 [GameObject]
@@ -136,7 +136,7 @@ false
 independence [1] =
 1
 curPilot [1] =
-bsuser23
+bsuser
 perceivedTeam [1] =
 1
 [GameObject]
@@ -8828,7 +8828,7 @@ perceivedTeam [1] =
 2
 [GameObject]
 PrjID [1] =
-svmamm
+svmtnk
 seqno [1] =
 283
 pos [1] =
@@ -8957,7 +8957,7 @@ perceivedTeam [1] =
 2
 [GameObject]
 PrjID [1] =
-svmamm
+svmtnk
 seqno [1] =
 284
 pos [1] =

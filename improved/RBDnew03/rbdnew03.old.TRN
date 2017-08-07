@@ -56,7 +56,7 @@ MinX=0
 MinZ=98560
 Width=3840
 Depth=3840
-Height=100
+Height=50
 
 [TextureType0] // Sandy
 FlatColor= 108
