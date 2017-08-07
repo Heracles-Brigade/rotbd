@@ -256,7 +256,7 @@ function Update()
 		SpawnNav(3);
 	end
 	
-	if not M.ControlDead then
+	if not M.ControlDead and M.OpeningCinDone then
 		keepOutside(M.Player, M.Mammoth);
 		if GetTime() >= M.LastShieldTime then
 			M.LastShieldTime = GetTime() + 3.5;
