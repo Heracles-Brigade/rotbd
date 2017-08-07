@@ -1,0 +1,82 @@
+[GameObjectClass]
+classLabel = "walker"
+scrapValue = 5
+scrapCost = 12
+buildTime = 15.0
+maxHealth = 6000
+maxAmmo = 2500
+unitName = "Walker"
+aiName = "GechFriend"
+aiName2 = "GechEnemy"
+heatSignature = 0.1
+imageSignature = 5.0
+radarSignature = 1.0
+
+weaponHard1 = "GC1"
+weaponName1 = "gatstab"
+weaponHard2 = "GC2"
+weaponName2 = "gatstab"
+
+[CraftClass]
+rangeScan = 200.0
+periodScan = 0.0
+velocJam = 0.0
+
+selectAttackMsg = "avwalkvd.wav"
+selectWaitMsg = "avwalkvf.wav"
+selectFollowMsg = "avwalkvh.wav"
+selectGoMsg = "avwalkvg.wav"
+selectOtherMsg = "avwalkvj.wav"
+
+goMsg = "avwalkv0.wav"
+goObjectMsg = "avwalkv6.wav"
+attackMsg = "avwalkv2.wav"
+followMsg = "avwalkv7.wav"
+followMeMsg = "avwalkv3.wav"
+repairMsg = "avwalkv4.wav"
+reloadMsg = "avwalkv5.wav"
+rescueMsg = "avwalkv8.wav"
+recycleMsg = "avwalkv9.wav"
+otherMsg = "avwalkvj.wav"
+
+killedMsg = "avwalkvk.wav"
+diedMsg = "abetty3.wav"
+
+[WalkerClass]
+setAltitude = 0.1
+accelDragStop = 4.0
+accelDragFull = 1.0
+alphaTrack = 20.0
+alphaDamp = 5.0
+pitchPitch = 0.0
+pitchPitchCrawl = 0.0
+pitchPitchRun = 0.0
+pitchPitchFly = 0.0
+pitchThrust = 0.0
+pitchThrustCrawl = 0.0
+pitchThrustRun = 0.0
+pitchThrustFly = 0.0
+rollStrafe = 0.0
+rollStrafeCrawl = 0.0
+rollStrafeRun = 0.0
+rollStrafeFly = 0.0
+rollSteer = 0.0
+rollSteerCrawl = 0.0
+rollSteerRun = 0.0
+rollSteerFly = 0.0
+
+velocForward = 8.0
+velocReverse = 8.0
+velocStrafe = 8.0
+accelThrust = 50.0
+accelBrake = 70.0
+omegaSpin = 2.0
+omegaTurn = 1.0
+alphaSteer = 5.0
+accelJump = 0.0
+
+jumpSound  = "avwalke2.wav"
+landSound  = "avwalke3.wav"
+stepSound  = "avwalke0.wav"
+
+animRate = 1.2

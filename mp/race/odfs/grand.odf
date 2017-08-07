@@ -1,0 +1,11 @@
+[WeaponClass]
+classLabel = "machinegun"
+ordName = "nobull"
+wpnName = "Random"
+fireSound = NULL
+wpnReticle = "octagon"
+wpnPriority = 100
+wpnCategory = "SPEC"
+
+[CannonClass]
+shotDelay = 1000000

@@ -1,0 +1,72 @@
+[GameObjectClass]
+baseName = "bvltnk"
+classLabel = "wingman"
+scrapValue = 4
+scrapCost = 6
+buildTime = 7.0
+maxHealth = 2000
+maxAmmo = 1500
+unitName = "Light Tank"
+aiName = "TankFriend"
+aiName2 = "TankEnemy"
+heatSignature = 1.2
+imageSignature = 2.2
+radarSignature = 0.1
+
+weaponHard1 = "GC1"
+weaponName1 = "gatstab"
+weaponHard2 = "GR1"
+weaponName2 = 
+weaponHard3 = "GS1"
+weaponName3 = 
+weaponMask =00001
+
+	
+[CraftClass]
+rangeScan = 300.0f
+periodScan = 5.0f
+velocJam = 5.0f
+
+selectAttackMsg = "avltnkv0.wav"
+selectGoMsg = "avltnkvf.wav"
+selectFollowMsg = "avltnkvg.wav"
+selectOtherMsg = "avltnkvm.wav"
+
+goMsg = "avltnkv1.wav"
+attackMsg = "avltnkv2.wav"
+followMeMsg = "avltnkv4.wav"
+followMsg = "avltnkvb.wav"
+repairMsg = "avltnkv8.wav"
+reloadMsg = "avltnkv9.wav"
+rescueMsg = "avltnkvc.wav"
+recycleMsg = "avltnkvd.wav"
+
+user1Msg = "avltnkva.wav"
+killedMsg = "avltnkv3.wav"
+diedMsg = "abetty3.wav"
+
+[HoverCraftClass]
+setAltitude = 1.0
+accelDragStop = 3.5
+accelDragFull = 1.
+alphaTrack = 20.0
+alphaDamp = 5.0
+pitchPitch = 0.25
+pitchThrust = 0.1
+rollStrafe = 0.1
+rollSteer = 0.1
+
+velocForward = 25.0
+velocReverse = 20.0
+velocStrafe = 20.0
+accelThrust = 20.0
+accelBrake = 75.0
+omegaSpin = 3.75
+omegaTurn = 2.75
+alphaSteer = 7.0
+accelJump = 20.0
+
+soundThrust = "avltnke0.wav"
+soundSteer = "avltnke3.wav"
+
+

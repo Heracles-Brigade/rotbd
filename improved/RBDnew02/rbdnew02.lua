@@ -2,8 +2,26 @@
 	Contributors:
    - Seqan
 	 - GBD
+   - Vemahk
+	 - Mari o
 --]]
---require("bz_logging");
+require("bz_logging");
+
+
+local audio = {
+	intro = "rbd0201.wav",
+	warn1 = "rbd0201W.wav", --Commtower warning
+	warn2 = "rbd0202W.wav", --Hurry up warning
+	warn3 = "rbd0203W.wav", --Detected warning
+	inspect = "rbd0202.wav",
+	service_vh = "rbd0203.wav",
+	first_a = "rbd0204.wav",
+	dayw = "rbd0205.wav",
+	second_a = "rbd0206.wav",
+	flee = "rbd0207.wav",
+	win = "rbd0208.wav",
+	lose1 = "rbd0201L.wav"
+}
 
 local M = { --Sets mission flow and progression. Booleans will be changed to "true" as mission progresses. Necessary for save files to function as well as objective flow in later if statements.
 StartDone = false, 
@@ -148,8 +166,8 @@ local function keepOutside(h1,h2) -- This is the shield function for the Mammoth
   local vel2 = GetVelocity(h2);
   local d = Length(pp-p);
   local vel = GetVelocity(h1);
-  local dprod = DotProduct(Normalize(vel),dv);
-  local nvel = vel - dprod*dv;
+  local dprod = DotProduct(vel,-dv);
+  local nvel = vel - dprod*dv*(1+GetTimeStep());
   if(d < r) then
     local newp = (p + dv*r);
     local h = GetTerrainHeightAndNormal(newp);
@@ -215,7 +233,7 @@ function Update()
 	for i = 1, 3 do
 		if IsAlive(M.Radar[i].RadarHandle) then
 			if not M.Radar[i].RadarWarn and GetDistance(M.Player, M.Radar[i].RadarHandle) < 100.0 then
-				M.Aud1 = AudioMessage("rbdnew0202.wav");
+				M.Aud1 = AudioMessage(audio.warn1);
 				M.RadarTime = GetTime();
 				M.Radar[i].RadarWarn = true;
 				StartCockpitTimer(30, 15, 5);
@@ -298,7 +316,7 @@ function Update()
 	if not M.MissionOver then
 	
 		-- Win Conditions:
-		if M.MammothInfoed and GetObjectiveName(ObjectiveNav) == "Extraction Point" and GetDistance(M.Player, ObjectiveNav) < 50.0 then
+		if M.MammothInfoed and GetDistance(M.Player, ObjectiveNav) < 50.0 then
 			Aud1 = AudioMessage("rbdnew0210.wav");
 			SucceedMission(GetTime()+5.0, "rbdnew02wn.des");
 			M.MissionOver = true;
@@ -314,20 +332,21 @@ function Update()
 			UpdateObjectives();
 		end
 
-		if  not IsAlive(M.Mammoth) then --not M.MammothInfoed and 
+		if  not IsAlive(M.Mammoth) then --not M.MammothInfoed and
+			Aud1 = AudioMessage(audio.lose1);
 			FailMission(GetTime()+5.0, "rbdnew02l1.des");
 			M.MissionOver = true;
 			UpdateObjectives();
 		end
 		
 		if M.MammothInfoed and GetCockpitTimer() == 0 then
-			FailMission(GetTime(), "rbdnew02l2.des");
+			FailMission(GetTime()+5.0, "rbdnew02l2.des");
 			M.MissionOver = true;
 			UpdateObjectives();
 		end
 		
 		if M.IsDetected and not M.MammothReached then
-			Aud1 = AudioMessage("rbdnew0207.wav");
+			Aud1 = AudioMessage(audio.warn2);
 			FailMission(GetTime() + 5.0, "rbdnew02l4.des");
 			M.MissionOver = true;
 			UpdateObjectives();

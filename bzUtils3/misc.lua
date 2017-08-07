@@ -23,6 +23,145 @@ GetOdf = function(...)
   return r;
     --return _GetOdf(...):gmatch("[^%c]+")();
 end
+local _GetWeaponClass = GetWeaponClass;
+GetWeaponClass  = function(...)
+  local r = _GetWeaponClass(...);
+  if(r) then
+    return r:gmatch("[^%c]+")();
+  end
+  return r;
+end
+
+GetPathPointCount = GetPathPointCount or function(path)
+  local p = GetPosition(path, 0)
+  local lp = SetVector(0, 0, 0)
+  local c = 0
+  while p ~= lp do
+    lp = p
+    c = c + 1
+    p = GetPosition(path, c)
+  end
+  return c
+end
+GetPathPoints = function(path)
+  local _accum_0 = { }
+  local _len_0 = 1
+  for i = 0, GetPathPointCount(path)-1 do
+    _accum_0[_len_0] = GetPosition(path, i)
+    _len_0 = _len_0 + 1
+  end
+  return _accum_0
+end
+GetPathLength = function(path,loop,max)
+  loop = loop or false;
+  if(max) then
+    max = max - 1;
+  else
+    max = math.huge;
+  end
+  local dist = 0;
+  local pps = GetPathPoints(path);
+  local l = math.min(max,loop and #pps or (#pps-1));
+  for i3=1, l do
+    dist = dist + Length(pps[i3]-pps[(i3)%(#pps)+1]);
+  end
+  return dist;
+end
+GetCenterOfPolygon = function(vertecies)
+  local center = SetVector(0, 0, 0)
+  local signedArea = 0
+  local a = 0
+  for i, v in ipairs(vertecies) do
+    local v2 = vertecies[i % #vertecies + 1]
+    a = v.x * v2.z - v2.x * v.z
+    signedArea = signedArea + a
+    center = center + (SetVector(v.x + v2.x, 0, v.z + v2.z) * a)
+  end
+  signedArea = signedArea / 2
+  center = center / (6 * signedArea)
+  return center
+end
+
+GetRadiusOfPolygon = function(...)
+  local pp = GetPathPoints(...);
+  local center = GetCenterOfPolygon(pp);
+  local radius = 0;
+  for i,v in ipairs(pp) do
+    radius = math.max(radius,Length(v-center));
+  end
+  return radius;
+end
+
+GetCenterOfPath = function(path)
+  return GetCenterOfPolygon(GetPathPoints(path));
+end
+
+GetRadiusOfPath = function(...)
+  return GetRadiusOfPolygon(...);
+end
+
+
+DoBoundingBoxesIntersect = function(p1,p2,p3,p4)
+  local x1 = math.min(p1.x,p2.x);
+  local x2 = math.max(p1.x,p2.x);
+  local x3 = math.min(p3.x,p4.x);
+  local x4 = math.max(p3.x,p4.x);
+
+  local y1 = math.min(p1.z,p2.z);
+  local y2 = math.max(p1.z,p2.z);
+  local y3 = math.min(p3.z,p4.z);
+  local y4 = math.max(p3.z,p4.z);
+  
+
+
+  return (
+    x1 <= x4 and
+    x2 >= x3 and
+    y1 <= y4 and
+    y2 >= y3
+  );
+end
+IsInsideArea = IsInsideArea or function()
+  return false;
+end 
+IsPointOnLine = function(a1,a2,b)
+  local aTmp = a2-a1;
+  local bTmp = b-a1;
+  local r = CrossProduct(aTmp, bTmp).y;
+  return math.abs(r) < 0.05;
+end
+
+
+IsPointRightOfLine = function(a1,a2,b)
+  local aTmp = a2-a1;
+  local bTmp = b-a1;
+  return CrossProduct(aTmp, bTmp).y < 0;
+end
+
+LineSegmentTouchesOrCrossesLine = function(p1,p2,p3,p4)
+  return (
+    IsPointOnLine(p1,p2,p3) or
+    IsPointOnLine(p1,p2,p4) or (
+      IsPointRightOfLine(p1,p2,p3) ==
+      not(IsPointRightOfLine(p1,p2,p4))
+    )
+  );
+end
+
+DoLinesIntersect = function(p1,p3,vec1,vec2)
+  p1.y = 0;
+  p3.y = 0;
+  vec1.y = 0;
+  vec2.y = 0;
+  local p2 = p1 + vec1;
+  local p4 = p3 + vec2;
+  return (
+    DoBoundingBoxesIntersect(p1,p2,p3,p4) and
+    LineSegmentTouchesOrCrossesLine(p1,p2,p3,p4) and
+    LineSegmentTouchesOrCrossesLine(p3,p4,p1,p2)
+  );
+end
+
 
 local function global2Local(vec,t)
   local up = SetVector(t.up_x,t.up_y,t.up_z);
@@ -202,17 +341,21 @@ local odfHeader = Class("odfHeader",{
         c = c + 1;
         n = self:getVar(varName .. c,...);
       end
-      return ret;
+      return ret, c > 1;
     end
   }
 })
-
-local odfFile = Class("odfFile",{
+local odfFile;
+odfFile = Class("odfFile",{
   constructor = function(fileName)
     self.name = fileName;
     self.file = OpenODF(fileName);
     self.headers = {};
     assert(self.file,"Could not open \"%s\"!",self.name);
+    local parent, exists = self:getProperty("Meta","parent");
+    if(exists) then
+      self.parent = odfFile(parent);
+    end
   end,
   methods = {
     getHeader = function(headerName)
@@ -220,30 +363,110 @@ local odfFile = Class("odfFile",{
         error("Header was nil!");
       end
       if(not self.headers[headerName]) then
-          self.headers[headerName] = odfHeader(self.file,headerName);
+        self.headers[headerName] = odfHeader(self.file,headerName);
       end
       return self.headers[headerName];
     end,
     getInt = function(header,...)
-      return self:getHeader(header):getAsInt(...);
+      local v, found = self:getHeader(header):getAsInt(...);
+      if self.parent and (not found) then
+        v, found = self.parent:getInt(header,...);
+      end
+      return v, found;
     end,
     getFloat = function(header,...)
-      return self:getHeader(header):getAsFloat(...);
+      local v, found = self:getHeader(header):getAsFloat(...);
+      if self.parent and (not found) then
+        v, found = self.parent:getFloat(header,...);
+      end
+      return v, found;
     end,
     getProperty = function(header,...)
-      return self:getHeader(header):getVar(...);
+      local v, found = self:getHeader(header):getVar(...);
+      if self.parent and (not found) then
+        v, found = self.parent:getProperty(header,...);
+      end
+      return v, found;
     end,
     getBool = function(header,...)
-      return self:getHeader(header):getAsBool(...);
+      local v, found = self:getHeader(header):getAsBool(...);
+      if self.parent and (not found) then
+        v, found = self.parent:getBool(header,...);
+      end
+      return v, found;
     end,
     getTable = function(header,...)
-      return self:getHeader(header):getAsTable(...);
+      local v, found = self:getHeader(header):getAsTable(...);
+      if self.parent and (not found) then
+        v, found = self.parent:getTable(header,...);
+      end
+      return v, found;
     end,
     getVector = function(header,...)
-      return self:getHeader(header):getAsVector(...);
+      local v, found = self:getHeader(header):getAsVector(...);
+      if self.parent and (not found) then
+        v, found = self.parent:getVector(header,...);
+      end
+      return v, found;
     end
   }
 })
+
+local function createFormation(formation,location,dir,seperation,height)
+  if(seperation == nil) then 
+    seperation = 10;
+  end
+  if(height == nil) then
+    height = 0;
+  end
+  local positions = {};
+  local directionVec = Normalize(SetVector(dir.x,0,dir.z));
+  local formationAlign = Normalize(SetVector(-dir.z,0,dir.x));
+  for i2, v2 in ipairs(formation) do
+    local length = v2:len();
+    local i3 = 1;
+    for c in v2:gmatch(".") do
+      local n = c;
+      if(n) then
+        local x = (i3-(length/2))*seperation;
+        local z = i2*seperation*2;
+        local pos = x*formationAlign + -z*directionVec + location;
+        local fh = GetTerrainHeightAndNormal(pos);
+        pos.y = math.max(pos.y,fh+height);
+        local t = BuildDirectionalMatrix(pos,directionVec);
+        positions[n] = t;
+      end
+      i3 = i3+1;
+    end
+  end
+  return positions;
+end
+
+local function createFormation2(formation,location,seperation,height)
+  return createFormation(formation,GetPosition(location,0),GetPosition(location,1) - GetPosition(location,0),seperation,height);
+end
+
+local function moveAllInFormation(handles,...)
+  local transforms = createFormation2(...);
+  for i,v in pairs(handles) do
+    local t = transforms[i];
+    local f = odfFile(GetOdf(v));
+    local height = f:getFloat("HoverCraftClass","setAltitude");
+    t.posit_y = t.posit_y + height;
+    if(t) then
+      SetTransform(v,t);
+    end
+  end
+  
+end
+
+local function moveInFormation(handle,key,...)
+  moveAllInFormation({[key] = handle},...);
+end
+
+
+
+
 
 local function spawnInFormation(formation,location,dir,units,team,seperation)
   if(seperation == nil) then 
@@ -261,6 +484,8 @@ local function spawnInFormation(formation,location,dir,units,team,seperation)
         local x = (i3-(length/2))*seperation;
         local z = i2*seperation*2;
         local pos = x*formationAlign + -z*directionVec + location;
+        local fh = GetTerrainHeightAndNormal(pos);
+        pos.y = math.max(pos.y,fh);
         local h = BuildObject(units[n],team,pos);
         local t = BuildDirectionalMatrix(GetPosition(h),directionVec);
         SetTransform(h,t);
@@ -327,6 +552,7 @@ local DefaultRuntimeModule = Decorate(
       self.commandListeners = setmetatable(containers.commandListeners or {}, {__mode=v});
       self.keyListeners = setmetatable(containers.keyListeners or {}, {__mode=v});
       self.startListeners = setmetatable(containers.startListeners or {}, {__mode=v});
+      self.map = {};
       self.classes = containers.classes or {};
     end,
     methods = {
@@ -419,10 +645,19 @@ local DefaultRuntimeModule = Decorate(
         end
       end,
       unregisterInstance = function(obj)
-        table.remove(self.all,obj);
+        local key = obj;
+        local obj = obj;
+        if(type(obj) == "table") then
+          key = self.map[obj];
+        else
+          obj = self.all[key];
+        end
+        self.map[obj] = nil;
+        self.all[key] = nil;
       end,
-      registerInstance = function(obj)
-        table.insert(self.all,obj);
+      registerInstance = function(obj,key)
+        self.map[obj] = key;
+        self.all[key] = obj;
         if(NetworkListener:made(obj)) then
           table.insert(self.netListeners,obj);
         end
@@ -515,7 +750,7 @@ local Timer = Decorate(
       end,
       stop = function()
         self:pause();
-        self.time = 0;
+        self:setTime(0);
       end,
       pause = function()
         self.running = false;
@@ -571,5 +806,9 @@ return {
   getAmmoCost = getAmmoCost,
   spawnInFormation = spawnInFormation,
   spawnInFormation2 = spawnInFormation2,
-  Timer = Timer
+  Timer = Timer,
+  createFormation = createFormation,
+  createFormation2 = createFormation2,
+  moveInFormation = moveInFormation,
+  moveAllInFormation = moveAllInFormation
 }

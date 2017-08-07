@@ -1,0 +1,20 @@
+[GameObjectClass]
+collisionRadius = 7.0
+classLabel = "repairdepot"
+scrapCost = 7
+scrapValue = 5
+maxHealth = 5000
+maxAmmo = 0
+unitName = "Hangar"
+heatSignature = 0.8
+imageSignature = 8.0
+radarSignature = 1.0
+
+[BuildingClass]
+soundAmbient = "abhange0.wav"
+
+[RepairDepotClass]
+repairRange = 50.0
+repairDelay = 1.0
+repairAmount = 50
+repairSound = "abhange2.wav"

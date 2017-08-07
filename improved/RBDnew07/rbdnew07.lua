@@ -474,6 +474,7 @@ function Start()
   SetPilot(1,25)
   --Start objective to escort recycler
   escortRecycler:start();
+  mission.fixTugs();
 end
 
 function Update(dtime)
@@ -500,4 +501,5 @@ function Load(misison_date,g,t)
   mission:Load(misison_date);
   globals = g;
   tracker:load(t);
+  mission.fixTugs();
 end

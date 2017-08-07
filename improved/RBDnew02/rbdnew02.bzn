@@ -77,9 +77,9 @@ euler =
  mass_inv [1] =
 0.000666667
  v_mag [1] =
-0.00333133
+0.00471028
  v_mag_inv [1] =
-300.18
+212.302
  I [1] =
 1500
  k_i [1] =
@@ -88,7 +88,7 @@ euler =
   x [1] =
 0.00333067
   y [1] =
--6.66082e-005
+-0.000133157
   z [1] =
 -3.52786e-028
  omega [1] =
@@ -668,7 +668,7 @@ who [1] =
 -6290941
 where = 00000000
 param [1] =
-ÿÿÿÿÿÿÿÿ
+Ã¿Ã¿Ã¿Ã¿Ã¿Ã¿Ã¿Ã¿
 aiProcess [1] =
 true
 isCargo [1] =
@@ -9893,4 +9893,69 @@ points [1] =
 2559.74
   z [1] =
 99957.3
+pathType = 00000000
+[AiPath]
+old_ptr = 00000057
+size [1] =
+4
+label = def1
+pointCount [1] =
+1
+points [1] =
+  x [1] =
+3865.39
+  z [1] =
+99481.5
+pathType = 00000000
+[AiPath]
+old_ptr = 00000058
+size [1] =
+4
+label = def2
+pointCount [1] =
+1
+points [1] =
+  x [1] =
+3843.93
+  z [1] =
+99445
+pathType = 00000000
+[AiPath]
+old_ptr = 00000059
+size [1] =
+4
+label = def3
+pointCount [1] =
+1
+points [1] =
+  x [1] =
+3815.31
+  z [1] =
+99385.8
+pathType = 00000000
+[AiPath]
+old_ptr = 0000005A
+size [1] =
+4
+label = def4
+pointCount [1] =
+1
+points [1] =
+  x [1] =
+3794.5
+  z [1] =
+99332.5
+pathType = 00000000
+[AiPath]
+old_ptr = 0000005B
+size [1] =
+4
+label = def5
+pointCount [1] =
+1
+points [1] =
+  x [1] =
+3771.73
+  z [1] =
+99276.6
 pathType = 00000000

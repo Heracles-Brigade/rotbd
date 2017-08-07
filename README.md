@@ -5,4 +5,4 @@
 * [Battlezone Report](https://battlezone.report)
 * [Youtube channel](https://www.youtube.com/channel/UCk2TNixtBnK6kAPfq5RamzA)  
 * [Steam Group](http://steamcommunity.com/groups/HeraclesBrigade)  
-* [Builds](http://188.166.61.106:8001/rotbd)
+* [Builds](https://media.studynator.me/rotbd/builds/releases)

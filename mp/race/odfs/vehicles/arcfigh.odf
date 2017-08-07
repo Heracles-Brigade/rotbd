@@ -1,0 +1,68 @@
+[GameObjectClass]
+baseName = "avfigh"
+classLabel = "wingman"
+scrapValue = 4
+scrapCost = 6
+buildTime = 12
+maxHealth = 1800
+maxAmmo = 700
+unitName = "Scout"
+aiName = "ScoutFriend"
+aiName2 = "ScoutEnemy"
+heatSignature = 2.0
+imageSignature = 1.5
+radarSignature = 0.1
+
+weaponHard1 = "GS1"
+weaponName1 = 
+weaponMask = 00001
+
+[CraftClass]
+rangeScan = 6000.0f
+periodScan = 5.0f
+velocJam = 2.5f
+
+
+selectAttackMsg = "avfighvd.wav"
+selectWaitMsg = "avfighvf.wav"
+selectGoMsg = "avfighvg.wav"
+selectOtherMsg = "avfighvj.wav"
+
+goMsg = "avfighv0.wav"
+attackMsg = "avfighv2.wav"
+followMeMsg = "avfighv3.wav"
+followMsg = "avfighv7.wav"
+repairMsg = "avfighv4.wav"
+reloadMsg = "avfighv5.wav"
+rescueMsg = "avfighv8.wav"
+recycleMsg = "avfighv9.wav"
+otherMsg = "avfighvh.wav"
+
+user1Msg = "avfighv6.wav"
+killedMsg = "avfighvm.wav"
+diedMsg = "abetty3.wav"
+
+[HoverCraftClass]
+setAltitude = 1.0
+accelDragStop = 4.0
+accelDragFull = 1.0
+alphaTrack = 30.0
+alphaDamp = 7.0
+pitchPitch = 0.25
+pitchThrust = 0.1
+rollStrafe = 0.1
+rollSteer = 0.1
+
+velocForward = 100.0
+velocReverse = 15.0
+velocStrafe = 20.0
+accelThrust = 100.0
+accelBrake = 75.0
+omegaSpin = 1.5
+omegaTurn = 0.5
+alphaSteer = 5.0
+accelJump = 20.0
+
+
+soundThrust = "avfighe0.wav"
+soundTurbo = "avfighe3.wav"

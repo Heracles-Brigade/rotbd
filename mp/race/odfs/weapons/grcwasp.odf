@@ -1,0 +1,12 @@
+[WeaponClass]
+classLabel = "dispenser"
+wpnName = "WASP"
+fireSound = "gwasp00.wav"
+wpnReticle = "quake.0"
+wpnPriority = 0
+wpnCategory = "SPEC"
+
+[DispenserClass]
+shotDelay = 1.0
+objectClass = "rcmsl2"
+

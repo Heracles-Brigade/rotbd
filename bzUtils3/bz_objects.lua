@@ -42,7 +42,8 @@ if ((not SetLabel) and SettLabel) then
 end
 
 
-local function copyObject(handle,odf)
+local function copyObject(handle,odf,kill)
+  print("Replacing object!");
   local nObject = BuildObject(odf,GetTeamNum(handle),GetTransform(handle));
   local pilot = GetPilotClass(handle) or "";
   local hp = GetCurHealth(handle) or 0;
@@ -72,16 +73,17 @@ local function copyObject(handle,odf)
   --SetMaxHealth(nObject,mhp);
   SetCurHealth(nObject,hp);
   SetCurAmmo(nObject,hp);
+  print("Kill?",kill);
   if(IsAliveAndPilot(handle)) then
     SetPilotClass(nObject,pilot);
-  elseif(not IsAlive(handle)) then
+  elseif((not IsAlive(handle)) and kill) then
     RemovePilot(handle);
   end
   SetLabel(nObject,label);
   SetVelocity(nObject,vel);
   SetOmega(nObject,omega);
   if(not IsBusy(handle)) then
-    SetCommand(nObject,currentCommand,0,currentWho,transform,0);
+    --SetCommand(nObject,currentCommand,0,currentWho,transform,0);
   end
   if(d) then
     Deploy(nObject);
@@ -288,9 +290,9 @@ local Handle = Class("Obj.Handle", {
     getObjectiveName = function()
       return GetObjectiveName(self:getHandle());
     end,
-    copyObject = function(odf)
+    copyObject = function(odf,...)
       odf = odf or self:getOdf();
-      return copyObject(self.handle,odf);
+      return copyObject(self.handle,odf,...);
     end,
     getDistance = function(...)
       return GetDistance(self:getHandle(), ...);
@@ -346,11 +348,28 @@ local Handle = Class("Obj.Handle", {
     damage = function(...)
       Damage(self:getHandle(), ...);
     end,
-    canCommand = function()
-      return CanCommand(self:getHandle());
+    canCommand = function(...)
+      return CanCommand(self:getHandle(),...);
     end,
-    canBuild = function()
-      return CanBuild(self:getHandle());
+    canBuild = function(...)
+      return CanBuild(self:getHandle(),...);
+    end,
+    canMake = function(odf)
+      local c = self:getClassLabel();
+      local cmake = false;
+      if(c == "armory" or c == "recycler" or c == "factory" or c == "constructionrig") then
+        local blist = self:getTable("ProducerClass","buildItem");
+        cmake = cmake or isIn(odf,blist);
+      end
+      if(c == "armory") then
+        local cann = self:getTable("ArmoryClass","cannonItem");
+        local spec = self:getTable("ArmoryClass","rocketItem");
+        local rock = self:getTable("ArmoryClass","mortarItem");
+        local mort = self:getTable("ArmoryClass","specialItem");
+        cmake = cmake or isIn(odf,cann) or isIn(odf,spec) or isIn(odf,rock) or isIn(odf,mort); 
+      end
+      return cmake;
+      --return self:canBuild();
     end,
     isBusy = function()
       return IsBusy(self:getHandle());
@@ -375,6 +394,9 @@ local Handle = Class("Obj.Handle", {
     end,
     goto = function(...)
       Goto(self:getHandle(), ...);
+    end,
+    gotoGeyser = function(priority)
+      self:setCommand(AiCommand["GO_TO_GEYSER"],priority);
     end,
     mine = function(...)
       Mine(self:getHandle(), ...);
@@ -792,7 +814,7 @@ local ObjectManager = D(BzModule("ObjectManagerModule"),
         if(not self.all[handle]) then
           Meta(handle, {
             dead = false,
-            truelocal = not (IsNetGame() and IsRemote(handle));
+            truelocal = not (IsNetGame() and IsRemote(handle))
           });
         end
       end,
@@ -806,7 +828,6 @@ local ObjectManager = D(BzModule("ObjectManagerModule"),
           for i, v in pairs(self.classes) do
             local objectMeta = Meta(v).GameObject;
             local customTest = objectMeta.customTest;
-            
             local m = isIn(odf, objectMeta.odfs or {})
               or isIn(classLabel, objectMeta.classLabels or {})
               or isIn(objectMeta.customClass, customClasses or {});

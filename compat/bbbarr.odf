@@ -1,0 +1,17 @@
+[GameObjectClass]
+baseName = "bbbarr2" // Non-Tent model.
+classLabel = "barracks"
+scrapCost = 8
+scrapValue = 3
+maxHealth = 5000
+maxAmmo = 0
+unitName = "Barracks"
+heatSignature = 0.8
+imageSignature = 8.0
+radarSignature = 1.0
+
+[BarracksClass]
+pilotHold = 5
+
+[BuildingClass]
+soundAmbient = "abbarre0.wav"

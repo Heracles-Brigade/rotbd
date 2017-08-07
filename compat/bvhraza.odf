@@ -1,0 +1,71 @@
+[GameObjectClass]
+baseName = "bvhraz"
+classLabel = "wingman"
+scrapValue = 5
+scrapCost = 12
+maxHealth = 3500
+maxAmmo = 1900
+unitName = "Bomber"
+aiName = "TankFriend"
+aiName2 = "TankEnemy"
+heatSignature = 0.9
+imageSignature = 3.5
+radarSignature = 0.1
+
+weaponHard1 = "GC1"
+weaponHard2 = "GR1"
+weaponName2 = "grktbomb"
+weaponHard3 = "GR2"
+weaponName3 = "grktbomb"
+ 
+
+[CraftClass]
+rangeScan = 400.0f
+periodScan = 5.0f
+velocJam = 5.0f
+
+selectAttackMsg = "avhrazvd.wav"
+selectWaitMsg = "avhrazvf.wav"
+selectFollowMsg = "avhrazvh.wav"
+selectGoMsg = "avhrazvg.wav"
+selectOtherMsg = "avhrazvj.wav"
+
+goMsg = "avhrazv0.wav"
+goObjectMsg = "avhrazvg.wav"
+attackMsg = "avhrazv2.wav"
+followMsg = "avhrazv7.wav"
+followMeMsg = "avhrazv3.wav"
+repairMsg = "avhrazv4.wav"
+reloadMsg = "avhrazv5.wav"
+rescueMsg = "avhrazv8.wav"
+recycleMsg = "avhrazv9.wav"
+otherMsg = "avhrazvi.wav"
+
+user1Msg = "avhrazv6.wav"
+killedMsg = "avhrazvk.wav"
+diedMsg = "abetty3.wav"
+
+[HoverCraftClass]
+setAltitude = 1.5
+accelDragStop = 4.0
+accelDragFull = .5
+alphaTrack = 20.0
+alphaDamp = 5.0
+pitchPitch = 0.25
+pitchThrust = 0.1
+rollStrafe = 0.1
+rollSteer = 0.1
+
+velocForward = 25.0
+velocReverse = 20.0
+velocStrafe = 20.0
+accelThrust = 20.0
+accelBrake = 50.0
+omegaSpin = 1.0
+omegaTurn = 0.4
+alphaSteer = 2.0
+accelJump = 10.0
+
+soundThrust = "avhraze0.wav"
+soundTurbo = "avhraze3.wav"
+

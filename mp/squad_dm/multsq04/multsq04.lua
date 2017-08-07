@@ -1,0 +1,1 @@
+require "squad_dm";

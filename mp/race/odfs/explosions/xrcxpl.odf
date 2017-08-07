@@ -1,0 +1,90 @@
+[ExplosionClass]
+classLabel = "explosion"
+
+explRadius = 10.0
+explSound = "xmv1.wav"
+damageRadius = 10.0
+damageBallistic = 0
+damageConcussion = 60000
+damageFlame = 0
+damageImpact = 0
+
+particleTypes = 14
+
+particleClass1 = "xminxpl.light"
+particleCount1 = 1
+particleVeloc1 = "0.0 2.0 0.0"
+particleBias1 = "0.0 5.0 0.0"
+
+particleClass2 = "xminxpl.scorch"
+particleCount2 = 1
+particleVeloc2 = "0.0 0.0 0.0"
+
+particleClass3 = "xminxpl.smokecenter"
+particleCount3 = 1
+particleVeloc3 = "0.0 5.0 0.0"
+particleBias3 = "0.0 9.0 0.0"
+
+particleClass4 = "xminxpl.flamecenter"
+particleCount4 = 1
+particleVeloc4 = "0.0 4.0 0.0"
+particleBias4 = "0.0 8.0 0.0"
+
+particleClass5 = "xminxpl.chunk"
+particleCount5 = 20
+particleVeloc5 = "30.0 8.0 30.0"
+particleBias5 = "0.0 16.0 0.0"
+
+
+particleClass6 = "xminxpl.smokeemit"
+particleCount6 = 4
+particleVeloc6 = "15.0 2.0 15.0"
+particleBias6 = "15.0 4.0 15.0"
+
+particleClass7 = "xminxpl.smokeemit"
+particleCount7 = 4
+particleVeloc7 = "-15.0 2.0 -15.0"
+particleBias7 = "-15.0 4.0 -15.0"
+
+particleClass8 = "xminxpl.smokeemit"
+particleCount8 = 4
+particleVeloc8 = "-15.0 2.0 15.0"
+particleBias8 = "-15.0 4.0 15.0"
+
+particleClass9 = "xminxpl.smokeemit"
+particleCount9 = 4
+particleVeloc9 = "15.0 2.0 -15.0"
+particleBias9 = "15.0 4.0 -15.0"
+
+particleClass10 = "xminxpl.smokeemit"
+particleCount10 = 4
+particleVeloc10 = "15.0 2.0 15.0"
+particleBias10 = "0.0 4.0 20.0"
+
+particleClass11 = "xminxpl.smokeemit"
+particleCount11 = 4
+particleVeloc11 = "-15.0 2.0 -15.0"
+particleBias11 = "0.0 4.0 -20.0"
+
+particleClass12 = "xminxpl.smokeemit"
+particleCount12 = 4
+particleVeloc12 = "15.0 2.0 -15.0"
+particleBias12 = "20.0 4.0 0.0"
+
+particleClass13 = "xminxpl.smokeemit"
+particleCount13 = 4
+particleVeloc13 = "-15.0 2.0 15.0"
+particleBias13 = "-20.0 4.0 0.0"
+
+particleClass14 = "xminxpl.sphere"
+particleCount14 = 1
+particleVeloc14 = "0.0 0.0 0.0"
+
+
+[ExplosionCore]
+renderBase = "draw_multi"
+renderCount = 4
+renderName1 = "xminxpl.scorch"
+renderName2 = "xminxpl.light"
+renderName3 = "xminxpl.smokecenter"
+renderName4 = "xminxpl.flamecenter"

@@ -40,7 +40,7 @@ local function Routine(data)
     Meta(class, {
       routine = {
         name = data.name,
-        delay = 0 or data.delay
+        delay = data.delay or 0
       }
     });
     D(Implements(Serializable, Updateable, BzInit,RoutineInterface), class);
@@ -72,7 +72,7 @@ local RoutineManager = D(
     methods = {
       update = function(dtime)
         for i,v in pairs(self.store.all) do
-          local m = Meta(v).routine
+          local m = Meta(v).routine;
           if(m.running and v:isAlive()) then
             m.acc = m.acc + dtime;
             if(m.acc >= m.delay) then
@@ -80,8 +80,11 @@ local RoutineManager = D(
               m.acc = 0;
             end
           elseif(not v:isAlive()) then
-            self:killRoutine(v);
+            self:killRoutine(m.id);
           end
+          Meta(v,{
+            routine = m
+          });
         end
       end,
       registerClass = function(class)
@@ -90,7 +93,7 @@ local RoutineManager = D(
       end,
       registerInstance = function(i,id)
         self.store.imap[id] = i;
-        super:registerInstance(i);
+        super:registerInstance(i,id);
         return id;
       end,
       startRoutine = function(name,...)
@@ -117,15 +120,26 @@ local RoutineManager = D(
         return self.store.imap[routineId];
       end,
       pauseRoutine = function(routineId)
-        Meta(self:getRoutine(routineId)).routine.running = false;
-        --return self:getRoutine(routineId):stop();
+        local m = Meta(self:getRoutine(routineId));
+        Meta(self:getRoutine(routineId),{
+          routine = assignObject({},m.routine,{
+            running = false
+          });
+        });
+        return self:getRoutine(routineId):stop();
       end,
       resumeRoutine = function(routineId)
-        Meta(self:getRoutine(routineId)).routine.running = true;
+        local m = Meta(self:getRoutine(routineId));
+        Meta(self:getRoutine(routineId),{
+          routine = assignObject({},m.routine,{
+            running = true
+          });
+        });
       end,
       killRoutine = function(routineId)
         if(self.store.imap[routineId]) then
           self.store.imap[routineId]:onDestroy();
+          self:unregisterInstance(routineId);
           self.store.imap[routineId] = nil;
         end
       end,

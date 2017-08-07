@@ -1,0 +1,16 @@
+[GameObjectClass]
+classLabel = "wpnpower"
+baseName = "apspec"
+scrapCost = 0
+scrapValue = 0
+maxHealth = 0
+maxAmmo = 0
+unitName = NULL
+aiName = "PowerUpProcess"
+
+[PowerUpClass]
+soundPickup = "apspec.wav"
+soundReject = "mnu_buzz.wav"
+
+[WeaponPowerupClass]
+weaponName = "grand"

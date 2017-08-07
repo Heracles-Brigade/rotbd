@@ -1,0 +1,6 @@
+[Meta]
+parent="default.race"
+
+
+[Settings]
+laps = 2
