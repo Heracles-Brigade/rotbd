@@ -2,7 +2,8 @@
 	Contributors:
    - Seqan
 	 - GBD
-	 - Mario
+   - Vemahk
+	 - Mari o
 --]]
 require("bz_logging");
 
@@ -21,8 +22,6 @@ local audio = {
 	win = "rbd0208.wav",
 	lose1 = "rbd0201L.wav"
 }
-
-
 
 local M = { --Sets mission flow and progression. Booleans will be changed to "true" as mission progresses. Necessary for save files to function as well as objective flow in later if statements.
 StartDone = false, 
@@ -135,33 +134,33 @@ end
 
 -- 
 local function SpawnArmy()
-	SpawnFromTo("svfigh", "patrol_2", 13, "def1");
-	SpawnFromTo("svfigh", "patrol_2", 14, "def1");
-	SpawnFromTo("svltnk", "patrol_2", 13, "def1");
+	SpawnFromTo("svfigh", "armyspawn1", 1, "def1");
+	SpawnFromTo("svfigh", "armyspawn1", 1, "def1");
+	SpawnFromTo("svltnk", "armyspawn1", 1, "def1");
 	SpawnFromTo("svwalk", "def1", 1, "def1");
 	
-	SpawnFromTo("svtank", "patrol_2", 14, "def2");
-	SpawnFromTo("svhraz", "patrol_2", 14, "def2");
+	SpawnFromTo("svtank", "armyspawn2", 1, "def2");
+	SpawnFromTo("svhraz", "armyspawn2", 1, "def2");
 	SpawnFromTo("svwalk", "def2", 1, "def2");
 	
-	SpawnFromTo("svtank", "patrol_2", 13, "def3");
-	SpawnFromTo("svtank", "patrol_2", 13, "def3");
-	SpawnFromTo("svrckt", "patrol_2", 15, "def3");
-	SpawnFromTo("svrckt", "patrol_2", 13, "def3");
+	SpawnFromTo("svtank", "armyspawn3", 1, "def3");
+	SpawnFromTo("svtank", "armyspawn3", 1, "def3");
+	SpawnFromTo("svrckt", "armyspawn3", 1, "def3");
+	SpawnFromTo("svrckt", "armyspawn3", 1, "def3");
 	
-	SpawnFromTo("svtank", "patrol_2", 15, "def4");
-	SpawnFromTo("svhraz", "patrol_2", 15, "def4");
+	SpawnFromTo("svtank", "armyspawn4", 1, "def4");
+	SpawnFromTo("svhraz", "armyspawn4", 1, "def4");
 	SpawnFromTo("svwalk", "def4", 1, "def4");
 	
-	SpawnFromTo("svltnk", "patrol_2", 14, "def5");
-	SpawnFromTo("svfigh", "patrol_2", 15, "def5");
-	SpawnFromTo("svfigh", "patrol_2", 13, "def5");
+	SpawnFromTo("svltnk", "armyspawn5", 1, "def5");
+	SpawnFromTo("svfigh", "armyspawn5", 1, "def5");
+	SpawnFromTo("svfigh", "armyspawn5", 1, "def5");
 	SpawnFromTo("svwalk", "def5", 1, "def5");
 end
 
-local function keepOutside(h1,h2) -- This is the shield function for the Mammoth.
+local function keepOutside(h1,h2) -- This is the shield function for the Mammoth. Thank you, Mario
   local p = GetPosition(h2);
-  local r = 625;
+  local r = 125;
   local pp = GetPosition(h1);
   local dv = Normalize(pp-p);
   local vel2 = GetVelocity(h2);
@@ -202,9 +201,10 @@ function Update()
 			RemoveObject(navtmp);
 		end
 		
-		-- Old script said the patrol units behave oddly. Patrol command here to make sure they behave as intended
-		Patrol(GetHandle("patrol1_1"), "patrol_1", 1);
-		for i =1, 4 do
+		for i =1, 3 do
+			Patrol(GetHandle("patrol1_" .. i), "patrol_1", 1);
+		end
+		for i =1, 5 do
 			Patrol(GetHandle("patrol2_" .. i), "patrol_2", 1);
 		end
 		
@@ -213,7 +213,7 @@ function Update()
 		
 		-- Pre-play setup complete. Time to start the shit.
 		CameraReady();
-		Aud1 = AudioMessage(audio.intro);
+		Aud1 = AudioMessage("rbdnew0201.wav");
 	end
 	
 	if not M.IsDetected and GetPerceivedTeam(M.Player) == 1 then
@@ -258,7 +258,7 @@ function Update()
 	end
 	
 	if not M.HangarInfoed and IsAlive(M.Hangar) and GetDistance(M.Player, M.Hangar) < 50.0 then
-		Aud1 = AudioMessage(audio.inspect);
+		Aud1 = AudioMessage("rbdnew0203.wav");
 		SpawnNav(2);
 		M.HangarInfoed = true;
 		UpdateObjectives();
@@ -270,11 +270,11 @@ function Update()
 		SetScrap(1, 20);
 		M.TugAquired = true;
 		UpdateObjectives();
-		Aud1 = AudioMessage(audio.first_a);
+		Aud1 = AudioMessage("rbdnew0204.wav");
 		SpawnNav(3);
 	end
 	
-	if not M.ControlDead then
+	if not M.ControlDead and M.OpeningCinDone then
 		keepOutside(M.Player, M.Mammoth);
 		if GetTime() >= M.LastShieldTime then
 			M.LastShieldTime = GetTime() + 3.5;
@@ -283,7 +283,7 @@ function Update()
 	end
 	
 	if not M.ControlDead and M.TugAquired and not IsAlive(M.ControlTower) then
-		Aud1 = AudioMessage(audio.dayw);
+		Aud1 = AudioMessage("rbdnew0205.wav");
 		SpawnNav(4);
 		M.ControlDead = true;
 		SpawnArmy();
@@ -294,11 +294,11 @@ function Update()
 		M.MammothTime = GetTime() + 10.0; -- Wait 10 seconds to gather info.
 		M.MammothReached = true;
 		UpdateObjectives();
-		Aud1 = AudioMessage(audio.second_a);
+		Aud1 = AudioMessage("rbdnew0209.wav");
 	end
 	
     if M.MammothReached and not M.MammothInfoed and GetTime() > M.MammothTime then
-        Aud1 = AudioMessage(audio.flee);
+        Aud1 = AudioMessage("rbdnew0206.wav");
         StartCockpitTimer(120, 60, 30);
         SpawnNav(5);
         M.MammothInfoed = true;
@@ -317,7 +317,7 @@ function Update()
 	
 		-- Win Conditions:
 		if M.MammothInfoed and GetDistance(M.Player, ObjectiveNav) < 50.0 then
-			Aud1 = AudioMessage(audio.win);
+			Aud1 = AudioMessage("rbdnew0210.wav");
 			SucceedMission(GetTime()+5.0, "rbdnew02wn.des");
 			M.MissionOver = true;
 			M.SafetyReached = true;
