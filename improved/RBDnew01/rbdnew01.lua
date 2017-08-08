@@ -635,6 +635,7 @@ local intermediate = mission.Objective:define("intermediate"):init({
             if(self.enemiesAtStart) then
                 UpdateObjective("bdmisn311.otf","green");
             end
+            AudioMessage(audio.recycler);
             local recy = BuildObject("bvrecy22",1,"recy_spawn");
             local e1 = BuildObject("bvtank1",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
             local e2 = BuildObject("bvtank1",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
@@ -658,7 +659,6 @@ local intermediate = mission.Objective:define("intermediate"):init({
         self.timer, self.recy, self.recyspawned = ...;
     end,
     success = function(self)
-        AudioMessage(audio.recycler);
         globals.keepGTsAtFullHealth = true;
         --Spawn in recycler
         --Recycler escort

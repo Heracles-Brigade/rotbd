@@ -13,6 +13,13 @@ local pwers = {};
 require("bz_logging");
 
 
+--[[
+  Notes:
+    - Damage base when player arrives
+    - MAYBE: let nsdf rebuild destroyed buildings
+    - Some furies attack when the player has secured the site
+]]
+
 local captureRelic = mission.Objective:define("captureRelic"):createTasks(
   "findRelic", "secureSite"
 ):setListeners({
