@@ -1,11 +1,11 @@
 [GameObjectClass]
-baseName = "hblaba"
+baseName = "hbgate"
 classLabel = "i76building"
-scrapCost = 25
-scrapValue = 15
-maxHealth = 12500
+scrapCost = 0
+scrapValue = 0
+maxHealth = 0
 maxAmmo = 0
-unitName = "Hangar"
+unitName = "Hadean Ruins"
 heatSignature = 1.0
 imageSignature = 2.0
 radarSignature = 0.5

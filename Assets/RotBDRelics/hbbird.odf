@@ -1,15 +1,15 @@
 [GameObjectClass]
-baseName = "hblaba"
+baseName = "hbbird"
 classLabel = "i76building"
-scrapCost = 25
-scrapValue = 15
-maxHealth = 12500
+scrapCost = 45
+scrapValue = 35
+maxHealth = 450000
 maxAmmo = 0
-unitName = "Hangar"
+unitName = "Alien Craft"
 heatSignature = 1.0
 imageSignature = 2.0
 radarSignature = 0.5
 
 [BuildingClass]
-soundAmbient = "sbcomme0.wav"
+soundAmbient = "avartle1.wav"
 
