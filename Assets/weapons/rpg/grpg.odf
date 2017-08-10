@@ -8,5 +8,5 @@ wpnPriority = 0
 wpnCategory = "CANN"
 
 [CannonClass]
-shotDelay = 2.5
+shotDelay = 1.5
 
