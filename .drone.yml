@@ -38,7 +38,7 @@ pipeline:
       - curl --data "content=[New release](https://media.studynator.me/rotbd/builds/branches/${DRONE_BRANCH}/rotbd1.5c_latest.zip)&username=Release&avatar_url=https://raw.githubusercontent.com/Aborysa/rotbd/master/rotbd2.png" ${WEBHOOK}
     volumes:
       - /root/studynator/nginx-fs/private/rotbd/builds/branches:/drone/deploy
-    secrets: [WEBHOOK]
+
   release:
     group: deploy
     image: docker.studynator.me/bzone/bztools:latest
