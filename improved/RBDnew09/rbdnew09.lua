@@ -5,12 +5,20 @@ local bzRoutine = require("bz_routine");
 local misc = require("misc");
 
 local IsIn = OOP.isIn;
+local joinTables = OOP.joinTables;
 local PatrolController = require("patrolc");
 local mission = require('cmisnlib');
 
 local pwers = {};
 require("bz_logging");
 
+
+--[[
+  Notes:
+    - Damage base when player arrives
+    - MAYBE: let nsdf rebuild destroyed buildings
+    - Some furies attack when the player has secured the site
+]]
 
 local captureRelic = mission.Objective:define("captureRelic"):createTasks(
   "findRelic", "secureSite"
@@ -80,15 +88,32 @@ local captureRelic = mission.Objective:define("captureRelic"):createTasks(
 });
 
 local defendSite = mission.Objective:define("defendSite"):createTasks(
-  "waves", "stuff"
+  "waves", "kill_all"
 ):setListeners({
+  init = function(self)
+    self.wave_count = 4;
+  end,
   start = function(self)
     local p = GetPosition("nsdf_outpost");
     p.y = GetTerrainHeightAndNormal(p) + 500;
     self.recy = BuildObject("bvrecy",1,p);
     SetPosition(self.recy,p);
-    self:call("_setTimer",60*5);
+    SetScrap(1,30);
+    self.fury_units = {};
     self.wave = 0;
+    self:startTask("waves");
+  end,
+  task_start = function(self,task)
+    if(task == "waves") then
+      self:call("_setTimer",60*5);
+    end
+  end,
+  task_success = function(self,task)
+    if(task == "waves") then
+      self:startTask("kill_all");
+    else
+      self:success();
+    end
   end,
   _setTimer = function(self,limit)
     self.timer = misc.Timer(limit,false);
@@ -100,20 +125,30 @@ local defendSite = mission.Objective:define("defendSite"):createTasks(
       self.sub:unsubscribe();
     end
     self.sub = self.timer:onAlarm():subscribe(function()
-      self:call("_nextWave");
+      if(self:isTaskActive("waves")) then
+        self:call("_nextWave");
+      else
+      end
     end);
   end,
   _nextWave = function(self)
     self.wave = self.wave + 1;
-    self:call("_setTimer",60);
-    self.fury_units = mission.spawnInFormation2({"1 2 1 2", "2 1 2 1"},"fury_spawn_1",{"hvsat","hvsav"},3);
+    self.fury_units = joinTables(self.fury_units,mission.spawnInFormation2({"1 2 1 2", "2 1 2 1"},"fury_spawn_1",{"hvsat","hvsav"},3));
     for i, v in pairs(self.fury_units) do
       Goto(v,"nsdf_outpost");
+    end
+    if(self.wave < self.wave_count) then
+      self:call("_setTimer",60);
+    else
+      self:taskSucceed("waves");
     end
   end,
   update = function(self,dtime)
     if(self.timer) then
       self.timer:update(dtime);
+    end
+    if(self:isTaskActive("kill_all") and mission.areAllDead(self.fury_units)) then
+      self:taskSucceed("kill_all");
     end
   end,
   save = function(self)
@@ -130,6 +165,9 @@ local defendSite = mission.Objective:define("defendSite"):createTasks(
     self.wave = data.wave;
     self.fury_units = data.fury_units;
     self:call("_subToTimer");
+  end,
+  success = function(self)
+    SucceedMission(GetTime() + 5,"rbdmisn29wn.des");
   end
 });
 

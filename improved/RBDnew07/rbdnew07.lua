@@ -6,8 +6,19 @@ local mission = require('cmisnlib');
 local globals = {};
 local tracker = mission.UnitTracker:new();
 
+-- NOTES:
+--[[
+1) Remove decorative gesyers in middle-map CHECK
+2) Enemy Tugs speed 5m/s CHECK
+3) Enemy Tug wingmen are two scouts/fighters CHECK
+4) Increase pickup zone radius but keep it where it is imho CHECK
+5) Allied Grizzlies show up at base to assist when Distress Call happens
+]]
 
-
+--[[
+  Make escort smaller:
+    two scouts/fighters
+]]
 
 --"Warming" up the RNG
 for i=1, math.random(100,1000) do
@@ -56,6 +67,21 @@ local des = {
   relic_destroyed = "rbd07l03.des"
 }
 
+local audio = {
+  intro = "rbd0701.wav",
+  surrender = "rbd0702.wav",
+  relic = "rbd0703.wav",
+  relic_secured_1 = "rbd0704.wav",
+  distress = "rbd0705.wav",
+  trap = "rbd0706.wav",
+  win = "rbd07wn.wav",
+  tug_loss = "rbd0701L.wav",
+  enemy_tug = "rbd0701W.wav",
+  attack_wave = "rbd0702W.wav",
+  enemy_got_relic = "rbd0703W.wav",
+  enemy_captured_relic = "rbd0702L.wav"
+}
+
 --the tug's label
 local tugL = "relic_tug";
 
@@ -87,6 +113,7 @@ local escortRecycler = mission.Objective:define("escortRecycler"):createTasks(
     --waves start
     self.attackers = {};
     AddObjective(otfs.escort,"white");
+    AudioMessage(audio.intro);
   end,
   task_success = function(self,name,first,first_s,a1,a2)
     if(a1 == "attack_wait") then
@@ -127,7 +154,7 @@ local escortRecycler = mission.Objective:define("escortRecycler"):createTasks(
       end
     end
     if(self:isTaskActive("escort")) then
-      if(GetDistance(GetRecyclerHandle(),"bdog_base") < 50) then
+      if(GetDistance(GetRecyclerHandle(),"bdog_base") < 100) then
         self:taskSucceed("escort");
       end
     end
@@ -151,6 +178,7 @@ local escortRecycler = mission.Objective:define("escortRecycler"):createTasks(
 --setUpBase objective that isn't currently used
 local setUpBase = mission.Objective:define("setUpBase"):setListeners({
   start = function()
+    AudioMessage(audio.surrender);
     AddObjective(otfs.createBase);
   end,
   update = function(self)
@@ -242,6 +270,7 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
       nsdf = math.abs(ranC-1)*self.waveInterval + self.waveInterval
     };
     self.distressCountdown = 5;
+    self.audio_played = false;
     AddObjective(otfs.relics,"white",16);
   end,
   update = function(self,dtime)
@@ -288,7 +317,7 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
         tug_sequencer:queue2("Dropoff",("%s_base"):format(f));
 
         --Create escort
-        for i,v in pairs(mission.spawnInFormation2({"2 3","1 1"},s,self.vehicles[f],2,15)) do
+        for i,v in pairs(mission.spawnInFormation2({"1 1"},s,self.vehicles[f],2,15)) do
           local def_seq = mission.TaskManager:sequencer(v);
           def_seq:queue2("Defend2",tug);
           --If tug dies, attack the players base
@@ -378,6 +407,10 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
     local fac = self.enemies[name];
     if(name == "relic_cca" or name == "relic_nsdf") then
       UpdateObjective(otfs[("%s_tug"):format(fac)],"green");
+      if(not self.audio_played) then
+        AudioMessage(audio.relic_secured_1);
+        self.audio_played = true;
+      end
     end
     if(name == "distress") then
       UpdateObjective(otfs[("%s_distress"):format(self.distress_faction)],"green");
@@ -394,7 +427,7 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
         --If we have picked up one of the relics
         if(name == pickup_task) then
           --AI has no time to lose
-          self.bufferTime[faction] = math.min(self.bufferTime[faction],30);
+          self.bufferTime[faction] = math.min(self.bufferTime[faction],10);
           self.bufferTime[other_faction] = math.min(self.bufferTime[other_faction],180);
           --If there hasn't been a distress call yet
           if(self:hasTaskSucccededBefore(other_pickup_task) and (not self:hasTaskStarted("distress"))) then
@@ -452,11 +485,22 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
   end,
   save = function(self)
     --Vars we need to save
-    return self.distress_faction, self.bufferTime,self.spawnedEnemyTugs,self.waveTimer,self.distressCountdown;
+    return 
+      self.distress_faction, 
+      self.bufferTime,
+      self.spawnedEnemyTugs,
+      self.waveTimer,
+      self.distressCountdown,
+      self.audio_played;
   end,
   load = function(self,...)
     --Vars we need to load
-    self.distress_faction,self.bufferTime,self.spawnedEnemyTugs,self.waveTimer,self.distressCountdown = ...;
+    self.distress_faction,
+    self.bufferTime,
+    self.spawnedEnemyTugs,
+    self.waveTimer,
+    self.distressCountdown,
+    self.audio_played = ...;
   end,
   fail = function(self,kind)
     FailMission(GetTime() + 5,des[kind]);

@@ -97,7 +97,7 @@ local RoutineManager = D(
         return id;
       end,
       startRoutine = function(name,...)
-        --Return routine ID      ¨
+        --Return routine ID
         assert(self.store.classes[name],"No routine named " .. tostring(name));
         local i = self.store.classes[name]:new();
         local id = ("%s_%d"):format(name,self.nextId);

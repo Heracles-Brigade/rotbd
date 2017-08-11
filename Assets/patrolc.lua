@@ -60,8 +60,13 @@ local PatrolController = Decorate(
       giveRoute = function(handle)
         local o = self.patrol_units[handle];
         local pair = self:getRandomRoute(o.location);
+        local c = 0;
         while( (pair~=nil) and ((pair.location == o.oldLocation) and #self.path_map[o.location] > 1)) do
           pair = self:getRandomRoute(o.location);
+          c = c + 1;
+          if(c > 10) then
+            break;
+          end
         end
         if(pair) then
           o.oldLocation = o.location;
@@ -115,7 +120,7 @@ local PatrolController = Decorate(
       end,
       onInit = function(handles)
         for i,v in pairs(handles or {}) do
-          self:addHandle(handle);
+          self:addHandle(v);
         end
       end,
       onAddObject = function()

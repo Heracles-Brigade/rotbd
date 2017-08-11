@@ -9,6 +9,10 @@ local TaskSequencer;
 local TaskManager;
 
 
+local function isBzr() 
+    return string.gmatch(GameVersion, "%d+")() == "2";
+end
+
 local function fixTugs()
     for v in AllCraft() do
         if(HasCargo(v)) then
@@ -794,6 +798,8 @@ MissionManager = {
     end
 }
 
+
+
 return {    
     Objective = Objective,
     Update = MissionManager.Update,
@@ -813,5 +819,6 @@ return {
     areAnyDead = areAnyDead,
     TaskManager = TaskManager,
     createWave = createWave,
-    fixTugs = fixTugs
+    fixTugs = fixTugs,
+    isBzr = isBzr
 }

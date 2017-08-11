@@ -53,6 +53,16 @@ local function applyMeta(obj,metadata)
   return obj;
 end
 
+local function joinTables(...)
+  local n = {};
+  for i, v in ipairs({...}) do
+    for i2, v2 in ipairs(v) do
+      n[#n+1] = v2;
+    end
+  end
+  return n;
+end
+
 local function getMeta(obj)
   assert(obj,"Can't get meta of nil'",4);
   return copyTable(metaObj[obj] or {});
@@ -437,7 +447,8 @@ local OOP = {
   Implements = Implements,
   getClassRef = getClassRef,
   getClass = getClass,
-  isIn = isIn
+  isIn = isIn,
+  joinTables = joinTables
 };
 
 

@@ -13,7 +13,6 @@ local bzRoutine = require("bz_routine");
 local bzObjects = require("bz_objects");
 
 local IsIn = OOP.isIn;
-local ConstructorAi = buildAi.ConstructorAi;
 local ProducerAi = buildAi.ProducerAi;
 local ProductionJob = buildAi.ProductionJob;
 local PatrolController = require("patrolc");
@@ -24,8 +23,11 @@ SetAIControl(3,false);
 
 --[[
 TODO:
-  * add fail for leaving relic too early
-  * might be better to check relics health instead of using GetWhoShotMe
+  * split CCA in two forces
+    - the first one arrives and attacks the player's forces
+    - the second one arrives as the DW is landing and is set to just be near the relics
+    
+
 ]]
 
 local audio = {
@@ -131,6 +133,11 @@ local intro = mission.Objective:define("introObjective"):createTasks(
   _forEachProduced1 = function(self,job,handle)
     --For each unit produced for the player, set the team number to 1
     SetTeamNum(handle,1);
+  end,
+  delete_object = function(self,handle)
+    if(not IsValid(GetConstructorHandle(3))) then
+      ProducerAi:queueJob(ProductionJob("bvcnst",3));
+    end
   end,
   _doneProducing1 = function(self,bundle,handle)
     --When all the player's units have been made, succeed wait_for_units
