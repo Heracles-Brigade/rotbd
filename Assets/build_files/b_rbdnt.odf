@@ -1,9 +1,9 @@
 [Builder]
-buildName = "Buildings"
+buildName = "Misc"
 buildTeam = 0
 buildItem1 = "eggeizr1"
 buildItem2 = "sfield"
-buildItem3 = ""
+buildItem3 = "aprpg"
 buildItem4 = ""
 buildItem5 = ""
 buildItem6 = "hbgate"

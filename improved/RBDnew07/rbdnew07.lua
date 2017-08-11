@@ -6,6 +6,14 @@ local mission = require('cmisnlib');
 local globals = {};
 local tracker = mission.UnitTracker:new();
 
+-- NOTES:
+--[[
+1) Remove decorative gesyers in middle-map CHECK
+2) Enemy Tugs speed 5m/s CHECK
+3) Enemy Tug wingmen are two scouts/fighters CHECK
+4) Increase pickup zone radius but keep it where it is imho CHECK
+5) Allied Grizzlies show up at base to assist when Distress Call happens
+]]
 
 --[[
   Make escort smaller:
@@ -146,7 +154,7 @@ local escortRecycler = mission.Objective:define("escortRecycler"):createTasks(
       end
     end
     if(self:isTaskActive("escort")) then
-      if(GetDistance(GetRecyclerHandle(),"bdog_base") < 50) then
+      if(GetDistance(GetRecyclerHandle(),"bdog_base") < 100) then
         self:taskSucceed("escort");
       end
     end
@@ -309,7 +317,7 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
         tug_sequencer:queue2("Dropoff",("%s_base"):format(f));
 
         --Create escort
-        for i,v in pairs(mission.spawnInFormation2({"2 3","1 1"},s,self.vehicles[f],2,15)) do
+        for i,v in pairs(mission.spawnInFormation2({"1 1"},s,self.vehicles[f],2,15)) do
           local def_seq = mission.TaskManager:sequencer(v);
           def_seq:queue2("Defend2",tug);
           --If tug dies, attack the players base
@@ -419,7 +427,7 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
         --If we have picked up one of the relics
         if(name == pickup_task) then
           --AI has no time to lose
-          self.bufferTime[faction] = math.min(self.bufferTime[faction],30);
+          self.bufferTime[faction] = math.min(self.bufferTime[faction],10);
           self.bufferTime[other_faction] = math.min(self.bufferTime[other_faction],180);
           --If there hasn't been a distress call yet
           if(self:hasTaskSucccededBefore(other_pickup_task) and (not self:hasTaskStarted("distress"))) then

@@ -37,7 +37,7 @@ BackdropHeight  = 100
 [Stars]
 Radius      = 300
 
-Texture00   = smjovian.map
+Texture00   = iojovian.map
 Size00      = 500
 Azimuth00   = 100
 Elevation00 = 15
