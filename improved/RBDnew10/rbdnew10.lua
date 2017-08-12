@@ -414,6 +414,7 @@ local defend_and_escort = mission.Objective:define("defend_and_escort"):createTa
     self.furies = {};
     self:startTask("fury_attack");
     self:startTask("build_transports");
+    AudioMessage(audio.evacuate);
   end,
   _setUpProdListeners = function(self,id,done,each)
     local job = ProducerAi:getBundle(id);
@@ -462,7 +463,8 @@ local defend_and_escort = mission.Objective:define("defend_and_escort"):createTa
     FailMission(GetTime()+5.0,fail_des[what]);
   end,
   success = function(self)
-    SucceedMission(GetTime()+5.0,"rbd10w01.des");
+    AudioMessage(audio.shaw);
+    SucceedMission(GetTime()+10.0,"rbd10w01.des");
   end,
   save = function(self)
     return self.transports, self.launchpad, self.furies;
