@@ -1,0 +1,118 @@
+[GameObjectClass] // Special BDOG Armory for BDOG mission 29. Limited build tree.
+baseName = "bvslf"
+classLabel = "armory"
+collisionRadius = 5.0
+scrapValue = 5
+scrapCost = 6
+buildTime = 10.0
+maxHealth = 6000
+maxAmmo = 0
+unitName = "Armory"
+aiName = "SLFFriend"
+aiName2 = "SLFEnemy"
+heatSignature = 0.5
+imageSignature = 2.0
+radarSignature = 1.0
+
+weaponHard1 = "gs2"
+weaponName1 = "gobject"
+
+[CraftClass]
+rangeScan = 500.0
+periodScan = 5.0
+velocJam = 0.0
+selectOtherMsg = "avslfv0.wav"
+selectGoMsg = "avslfve.wav"
+selectUser2Msg = "avslfvo.wav"
+selectUser1Msg = "avslfvp.wav"
+
+otherMsg = "avslfvg.wav"
+goMsg = "avslfv7.wav"
+repairMsg = "avslfvh.wav"
+attackMsg = "avslfvd.wav"
+followMsg = "avslfv8.wav"
+recycleMsg = "avslfg.wav"
+
+selectAttackMsg = "avslfvf.wav"
+killedMsg = "avslfv2.wav"
+reloadMsg = "avslfvn.wav"
+rescueMsg = "avslfv3.wav"
+User1Msg = "avslfv4.wav"
+User2Msg = "avslfvk.wav"
+
+deployedMsg = "avslfvp.wav"
+packedMsg = "avslfvc.wav"
+diedMsg = "abetty1.wav"
+
+[HoverCraftClass]
+setAltitude = 1.5
+accelDragStop = 4.0
+accelDragFull = 1.0
+alphaTrack = 20.0
+alphaDamp = 5.0
+pitchPitch = 0.1
+pitchThrust = 0.05
+rollStrafe = 0.05
+rollSteer = 0.05
+
+velocForward = 15.0
+velocReverse = 15.0
+velocStrafe = 15.0
+accelThrust = 50.0
+accelBrake = 20.0
+omegaSpin = 2.0
+omegaTurn = 1.0
+alphaSteer = 5.0
+accelJump = 0.0
+
+soundThrust = "avslfe6.wav"
+soundSteer = "avslfe9.wav"
+soundDeploy = "avslfe3.wav"
+soundUndeploy = "avslfe5.wav"
+
+[ProducerClass]
+timeDeploy = 5.0
+timeUndeploy = 5.0
+timeRepair = 1.0
+healthRepair = 100
+scrapHold = 5
+pilotHold = 0
+buildItem1 = "aprepa"
+buildItem2 = "apammo"
+buildItem3 = "apcamr"
+buildItem4 = "apwrck"
+
+blockedGeyserMsg = "avslfvb.wav"
+
+soundBuild = "avslfe1.wav"
+
+
+[ArmoryClass]
+cannonItem1 = "apmini"
+cannonItem2 = "apstab"
+cannonItem3 = "apsstb"
+//cannonItem4 = "apmagg"
+//cannonItem5 = "apflsh"
+//cannonItem6 = "apbolt"
+
+rocketItem1 = "apshdw"
+rocketItem2 = "aphorn"
+//rocketItem3 = "apcmet"
+//rocketItem4 = "aptagg"
+//rocketItem5 = "apsand"
+rocketItem3 = "aprktb"
+
+//mortarItem1 = "apmort"
+mortarItem1 = "apmdmg"
+//mortarItem3 = "appopg"
+mortarItem2 = "apspln"
+
+//specialItem1 = "apflar"
+//specialItem2 = "apmcur"
+//specialItem3 = "apmits"
+//specialItem4 = "approx"
+specialItem1 = "apthmp"
+//specialItem6 = "apredf"
+//specialItem7 = "apphan"
+//specialItem8 = "apsite"
+//specialItem9 = "apmasg"

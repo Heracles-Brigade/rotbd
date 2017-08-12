@@ -1,0 +1,84 @@
+[GameObjectClass]
+baseName = "bvmuf"
+classLabel = "factory"
+scrapValue = 9
+scrapCost = 12
+maxHealth = 6000
+maxAmmo = 0
+unitName = "Factory"
+aiName = "MUFFriend"
+aiName2 = "MUFEnemy"
+heatSignature = 0.1
+imageSignature = 4.0
+radarSignature = 1.0
+
+[CraftClass]
+rangeScan = 1000.0
+periodScan = 5.0
+velocJam = 0.0
+
+selectUser1Msg = "avmufve.wav"
+selectGoMsg = "avmufvd.wav"
+selectReadyMsg = "avmufv0.wav"
+selectUser2Msg = "avmufvc.wav"
+
+goMsg = "avmufv3.wav"
+repairMsg = "avmufvh.wav"
+attackMsg = "avmufv5.wav"
+followMsg = "avmufv4.wav"
+reloadMsg = "avmufv1.wav"
+rescueMsg = "avmufv2.wav"
+recycleMsg = "avmufv6.wav"
+
+deployedMsg = "avmufvf.wav"
+packedMsg = "avmufvb.wav"
+diedMsg = "abetty3.wav"
+
+[HoverCraftClass]
+setAltitude = 1.5
+accelDragStop = 4.0
+accelDragFull = 1.0
+alphaTrack = 20.0
+alphaDamp = 5.0
+pitchPitch = 0.1
+pitchThrust = 0.05
+rollStrafe = 0.05
+rollSteer = 0.05
+
+velocForward = 15.0
+velocReverse = 10.0
+velocStrafe = 10.0
+accelThrust = 50.0
+accelBrake = 20.0
+omegaSpin = 2.0
+omegaTurn = 1.0
+alphaSteer = 5.0
+accelJump = 0.0
+
+soundThrust = "avmufe2.wav"
+soundSteer = "avmufe6.wav"
+soundDeploy = "avmufe1.wav"
+soundUndeploy = "avmufe3.wav"
+
+[ProducerClass]
+timeDeploy = 5.0
+timeUndeploy = 5.0
+timeRepair = 1.0
+healthRepair = 100
+scrapHold = 10
+pilotHold = 5
+buildItem1 = "bvtank"
+buildItem2 = "bvltnk"
+buildItem3 = "bvhaul"
+buildItem4 = "bvartl"
+buildItem5 = "bvmine"
+buildItem6 = "bvrckt"
+buildItem7 = "bvapc"
+buildItem8 = "bvhraz"
+buildItem9 = "bvwalk"
+buildItem10 = "svmtnk30"
+buildItem11 = "bvhaul30"
+blockedGeyserMsg = "avmufva.wav"
+
+soundBuild = "avmufe5.wav"
+soundFinish = "avmufe4.wav"
