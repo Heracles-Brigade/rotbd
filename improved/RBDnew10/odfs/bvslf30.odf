@@ -1,4 +1,4 @@
-[GameObjectClass] // Special BDOG Armory for BDOG mission 29. Limited build tree.
+[GameObjectClass]
 baseName = "bvslf"
 classLabel = "armory"
 collisionRadius = 5.0
@@ -91,7 +91,7 @@ soundBuild = "avslfe1.wav"
 cannonItem1 = "apmini"
 cannonItem2 = "apstab"
 cannonItem3 = "apsstb"
-//cannonItem4 = "apmagg"
+cannonItem4 = "aphade"
 //cannonItem5 = "apflsh"
 //cannonItem6 = "apbolt"
 
