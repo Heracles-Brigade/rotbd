@@ -24,18 +24,29 @@ local buildAi = require("buildAi");
 local ProducerAi = buildAi.ProducerAi;
 local ProductionJob = buildAi.ProductionJob;
 
+local isIn = OOP.isIn;
+
+
 local fail_des = {
   lpad = "rbd10l01.des",
   const = "rbd10l02.des",
   transports = "rbd10l04.des",
-  recycler = "rbd10l03.des"
+  recycler = "rbd10l03.des",
+  factory = "rbd10l04.des"
 };
 
 
 local units = {
   nsdf = {"avfigh","avtank","avrckt","avhraz","avapc","avwalk", "avltnk"},
-  cca = {"svfigh","svtank","svrckt","svhraz","svapc","svwalk", "svltnk"}
+  cca = {"svfigh","svtank","svrckt","svhraz","svapc","svwalk", "svltnk"},
+  fury = {"hvsat","hvsav"}
 };
+
+
+local fury_waves = {
+  {item = {"1 1", "2 2"}, chance = 10},
+  {item = {"  1 1  ", "2 2 2 2"}, chance = 5},
+}
 
 local light_waves = {
   {item = {" 2 ", "1 1"}, chance = 7},
@@ -46,8 +57,8 @@ local heavy_waves = {
   {item = {" 2 ", "7 1"}, chance = 7}, --LIGHT
   {item = {"2 7 2", "3 1 1"}, chance = 7}, --ASSAULT
   {item = {"3 2", "4 4"}, chance = 5}, --BOMBER
-  {item = {" 5 ", "7 7"}, chance = 4}, --APC
-  {item = {"  6  ", "6 3 2"}, chance = 2} --WALKER
+  {item = {" 5 ", "5 7 7"}, chance = 4}, --APC
+  {item = {" 6 ", "3 2"}, chance = 2} --WALKER
 }
 
 function FindTarget(handle,alt,sequencer)
@@ -61,7 +72,6 @@ function FindTarget(handle,alt,sequencer)
   else
     sequencer:queue(AiCommand["Hunt"]);
   end
-  
 end
 
 local function choose(...)
@@ -86,11 +96,9 @@ local function chooseA(...)
   end
 end
 
-local function spawnWave(wave_table)
-  local fac = choose("nsdf","cca");
-  local location = choose("east","west",fac);
-  local w_type = chooseA(unpack(wave_table));
-  local units, lead = mission.spawnInFormation2(w_type,("%s_wave"):format(location),units[fac],2);
+local function spawnWave(wave_table,faction,location)
+  print("Spawn Wave",wave_table,faction,location,units[faction]);
+  local units, lead = mission.spawnInFormation2(wave_table,("%s_wave"):format(location),units[faction],2);
   for i, v in pairs(units) do
     local s = mission.TaskManager:sequencer(v);
     if(v == lead) then
@@ -100,6 +108,7 @@ local function spawnWave(wave_table)
     end
     s:queue3("FindTarget","bdog_base");
   end
+  return units;
 end
 
 
@@ -115,19 +124,43 @@ local waveSpawner = Decorate(
       self.timer = 0;
       self.variance = 0;
       self.c_variance = 0;
+      self.wave_subject = rx.Subject.create();
     end,
     methods = {
       isAlive = function()
         return self.waves_left > 0;
       end,
       save = function()
-        return self.wave_frequency, self.waves_left, self.timer, self.variance, self.c_variance, self.wave_type;
+        return self.wave_frequency, 
+          self.waves_left, 
+          self.timer, 
+          self.variance, 
+          self.c_variance, 
+          self.wave_types,
+          self.factions,
+          self.locations;
       end,
       load = function(...)
-        self.wave_frequency, self.waves_left, self.timer, self.variance, self.c_variance, self.wave_type = ...;
+        self.wave_frequency, 
+          self.waves_left, 
+          self.timer, 
+          self.variance, 
+          self.c_variance, 
+          self.wave_types,
+          self.factions,
+          self.locations = ...;
+      end,
+      onWaveSpawn = function()
+        return self.wave_subject;
       end,
       onInit = function(...)
-        self.wave_frequency, self.waves_left, self.variance, self.wave_type = ...;
+        self.factions,
+          self.locations,
+          self.wave_frequency, 
+          self.waves_left, 
+          self.variance, 
+          self.wave_types = ...;
+
         local f = self.wave_frequency*self.variance;
         self.c_variance =  f + 2*f*math.random();
       end,
@@ -141,7 +174,16 @@ local waveSpawner = Decorate(
           local f = self.wave_frequency*self.variance;
           self.c_variance =  f + 2*f*math.random();
           self.waves_left = self.waves_left - 1;
-          spawnWave(self.wave_type);
+          local fac = choose(unpack(self.factions));
+          local locations = {};
+          for i, v in pairs(self.locations) do
+            if (not isIn(v,self.factions)) or (isIn(v,self.factions) and fac==v) then
+              table.insert(locations,v);
+            end
+          end
+          local location = choose(unpack(locations));
+          local w_type = chooseA(unpack(self.wave_types));
+          self.wave_subject:onNext(spawnWave(w_type,fac,location));
         end
       end
     }
@@ -279,26 +321,27 @@ local build_launchpad = mission.Objective:define("build_launchpad"):createTasks(
     self.wave_timer = 0;
     self.factory_timer = 60*15;
     self.waves = {
-      [0] = {
+      [("%d"):format(0)] = {
         --{frequency,wave_count,variance,wave_type}
-        {1/120,5,0.5,heavy_waves},
-        {1/60,5,0.1,light_waves}
+        {1/120,8,0.5,heavy_waves},
+        {1/60,10,0.1,light_waves}
       },
-      [16*60] = {
+      [("%d"):format(16*60)] = {
         {1/60,15,0.1,heavy_waves}
       },
-      [15*60] = {
-        {1/160,10,0.5,heavy_waves},
-        {1/160,10,0.5,heavy_waves}
+      [("%d"):format(15*60)] = {
+        {1/160,9,0.2,heavy_waves},
+        {1/160,9,0.2,heavy_waves}
       }
     }
   end,
   task_start = function(self,name)
     if(name == "order_to_build") then
-      bzRoutine.routineManager:startRoutine("waveSpawner",1/70,5,0.05,light_waves);
+      bzRoutine.routineManager:startRoutine("waveSpawner",{"cca","nsdf"},{"east","west","cca","nsdf"},1/70,5,0.05,light_waves);
     elseif(name == "build_lpad") then
       AddObjective("rbd1002.otf");
       local btime = misc.odfFile("ablpadx"):getFloat("GameObjectClass","buildTime");
+      self.factory_timer = math.min(self.factory_timer,btime);
       StartCockpitTimer(btime);
     end
   end,
@@ -308,7 +351,7 @@ local build_launchpad = mission.Objective:define("build_launchpad"):createTasks(
       self:startTask("factory_spawn");
       RemoveObjective("rbd1001.otf");
     end
-    if(self:hasTasksSucceeded("build_lpad","order_to_build")) then
+    if(self:hasTasksSucceeded("build_lpad","order_to_build","factory_spawn")) then
       UpdateObjective("rbd1002.otf","green");
       self:success();
     end
@@ -343,9 +386,9 @@ local build_launchpad = mission.Objective:define("build_launchpad"):createTasks(
     elseif(self:isTaskActive("build_lpad")) then
       self.wave_timer = self.wave_timer + dtime;
       for i, v in pairs(self.waves) do
-        if(self.wave_timer > i) then
+        if(self.wave_timer > tonumber(i)) then
           for i2, wave_args in ipairs(v) do
-            bzRoutine.routineManager:startRoutine("waveSpawner",unpack(wave_args));
+            bzRoutine.routineManager:startRoutine("waveSpawner",{"cca","nsdf"},{"east","west","cca","nsdf"},unpack(wave_args));
           end
           self.wave_timer = 0;
           self.waves[i] = nil;
@@ -363,6 +406,8 @@ local build_launchpad = mission.Objective:define("build_launchpad"):createTasks(
         ProducerAi:queueJobs(ProductionJob:createMultiple(3,"svmtnk30",1));
         self:taskSucceed("factory_spawn");
       end
+    elseif(self:hasTasksSucceeded("factory_spawn") and not IsAlive(GetFactoryHandle())) then
+      self:fail("factory");
     end
   end,
   delete_object = function(self,handle)
@@ -406,13 +451,12 @@ local build_launchpad = mission.Objective:define("build_launchpad"):createTasks(
 });
 
 local defend_and_escort = mission.Objective:define("defend_and_escort"):createTasks(
-  "fury_attack", "build_transports", "escort_transports"
+  "build_transports", "escort_transports"
 ):setListeners({
   start = function(self,launchpad)
     self.transports = {};
     self.launchpad = launchpad;
     self.furies = {};
-    self:startTask("fury_attack");
     self:startTask("build_transports");
     AudioMessage(audio.evacuate);
   end,
@@ -437,10 +481,17 @@ local defend_and_escort = mission.Objective:define("defend_and_escort"):createTa
   end,
   task_start = function(self,name)
     if(name == "build_transports") then
+      self.fury_id = bzRoutine.routineManager:startRoutine("waveSpawner",{"fury"},{"fury"},1/30,5,0.05,fury_waves);
+      bzRoutine.routineManager:getRoutine(self.fury_id):onWaveSpawn():subscribe(function(...)
+        self:call("_fury_spawn",...);
+      end);
       self.transport_job = ProducerAi:queueJobs(ProductionJob:createMultiple(3,"bvhaul30",1));
       self:call("_setUpProdListeners",self.transport_job,"_transports_done","_each_transport");
     elseif(name == "escort_transports") then
       --Make furies target transports
+      for i, v in pairs(self.furies) do
+        Attack(v,choose(unpack(self.transports)));
+      end
       AddObjective("rbd1003.otf");
       for i, v in ipairs(self.transports) do
         Goto(v,self.launchpad);
@@ -462,15 +513,23 @@ local defend_and_escort = mission.Objective:define("defend_and_escort"):createTa
     UpdateObjective("rbd1003.otf","red");
     FailMission(GetTime()+5.0,fail_des[what]);
   end,
+  _fury_spawn = function(self,units)
+    self.furies = joinTables(self.furies,units);
+  end,
   success = function(self)
     AudioMessage(audio.shaw);
     SucceedMission(GetTime()+10.0,"rbd10w01.des");
   end,
   save = function(self)
-    return self.transports, self.launchpad, self.furies;
+    return self.transports, self.launchpad, self.furies, self.fury_id;
   end,
   load = function(self,...)
-    self.transports, self.launchpad, self.furies = ...;
+    self.transports, self.launchpad, self.furies, self.fury_id = ...;
+    if(self.fury_id) then
+      bzRoutine.routineManager:getRoutine(self.fury_id):onWaveSpawn():subscribe(function(...)
+        self:call("_fury_spawn",...);
+      end);
+    end
   end,
   update = function(self,dtime)
     if(not IsAlive(self.launchpad)) then
@@ -490,6 +549,8 @@ local defend_and_escort = mission.Objective:define("defend_and_escort"):createTa
       elseif(#self.transports <= 0) then
         self:taskSucceed("escort_transports");
       end
+    elseif(self:isTaskActive("build_transports") and not IsAlive(GetFactoryHandle())) then
+      self:taskFail("build_transports","factory"); 
     end
   end
 });

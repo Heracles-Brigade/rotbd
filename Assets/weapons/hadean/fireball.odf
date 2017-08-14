@@ -31,16 +31,16 @@ smokeFrames = 16
 renderBase = "draw_multi"
 renderCount = 3
 renderName1 = "fireball.spark"
-renderName2 = "fireball.light"
-renderName3 = "fireball.flare"
+renderName2 = "fireball.spark2"
+renderName3 = "fireball.lightemit"
 
 [Spark]
 renderBase = "draw_twirl_trail"
 emitDelay = 0.02
 emitDelayVar = 0.01
 emitVelocity = "0.0 0.0 1.0"
-emitVariance = "6.0 6.0 6.0"
-emitInherit = "0.5 0.5 0.5"
+emitVariance = "6.0 6.0 2.0"
+emitInherit = "0.0 0.0 0.0"
 emitLife = 1.0
 textureName = "spark.tga"
 startColor = "255 155 0 255"
@@ -50,19 +50,36 @@ finishRadius = 0.1
 animateTime = 1.0
 rotationRate = 20.0
 
-[Light]
+[Spark2]
+renderBase = "draw_twirl_trail"
+emitDelay = 0.01
+emitDelayVar = 0.01
+emitVelocity = "0.0 0.0 1.0"
+emitVariance = "2.0 2.0 2.0"
+emitInherit = "0.0 0.0 0.0"
+emitLife = 1.0
+textureName = "spark.tga"
+startColor = "255 155 0 255"
+finishColor = "255 0 0 0"
+startRadius = 0.8
+finishRadius = 0.1
+animateTime = 1.0
+rotationRate = 20.0
+
+[Lightemit]
 simulateBase = "sim_smoke"
-lifeTime = 0.2
+lifeTime = 1.0
 renderBase = "draw_light"
-startColor = "255 155 100 150"
+startColor = "255 155 100 255"
 finishColor = "255 155 100 100"
-startRadius = 4 //5.0
-finishRadius = 3.2 //4.0
-animateTime = 0.2
-attenuateConstant = 0.0
+startRadius = 40
+finishRadius = 32
+animateTime = 1.0
+attenuateConstant = 1.0
 attenuateLinear = 0.0
 attenuateQuadratic = 1.0
-lensFlare = false
+lensFlare = true
+
 
 [Flare]
 renderBase = "draw_sprite"

@@ -13,6 +13,7 @@ local odfFile = misc.odfFile;
 local ProductionJob;
 local JobBundle;
 
+local isIn = OOP.isIn;
 
 --Class for bundeling production jobs
 JobBundle = Class("AI.JobBundle",{
@@ -263,6 +264,7 @@ local ProducerAi = Decorate(
     constructor = function(handle)
       self.handle = bzObjects.Handle(handle);
       self.currentJob = nil;
+      self.buildState = 0;
       self.wait = 10;
       self.last_command = self.handle:getCurrentCommand();
     end,
@@ -271,7 +273,8 @@ local ProducerAi = Decorate(
         self.wait = self.wait - 1;
         local nc = self.handle:getCurrentCommand();
         if(nc ~= self.last_command) then
-          if(nc == AiCommand["STOP"] and self.buildState ~= 0) then
+          if((not isIn(AiCommand[nc],{"DROPOFF","NONE","BUILD"})) and self.buildState ~= 0) then
+            print(AiCommand[nc]);
             self.currentJob:unAssign();
             self.currentJob = nil;
             self.buildState = 0;

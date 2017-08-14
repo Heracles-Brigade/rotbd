@@ -22340,8 +22340,8 @@ pathType = 00000000
 [AiPath]
 old_ptr = 000000C6
 size [1] =
-8
-label = east_pat
+9
+label = east_path
 pointCount [1] =
 7
 points [7] =
