@@ -1,12 +1,11 @@
 --[[
 	Contributors:
-   - Seqan
+	 - Seqan
 	 - GBD
-   - Vemahk
-	 - Mari o
+	 - Vemahk
+	 - Mario
 --]]
-require("bz_logging");
-
+--require("bz_logging");
 
 local audio = {
 	intro = "rbd0201.wav",
@@ -23,12 +22,25 @@ local audio = {
 	lose1 = "rbd0201L.wav"
 }
 
-local M = { --Sets mission flow and progression. Booleans will be changed to "true" as mission progresses. Necessary for save files to function as well as objective flow in later if statements.
+local objectives = {
+	Detection = "rbdnew0200.otf",
+	Hanger = "rbdnew0201.otf",
+	Tug = "rbdnew0203.otf",
+	Mammoth1 = "rbdnew0202.otf",
+	Control = "rbdnew0204.otf",
+	Mammoth2 = "rbdnew0205.otf",
+	TranStart = "rbdnew0206.otf",
+	TranFin = "rbdnew0207.otf",
+	Extract = "rbdnew0208.otf"
+}
+
+local M = { --Sets mission flow and progression. Booleans and values will be changed to "true" and appropriate names/integers as mission progresses. Necessary for save files to function as well as objective flow in later if statements.
 StartDone = false, 
 OpeningCinDone = false, --Forces intro to play
 IsDetected = false,
 HangarInfoed = false,
 TugAquired = false,
+ShieldDetected = false,
 ControlDead = false,
 MammothReached = false,
 MammothInfoed = false,
@@ -37,6 +49,8 @@ MissionOver = false,
 MammothTime = 0,
 RadarTime = 0,
 LastShieldTime = 0,
+WreckTime1 = 0,
+WreckTime2 = 0,
 -- Handles; values will be assigned during mission setup and play
 Player = nil,
 ObjectiveNav = nil,
@@ -48,6 +62,8 @@ Mammoth = nil,
 ControlTower = nil,
 Hangar = nil,
 Supply = nil,
+Wrecker = nil,
+Armory = false,
 Radar = { },
 Aud1 = 0
 }
@@ -69,39 +85,44 @@ local function UpdateObjectives() --This entire function controls objective bubb
 	ClearObjectives();
 	
 	if not M.IsDetected then
-		AddObjective("rbdnew0200.otf", "WHITE");
+		AddObjective(objectives.Detection, "WHITE");
 	else
 		if not M.MammothReached then
-			AddObjective("rbdnew0200.otf", "RED");
+			AddObjective(objectives.Detection, "RED");
 		end
 	end
 	
 	if not M.HangarInfoed then
 		-- NEW: If hanger dies before acquiring intel, just fail mission. Should be impossible unless we have cheating players. Joke's on them! They failed the mission! HA!
 		if not IsAlive(M.Hangar) then
-			AddObjective("rbdnew0201.otf", "RED");
+			AddObjective(objectives.Hanger, "RED");
 		else
-			AddObjective("rbdnew0201.otf", "WHITE");
+			AddObjective(objectives.Hanger, "WHITE");
 		end
 	else
 		if not M.TugAquired then
-			AddObjective("rbdnew0203.otf", "WHITE");
+			AddObjective(objectives.Tug, "WHITE");
 		else
-			AddObjective("rbdnew0203.otf", "GREEN");
-			if not M.ControlDead then -- Destroy Control Tower.
-				AddObjective("rbdnew0204.otf", "WHITE");
+			AddObjective(objectives.Tug, "GREEN");
+			if not M.ShieldDetected then
+				AddObjective(objectives.Mammoth1, "WHITE");
 			else
-				if not M.MammothReached then -- Goto Mammoth.
-					AddObjective("rbdnew0205.otf", "WHITE");
+				if not M.ControlDead then -- Destroy Control Tower.
+					AddObjective(objectives.Control, "WHITE");
 				else
-					if not M.MammothInfoed then -- Stream Mammoth data.
-						AddObjective("rbdnew0206.otf", "WHITE");
+					AddObjective(objectives.Control, "GREEN");
+					if not M.MammothReached then -- Goto Mammoth.
+						AddObjective(objectives.Mammoth2, "WHITE");
 					else
-						AddObjective("rbdnew0207.otf", "GREEN");
-						if not M.SafetyReached then -- At safe distance yet?
-							AddObjective("rbdnew0208.otf", "WHITE");
+						if not M.MammothInfoed then -- Stream Mammoth data.
+							AddObjective(objectives.TranStart, "WHITE");
 						else
-							AddObjective("rbdnew0208.otf", "GREEN");
+							AddObjective(objectives.TranFin, "GREEN");
+							if not M.SafetyReached then -- At safe distance yet?
+								AddObjective(objectives.Extract, "WHITE");
+							else
+								AddObjective(objectives.Extract, "GREEN");
+							end
 						end															
 					end						
 				end					
@@ -119,9 +140,9 @@ local function SpawnNav(num) -- Spawns the Nth Nav point.
 	SetMaxHealth(nav, 0); -- Can't go boom-boom. I accidentally destroyed Nav 3 with the DW before this.
 	
 	-- Switches the active objective from the old nav to the new nav.
-	SetObjectiveOff(ObjectiveNav);
+	SetObjectiveOff(M.ObjectiveNav);
 	SetObjectiveOn(nav);
-	ObjectiveNav = nav; -- Sets the new nav to the ObjectiveNav so that the next time this function is called, it can switch off of it.
+	M.ObjectiveNav = nav; -- Sets the new nav to the ObjectiveNav so that the next time this function is called, it can switch off of it.
 end
 
 local function SpawnFromTo(odf, fp, fpp, tp)
@@ -174,6 +195,12 @@ local function keepOutside(h1,h2) -- This is the shield function for the Mammoth
     newp.y = math.max(h,newp.y);
     SetPosition(h1,newp);
     SetVelocity(h1,nvel);
+  end
+end
+
+function CreateObject(h)  -- check if daywrecker was spawned by the armory assuming player will have 0-1 scrap after building it
+  if(not M.Wrecker and GetScrap(1) <= 1 and GetClassLabel(h) == "daywrecker") then
+    M.Wrecker = h
   end
 end
 
@@ -233,7 +260,7 @@ function Update()
 	for i = 1, 3 do
 		if IsAlive(M.Radar[i].RadarHandle) then
 			if not M.Radar[i].RadarWarn and GetDistance(M.Player, M.Radar[i].RadarHandle) < 100.0 then
-				M.Aud1 = AudioMessage(audio.warn1);
+				M.Aud1 = AudioMessage("rbdnew0202.wav");
 				M.RadarTime = GetTime();
 				M.Radar[i].RadarWarn = true;
 				StartCockpitTimer(30, 15, 5);
@@ -253,7 +280,6 @@ function Update()
 					end
 				end
 			end
-			
 		end
 	end
 	
@@ -263,16 +289,25 @@ function Update()
 		M.HangarInfoed = true;
 		UpdateObjectives();
 	end
-		
+	
 	if not M.TugAquired and M.Player == M.Tug then
-		BuildObject("bvslf", 1, "NukeSpawn", 1);
-		SetMaxScrap(1, 20);
-		SetScrap(1, 20);
 		M.TugAquired = true;
 		UpdateObjectives();
 		Aud1 = AudioMessage("rbdnew0204.wav");
-		SpawnNav(3);
+		SpawnNav(3)
 	end
+	
+	if M.TugAquired and GetDistance(M.Player, M.Mammoth) < 225.0 and not M.ShieldDetected then
+		BuildObject("bvslf", 1, "NukeSpawn", 1);
+		M.Armory = true;
+		SetMaxScrap(1, 20);
+		SetScrap(1, 20);
+		M.ShieldDetected = true;
+	--	Aud1 = AudioMessage();
+		SpawnNav(4);
+		UpdateObjectives();
+	end
+		
 	
 	if not M.ControlDead and M.OpeningCinDone then
 		keepOutside(M.Player, M.Mammoth);
@@ -284,13 +319,15 @@ function Update()
 	
 	if not M.ControlDead and M.TugAquired and not IsAlive(M.ControlTower) then
 		Aud1 = AudioMessage("rbdnew0205.wav");
-		SpawnNav(4);
+		SetObjectiveOff(M.ObjectiveNav);
+		SetObjectiveOn(M.Mammoth);
+		SetObjectiveName(M.Mammoth, "Mammoth");
 		M.ControlDead = true;
 		SpawnArmy();
 		UpdateObjectives();
 	end
 	
-	if M.ControlDead and not M.MammothReached and GetDistance(M.Player, M.Mammoth) < 75 then
+	if M.ControlDead and not M.MammothReached and GetDistance(M.Player, M.Mammoth) < 35 then
 		M.MammothTime = GetTime() + 10.0; -- Wait 10 seconds to gather info.
 		M.MammothReached = true;
 		UpdateObjectives();
@@ -299,7 +336,8 @@ function Update()
 	
     if M.MammothReached and not M.MammothInfoed and GetTime() > M.MammothTime then
         Aud1 = AudioMessage("rbdnew0206.wav");
-        StartCockpitTimer(120, 60, 30);
+        StartCockpitTimer(120, 30, 10);
+		SetObjectiveOff(M.Mammoth);
         SpawnNav(5);
         M.MammothInfoed = true;
         UpdateObjectives();
@@ -316,7 +354,7 @@ function Update()
 	if not M.MissionOver then
 	
 		-- Win Conditions:
-		if M.MammothInfoed and GetDistance(M.Player, ObjectiveNav) < 50.0 then
+		if M.MammothInfoed and GetObjectiveName(M.ObjectiveNav) == "Extraction Point" and GetDistance(M.Player, M.ObjectiveNav) < 25.0 then
 			Aud1 = AudioMessage("rbdnew0210.wav");
 			SucceedMission(GetTime()+5.0, "rbdnew02wn.des");
 			M.MissionOver = true;
@@ -332,24 +370,43 @@ function Update()
 			UpdateObjectives();
 		end
 
-		if  not IsAlive(M.Mammoth) then --not M.MammothInfoed and
-			Aud1 = AudioMessage(audio.lose1);
+		if  not IsAlive(M.Mammoth) then --not M.MammothInfoed and 
 			FailMission(GetTime()+5.0, "rbdnew02l1.des");
 			M.MissionOver = true;
 			UpdateObjectives();
 		end
 		
-		if M.MammothInfoed and GetCockpitTimer() == 0 then
-			FailMission(GetTime()+5.0, "rbdnew02l2.des");
+		if M.MammothInfoed and GetCockpitTimer() == 0 and not M.MissionOver then
+			FailMission(GetTime(), "rbdnew02l2.des");
 			M.MissionOver = true;
 			UpdateObjectives();
 		end
-		
+
 		if M.IsDetected and not M.MammothReached then
-			Aud1 = AudioMessage(audio.warn2);
+			Aud1 = AudioMessage("rbdnew0207.wav");
 			FailMission(GetTime() + 5.0, "rbdnew02l4.des");
 			M.MissionOver = true;
 			UpdateObjectives();
+		end
+
+		if M.Wrecker and not IsValid(M.Wrecker) and not M.ControlDead and M.WreckTime1 == 0 then
+			M.WreckTime1 = GetTime() + 1.0;
+		end
+		if M.WreckTime1 ~= 0 and GetTime() >=M.WreckTime1 and not M.ControlDead then
+	--		Aud1 = AudioMessage();
+			FailMission(GetTime() + 5.0, "rbdnew02l5.des");
+			M.MissionOver = true;
+			UpdateObjective(objectives.Control, "RED");
+		end
+
+		if not M.Wrecker and M.Armory and GetScrap(1) < 20 and not M.ControlDead and M.WreckTime2 == 0 then
+			M.WreckTime2 = GetTime() + 1.5;
+		end
+		if M.WreckTime2 ~= 0 and GetTime() > M.WreckTime2 and not M.ControlDead and not M.Wrecker then
+	--		Aud1 = AudioMessage();
+			FailMission(GetTime() + 5.0, "rbdnew02l5.des");
+			M.MissionOver = true;
+			UpdateObjective(objectives.Control, "RED");
 		end
 	end
 end
