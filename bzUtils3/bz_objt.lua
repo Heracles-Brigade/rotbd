@@ -66,7 +66,7 @@ local reorderObjectives = function()
   end
 end
 
-_G["UpdateObjective"] = function(name,color,dur,opt)
+_G["UpdateObjective"] = function(name,color,dur,opt,pos,persistant)
   if(allObjectives[name]) then
     local o = allObjectives[name];
     allObjectives[name] = {
@@ -74,11 +74,12 @@ _G["UpdateObjective"] = function(name,color,dur,opt)
       name = o.name,
       color = color,
       duration = dur,
-      pos = o.pos,
+      pos = pos ~= nil and pos or o.pos,
       optText = opt,
-      persistant = o.persistant
+      persistant = persistant ~= nil and persistant or o.persistant
     }
     oldG.UpdateObjective(name,color,dur,opt);
+    reorderObjectives();
   end
 end
 
@@ -102,7 +103,7 @@ _G["AddObjective"] = function(name,color,dur,opt,pos,persistant)
       name = name,
       color = color,
       duration = dur,
-      pos = pos or nextId,
+      pos = pos~=nil and pos or nextId,
       optText = opt,
       persistant = persistant
     };
@@ -115,6 +116,7 @@ _G["RemoveObjective"] = function(name)
   allObjectives[name] = nil;
   oldG.RemoveObjective(name);
 end
+
 _G["SetObjectivePosition"] = function(name,pos)
   if(allObjectives[name]) then
     allObjectives[name].pos = pos;
@@ -122,6 +124,30 @@ _G["SetObjectivePosition"] = function(name,pos)
   end
 end
 
+_G["GetObjectivePosition"] = function(name)
+  if(allObjectives[name]) then
+    return allObjectives[name].pos;
+  end
+end
+
+_G["ReplaceObjective"] = function(name,name2,...)
+  local obj = allObjectives[name];
+  RemoveObjective(name);
+  local add_args = table.pack(...);
+  if(obj) then
+    obj_args = table.pack(
+      obj.color,
+      obj.duration,
+      obj.optText,
+      obj.pos,
+      obj.persistant
+    );
+    AddObjective(name2,unpack(obj_args));
+    UpdateObjective(name2,unpack(add_args));
+  else
+    AddObjective(name2,unpack(add_args));
+  end
+end
 
 local FormatedObjective = Class("FormatedObjective",{
   constructor = function(name,color,text,speed,dummy)

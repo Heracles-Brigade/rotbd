@@ -138,8 +138,8 @@ local function spawnInFormation(formation,location,dir,units,team,seperation)
     return tempH, lead;
 end
 
-local function spawnInFormation2(formation,location,units,team,seperation)
-    return spawnInFormation(formation,GetPosition(location,0),GetPosition(location,1) - GetPosition(location,0),units,team,seperation);
+local function spawnInFormation2(formation,location,...)
+    return spawnInFormation(formation,GetPosition(location,0),GetPosition(location,1) - GetPosition(location,0),...);
 end
 
 TaskSequencer = {
@@ -412,7 +412,7 @@ ObjectiveInstance = {
             return self.parentRef:dispatchEvent(event,self,...)
         end,
         call = function(self,...)
-            return self:parentCall(...);
+            return unpack(self:parentCall(...)[1]);
         end,
         start = function(self,...)
             self:parentCall('start',...);
@@ -520,6 +520,13 @@ ObjectiveInstance = {
         end,
         taskCount = function(self)
             return self.subCount;
+        end,
+        taskEnd = function(self,name)
+            if(self.subTasks[name]) then
+                local t = self.subTasks[name];
+                t.done = true;
+                t.state = 1;
+            end
         end,
         taskSucceed = function(self,name,...)
             if(self.subTasks[name]) then
