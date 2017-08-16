@@ -25,7 +25,7 @@ local ProducerAi = buildAi.ProducerAi;
 local ProductionJob = buildAi.ProductionJob;
 
 local isIn = OOP.isIn;
-
+local joinTables = OOP.joinTables;
 
 local fail_des = {
   lpad = "rbd10l01.des",
@@ -44,8 +44,7 @@ local units = {
 
 
 local fury_waves = {
-  {item = {"1 1", "2 2"}, chance = 10},
-  {item = {"  1 1  ", "2 2 2 2"}, chance = 5},
+  {item = {"2 2", "2 2"}, chance = 1},
 }
 
 local light_waves = {
@@ -312,6 +311,7 @@ local build_launchpad = mission.Objective:define("build_launchpad"):createTasks(
   "order_to_build", "build_lpad", "factory_spawn"
 ):setListeners({
   init = function(self)
+    self.subscriptions = {};
   end,
   start = function(self)
     AudioMessage(audio.intro);
@@ -320,24 +320,27 @@ local build_launchpad = mission.Objective:define("build_launchpad"):createTasks(
     self.building = false;
     self.wave_timer = 0;
     self.factory_timer = 60*15;
+    self.wave_controllers = {};
+    self.enemy_units = {};
     self.waves = {
       [("%d"):format(0)] = {
         --{frequency,wave_count,variance,wave_type}
         {1/120,8,0.5,heavy_waves},
-        {1/60,10,0.1,light_waves}
+        {1/60,11,0.1,light_waves}
       },
       [("%d"):format(16*60)] = {
-        {1/60,15,0.1,heavy_waves}
+        {1/60,15,0.1,heavy_waves},
+        {1/60,3,0.1,light_waves}
       },
       [("%d"):format(15*60)] = {
-        {1/160,9,0.2,heavy_waves},
-        {1/160,9,0.2,heavy_waves}
+        {1/100,10,0.2,heavy_waves},
+        {1/80,10,0.2,heavy_waves}
       }
     }
   end,
   task_start = function(self,name)
     if(name == "order_to_build") then
-      bzRoutine.routineManager:startRoutine("waveSpawner",{"cca","nsdf"},{"east","west","cca","nsdf"},1/70,5,0.05,light_waves);
+      bzRoutine.routineManager:startRoutine("waveSpawner",{"cca","nsdf"},{"east","west","cca","nsdf"},1/70,8,0.05,light_waves);
     elseif(name == "build_lpad") then
       AddObjective("rbd1002.otf");
       local btime = misc.odfFile("ablpadx"):getFloat("GameObjectClass","buildTime");
@@ -362,6 +365,22 @@ local build_launchpad = mission.Objective:define("build_launchpad"):createTasks(
     end
     
     self:fail("const");
+  end,
+  _hook_controller = function(self,id)
+    local p = bzRoutine.routineManager:getRoutine(id);
+    if(p) then
+      table.insert(self.subscriptions,
+        p:onWaveSpawn():subscribe(function(handles)
+          local n = {};
+          for i, v in pairs(self.enemy_units) do
+            if(IsAlive(v)) then
+              table.insert(n,v);
+            end
+          end
+          self.enemy_units = joinTables(n,handles);
+        end)
+      );
+    end
   end,
   update = function(self,dtime)
     local const = GetConstructorHandle();
@@ -388,7 +407,9 @@ local build_launchpad = mission.Objective:define("build_launchpad"):createTasks(
       for i, v in pairs(self.waves) do
         if(self.wave_timer > tonumber(i)) then
           for i2, wave_args in ipairs(v) do
-            bzRoutine.routineManager:startRoutine("waveSpawner",{"cca","nsdf"},{"east","west","cca","nsdf"},unpack(wave_args));
+            local r_id, r = bzRoutine.routineManager:startRoutine("waveSpawner",{"cca","nsdf"},{"east","west","cca","nsdf"},unpack(wave_args));
+            table.insert(self.wave_controllers,r_id);
+            self:call("_hook_controller",r_id);
           end
           self.wave_timer = 0;
           self.waves[i] = nil;
@@ -420,19 +441,45 @@ local build_launchpad = mission.Objective:define("build_launchpad"):createTasks(
     end
   end,
   save = function(self)
-    return self.building, self.const, self.lpad_bid, self.lpad, self.waves, self.wave_timer, self.factory_timer;
+    return self.building, 
+      self.const, 
+      self.lpad_bid, 
+      self.lpad, 
+      self.waves, 
+      self.wave_timer, 
+      self.factory_timer,
+      self.wave_controllers,
+      self.enemy_units;
   end,
   load = function(self,...)
-    self.building, self.const, self.lpad_bid, self.lpad, self.waves, self.wave_timer, self.factory_timer = ...;
+    self.building, 
+      self.const, 
+      self.lpad_bid, 
+      self.lpad, 
+      self.waves, 
+      self.wave_timer, 
+      self.factory_timer,
+      self.wave_controllers,
+      self.enemy_units = ...;
+
+    for i, v in pairs(self.wave_controllers) do
+      self:call("_hook_controller",v);
+    end
+
     if(self.lpad_bid) then
       self:call("_setUpProdListener",self.lpad_bid,"_lpad_done");
+    end
+  end,
+  finish = function(self)
+    for i, v in pairs(self.subscriptions) do
+      v:unsubscribe();
     end
   end,
   fail = function(self,what)
     FailMission(GetTime()+5.0,fail_des[what]);
   end,
   success = function(self)
-    mission.Objective:Start("defend_and_escort",self.lpad);
+    mission.Objective:Start("defend_and_escort",self.lpad,OOP.copyTable(self.enemy_units),self.wave_controllers);
   end,
   _lpad_done = function(self,job,handle)
     self.lpad = handle;
@@ -453,9 +500,19 @@ local build_launchpad = mission.Objective:define("build_launchpad"):createTasks(
 local defend_and_escort = mission.Objective:define("defend_and_escort"):createTasks(
   "build_transports", "escort_transports"
 ):setListeners({
-  start = function(self,launchpad)
+  start = function(self,launchpad,enemy_units,wave_controllers)
     self.transports = {};
     self.launchpad = launchpad;
+    self.enemy_units = enemy_units;
+    for i, v in pairs(self.enemy_units) do
+      local s = mission.TaskManager:sequencer(v);
+      s:clear();
+      Retreat(v,"enemy_base");
+    end
+    self.wave_controllers = wave_controllers;
+    for i, v in pairs(self.wave_controllers) do
+      self:call("_hook_controller",v);
+    end
     self.furies = {};
     self:startTask("build_transports");
     AudioMessage(audio.evacuate);
@@ -516,15 +573,34 @@ local defend_and_escort = mission.Objective:define("defend_and_escort"):createTa
   _fury_spawn = function(self,units)
     self.furies = joinTables(self.furies,units);
   end,
+  _hook_controller = function(self,id)
+    local p = bzRoutine.routineManager:getRoutine(id);
+    if(p) then
+      p:onWaveSpawn():subscribe(function(handles)
+        self:call("_enemy_spawn",handles);
+      end);
+    end
+  end,
+  _enemy_spawn = function(self,units)
+    for i, v in pairs(units) do
+      local s = mission.TaskManager:sequencer(v);
+      s:clear();
+      Retreat(v,"enemy_base");
+      table.insert(self.enemy_units,v);
+    end
+  end,
   success = function(self)
     AudioMessage(audio.shaw);
     SucceedMission(GetTime()+10.0,"rbd10w01.des");
   end,
   save = function(self)
-    return self.transports, self.launchpad, self.furies, self.fury_id;
+    return self.transports, self.launchpad, self.furies, self.fury_id, self.enemy_units, self.wave_controllers;
   end,
   load = function(self,...)
-    self.transports, self.launchpad, self.furies, self.fury_id = ...;
+    self.transports, self.launchpad, self.furies, self.fury_id, self.enemy_units, self.wave_controllers = ...;
+    for i, v in pairs(self.wave_controllers) do
+      self:call("_hook_controller",v);
+    end
     if(self.fury_id) then
       bzRoutine.routineManager:getRoutine(self.fury_id):onWaveSpawn():subscribe(function(...)
         self:call("_fury_spawn",...);
