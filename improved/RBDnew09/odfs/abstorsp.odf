@@ -1,16 +1,16 @@
 [GameObjectClass]
-baseName="bblpad"
+baseName = "abstor"
 classLabel = "i76building"
 scrapCost = 0
 scrapValue = 0
-buildTime = 1800
-maxHealth = 7000
+maxHealth = 500
 maxAmmo = 0
-unitName = "Launch Pad"
+unitName = "Weapon storage"
 heatSignature = 0.8
 imageSignature = 8.0
 radarSignature = 1.0
 
-[BuildingClass]
-soundAmbient = "ablpade0.wav"
+customClass1 = "objectCrate"
 
+[ObjectCrateClass]
+object = "apsstb"

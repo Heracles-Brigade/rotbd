@@ -1,0 +1,92 @@
+[OrdnanceClass] // Hadean Plasma Bomb
+classLabel = "rocket"
+
+shotGeometry = "gtagg00.geo"
+shotSound = "wmflame.wav"
+
+xplGround = "xbalxpl"
+xplVehicle = "xbalxpl"
+xplBuilding = "xbalxpl"
+xplExpire = "xbalxpl"
+
+renderName = "fireball.render"
+
+ammoCost = 50
+lifeSpan = 2.0
+shotSpeed = 100.0
+damageBallistic = 350
+damageConcussion = 50
+damageFlame = 0
+damageImpact = 0
+
+[RocketClass]
+flameLength = 0.4
+smokeRadius = 0.8
+smokeDelay = 0.005
+smokePause = 0.002
+smokeTexture = "rpuff.0"
+smokeFrames = 16
+
+[Render]
+renderBase = "draw_multi"
+renderCount = 3
+renderName1 = "fireball.spark"
+renderName2 = "fireball.spark2"
+renderName3 = "fireball.lightemit"
+
+[Spark]
+renderBase = "draw_twirl_trail"
+emitDelay = 0.02
+emitDelayVar = 0.01
+emitVelocity = "0.0 0.0 1.0"
+emitVariance = "6.0 6.0 2.0"
+emitInherit = "0.0 0.0 0.0"
+emitLife = 1.0
+textureName = "spark.tga"
+startColor = "255 155 0 255"
+finishColor = "255 0 0 0"
+startRadius = 0.8
+finishRadius = 0.1
+animateTime = 1.0
+rotationRate = 20.0
+
+[Spark2]
+renderBase = "draw_twirl_trail"
+emitDelay = 0.01
+emitDelayVar = 0.01
+emitVelocity = "0.0 0.0 1.0"
+emitVariance = "2.0 2.0 2.0"
+emitInherit = "0.0 0.0 0.0"
+emitLife = 1.0
+textureName = "spark.tga"
+startColor = "255 155 0 255"
+finishColor = "255 0 0 0"
+startRadius = 0.8
+finishRadius = 0.1
+animateTime = 1.0
+rotationRate = 20.0
+
+[Lightemit]
+simulateBase = "sim_smoke"
+lifeTime = 1.0
+renderBase = "draw_light"
+startColor = "255 155 100 255"
+finishColor = "255 155 100 100"
+startRadius = 40
+finishRadius = 32
+animateTime = 1.0
+attenuateConstant = 1.0
+attenuateLinear = 0.0
+attenuateQuadratic = 1.0
+lensFlare = true
+
+
+[Flare]
+renderBase = "draw_sprite"
+textureName = "plasma_1.tga"
+//textureBlend = "one one modulate"
+startColor = "255 255 255 255"
+finishColor = "255 255 255 255"
+startRadius = 2.0
+finishRadius = 2.0
+//rotationRate = 10.0

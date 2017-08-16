@@ -13,6 +13,7 @@ local odfFile = misc.odfFile;
 local ProductionJob;
 local JobBundle;
 
+local isIn = OOP.isIn;
 
 --Class for bundeling production jobs
 JobBundle = Class("AI.JobBundle",{
@@ -23,7 +24,7 @@ JobBundle = Class("AI.JobBundle",{
     self.handles = {};
     self.subscriptions = {};
     self.jobsSet = false;
-    self.finished = falese;
+    self.finished = false;
     self:_setJobs(...);
   end,
   methods = {
@@ -263,11 +264,23 @@ local ProducerAi = Decorate(
     constructor = function(handle)
       self.handle = bzObjects.Handle(handle);
       self.currentJob = nil;
+      self.buildState = 0;
       self.wait = 10;
+      self.last_command = self.handle:getCurrentCommand();
     end,
     methods = {
       update = function(dtime)
         self.wait = self.wait - 1;
+        local nc = self.handle:getCurrentCommand();
+        if(nc ~= self.last_command) then
+          if((not isIn(AiCommand[nc],{"DROPOFF","NONE","BUILD"})) and self.buildState ~= 0) then
+            print(AiCommand[nc]);
+            self.currentJob:unAssign();
+            self.currentJob = nil;
+            self.buildState = 0;
+          end
+        end
+        self.last_command = nc;
         if(self.wait <= 0) then
           if(self.handle:isDeployed()) then
             if(self.buildState == 1 and (not self.handle:isBusy())) then
@@ -281,9 +294,13 @@ local ProducerAi = Decorate(
                   end
                 end
               end
+              --if(IsValid(cmatch)) then
               self.currentJob:finish(cmatch);
               self.buildState = 0;
               self.currentJob = nil;
+              --else
+                --self.currentJob:unAssign();
+              --end
             end
             if(self.buildState == 3 and self.handle:isBusy()) then
               self.buildState = 1;
@@ -302,7 +319,7 @@ local ProducerAi = Decorate(
       end,
       _requestJob = function()
         local job = class:requestJob(self.handle);
-        self.wait = 60;
+        self.wait = 20;
         if(job) then
           self.wait = 0;
           self.currentJob = job;
@@ -379,6 +396,8 @@ local ProducerAi = Decorate(
         local job;
         local t = me:getTeamNum();
         local filtered = {};
+        local jobPair = nil;
+        local smallestPrio = math.huge;
         for i, v in pairs(class.jobs) do
           if((not v:isFinished()) and (not v:isAssigned()) and (v:getTeam() == t) and me:canMake(v:getOdf())) then
             local nl = me:getDistance(v:getLocation());
@@ -392,14 +411,21 @@ local ProducerAi = Decorate(
             if(scrapDiff < 0) then
               relativePriority = relativePriority - scrapDiff*5;
             end
-            table.insert(filtered,{
+            if(relativePriority < smallestPrio) then
+              smallestPrio = relativePriority;
+              jobPair = {
+                job = v,
+                relativePriority = relativePriority
+              };
+            end
+            --[[table.insert(filtered,{
               job = v,
               relativePriority = relativePriority
-            });
+            });--]]
           end
         end
-        table.sort(filtered,function(a,b) return a.relativePriority < b.relativePriority end);
-        local jobPair = table.remove(filtered,1);
+        --table.sort(filtered,function(a,b) return a.relativePriority < b.relativePriority end);
+        --local jobPair = table.remove(filtered,1);
         if(jobPair) then
           --class.jobQueue[t][job.location][job.id] = nil;
           local job = jobPair.job;

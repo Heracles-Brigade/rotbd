@@ -8,11 +8,49 @@ local IsIn = OOP.isIn;
 local joinTables = OOP.joinTables;
 local PatrolController = require("patrolc");
 local mission = require('cmisnlib');
+local bzObjects = require("bz_objects");
+-- Allows us to re-order objectives
+require("bz_objt");
+
+require("objectCrate");
 
 local pwers = {};
 require("bz_logging");
 
+local audio = {
+  intro = "rbd0901.wav",
+  found = "rbd0902.wav",
+  clear = "rbd0903.wav",
+  warn1 = "rbd0901W.wav",
+  win = "rbd091wn.wav"
+}
 
+
+local fail_conditions = {
+  apc = "rbd09l01.des"
+}
+
+
+function FindTarget(handle,alt,sequencer)
+  local ne = GetNearestEnemy(handle);
+  if(IsValid(ne)) then
+    sequencer:queue2("Attack",GetNearestEnemy(handle));
+    sequencer:queue3("FindTarget",alt);
+  elseif(GetDistance(handle,alt) > 50) then
+    sequencer:queue2("Goto",alt);
+    sequencer:queue3("FindTarget",alt);
+  else
+    sequencer:queue(AiCommand["Hunt"]);
+  end
+end
+
+function AddToPatrolTask(handle,p_id,sequencer)
+  --Look for enemies
+  local r = bzRoutine.routineManager:getRoutine(p_id);
+  if(r) then
+    r:addHandle(handle);
+  end
+end
 --[[
   Notes:
     - Damage base when player arrives
@@ -20,11 +58,98 @@ require("bz_logging");
     - Some furies attack when the player has secured the site
 ]]
 
-local captureRelic = mission.Objective:define("captureRelic"):createTasks(
-  "findRelic", "secureSite"
+local sideObjectives = mission.Objective:define("sideObjectives"):createTasks(
+  "destroy_comm", "capture_supply"
 ):setListeners({
   init = function(self)
-    self.relic = GetHandle("armory");
+    self.commtower = GetHandle("commtower");
+    self.comm_timer = 60*4;
+  end,
+  start = function(self,patrol_units)
+    self.units = patrol_units;
+    self:startTask("capture_supply");
+  end,
+  update = function(self,dtime)
+    if(self:isTaskActive("capture_supply")) then
+      local secure = true;
+      local pp = GetPathPoints("supply_site");
+      local l = Length(pp[2]-pp[1])
+      if(GetDistance(GetPlayerHandle(),pp[1]) < l) then
+        for obj in ObjectsInRange(l,pp[1]) do
+          if(IsCraft(obj) and GetTeamNum(obj) == 2) then
+            secure = false;
+            break;
+          end
+        end
+        if(secure) then
+          self:taskSucceed("capture_supply");
+        end
+      end
+    end
+    if(not self:hasTaskStarted("destroy_comm") and IsAlive(self.commtower)) then
+      if(mission.areAnyDead(self.units)) then
+        self:startTask("destroy_comm");
+      end
+    elseif(self:isTaskActive("destroy_comm")) then
+      self.comm_timer = self.comm_timer - dtime;
+      if(self.comm_timer <= 0) then
+        self:taskFail("destroy_comm");
+      elseif(not IsAlive(self.commtower)) then
+        self:taskSucceed("destroy_comm");
+      end
+    end
+  end,
+  task_start = function(self,name)
+    if(name == "destroy_comm") then
+      AudioMessage(audio.warn1);
+      AddObjective("rbd0905.otf");
+      StartCockpitTimer(self.comm_timer,self.comm_timer*0.5,self.comm_timer*0.1);
+      SetObjectiveOn(self.commtower);
+    end
+  end,
+  task_success = function(self,name)
+    if(name == "capture_supply") then
+      local pp = GetPathPoints("supply_site");
+      for obj in ObjectsInRange(Length(pp[2]-pp[1]),pp[1]) do
+        if(IsBuilding(obj) and GetTeamNum(obj) == 2) then
+          SetTeamNum(obj,1);
+        end
+      end
+      AddObjective("rbd0904.otf","green");
+    elseif(name == "destroy_comm") then
+      UpdateObjective("rbd0905.otf","green");
+    end
+  end,
+  task_fail = function(self,name)
+    if(name == "destroy_comm") then
+      StopCockpitTimer();
+      HideCockpitTimer();
+      ReplaceObjective("rbd0905.otf","rbd0906.otf","yellow");
+    end
+  end,
+  _hasBeenDetected = function(self)
+    if(self:isTaskActive("destroy_comm")) then
+      self:taskFail("destroy_comm");
+    else
+      self:taskEnd("destroy_comm");
+    end
+    return self:hasTaskFailed("destroy_comm");
+  end,
+  save = function(self)
+    return self.units, self.comm_timer;
+  end,
+  load = function(self,...)
+    self.units, self.comm_timer = ...;
+  end
+});
+
+
+local captureRelic = mission.Objective:define("captureRelic"):createTasks(
+  "findRelic", "secureSite", "captureRecycler"
+):setListeners({
+  init = function(self)
+    self.apc = GetHandle("apc");
+    self.recy = GetHandle("recycler");
     self.check_interval = 50;
     self.cframe = 0;
     self.otfs = {
@@ -32,29 +157,57 @@ local captureRelic = mission.Objective:define("captureRelic"):createTasks(
       secureSite = "rbd0902.otf"
     }
   end,
-  start = function(self,patrol_id)
+  start = function(self,patrol_id,patrol_units)
     self.patrol_id = patrol_id;
+    self.patrol_units = patrol_units;
     self:startTask("findRelic");
+    AudioMessage(audio.intro);
   end,
   task_start = function(self,name)
-    AddObjective(self.otfs[name]);
+    if(self.otfs[name] ~= nil) then
+      AddObjective(self.otfs[name]);
+    end
+    if(name == "captureRecycler") then
+      Goto(self.apc,GetPositionNear(GetPosition(self.recy),30,35));
+    end
   end,
   task_fail = function(self,name)
     UpdateObjective(self.otfs[name],"red");
     self:fail();
   end,
+  fail = function(self,what)
+    FailMission(GetTime()+5.0,what ~= nil and fail_conditions[what]);
+  end,
   task_success = function(self,name)
     UpdateObjective(self.otfs[name],"green");
     if(name == "findRelic") then
+      AudioMessage(audio.found);
+      SetTeamNum(self.recy,0);
       self:startTask("secureSite");
     elseif(name == "secureSite") then
+      AudioMessage(audio.clear);
+      local pp = GetPathPoints("relic_site");
+      for obj in ObjectsInRange(Length(pp[2]-pp[1]),pp[1]) do
+        if(IsBuilding(obj) and GetTeamNum(obj) == 2) then
+          SetTeamNum(obj,1);
+        end
+      end
+      self:startTask("captureRecycler");
+    elseif(name == "captureRecycler") then
+      SetTeamNum(self.recy,1);
+      SetScrap(1,30);
+      bzObjects.copyObject(self.apc,"bvapc");
+      RemoveObject(self.apc);
       self:success();
     end  
   end,
   update = function(self,dtime)
     local ph = GetPlayerHandle();
+    if(not IsAlive(self.apc)) then
+      self:fail("apc");
+    end
     if(self:isTaskActive("findRelic")) then
-      if(IsWithin(ph,self.relic,400)) then
+      if(GetDistance(ph,"relic_site") < 400) then
         self:taskSucceed("findRelic");
       end
     end
@@ -63,7 +216,8 @@ local captureRelic = mission.Objective:define("captureRelic"):createTasks(
       if(self.cframe > 50) then
         self.cframe = 0;
         local secure = true;
-        for obj in ObjectsInRange(400,self.relic) do
+        local pp = GetPathPoints("relic_site");
+        for obj in ObjectsInRange(Length(pp[2]-pp[1]),pp[1]) do
           if(IsCraft(obj) and GetTeamNum(obj) == 2) then
             secure = false;
             break;
@@ -74,181 +228,219 @@ local captureRelic = mission.Objective:define("captureRelic"):createTasks(
         end
       end
     end
+    if(self:isTaskActive("captureRecycler")) then
+      if(IsWithin(self.apc,self.recy,40)) then
+        Stop(self.apc,0);
+        self:taskSucceed("captureRecycler");
+      end
+    end
   end,
   save = function(self)
-    return self.p_id;
+    return self.patrol_id, self.patrol_units;
   end,
   load = function(self,...)
-    self.p_id = ...;
+    self.patrol_id, self.patrol_units = ...;
   end,
   success = function(self)
-    print("success");
-    mission.Objective:Start("defendSite");
+    mission.Objective:Start("defendSite",self.patrol_id,self.patrol_units);
   end
 });
 
 local defendSite = mission.Objective:define("defendSite"):createTasks(
-  "waves", "kill_all"
+  "spawn_waves", "kill_waves"
 ):setListeners({
-  init = function(self)
-    self.wave_count = 4;
-  end,
-  start = function(self)
-    local p = GetPosition("nsdf_outpost");
-    p.y = GetTerrainHeightAndNormal(p) + 500;
-    self.recy = BuildObject("bvrecy",1,p);
-    SetPosition(self.recy,p);
-    SetScrap(1,30);
-    self.fury_units = {};
-    self.wave = 0;
-    self:startTask("waves");
-  end,
-  task_start = function(self,task)
-    if(task == "waves") then
-      self:call("_setTimer",60*5);
+  start = function(self,patrol_id,patrol_units)
+    self.patrol_id = patrol_id;
+    bzRoutine.routineManager:killRoutine(patrol_id);
+    local sideObjectives = mission.Objective:getObjective("sideObjectives"):getInstance();
+    self.extraUnits = sideObjectives:call("_hasBeenDetected");
+    self.units_to_kill = patrol_units;
+    self.default_waves = {
+      [("%d"):format(3*60)] = {"2 2 4","1 1 1"},
+      [("%d"):format(3*60 + 60)] = {"3 3","1 1"},
+      [("%d"):format(3*60 + 60*7)] = {"5   5", "5 5 5"}
+    };
+    self.extra_waves = {
+      [("%d"):format(3*60 + 60*2+15)] = {"1 1 1"},
+      [("%d"):format(3*60 + 60*3)] = {"2 4 4","4 1 1"},
+      [("%d"):format(3*60 + 60*3+30)] = {"2 4 4 4","3 1 1 1"},
+      [("%d"):format(3*60 + 60*5)] = {"2 4 4 4","3 1 1 1"}
+    };
+    for i, v in pairs(self.units_to_kill) do
+      local s = mission.TaskManager:sequencer(v);
+      s:clear();
+      Stop(v,0);
+      --Looks for target, if not found goto relic site
+      s:queue3("FindTarget","relic_site");
     end
+    AddObjective("rbd0903.otf");
+    self.wave_timer = 0;
+    self:startTask("spawn_waves");
+    self:startTask("kill_waves");
+    
   end,
-  task_success = function(self,task)
-    if(task == "waves") then
-      self:startTask("kill_all");
-    else
+  task_success = function(self,name)
+    if(self:hasTasksSucceeded("spawn_waves","kill_waves")) then
+      UpdateObjective("rbd0903.otf","green");
       self:success();
     end
   end,
-  _setTimer = function(self,limit)
-    self.timer = misc.Timer(limit,false);
-    self:call("_subToTimer");
-    self.timer:start();
-  end,
-  _subToTimer = function(self)
-    if(self.sub) then
-      self.sub:unsubscribe();
-    end
-    self.sub = self.timer:onAlarm():subscribe(function()
-      if(self:isTaskActive("waves")) then
-        self:call("_nextWave");
-      else
-      end
-    end);
-  end,
-  _nextWave = function(self)
-    self.wave = self.wave + 1;
-    self.fury_units = joinTables(self.fury_units,mission.spawnInFormation2({"1 2 1 2", "2 1 2 1"},"fury_spawn_1",{"hvsat","hvsav"},3));
-    for i, v in pairs(self.fury_units) do
-      Goto(v,"nsdf_outpost");
-    end
-    if(self.wave < self.wave_count) then
-      self:call("_setTimer",60);
-    else
-      self:taskSucceed("waves");
-    end
-  end,
   update = function(self,dtime)
-    if(self.timer) then
-      self.timer:update(dtime);
+    if(self:isTaskActive("spawn_waves")) then
+      self.wave_timer = self.wave_timer + dtime;
+      self.done = true;
+      for i, v in pairs(self.default_waves) do
+        self.done = false;
+        local d = tonumber(i);
+        if(self.wave_timer >= d) then
+          local wave, lead = mission.spawnInFormation2(v,"nsdf_attack",{"avfigh","avtank","avrckt","avltnk","hvsav"},2);
+          Goto(lead,"nsdf_attack");
+          for i2, v2 in pairs(wave) do
+            local s = mission.TaskManager:sequencer(v2);
+            if(v2~=lead) then
+              Follow(v2,lead);
+            end
+            s:queue3("FindTarget","relic_site");
+            table.insert(self.units_to_kill,v2);
+          end
+          self.default_waves[i] = nil;
+        end
+      end
+      if(self.extraUnits) then
+        for i, v in pairs(self.extra_waves) do
+          self.done = false;
+          local d = tonumber(i);
+          if(self.wave_timer >= d) then
+            local wave, lead = mission.spawnInFormation2(v,"nsdf_attack",{"avfigh","avtank","avrckt","avltnk","hvsav"},2);
+            --Goto(lead,"nsdf_attack");
+            for i2, v2 in pairs(wave) do
+              local s = mission.TaskManager:sequencer(v2);
+              if(v2~=lead) then
+                Follow(v2,lead);
+              end
+              s:queue3("FindTarget","relic_site");
+              table.insert(self.units_to_kill,v2);
+            end
+            self.extra_waves[i] = nil;
+          end
+        end
+      end
+      if(done) then
+        self:taskSucceed("spawn_waves");
+      end
     end
-    if(self:isTaskActive("kill_all") and mission.areAllDead(self.fury_units)) then
-      self:taskSucceed("kill_all");
+    if(self:isTaskActive("kill_waves")) then
+      if(mission.areAllDead(self.units_to_kill)) then
+        self:taskSucceed("kill_waves");
+      end
     end
-  end,
-  save = function(self)
-    return {
-      recy = self.recy,
-      timer = self.timer:save(),
-      wave = self.wave,
-      fury_units = self.fury_units
-    }
-  end,
-  load = function(self,data)
-    self.recy = data.recy;
-    self.timer = misc.Timer(0,false):load(data.timer);
-    self.wave = data.wave;
-    self.fury_units = data.fury_units;
-    self:call("_subToTimer");
   end,
   success = function(self)
-    SucceedMission(GetTime() + 5,"rbdmisn29wn.des");
+    AudioMessage(audio.win);
+    SucceedMission(GetTime() + 15,"rbdmisn29wn.des");
+  end,
+  save = function(self)
+    return self.default_waves, self.extra_waves, self.extraUnits, self.wave_timer, self.patrol_id;
+  end,
+  load = function(self,...)
+    self.default_waves, self.extra_waves, self.extraUnits, self.wave_timer, self.patrol_id = ...;
   end
 });
 
+--]]
 
+local function setUpPatrols()
 
-local function setUpPatrols(handles)
   local patrol_rid, patrol_r = bzRoutine.routineManager:startRoutine("PatrolRoutine");
   --what are our `checkpoint` locations?
-  patrol_r:registerLocations({"l_comm","l_center1","l_north","l_west","l_obase","l_sw","l_center2"});
-
-  patrol_r:defineRouts("l_obase",{
-    p_obase_center1 = "l_center1",
-    p_obase_r1 = "l_obase",
-    p_obase_r2 = "l_obase"
-  });
-  
-  patrol_r:defineRouts("l_center1",{
-    p_center1_center2 = "l_center2",
-    p_center1_obase = "l_obase",
-    p_center1_sw = "l_sw"
-  });
+  patrol_r:registerLocations({"l_comm","l_c1","l_c2","l_c3","l_solar","l_north","l_west","l_sw"});
 
   patrol_r:defineRouts("l_comm",{
-    p_comm_north_1 = "l_north",
-    p_comm_north_2 = "l_north"
+    p_comm_c3 = "l_c3"
   });
   
-  patrol_r:defineRouts("l_center2",{
-    --p_center2_west = "l_west",    
-    p_center2_comm = "l_comm",
-    p_center2_center1 = "l_center1",
-    p_center2_sw = "l_sw"
+  patrol_r:defineRouts("l_c1",{
+    p_c1_c2 = "l_c2",
+    p_c1_sw = "l_sw"
+  });
+
+  patrol_r:defineRouts("l_c2",{
+    p_c2_c3 = "l_c3",
+    p_c2_north = "l_north"
+  });
+  
+  patrol_r:defineRouts("l_c3",{
+    p_c3_comm = "l_comm",
+    p_c3_c1 = "l_c1"
+  });
+
+  patrol_r:defineRouts("l_solar",{
+    p_solar_c3 = "l_c3"
   });
 
   patrol_r:defineRouts("l_north",{
     p_north_west = "l_west",
-    p_north_center2 = "l_center2"
-  });
-  
-  patrol_r:defineRouts("l_sw",{
-    p_sw_center2 = "l_center2",
-    p_sw_center1 = "l_center1"
+    p_north_solar = "l_solar",
+    p_north_comm = "l_comm"
   });
 
   patrol_r:defineRouts("l_west",{
-    p_west_center2_1 = "l_center2",
-    p_west_center2_2 = "l_center2"
+    p_west_c2 = "l_c2"
   });
-  return patrol_id, patrol_r;
+
+  patrol_r:defineRouts("l_sw",{
+    p_sw_c1 = "l_c1"
+  });
+  return patrol_rid, patrol_r;
 end
 
 function Start()
-  local p_id, p = setUpPatrols(handles);
-  for v in AllCraft() do
-    if((GetTeamNum(v) == 2) and (GetClassLabel(v) ~= "turrettank") and GetNation(v) == "s") then
-      p:addHandle(v);
+  --Set up patrolling units
+  local patrol_form = {
+    p_comm_c3 = {" 2 ", "3 3"},
+    p_west_c2 = {" 2 ", "1 1"},
+    p_north_solar = {" 2 ", "3 3"},
+    p_c2_c3 = {" 2 ", "3 3"},
+    p_sw_c1 = {" 2 ", "1 1"}
+  }
+
+  local p_id, p = setUpPatrols();
+  local patrol_units = {};
+  for i, v in pairs(patrol_form) do
+    local units, lead = mission.spawnInFormation2(v,i,{"svfigh", "svtank", "svlntk"},2);
+    for i2, v2 in pairs(units) do
+      table.insert(patrol_units,v2);
+      if(v2 ~= lead) then
+        local s = mission.TaskManager:sequencer(v2);
+        Follow(v2,lead);
+        s:queue3("AddToPatrolTask",p_id);
+      end
     end
+    p:addHandle(lead);
   end
+  local i = 1;
+  local h;
+  repeat
+    h = GetHandle(("patrol%d"):format(i));
+    i = i + 1;
+    table.insert(patrol_units,h);
+  until not IsValid(h)
+
+  local player_units, apc = mission.spawnInFormation2({" 1 ", "2 3 2", "4  3  4"},"player_units",{"bvapc26","bvtank","bvraz","bvltnk"},1,7);
+  SetLabel(apc,"apc");
+  captureRelic:start(p_id,patrol_units);
+  sideObjectives:start(patrol_units);
   core:onStart();
-  captureRelic:start(p_id);
 end
 
 function Update(dtime)
   core:update(dtime);
   mission:Update(dtime);
-  for i,v in pairs(pwers) do
-    if GetCurrentCommand(v.h) == AiCommand["GO"] then
-      SetTeamNum(v.h,v.t);
-      pwers[i] = nil;
-    end
-  end
 end
 
 function CreateObject(handle)
   core:onCreateObject(handle);
   mission:CreateObject(handle);
-  local l = GetClassLabel(handle);
-  if(IsIn(l,{"ammopack","repairkit","daywrecker","wpnpower","camerapod"})) then
-    table.insert(pwers,{h=handle,t=GetTeamNum(handle)});
-    SetTeamNum(handle,1);
-  end
 end
 
 function AddObject(handle)

@@ -19,7 +19,7 @@ pos [1] =
   x [1] =
 706.856
   y [1] =
-2.17876
+2.17965
   z [1] =
 101406
 team [1] =
@@ -30,27 +30,27 @@ isUser [1] =
 obj_addr = 00000001
 transform [1] =
   right_x [1] =
--0.0193303
+0.0347243
   right_y [1] =
-0.00666438
+0.00666163
   right_z [1] =
--0.999791
+-0.999375
   up_x [1] =
-0
+-8.00355e-010
   up_y [1] =
 0.999978
   up_z [1] =
-0.00666563
+0.00666565
   front_x [1] =
-0.999813
+0.999397
   front_y [1] =
-0.000128849
+-0.000231459
   front_z [1] =
--0.0193299
+0.0347235
   posit_x [1] =
 706.856
   posit_y [1] =
-2.17876
+2.17965
   posit_z [1] =
 101406
 abandoned [1] =
@@ -64,9 +64,9 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-706.495
+706.496
   y [1] =
-3.54283
+3.54386
   z [1] =
 101406
 euler =
@@ -75,34 +75,34 @@ euler =
  mass_inv [1] =
 0.000666667
  v_mag [1] =
-0.000979978
+0.000783984
  v_mag_inv [1] =
-1020.43
+1275.54
  I [1] =
 1500
  k_i [1] =
 1
  v [1] =
   x [1] =
-1.61116e-012
+-5.03534e-013
   y [1] =
--1.9517e-005
+-1.57676e-005
   z [1] =
-0.000979783
+0.000783825
  omega [1] =
   x [1] =
-5.82077e-011
+-9.01829e-010
   y [1] =
--2.99555e-035
+-3.18857e-010
   z [1] =
--1.86265e-009
+6.93287e-008
  Accel [1] =
   x [1] =
-3.63798e-010
+-4.54747e-010
   y [1] =
-7.38264e-007
+1.69141e-006
   z [1] =
-3.51018e-008
+6.83607e-008
 seqNo [1] =
 1
 name = 
@@ -457,7 +457,7 @@ state = 01000000
 delayTimer [1] =
 4.16664
 nextRepair [1] =
-1.002
+1.001
 buildClass [1] =
 
 buildDoneTime [1] =
@@ -608,7 +608,7 @@ state = 01000000
 delayTimer [1] =
 4.16664
 nextRepair [1] =
-1.002
+1.001
 buildClass [1] =
 
 buildDoneTime [1] =
@@ -1404,7 +1404,7 @@ state = 01000000
 delayTimer [1] =
 4.16664
 nextRepair [1] =
-1.002
+1.001
 buildClass [1] =
 
 buildDoneTime [1] =
@@ -1554,7 +1554,7 @@ state = 01000000
 delayTimer [1] =
 4.16664
 nextRepair [1] =
-1.002
+1.001
 buildClass [1] =
 
 buildDoneTime [1] =
@@ -14112,7 +14112,7 @@ perceivedTeam [1] =
 1
 [GameObject]
 PrjID [1] =
-aprpg
+aphade
 seqno [1] =
 122
 pos [1] =
@@ -14212,9 +14212,9 @@ seen [1] =
 healthRatio [1] =
 1
 curHealth [1] =
-150
+250
 maxHealth [1] =
-150
+250
 ammoRatio [1] =
 0
 curAmmo [1] =
@@ -14320,7 +14320,7 @@ state = 00000000
 delayTimer [1] =
 -1e+030
 nextRepair [1] =
-1.002
+1.001
 buildClass [1] =
 
 buildDoneTime [1] =
@@ -17465,7 +17465,7 @@ state = 01000000
 delayTimer [1] =
 4.221
 nextRepair [1] =
-1.002
+1.001
 buildClass [1] =
 
 buildDoneTime [1] =
@@ -20808,7 +20808,7 @@ size [1] =
 0
 [AiPaths]
 count [1] =
-40
+42
 [AiPath]
 old_ptr = 0000009F
 size [1] =
@@ -20829,24 +20829,11 @@ pathType = 00000000
 [AiPath]
 old_ptr = 000000A0
 size [1] =
-9
-label = launchpad
+8
+label = cca_path
 pointCount [1] =
-1
-points [1] =
-  x [1] =
-1650.62
-  z [1] =
-101226
-pathType = 00000000
-[AiPath]
-old_ptr = 000000A1
-size [1] =
-11
-label = soviet_path
-pointCount [1] =
-14
-points [14] =
+12
+points [12] =
   x [1] =
 420.026
   z [1] =
@@ -20895,23 +20882,15 @@ points [14] =
 1435.14
   z [1] =
 101219
-  x [1] =
-1505.15
-  z [1] =
-101252
-  x [1] =
-1562.91
-  z [1] =
-101264
 pathType = 00000000
 [AiPath]
-old_ptr = 000000A2
+old_ptr = 000000A1
 size [1] =
 9
 label = nsdf_path
 pointCount [1] =
-16
-points [16] =
+14
+points [14] =
   x [1] =
 1337.13
   z [1] =
@@ -20965,20 +20944,12 @@ points [16] =
   z [1] =
 100961
   x [1] =
-1739.68
+1712.01
   z [1] =
-101038
-  x [1] =
-1792.18
-  z [1] =
-101119
-  x [1] =
-1772.93
-  z [1] =
-101217
+101031
 pathType = 00000000
 [AiPath]
-old_ptr = 000000A3
+old_ptr = 000000A2
 size [1] =
 8
 label = fury_cam
@@ -21031,80 +21002,20 @@ points [11] =
 100996
 pathType = 00000000
 [AiPath]
-old_ptr = 000000A4
+old_ptr = 000000A3
 size [1] =
 9
 label = fury_path
 pointCount [1] =
-16
-points [16] =
+1
+points [1] =
   x [1] =
-748.523
+1563.09
   z [1] =
-101360
-  x [1] =
-836.661
-  z [1] =
-101296
-  x [1] =
-904.17
-  z [1] =
-101274
-  x [1] =
-997.933
-  z [1] =
-101292
-  x [1] =
-1071.07
-  z [1] =
-101362
-  x [1] =
-1078.57
-  z [1] =
-101444
-  x [1] =
-1091.7
-  z [1] =
-101538
-  x [1] =
-1147.95
-  z [1] =
-101617
-  x [1] =
-1207.96
-  z [1] =
-101679
-  x [1] =
-1297.98
-  z [1] =
-101726
-  x [1] =
-1389.86
-  z [1] =
-101782
-  x [1] =
-1485.5
-  z [1] =
-101829
-  x [1] =
-1556.76
-  z [1] =
-101834
-  x [1] =
-1643.02
-  z [1] =
-101791
-  x [1] =
-1680.53
-  z [1] =
-101727
-  x [1] =
-1704.91
-  z [1] =
-101652
+101331
 pathType = 00000000
 [AiPath]
-old_ptr = 000000A5
+old_ptr = 000000A4
 size [1] =
 0
 pointCount [1] =
@@ -21120,7 +21031,7 @@ points [2] =
 101418
 pathType = 00000000
 [AiPath]
-old_ptr = 000000A6
+old_ptr = 000000A5
 size [1] =
 0
 pointCount [1] =
@@ -21136,7 +21047,7 @@ points [2] =
 101418
 pathType = 00000000
 [AiPath]
-old_ptr = 000000A7
+old_ptr = 000000A6
 size [1] =
 0
 pointCount [1] =
@@ -21221,7 +21132,7 @@ points [15] =
 100522
 pathType = 02000000
 [AiPath]
-old_ptr = 000000A8
+old_ptr = 000000A7
 size [1] =
 0
 pointCount [1] =
@@ -21237,7 +21148,7 @@ points [2] =
 100619
 pathType = 00000000
 [AiPath]
-old_ptr = 000000A9
+old_ptr = 000000A8
 size [1] =
 0
 pointCount [1] =
@@ -21253,7 +21164,7 @@ points [2] =
 100619
 pathType = 00000000
 [AiPath]
-old_ptr = 000000AA
+old_ptr = 000000A9
 size [1] =
 0
 pointCount [1] =
@@ -21269,7 +21180,7 @@ points [2] =
 100625
 pathType = 00000000
 [AiPath]
-old_ptr = 000000AB
+old_ptr = 000000AA
 size [1] =
 0
 pointCount [1] =
@@ -21285,7 +21196,7 @@ points [2] =
 100605
 pathType = 00000000
 [AiPath]
-old_ptr = 000000AC
+old_ptr = 000000AB
 size [1] =
 0
 pointCount [1] =
@@ -21301,7 +21212,7 @@ points [2] =
 101261
 pathType = 00000000
 [AiPath]
-old_ptr = 000000AD
+old_ptr = 000000AC
 size [1] =
 0
 pointCount [1] =
@@ -21317,7 +21228,7 @@ points [2] =
 101404
 pathType = 00000000
 [AiPath]
-old_ptr = 000000AE
+old_ptr = 000000AD
 size [1] =
 0
 pointCount [1] =
@@ -21333,7 +21244,7 @@ points [2] =
 101404
 pathType = 00000000
 [AiPath]
-old_ptr = 000000AF
+old_ptr = 000000AE
 size [1] =
 0
 pointCount [1] =
@@ -21481,7 +21392,7 @@ points [35] =
 101404
 pathType = 00000000
 [AiPath]
-old_ptr = 000000B0
+old_ptr = 000000AF
 size [1] =
 0
 pointCount [1] =
@@ -21497,7 +21408,7 @@ points [2] =
 100529
 pathType = 00000000
 [AiPath]
-old_ptr = 000000B1
+old_ptr = 000000B0
 size [1] =
 0
 pointCount [1] =
@@ -21513,7 +21424,7 @@ points [2] =
 100524
 pathType = 00000000
 [AiPath]
-old_ptr = 000000B2
+old_ptr = 000000B1
 size [1] =
 0
 pointCount [1] =
@@ -21529,7 +21440,7 @@ points [2] =
 100461
 pathType = 00000000
 [AiPath]
-old_ptr = 000000B3
+old_ptr = 000000B2
 size [1] =
 0
 pointCount [1] =
@@ -21545,7 +21456,7 @@ points [2] =
 100449
 pathType = 00000000
 [AiPath]
-old_ptr = 000000B4
+old_ptr = 000000B3
 size [1] =
 0
 pointCount [1] =
@@ -21561,7 +21472,7 @@ points [2] =
 101491
 pathType = 00000000
 [AiPath]
-old_ptr = 000000B5
+old_ptr = 000000B4
 size [1] =
 0
 pointCount [1] =
@@ -21577,7 +21488,7 @@ points [2] =
 101491
 pathType = 00000000
 [AiPath]
-old_ptr = 000000B6
+old_ptr = 000000B5
 size [1] =
 0
 pointCount [1] =
@@ -21657,7 +21568,7 @@ points [18] =
 100619
 pathType = 00000000
 [AiPath]
-old_ptr = 000000B7
+old_ptr = 000000B6
 size [1] =
 0
 pointCount [1] =
@@ -21673,7 +21584,7 @@ points [2] =
 100619
 pathType = 00000000
 [AiPath]
-old_ptr = 000000B8
+old_ptr = 000000B7
 size [1] =
 0
 pointCount [1] =
@@ -21749,7 +21660,7 @@ points [17] =
 100625
 pathType = 00000000
 [AiPath]
-old_ptr = 000000B9
+old_ptr = 000000B8
 size [1] =
 0
 pointCount [1] =
@@ -21829,7 +21740,7 @@ points [18] =
 100605
 pathType = 00000000
 [AiPath]
-old_ptr = 000000BA
+old_ptr = 000000B9
 size [1] =
 0
 pointCount [1] =
@@ -21845,7 +21756,7 @@ points [2] =
 101261
 pathType = 00000000
 [AiPath]
-old_ptr = 000000BB
+old_ptr = 000000BA
 size [1] =
 0
 pointCount [1] =
@@ -22009,7 +21920,7 @@ points [39] =
 101477
 pathType = 00000000
 [AiPath]
-old_ptr = 000000BC
+old_ptr = 000000BB
 size [1] =
 0
 pointCount [1] =
@@ -22157,7 +22068,7 @@ points [35] =
 101477
 pathType = 00000000
 [AiPath]
-old_ptr = 000000BD
+old_ptr = 000000BC
 size [1] =
 13
 label = spawn_factory
@@ -22170,7 +22081,7 @@ points [1] =
 102020
 pathType = 00000000
 [AiPath]
-old_ptr = 000000BE
+old_ptr = 000000BD
 size [1] =
 12
 label = factory_path
@@ -22215,7 +22126,7 @@ points [9] =
 101640
 pathType = 00000000
 [AiPath]
-old_ptr = 000000BF
+old_ptr = 000000BE
 size [1] =
 9
 label = nsdf_wave
@@ -22232,7 +22143,7 @@ points [2] =
 100151
 pathType = 00000000
 [AiPath]
-old_ptr = 000000C0
+old_ptr = 000000BF
 size [1] =
 8
 label = cca_wave
@@ -22249,7 +22160,7 @@ points [2] =
 100627
 pathType = 00000000
 [AiPath]
-old_ptr = 000000C1
+old_ptr = 000000C0
 size [1] =
 9
 label = west_wave
@@ -22266,7 +22177,7 @@ points [2] =
 101291
 pathType = 00000000
 [AiPath]
-old_ptr = 000000C2
+old_ptr = 000000C1
 size [1] =
 9
 label = fury_wave
@@ -22278,12 +22189,12 @@ points [2] =
   z [1] =
 101441
   x [1] =
-738.5
+736.566
   z [1] =
-101384
+101441
 pathType = 00000000
 [AiPath]
-old_ptr = 000000C3
+old_ptr = 000000C2
 size [1] =
 9
 label = east_wave
@@ -22300,7 +22211,7 @@ points [2] =
 100735
 pathType = 00000000
 [AiPath]
-old_ptr = 000000C4
+old_ptr = 000000C3
 size [1] =
 9
 label = launchpad
@@ -22310,14 +22221,14 @@ points [2] =
   x [1] =
 1651.24
   z [1] =
-101242
+101236
   x [1] =
-1610.64
+1651.29
   z [1] =
-101242
+101276
 pathType = 00000000
 [AiPath]
-old_ptr = 000000C5
+old_ptr = 000000C4
 size [1] =
 9
 label = bdog_base
@@ -22332,4 +22243,87 @@ points [2] =
 1624
   z [1] =
 101458
+pathType = 00000000
+[AiPath]
+old_ptr = 000000C5
+size [1] =
+9
+label = west_path
+pointCount [1] =
+6
+points [6] =
+  x [1] =
+617.31
+  z [1] =
+101269
+  x [1] =
+749.336
+  z [1] =
+101268
+  x [1] =
+924.443
+  z [1] =
+101293
+  x [1] =
+1113.45
+  z [1] =
+101326
+  x [1] =
+1273.27
+  z [1] =
+101379
+  x [1] =
+1373.33
+  z [1] =
+101392
+pathType = 00000000
+[AiPath]
+old_ptr = 000000C6
+size [1] =
+9
+label = east_path
+pointCount [1] =
+7
+points [7] =
+  x [1] =
+2000.94
+  z [1] =
+100757
+  x [1] =
+2012.06
+  z [1] =
+100818
+  x [1] =
+2057.92
+  z [1] =
+100905
+  x [1] =
+2124.63
+  z [1] =
+101000
+  x [1] =
+2159.38
+  z [1] =
+101090
+  x [1] =
+2141.31
+  z [1] =
+101215
+  x [1] =
+2041.25
+  z [1] =
+101312
+pathType = 00000000
+[AiPath]
+old_ptr = 000000C7
+size [1] =
+10
+label = enemy_base
+pointCount [1] =
+1
+points [1] =
+  x [1] =
+1090.08
+  z [1] =
+100366
 pathType = 00000000
