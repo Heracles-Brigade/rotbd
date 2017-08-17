@@ -525,7 +525,7 @@ ObjectiveInstance = {
             if(self.subTasks[name]) then
                 local t = self.subTasks[name];
                 t.done = true;
-                t.state = 1;
+                --t.state = 1;
             end
         end,
         taskSucceed = function(self,name,...)

@@ -118,13 +118,16 @@ local sideObjectives = mission.Objective:define("sideObjectives"):createTasks(
       AddObjective("rbd0904.otf","green");
     elseif(name == "destroy_comm") then
       UpdateObjective("rbd0905.otf","green");
+      StopCockpitTimer();
+      HideCockpitTimer();
     end
   end,
   task_fail = function(self,name)
     if(name == "destroy_comm") then
+      ReplaceObjective("rbd0905.otf","rbd0906.otf","yellow");
       StopCockpitTimer();
       HideCockpitTimer();
-      ReplaceObjective("rbd0905.otf","rbd0906.otf","yellow");
+      SetObjectiveOff(self.commtower);
     end
   end,
   _hasBeenDetected = function(self)
@@ -256,15 +259,16 @@ local defendSite = mission.Objective:define("defendSite"):createTasks(
     self.extraUnits = sideObjectives:call("_hasBeenDetected");
     self.units_to_kill = patrol_units;
     self.default_waves = {
-      [("%d"):format(3*60)] = {"2 2 4","1 1 1"},
-      [("%d"):format(3*60 + 60)] = {"3 3","1 1"},
-      [("%d"):format(3*60 + 60*7)] = {"5   5", "5 5 5"}
+      [("%d"):format(3*60)] = {"2 2 4","1 4 1"},
+      [("%d"):format(3*60 + 60)] = {"2 3","1 1"},
+      [("%d"):format( self.extraUnits and (3*60 + 60*7) or 4*60 )] = {"5 5 5", "5 5 5"},
+      [("%d"):format( (self.extraUnits and (3*60 + 60*7) or 4*60) + 60 )] = {"5 5 5", "5 5 5"}
     };
     self.extra_waves = {
-      [("%d"):format(3*60 + 60*2+15)] = {"1 1 1"},
+      [("%d"):format(3*60 + 60*2+15)] = {"4 1 1"},
       [("%d"):format(3*60 + 60*3)] = {"2 4 4","4 1 1"},
-      [("%d"):format(3*60 + 60*3+30)] = {"2 4 4 4","3 1 1 1"},
-      [("%d"):format(3*60 + 60*5)] = {"2 4 4 4","3 1 1 1"}
+      [("%d"):format(3*60 + 60*3+30)] = {"2 2 4 4","3 1 1 1"},
+      [("%d"):format(3*60 + 60*5)] = {"2 2 2 4","3 4 1 1"}
     };
     for i, v in pairs(self.units_to_kill) do
       local s = mission.TaskManager:sequencer(v);
@@ -288,9 +292,9 @@ local defendSite = mission.Objective:define("defendSite"):createTasks(
   update = function(self,dtime)
     if(self:isTaskActive("spawn_waves")) then
       self.wave_timer = self.wave_timer + dtime;
-      self.done = true;
+      done = true;
       for i, v in pairs(self.default_waves) do
-        self.done = false;
+        done = false;
         local d = tonumber(i);
         if(self.wave_timer >= d) then
           local wave, lead = mission.spawnInFormation2(v,"nsdf_attack",{"avfigh","avtank","avrckt","avltnk","hvsav"},2);
@@ -308,7 +312,7 @@ local defendSite = mission.Objective:define("defendSite"):createTasks(
       end
       if(self.extraUnits) then
         for i, v in pairs(self.extra_waves) do
-          self.done = false;
+          done = false;
           local d = tonumber(i);
           if(self.wave_timer >= d) then
             local wave, lead = mission.spawnInFormation2(v,"nsdf_attack",{"avfigh","avtank","avrckt","avltnk","hvsav"},2);
@@ -337,7 +341,7 @@ local defendSite = mission.Objective:define("defendSite"):createTasks(
   end,
   success = function(self)
     AudioMessage(audio.win);
-    SucceedMission(GetTime() + 15,"rbdmisn29wn.des");
+    SucceedMission(GetTime() + 15,"rbd09wn.des");
   end,
   save = function(self)
     return self.default_waves, self.extra_waves, self.extraUnits, self.wave_timer, self.patrol_id;
@@ -407,7 +411,7 @@ function Start()
   local p_id, p = setUpPatrols();
   local patrol_units = {};
   for i, v in pairs(patrol_form) do
-    local units, lead = mission.spawnInFormation2(v,i,{"svfigh", "svtank", "svlntk"},2);
+    local units, lead = mission.spawnInFormation2(v,i,{"svfigh", "svtank", "svltnk"},2);
     for i2, v2 in pairs(units) do
       table.insert(patrol_units,v2);
       if(v2 ~= lead) then
@@ -423,10 +427,13 @@ function Start()
   repeat
     h = GetHandle(("patrol%d"):format(i));
     i = i + 1;
-    table.insert(patrol_units,h);
+    -- they're sooooo slooooooooooooooooow
+    if(GetClassLabel(h) ~= "walker") then
+      table.insert(patrol_units,h);
+    end
   until not IsValid(h)
 
-  local player_units, apc = mission.spawnInFormation2({" 1 ", "2 3 2", "4  3  4"},"player_units",{"bvapc26","bvtank","bvraz","bvltnk"},1,7);
+  local player_units, apc = mission.spawnInFormation2({" 1 ", "2 2 2", "4  2  4"},"player_units",{"bvapc09","bvtank","bvraz","bvltnk"},1,7);
   SetLabel(apc,"apc");
   captureRelic:start(p_id,patrol_units);
   sideObjectives:start(patrol_units);
