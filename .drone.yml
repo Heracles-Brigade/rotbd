@@ -17,7 +17,7 @@ pipeline:
       - find /rotbd -type f \( -name "*.lua" -o -name "*.squish" \) -exec rsync -rv {} ./tmp_lua \;
       - python3 /bztools/luaSquish.py ./tmp_lua
       - find /rotbd -not -ipath '*/\.*' -not -name '*.lua' -type f -exec rsync -rv {} ./tmp_files \;
-      - find /tmp_lua -name '*.lua' -type f -exec mv {} ./tmp_files \;
+      - find ./tmp_lua -name '*.lua' -type f -exec mv {} ./tmp_files \;
       - python3 /bztools/textToSpeech.py ./tmp_files
       - python3 /bztools/crlf_fixer.py ./tmp_files
       - mkdir -p /rotbd/output
