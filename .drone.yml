@@ -13,7 +13,9 @@ pipeline:
         
     commands:
       - mkdir ./tmp_files
+      - mkdir ./tmp_lua
       - find /rotbd -not -ipath '*/\.*' -type f -exec rsync -rv {} ./tmp_files \;
+      - python3 /bztools/luaSquish.py ./tmp_files
       - python3 /bztools/textToSpeech.py ./tmp_files
       - python3 /bztools/crlf_fixer.py ./tmp_files
       - mkdir -p /rotbd/output
