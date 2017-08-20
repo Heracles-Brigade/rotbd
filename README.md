@@ -1,3 +1,5 @@
+[![Build Status](https://drone.studynator.me/api/badges/Aborysa/rotbd/status.svg)](https://drone.studynator.me/Aborysa/rotbd)
+
 # Rise of the Black Dogs #
 <img src="./rotbd.png" alt="Drawing" style="width: 200px;"/>
 
