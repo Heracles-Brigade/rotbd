@@ -15,15 +15,15 @@ pipeline:
       - mkdir /tmp/files
       - mkdir /tmp/lua
       - find /rotbd -type f \( -name "*.lua" -o -name "*.squish" \) -exec cp {} /tmp/lua \;
-      - python3 /bztools/luaSquish.py ./tmp_lua -r
+      - python3 /bztools/luaSquish.py /tmp/lua -r
       - find /rotbd -not -ipath '*/\.*' -not -name '*.lua' -type f -exec cp {} /tmp/files \;
       - find /tmp/lua -name '*.lua' -type f -exec mv {} /tmp/files \;
       - python3 /bztools/textToSpeech.py /tmp/files
       - python3 /bztools/crlf_fixer.py /tmp/files
       - mkdir -p /rotbd/output
-      - zip -j -r /rotbd/output/bundle.zip ./tmp_files
+      - zip -j -r /rotbd/output/bundle.zip /tmp/files
       - find -type f -name '*.bzn' -exec python3 /bztools/bznDown.py {} {} \;
-      - zip -j -r /rotbd/output/bundle1.5.zip ./tmp_files
+      - zip -j -r /rotbd/output/bundle1.5.zip /tmp/files
 
   snapshot-branch:
     group: deploy

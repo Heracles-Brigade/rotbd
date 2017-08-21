@@ -1,9 +1,4 @@
 --Combination of Grab The Scientists and Preparations
---Contributors:
-    --Jarle Trollebø(Mario)
-    --General BlackDragon
-    --The Deus Ex
-
 
 require("bz_logging");
 
