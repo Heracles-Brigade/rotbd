@@ -1,6 +1,6 @@
 --Rev_2
 
-require("bz_logging");
+local _ = require("bz_logging");
 
 local mission = require('cmisnlib');
 local globals = {};

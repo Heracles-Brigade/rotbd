@@ -1,6 +1,6 @@
 
 local p = require("scr");
-require("luaio");
+local _ = require("luaio");
 
 
 local haswin = false;

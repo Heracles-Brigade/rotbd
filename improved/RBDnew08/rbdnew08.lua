@@ -1,5 +1,5 @@
 
-require("bz_logging");
+local _ = require("bz_logging");
 
 local OOP = require("oop");
 local mission = require("cmisnlib");

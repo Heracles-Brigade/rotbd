@@ -1,6 +1,6 @@
 --Combination of Grab The Scientists and Preparations
 
-require("bz_logging");
+local _ = require("bz_logging");
 
 print("LOAD!",GetMissionFilename());
 

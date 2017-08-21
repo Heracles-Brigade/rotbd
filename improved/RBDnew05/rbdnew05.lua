@@ -1,7 +1,7 @@
 --Combination of The Last Stand and Evacuate Venus
 
 
-require("bz_logging");
+local _ = require("bz_logging");
 
 local miss25setup;
 local miss26setup;

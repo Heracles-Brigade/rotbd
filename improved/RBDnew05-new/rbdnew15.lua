@@ -3,7 +3,7 @@
 
 local pwers = {};
 
-require("bz_logging");
+local _ = require("bz_logging");
 local orig15setup = require("orig15p");
 local core = require("bz_core");
 local OOP = require("oop");

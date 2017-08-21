@@ -10,12 +10,12 @@ local PatrolController = require("patrolc");
 local mission = require('cmisnlib');
 local bzObjects = require("bz_objects");
 -- Allows us to re-order objectives
-require("bz_objt");
+local _ = require("bz_objt");
 
-require("objectCrate");
+local _ = require("objectCrate");
 
 local pwers = {};
-require("bz_logging");
+local _ = require("bz_logging");
 
 local audio = {
   intro = "rbd0901.wav",

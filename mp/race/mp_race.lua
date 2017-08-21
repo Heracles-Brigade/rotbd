@@ -5,7 +5,7 @@ local bzRoutine = require("bz_routine");
 local misc = require("misc");
 local debug = require("bz_logging");
 --routine for spectating
-require("spectate_r");
+local _ = require("spectate_r");
 
 local KeyListener = misc.KeyListener;
 local MpSyncable = misc.MpSyncable;
