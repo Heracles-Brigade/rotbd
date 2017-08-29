@@ -282,13 +282,14 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
     if(name == "nuke") then
       self.day_id = ProducerAi:queueJob(ProductionJob("apwrckz",3,self.relic));
       self:call("_setUpProdListeners",self.day_id,"_setDayWrecker");
-      local units, lead = mission.spawnInFormation2({"   1   "," 22222 ", "3333333"},"cca_relic_attack",{"svtank","svrckt","svfigh"},2,15);
+      local units, lead = mission.spawnInFormation2({"   1   ","1 1 2 2", "3 3 3 3"},"cca_relic_attack",{"svtank","svrckt","svfigh"},2,15);
       for i, v in pairs(units) do
         if(v ~= lead) then
           Defend2(v,lead);
         end
         local s = mission.TaskManager:sequencer(v);
         s:queue2("Goto","cca_relic_attack");
+        s:queue2("Defend2", self.relic);
         s:queue2("Defend");
       end
     elseif(name == "cca_attack_base") then
@@ -305,6 +306,17 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
         {loc = "base_attack2",formation={"2 2","1 1"}}
       };
       self.attack_timer = nil;
+    elseif(name == "destroy_relic") then
+      local units, lead = mission.spawnInFormation2({"   1   ","1 1 2 2", "3 3 3 3"},"cca_relic_attack",{"svtank","svltnk","svfigh"},2,15);
+      for i, v in pairs(units) do
+        if(v ~= lead) then
+          Defend2(v,lead);
+        end
+        local s = mission.TaskManager:sequencer(v);
+        s:queue2("Goto","cca_relic_attack");
+        s:queue2("Defend2", self.relic);
+        s:queue2("Defend");
+      end
     end
   end,
   _setDayWrecker = function(self,job,handle)
