@@ -10,6 +10,8 @@ local AiDecorator = bzAi.AiDecorator;
 local Class = OOP.Class;
 local assignObject = OOP.assignObject;
 local odfFile = misc.odfFile;
+local ObjectListener = misc.ObjectListener;
+
 local ProductionJob;
 local JobBundle;
 
@@ -260,6 +262,7 @@ local ProducerAi = Decorate(
     aiNames = {"RecyclerFriend","MUFFriend","RigFriend","SLFFriend"},
     playerTeam = false
   }),
+  Implements(ObjectListener),
   Class("ProducerAi",{
     constructor = function(handle)
       self.handle = bzObjects.Handle(handle);
@@ -267,6 +270,7 @@ local ProducerAi = Decorate(
       self.buildState = 0;
       self.wait = 10;
       self.last_command = self.handle:getCurrentCommand();
+      self._check_next = {};
     end,
     methods = {
       update = function(dtime)
@@ -280,32 +284,32 @@ local ProducerAi = Decorate(
           end
         end
         self.last_command = nc;
-        if(self.wait <= 0) then
-          if(self.handle:isDeployed()) then
-            if(self.buildState == 1 and (not self.handle:isBusy())) then
-              local cmatch = nil;
-              local dist = 300;
-              for v in ObjectsInRange(100,self.handle:getHandle()) do
-                if(IsOdf(v,self.currentJob.odf)) then
-                  local nl = self.handle:getDistance(v);
-                  if(nl < dist) then
-                    cmatch = v;
-                  end
+        if(self.handle:isDeployed()) then
+          if(self.buildState == 3 and self.handle:isBusy()) then
+            self.buildState = 1;
+          elseif(self.buildState == 1 and (not self.handle:isBusy())) then
+            local cmatch = nil;
+            local dist = 300;
+            for i, handle in pairs(self._check_next) do
+              print("Odf match?", IsOdf(handle,self.currentJob.odf), self.handle:getDistance(handle))
+              if(IsOdf(handle,self.currentJob.odf)) then
+                local nl = self.handle:getDistance(handle);
+                if(nl < dist) then
+                  cmatch = handle;
                 end
               end
-              --if(IsValid(cmatch)) then
+            end
+            self._check_next = {}
+            --if(IsValid(cmatch)) then
               self.currentJob:finish(cmatch);
               self.buildState = 0;
               self.currentJob = nil;
-              --else
-                --self.currentJob:unAssign();
-              --end
-            end
-            if(self.buildState == 3 and self.handle:isBusy()) then
-              self.buildState = 1;
-            end
+            --else
+              --self.currentJob:unAssign();
+            --end
           end
-          
+        end
+        if(self.wait <= 0) then
           if((not self.handle:canBuild()) and self.currentJob) then
             self.currentJob:unAssign();
             self.currentJob = nil;
@@ -318,7 +322,7 @@ local ProducerAi = Decorate(
       end,
       _requestJob = function()
         local job = class:requestJob(self.handle);
-        self.wait = 20;
+        self.wait = 120;
         if(job) then
           self.wait = 0;
           self.currentJob = job;
@@ -352,6 +356,15 @@ local ProducerAi = Decorate(
           self.currentJob = class:getJob(data.jobId);
         end
         self.buildState = data.state;
+      end,
+      onAddObject = function()
+      end,
+      onCreateObject = function(handle)
+        if(self.handle:isDeployed() and self.buildState == 1) then
+          table.insert(self._check_next, handle)
+        end
+      end,
+      onDeleteObject = function()
       end
     },
     static = {
@@ -487,7 +500,6 @@ local ProducerAi = Decorate(
 
 ProducerAi.jobs = {};
 ProducerAi.bundled = {};
-
 bzAi.aiManager:declearClass(ProducerAi);
 
 return {
