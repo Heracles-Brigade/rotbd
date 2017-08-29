@@ -307,7 +307,7 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
       };
       self.attack_timer = nil;
     elseif(name == "destroy_relic") then
-      local units, lead = mission.spawnInFormation2({"   1   ","1 1 2 2", "3 3 3 3"},"cca_relic_attack",{"svtank","svltnk","svfigh"},2,15);
+      local units, lead = mission.spawnInFormation2({"   1   ","1   2 2", "3   3  "},"relic_light",{"svtank","svltnk","svfigh"},2,15);
       for i, v in pairs(units) do
         if(v ~= lead) then
           Defend2(v,lead);
@@ -396,7 +396,7 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
             self.nuke_state = 3;
           end
         elseif(self.nuke_state == 3) then
-          if(Length(GetPosition(self.daywrecker) - GetPosition(self.relic)) < 50) then
+          if(Length(GetPosition(self.daywrecker) - GetPosition(self.relic)) < 100) then
             RemoveObjective(self.nuke_state < 2 and "rbd0530.otf" or "rbd0531.otf");
             AddObjective("rbd0534.otf","green");
             AudioMessage(audio.done_d);
