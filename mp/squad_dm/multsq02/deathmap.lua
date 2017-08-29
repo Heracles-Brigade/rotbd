@@ -1,1 +1,1 @@
-require "squad_dm";
+local _ = require "squad_dm";

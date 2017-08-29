@@ -51,6 +51,7 @@ local PatrolController = Decorate(
         end
       end,
       getRandomRoute = function(location)
+        print("getRandomRoute",location,self.path_map[location]);
         if(#self.path_map[location] < 2) then
           return self.path_map[location][1];
         end
@@ -104,7 +105,7 @@ local PatrolController = Decorate(
         return self.patrol_units, self.locations, self.path_map;
       end,
       load = function(...)
-        self.patrol_units, self.location, self.path_map = ...;
+        self.patrol_units, self.locations, self.path_map = ...;
       end,
       update = function(dtime)
         --Check all units, if they are not doing anything check their location,

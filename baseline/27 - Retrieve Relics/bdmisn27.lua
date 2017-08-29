@@ -5,7 +5,7 @@
 
 
 
-require("bz_logging");
+local _ = require("bz_logging");
 
 local M = {
 -- Bools

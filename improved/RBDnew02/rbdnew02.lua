@@ -5,7 +5,7 @@
    - Vemahk
 	 - Mari o
 --]]
-require("bz_logging");
+local _ = require("bz_logging");
 
 
 local audio = {

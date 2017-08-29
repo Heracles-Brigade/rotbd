@@ -212,7 +212,7 @@ ProductionJob = Class("AI.ProductionJob",{
         team = self.team,
         location = self.location,
         priority = self.priority,
-        asignee = self.assignee,
+        assignee = self.assignee,
         assigned = self.assigned,
         UUID = self:getId(),
         finished = self.finished
@@ -274,7 +274,6 @@ local ProducerAi = Decorate(
         local nc = self.handle:getCurrentCommand();
         if(nc ~= self.last_command) then
           if((not isIn(AiCommand[nc],{"DROPOFF","NONE","BUILD"})) and self.buildState ~= 0) then
-            print(AiCommand[nc]);
             self.currentJob:unAssign();
             self.currentJob = nil;
             self.buildState = 0;
@@ -370,7 +369,7 @@ local ProducerAi = Decorate(
         end
         local bundle = JobBundle(...);
         class.bundled[bundle:getId()] = bundle;
-        bundle:onFinish():subscribe(function()
+        bundle:onFinish():subscribe(function(b)
           class:removeBundle(bundle:getId());
         end);
         return bundle:getId();

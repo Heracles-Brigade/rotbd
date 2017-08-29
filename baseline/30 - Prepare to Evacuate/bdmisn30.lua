@@ -6,7 +6,7 @@
 
 
 
-require("bz_logging");
+local _ = require("bz_logging");
 
 if not SetLabel then SetLabel = SettLabel end -- BZ1.5 backwards compatability.
 

@@ -1,11 +1,7 @@
 --Combination of The Last Stand and Evacuate Venus
---Contributors:
-    --Jarle Trollebø(Mario)
-    --General BlackDragon
-    --Deus Ex Ceteri
 
 
-require("bz_logging");
+local _ = require("bz_logging");
 
 local miss25setup;
 local miss26setup;

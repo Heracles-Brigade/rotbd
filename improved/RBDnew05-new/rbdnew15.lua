@@ -1,10 +1,9 @@
 --Combination of The Last Stand and Evacuate Venus
---Contributors:
-    --Jarle Trollebø(Mario)
+
 
 local pwers = {};
 
-require("bz_logging");
+local _ = require("bz_logging");
 local orig15setup = require("orig15p");
 local core = require("bz_core");
 local OOP = require("oop");
@@ -55,6 +54,7 @@ local intro = mission.Objective:define("introObjective"):createTasks(
       rendezvous = "wait_for_units",
       wait_for_units = "goto_relic"
     };
+    self.relic = GetHandle("relic_1")
   end,
   start = function(self)
     --Set up patrol paths
@@ -135,9 +135,9 @@ local intro = mission.Objective:define("introObjective"):createTasks(
     SetTeamNum(handle,1);
   end,
   delete_object = function(self,handle)
-    if(not IsValid(GetConstructorHandle(3))) then
-      ProducerAi:queueJob(ProductionJob("bvcnst",3));
-    end
+    --if(not IsValid(GetConstructorHandle(3))) then
+    --  ProducerAi:queueJob(ProductionJob("bvcnst",3));
+    --end
   end,
   _doneProducing1 = function(self,bundle,handle)
     --When all the player's units have been made, succeed wait_for_units
@@ -191,7 +191,7 @@ local intro = mission.Objective:define("introObjective"):createTasks(
         self:taskSucceed("rendezvous");
       end
     elseif(self:isTaskActive("goto_relic")) then
-      if(IsInfo("hbcrys")) then
+      if(IsInfo(GetOdf(self.relic))) then
         self:taskSucceed("goto_relic");
       end
     elseif(not self:isTaskActive("wait_for_units")) then

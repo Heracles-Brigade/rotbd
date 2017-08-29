@@ -1,7 +1,7 @@
 -- Battlezone: Rise of the Black Dogs Redux Mission 3 coded by Seqan and Vemahk
 
 
-require("bz_logging");
+local _ = require("bz_logging");
 local bzCore = require("bz_core");
 local mammoth = require("mammoth");
 

@@ -412,7 +412,7 @@ ObjectiveInstance = {
             return self.parentRef:dispatchEvent(event,self,...)
         end,
         call = function(self,...)
-            return unpack(self:parentCall(...)[1]);
+            return unpack(self:parentCall(...)[1] or {});
         end,
         start = function(self,...)
             self:parentCall('start',...);
@@ -525,7 +525,7 @@ ObjectiveInstance = {
             if(self.subTasks[name]) then
                 local t = self.subTasks[name];
                 t.done = true;
-                t.state = 1;
+                --t.state = 1;
             end
         end,
         taskSucceed = function(self,name,...)
