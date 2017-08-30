@@ -427,10 +427,6 @@ function Start()
   repeat
     h = GetHandle(("patrol%d"):format(i));
     i = i + 1;
-    -- they're sooooo slooooooooooooooooow
-    if(GetClassLabel(h) ~= "walker") then
-      table.insert(patrol_units,h);
-    end
   until not IsValid(h)
 
   local player_units, apc = mission.spawnInFormation2({" 1 ", "2 2 2", "4  2  4"},"player_units",{"bvapc09","bvtank","bvraz","bvltnk"},1,7);
