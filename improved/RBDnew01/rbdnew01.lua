@@ -297,7 +297,7 @@ local nsdfAttack = mission.Objective:define("nsdf_attack"):init({
         if(self.recycler_target and not IsAlive(GetRecyclerHandle(2))) then
             self:success();
         elseif(not self.recycler_target) then
-            if areAllDead(self.targets) then
+            if areAllDead(self.targets, 2) then
                 self.recycler_target = true;
                 SetObjectiveOn(GetRecyclerHandle(2));
                 UpdateObjective(self.otf,"green");

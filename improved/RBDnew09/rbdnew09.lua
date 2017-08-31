@@ -334,7 +334,7 @@ local defendSite = mission.Objective:define("defendSite"):createTasks(
       end
     end
     if(self:isTaskActive("kill_waves")) then
-      if(mission.areAllDead(self.units_to_kill)) then
+      if(mission.areAllDead(self.units_to_kill, 2)) then
         self:taskSucceed("kill_waves");
       end
     end
