@@ -139,7 +139,7 @@ local escortRecycler = mission.Objective:define("escortRecycler"):createTasks(
     FailMission(GetTime() + 5,des[reason]);
   end,
   delete_object = function(self,h)
-    if(self:isTaskActive("kill_attackers") and mission.areAllDead(self.attackers)) then
+    if(self:isTaskActive("kill_attackers") and mission.areAllDead(self.attackers, 2)) then
       self:taskSucceed("kill_attackers");
     end
   end,

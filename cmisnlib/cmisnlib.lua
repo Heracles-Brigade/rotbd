@@ -73,9 +73,9 @@ local function spawnAtPath(odf,team,path)
 end
 --Returns true of all of the handles given are dead
 --areAnyAlive = not areAllDead
-local function areAllDead(handles)
+local function areAllDead(handles, team)
     for i,v in pairs(handles) do
-        if(IsAlive(v)) then
+        if(IsAlive(v) and (team~=nil and team == GetTeamNum(v))) then
             return false;
         end
     end
