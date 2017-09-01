@@ -1,10 +1,10 @@
 PARENT diag.voices
 START
-SHAW: Nice work [100] the power’s down 
+SHAW: Nice work [100] the powers down 
 [1000] huh [100] Looks like we re being sent reinforcements 
 [100] We will be out of here in [250] wait [100] did you hear that [50]
 What did they say [100][200];
 GRIG: Evacuating the scientists [50] sir [100][200];
 SHAW: What [150] Cobra One [100] the units heading to the research facility are working with the Russians [100] They re gonna evacuate the scientists [75] stop them[200];
 HRLY: Attention Black Dog forces [150] You are under order to stand down [200] I repeat [100] stand down [500] This is a 3rd Platoon operation and you are[200];
-SHAW: That’s enough of him [100] Wipe them out [75] Cobra One[200];
+SHAW: That is enough of him [100] Wipe them out [75] Cobra One[200];

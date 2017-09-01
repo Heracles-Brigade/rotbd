@@ -43,7 +43,6 @@ end
 
 
 local function copyObject(handle,odf,kill)
-  print("Replacing object!");
   local nObject = BuildObject(odf,GetTeamNum(handle),GetTransform(handle));
   local pilot = GetPilotClass(handle) or "";
   local hp = GetCurHealth(handle) or 0;
@@ -354,9 +353,13 @@ local Handle = Class("Obj.Handle", {
     canBuild = function(...)
       return CanBuild(self:getHandle(),...);
     end,
-    canMake = function(odf)
+    canMake = function(odf,const_can_build_all)
+      const_can_build_all = const_can_build_all == nil or const_can_build_all;
       local c = self:getClassLabel();
       local cmake = false;
+      --if(c == "constructionrig" and const_can_build_all) then
+      --  return true;
+      --end
       if(c == "armory" or c == "recycler" or c == "factory" or c == "constructionrig") then
         local blist = self:getTable("ProducerClass","buildItem");
         cmake = cmake or isIn(odf,blist);

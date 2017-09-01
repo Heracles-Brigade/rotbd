@@ -10,20 +10,26 @@ pipeline:
       event:
         - push
         - tag
+      branch:
+        - master
         
     commands:
-      - mkdir ./tmp_files
-      - find /rotbd -not -ipath '*/\.*' -type f -exec rsync -rv {} ./tmp_files \;
-      - python3 /bztools/textToSpeech.py ./tmp_files
-      - python3 /bztools/crlf_fixer.py ./tmp_files
+      - mkdir /tmp/files
+      - mkdir /tmp/lua
+      - find /rotbd -type f \( -name "*.lua" -o -name "*.squish" \) -exec cp {} /tmp/lua \;
+      - python3 /bztools/luaSquish.py /tmp/lua -r
+      - find /rotbd -not -ipath '*/\.*' -not -name '*.lua' -not -name '*.bin' -type f -exec cp {} /tmp/files \;
+      - find /tmp/lua -name '*.lua' -type f -exec mv {} /tmp/files \;
+      - python3 /bztools/textToSpeech.py /tmp/files
+      - python3 /bztools/crlf_fixer.py /tmp/files
       - mkdir -p /rotbd/output
-      - zip -j -r /rotbd/output/bundle.zip ./tmp_files
+      - zip -j -r /rotbd/output/bundle.zip /tmp/files
       - find -type f -name '*.bzn' -exec python3 /bztools/bznDown.py {} {} \;
-      - zip -j -r /rotbd/output/bundle1.5.zip ./tmp_files
+      - zip -j -r /rotbd/output/bundle1.5.zip /tmp/files
 
   snapshot-branch:
     group: deploy
-    image: ubuntu
+    image: docker.studynator.me/bzone/bztools:latest
     when:
       event:
         - push
@@ -40,7 +46,7 @@ pipeline:
 
   release:
     group: deploy
-    image: ubuntu
+    image: docker.studynator.me/bzone/bztools:latest
     when:
       event:
         - tag

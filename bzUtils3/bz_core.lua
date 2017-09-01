@@ -28,6 +28,11 @@ local BzCoreModule = D(BzModule("BzCoreModule"),
         end
       end,
       onStart = function(...)
+        if(IsBzr()) then
+          for v in AllCraft() do
+            AddObject(v);
+          end
+        end
         for i, v in pairs(self.modules) do
           print(i, v);
           v:onStart(...);

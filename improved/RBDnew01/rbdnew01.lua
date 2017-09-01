@@ -1,17 +1,14 @@
 --Combination of Grab The Scientists and Preparations
---Contributors:
-    --Jarle Trollebø(Mario)
-    --General BlackDragon
-    --The Deus Ex
 
-
-require("bz_logging");
+local _ = require("bz_logging");
 
 print("LOAD!",GetMissionFilename());
 
 local mission = require('cmisnlib');
 local globals = {};
 local tracker = mission.UnitTracker:new();
+
+local areAllDead = mission.areAllDead;
 
 local audio = {
     intro = "rbd0101.wav",
@@ -232,7 +229,7 @@ local destorySoviet = mission.Objective:define("destroy_soviet"):init({
 }):setListeners({
     start = function()
         createWave("svfigh",{"spawn_e1","spawn_e2"},"east_path");
-		createWave("svtank",{"spawn_e3"},"east_path");
+        createWave("svtank",{"spawn_e3"},"east_path");
         AudioMessage(audio.attack);
     end,
     update = function(self,dtime)
@@ -278,22 +275,12 @@ local nsdfAttack = mission.Objective:define("nsdf_attack"):init({
         local a,b,camTarget = createWave("avwalk",{"spawn_avwalk1","spawn_avwalk2","spawn_avwalk3"},"nsdf_path");
         local c,e,g = createWave("avtank",{"spawn_avtank1","spawn_avtank2","spawn_avtank3"},"nsdf_path");
         local d,h,i = createWave("avtank",{"spawn_w1","spawn_w2","spawn_w3"},"west_path");
-        local f = createWave("svtank",{"spawn_n4","spawn_n5"},"north_path");
+        local f,j = createWave("svtank",{"spawn_n4","spawn_n5"},"north_path");
         self.camTarget = camTarget;
         self.camOn = CameraReady();
-        self.targets = {
-            [a]=true,
-            [b]=true,
-            [camTarget]=true,
-            [c]=true,
-            [d]=true,
-            [e]=true,
-            [g]=true,
-            [h]=true,
-            [i]=true
-        };
+        self.targets = {a,b,c,d,e,f,g,h,i,camTarget,j};
         for i,v in pairs(self.targets) do
-            SetObjectiveOn(i);
+            SetObjectiveOn(v);
         end
         if(not IsAlive(GetRecyclerHandle(2))) then
             UpdateObjective(self.otf,"green");
@@ -309,23 +296,15 @@ local nsdfAttack = mission.Objective:define("nsdf_attack"):init({
         end
         if(self.recycler_target and not IsAlive(GetRecyclerHandle(2))) then
             self:success();
-        end        
-    end,
-    delete_object = function(self,handle)
-        if(not self.recycler_target) then
-            if(self.targets[handle]) then
-                self.targets[handle] = false;
-            end
-            local anyleft = false;
-            for i,v in pairs(self.targets) do
-                anyleft = anyleft or v;
-            end
-            if(not anyleft) then
+        elseif(not self.recycler_target) then
+            if areAllDead(self.targets, 2) then
                 self.recycler_target = true;
                 SetObjectiveOn(GetRecyclerHandle(2));
                 UpdateObjective(self.otf,"green");
             end
-        end
+        end        
+    end,
+    delete_object = function(self,handle)
         if(handle == GetRecyclerHandle(2)) then
             UpdateObjective("bdmisn2207.otf","green");
         end
@@ -635,6 +614,7 @@ local intermediate = mission.Objective:define("intermediate"):init({
             if(self.enemiesAtStart) then
                 UpdateObjective("bdmisn311.otf","green");
             end
+            AudioMessage(audio.recycler);
             local recy = BuildObject("bvrecy22",1,"recy_spawn");
             local e1 = BuildObject("bvtank1",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
             local e2 = BuildObject("bvtank1",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
@@ -658,7 +638,6 @@ local intermediate = mission.Objective:define("intermediate"):init({
         self.timer, self.recy, self.recyspawned = ...;
     end,
     success = function(self)
-        AudioMessage(audio.recycler);
         globals.keepGTsAtFullHealth = true;
         --Spawn in recycler
         --Recycler escort

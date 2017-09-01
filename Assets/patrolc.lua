@@ -51,6 +51,7 @@ local PatrolController = Decorate(
         end
       end,
       getRandomRoute = function(location)
+        print("getRandomRoute",location,self.path_map[location]);
         if(#self.path_map[location] < 2) then
           return self.path_map[location][1];
         end
@@ -60,8 +61,13 @@ local PatrolController = Decorate(
       giveRoute = function(handle)
         local o = self.patrol_units[handle];
         local pair = self:getRandomRoute(o.location);
+        local c = 0;
         while( (pair~=nil) and ((pair.location == o.oldLocation) and #self.path_map[o.location] > 1)) do
           pair = self:getRandomRoute(o.location);
+          c = c + 1;
+          if(c > 10) then
+            break;
+          end
         end
         if(pair) then
           o.oldLocation = o.location;
@@ -99,7 +105,7 @@ local PatrolController = Decorate(
         return self.patrol_units, self.locations, self.path_map;
       end,
       load = function(...)
-        self.patrol_units, self.location, self.path_map = ...;
+        self.patrol_units, self.locations, self.path_map = ...;
       end,
       update = function(dtime)
         --Check all units, if they are not doing anything check their location,
@@ -115,7 +121,7 @@ local PatrolController = Decorate(
       end,
       onInit = function(handles)
         for i,v in pairs(handles or {}) do
-          self:addHandle(handle);
+          self:addHandle(v);
         end
       end,
       onAddObject = function()

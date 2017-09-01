@@ -1,5 +1,5 @@
 [GameObjectClass] // Mammoth Tank. Should have 4 Cannon Hardpoints.
-baseName = "cvhtnk" //"svtank"
+baseName = "svmtnk"
 classLabel = "wingman"
 scrapValue = 10
 scrapCost = 20

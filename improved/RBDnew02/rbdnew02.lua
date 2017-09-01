@@ -5,7 +5,7 @@
 	 - Vemahk
 	 - Mario
 --]]
-require("bz_logging");
+local _ = require("bz_logging");
 
 --[[local audio = {
 	intro = "rbd0201.wav",

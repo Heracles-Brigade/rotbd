@@ -1,0 +1,17 @@
+PARENT diag.voices
+START
+NTRG: When you attacked the base on Titan [200];
+CBRA: Sigh [150] That was when we first realised [25] yes [200];
+NTRG: Realised what [200];
+CBRA: Realised that something was wrong [50] I might not have been inside the perimeter [25] but that base was
+    obviously not Soviet [50] Shaw was having us raid one of the biggest NSDF bases I have ever seen [25] there was
+    no way the Soviets had turned that many of us [100] Maybe Harley was right [50] and they werent traitors after
+    all I dont know what [50] why or how but there was something wrong with what Shaw was doing [25] Either he
+    did not know, or [220];
+NTRG: Or [200];
+CBRA: Or he was lying to us [50] But we didnt know for sure [25] and Shaw is a good man [50] We owed him the benefit of
+    the doubt [25] Grigg and I agreed we would keep an eye on it [10] maybe talk to Baker [25] but [200] we didnt believe Shaw
+    was a traitor [50] Not for a moment [200];
+NTRG: So [100] what did you do [200];
+CBRA: Knowing that something was wrong didnt change anything [100] The Soviets had still been working on a
+    superweapon and experimenting with dangerous alien technology [150] We still had to stop that;

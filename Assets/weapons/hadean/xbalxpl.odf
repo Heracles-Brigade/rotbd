@@ -1,0 +1,35 @@
+[ExplosionClass]
+classLabel = "explosion" //"shockblast"
+
+//frameName = "rpuff.0"
+//frameCount = 16
+//frameDelay = 0.05
+//explRadius = 10.0
+explSound = "xmv1.wav"
+damageRadius = 50.0
+damageBallistic = 0
+damageConcussion = 200
+damageFlame = 0
+damageImpact = 0
+omegaShake = 300
+
+particleTypes = 4
+
+particleClass1 = "xgasxpl.light"
+particleCount1 = 1
+particleVeloc1 = "0.0 2.0 0.0"
+particleBias1 = "0.0 5.0 0.0"
+
+particleClass2 = "xgasxpl.smokecenter"
+particleCount2 = 1
+particleVeloc2 = "0.0 5.0 0.0"
+particleBias2 = "0.0 10.0 0.0"
+
+particleClass3 = "xgasxpl.flamecenter"
+particleCount3 = 1
+particleVeloc3 = "0.0 2.5 0.0"
+particleBias3 = "0.0 5.0 0.0"
+
+particleClass4 = "xgasgnd.sphere"
+particleCount4 = 1
+particleVeloc4 = "0.0 0.0 0.0"

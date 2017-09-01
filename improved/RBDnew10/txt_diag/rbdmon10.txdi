@@ -1,0 +1,15 @@
+PARENT diag.voices
+START
+NTRG: After Europa you went to the moon. [300] Why? [100] What was the plan? [250];
+CBRA: Honestly [50] I don not know if Shaw had one at this point [100] By then Grigg [50] Baker and I all knew he was a traitor
+    and we were all looking for a way out that did not land us in the brig or in front of the firing squad [250];
+NTRG: Did you find one? [250];
+CBRA: We were desperate. We could not come up with anything [100] no access to ship-to-ship comms meant no way
+    to hail the fleet [50] putting the word out risked Shaw turning on us and turning on Shaw ourselves risked
+    everybody else [100] We figured our best option was to go with the plan to get to Earth [25] then make contact with
+    Director Webb and ask him to help us [250];
+NTRG: How did you plan to get through the blockade? [250];
+CBRA: Shaw and a skeleton crew were going to take the Jackson and storm the blockade [50] try to break through
+    and make a gap for us [125] We follow [25] and make it to Earth [250];
+NTRG: Except it did not work [100];
+CBRA: No, it did not;

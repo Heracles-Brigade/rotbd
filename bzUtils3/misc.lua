@@ -15,6 +15,10 @@ local Meta = OOP.Meta;
 --This wrapper removes that junk
 local _GetOdf = GetOdf;
 
+IsBzr = function()
+  return string.gmatch(GameVersion, "%d+")() == "2";
+end
+
 GetOdf = function(...)
   local r = _GetOdf(...);
   if(r) then

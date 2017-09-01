@@ -2,7 +2,7 @@ PARENT diag.voices
 START
 NTRG: Case NZEO June third nineteen seventy [250] Subject Lieutenant James Rhodes [100] 
 callsign Cobra One [1000] Lieutenant you have landed yourself in quite a mess [175] 
-I am Lieutenant Michaelson from Commander Braddock’s office [50] 
+I am Lieutenant Michaelson from Commander Braddocks office [50] 
 I am here to debrief you pending transfer to our custody [150][200];
 CBRA: Piss off[200];
 NTRG: I dont think you realise how much trouble you are in [75] 
