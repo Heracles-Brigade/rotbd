@@ -1,0 +1,11 @@
+[GameObjectClass]
+baseName = "sbhqcp"
+classLabel = "i76building"
+scrapCost = 5
+scrapValue = 3
+maxHealth = 1500
+maxAmmo = 0
+unitName = "Shield Control"
+heatSignature = 0.8
+imageSignature = 8.0
+radarSignature = 1.0
