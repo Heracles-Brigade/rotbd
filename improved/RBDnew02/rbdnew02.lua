@@ -5,22 +5,24 @@
 	 - Vemahk
 	 - Mario
 --]]
---require("bz_logging");
+require("bz_logging");
 
-local audio = {
+--[[local audio = {
 	intro = "rbd0201.wav",
-	warn1 = "rbd0201W.wav", --Commtower warning
-	warn2 = "rbd0202W.wav", --Hurry up warning
-	warn3 = "rbd0203W.wav", --Detected warning
+	commwarn = "rbd0201W.wav",
 	inspect = "rbd0202.wav",
-	service_vh = "rbd0203.wav",
+	tug = "rbd0203.wav",
 	first_a = "rbd0204.wav",
 	dayw = "rbd0205.wav",
 	second_a = "rbd0206.wav",
 	flee = "rbd0207.wav",
 	win = "rbd0208.wav",
-	lose1 = "rbd0201L.wav"
-}
+	lose1 = "rbd0201L.wav",
+	lose2 = "",
+	lose3 = "",
+	lose4 = "",
+	lose5 = ""
+}--]]
 
 local objectives = {
 	Detection = "rbdnew0200.otf",
@@ -36,13 +38,14 @@ local objectives = {
 
 local M = { --Sets mission flow and progression. Booleans and values will be changed to "true" and appropriate names/integers as mission progresses. Necessary for save files to function as well as objective flow in later if statements.
 StartDone = false, 
-OpeningCinDone = false, --Forces intro to play
+OpeningCinDone = false,
 IsDetected = false,
 HangarInfoed = false,
 TugAquired = false,
 ShieldDetected = false,
 ControlDead = false,
 MammothReached = false,
+MammothReachedPrevious = false,
 MammothInfoed = false,
 SafetyReached = false,
 MissionOver = false,
@@ -303,7 +306,7 @@ function Update()
 		SetMaxScrap(1, 20);
 		SetScrap(1, 20);
 		M.ShieldDetected = true;
-	--	Aud1 = AudioMessage();
+	--	Aud1 = AudioMessage(audio.first_a);
 		SpawnNav(4);
 		UpdateObjectives();
 	end
@@ -331,7 +334,19 @@ function Update()
 		M.MammothTime = GetTime() + 10.0; -- Wait 10 seconds to gather info.
 		M.MammothReached = true;
 		UpdateObjectives();
-		Aud1 = AudioMessage("rbdnew0209.wav");
+		if not M.MammothReachedPrevious then
+			Aud1 = AudioMessage("rbdnew0209.wav");
+			M.MammothReachedPrevious = true;
+		else
+			Aud1 = AudioMessage(aud.backinrange)
+		end
+	end
+	
+	if GetTime() < M.MammothTime and GetDistance(M.Player, M.Mammoth) > 35 then
+		M.MammothTime = 0;
+		M.MammothReached = false;
+		UpdateObjectives();
+		Aud1 = AudioMessage(aud.transint);
 	end
 	
     if M.MammothReached and not M.MammothInfoed and GetTime() > M.MammothTime then
@@ -377,13 +392,14 @@ function Update()
 		end
 		
 		if M.MammothInfoed and GetCockpitTimer() == 0 and not M.MissionOver then
+		--	Aud1 = AudioMessage(
 			FailMission(GetTime(), "rbdnew02l2.des");
 			M.MissionOver = true;
 			UpdateObjectives();
 		end
 
 		if M.IsDetected and not M.MammothReached then
-			Aud1 = AudioMessage("rbdnew0207.wav");
+			Aud1 = AudioMessage("rbdnew0207.wav"); --audio.fail1
 			FailMission(GetTime() + 5.0, "rbdnew02l4.des");
 			M.MissionOver = true;
 			UpdateObjectives();
