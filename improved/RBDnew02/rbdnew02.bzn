@@ -17,9 +17,9 @@ seqno [1] =
 868
 pos [1] =
   x [1] =
-2025.53
+2025.58
   y [1] =
-0.189461
+0.188307
   z [1] =
 100451
 team [1] =
@@ -30,27 +30,27 @@ isUser [1] =
 obj_addr = 00000001
 transform [1] =
   right_x [1] =
-0.685867
+0.685868
   right_y [1] =
--0.00462184
+-0.00457184
   right_z [1] =
-0.727714
+0.727712
   up_x [1] =
-0.0128019
+0.00666564
   up_y [1] =
-0.999906
+0.99998
   up_z [1] =
--0.00571354
+-2.81366e-008
   front_x [1] =
--0.727615
+-0.727697
   front_y [1] =
-0.0132332
+0.00485066
   front_z [1] =
-0.685856
+0.685883
   posit_x [1] =
-2025.53
+2025.58
   posit_y [1] =
-0.189461
+0.188307
   posit_z [1] =
 100451
 nextScream [1] =
@@ -66,9 +66,9 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-2025.31
+2025.36
   y [1] =
-1.26389
+1.26023
   z [1] =
 100451
 euler =
@@ -77,9 +77,9 @@ euler =
  mass_inv [1] =
 0.000666667
  v_mag [1] =
-0.00471028
+0.00333133
  v_mag_inv [1] =
-212.302
+300.18
  I [1] =
 1500
  k_i [1] =
@@ -88,23 +88,23 @@ euler =
   x [1] =
 0.00333067
   y [1] =
--0.000133157
+-6.66082e-005
   z [1] =
--3.52786e-028
+0
  omega [1] =
   x [1] =
-2.71039e-005
+7.85804e-009
   y [1] =
--0.00438785
+0
   z [1] =
--0.000116225
+5.23869e-009
  Accel [1] =
   x [1] =
 -0.195922
   y [1] =
 -9.79608
   z [1] =
-1.11684e-027
+0
 seqNo [1] =
 868
 name = 
@@ -665,10 +665,10 @@ priority [1] =
 1
 what = 02000000
 who [1] =
--6290941
+-5242365
 where = 00000000
 param [1] =
-Ã¿Ã¿Ã¿Ã¿Ã¿Ã¿Ã¿Ã¿
+ÿÿÿÿÿÿÿÿ
 aiProcess [1] =
 true
 isCargo [1] =
@@ -1017,7 +1017,7 @@ pos [1] =
   y [1] =
 5.62012
   z [1] =
-99299.8
+99299.9
 euler =
  mass [1] =
 0
@@ -3261,7 +3261,7 @@ pos [1] =
 99366.7
 team [1] =
 1
-label = nav3
+label = nav4
 isUser [1] =
 0
 obj_addr = 00000019
@@ -3390,7 +3390,7 @@ pos [1] =
 99679
 team [1] =
 1
-label = nav4
+label = nav3
 isUser [1] =
 0
 obj_addr = 0000001A
@@ -5378,7 +5378,7 @@ perceivedTeam [1] =
 2
 [GameObject]
 PrjID [1] =
-sbmbld
+sbhqcpa
 seqno [1] =
 867
 pos [1] =
@@ -8777,7 +8777,7 @@ pos [1] =
   x [1] =
 1844.26
   y [1] =
-10
+1.5
   z [1] =
 99252.8
 team [1] =
@@ -8808,7 +8808,7 @@ transform [1] =
   posit_x [1] =
 1844.26
   posit_y [1] =
-10
+1.5
   posit_z [1] =
 99252.8
 timeDeploy [1] =
@@ -8820,7 +8820,7 @@ state = 00000000
 delayTimer [1] =
 -1e+030
 nextRepair [1] =
-148.526
+1.001
 buildClass [1] =
 
 buildDoneTime [1] =
@@ -8838,9 +8838,9 @@ pos [1] =
   x [1] =
 1841.2
   y [1] =
-16.9452
+8.4452
   z [1] =
-99251.6
+99251.5
 euler =
  mass [1] =
 1750
@@ -8887,7 +8887,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-0
+4
 healthRatio [1] =
 1
 curHealth [1] =
@@ -8965,7 +8965,7 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-1913.84
+1913.83
   y [1] =
 11.4113
   z [1] =
@@ -9016,7 +9016,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-0
+4
 healthRatio [1] =
 1
 curHealth [1] =
@@ -9056,7 +9056,7 @@ pos [1] =
   x [1] =
 1741.41
   y [1] =
-1.9613
+1.96778
   z [1] =
 99654.5
 team [1] =
@@ -9087,7 +9087,7 @@ transform [1] =
   posit_x [1] =
 1741.41
   posit_y [1] =
-1.9613
+1.96778
   posit_z [1] =
 99654.5
 undeffloat [1] =
@@ -9114,9 +9114,9 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-1742.08
+1742.07
   y [1] =
-3.50747
+4.01396
   z [1] =
 99654.7
 euler =
@@ -9165,7 +9165,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-0
+4
 healthRatio [1] =
 1
 curHealth [1] =
@@ -9205,7 +9205,7 @@ pos [1] =
   x [1] =
 1814.81
   y [1] =
-0.833028
+0.832379
   z [1] =
 99660.3
 team [1] =
@@ -9236,7 +9236,7 @@ transform [1] =
   posit_x [1] =
 1814.81
   posit_y [1] =
-0.833028
+0.832379
   posit_z [1] =
 99660.3
 undeffloat [1] =
@@ -9263,9 +9263,9 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-1815.48
+1815.47
   y [1] =
-2.3792
+2.87855
   z [1] =
 99660.5
 euler =
@@ -9314,7 +9314,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-0
+4
 healthRatio [1] =
 1
 curHealth [1] =
@@ -9443,7 +9443,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-0
+4
 healthRatio [1] =
 1
 curHealth [1] =
@@ -9893,69 +9893,4 @@ points [1] =
 2559.74
   z [1] =
 99957.3
-pathType = 00000000
-[AiPath]
-old_ptr = 00000057
-size [1] =
-4
-label = def1
-pointCount [1] =
-1
-points [1] =
-  x [1] =
-3865.39
-  z [1] =
-99481.5
-pathType = 00000000
-[AiPath]
-old_ptr = 00000058
-size [1] =
-4
-label = def2
-pointCount [1] =
-1
-points [1] =
-  x [1] =
-3843.93
-  z [1] =
-99445
-pathType = 00000000
-[AiPath]
-old_ptr = 00000059
-size [1] =
-4
-label = def3
-pointCount [1] =
-1
-points [1] =
-  x [1] =
-3815.31
-  z [1] =
-99385.8
-pathType = 00000000
-[AiPath]
-old_ptr = 0000005A
-size [1] =
-4
-label = def4
-pointCount [1] =
-1
-points [1] =
-  x [1] =
-3794.5
-  z [1] =
-99332.5
-pathType = 00000000
-[AiPath]
-old_ptr = 0000005B
-size [1] =
-4
-label = def5
-pointCount [1] =
-1
-points [1] =
-  x [1] =
-3771.73
-  z [1] =
-99276.6
 pathType = 00000000
