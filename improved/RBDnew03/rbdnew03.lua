@@ -1,13 +1,19 @@
--- Battlezone: Rise of the Black Dogs Redux Mission 3 coded by Seqan and Vemahk
+-- Battlezone: Rise of the Black Dogs Redux, Mission 3 "The Mammoth Project" recoded by Vemahk and Seqan based off GBD's 1:1 script
 
 
-local _ = require("bz_logging");
-local bzCore = require("bz_core");
-local mammoth = require("mammoth");
+require("bz_logging");
 
 
+local audio = {
+intro = "rbdnew0301.wav";
+itsatrap = "rbdnew0302.wav";
+freedom = "rbdnew0303.wav";
+gtfo = "rbdnew0304.wav";
+}
 
+local objs = {
 
+}
 
 local M = {
 -- Bools
@@ -25,6 +31,7 @@ MissionOver = false, -- Yay!
 -- Handles
 Player = nil,
 NavCoords = { },
+Nav = { },
 ObjectiveNav = nil,
 Mammoth = nil,
 MammothDecoy = nil,
@@ -33,55 +40,16 @@ MammothDecoy = nil,
 Aud1 = 0
 }
 
-
-
-local loaded = false;
-
 function Save()
 	return 
-	M, bzCore:save();
+		M
 end
 
-function Load(missionData,bzUtilsData)	
-	--[[if select('#', ...) > 0 then
-	M
-	= ...
-	end--]]
-	M = missionData;
-	bzCore:load(bzUtilsData);
-	loaded = true;
-end
-
-function GameKey(...)
-	bzCore:onGameKey(...);
-end
-
-function Start()
-	bzCore:onStart();
-	print("Black Dog Mission 3 Lua created by Seqan and Vemahk");
-end
-
-function AddObject(h)
-	bzCore:onAddObject(h);
-	local Team = GetTeamNum(h);
-
-end
-
-function DeleteObject(h)
-	bzCore:onDeleteObject(h);
-end
-
-function CreateObject(h)
-	bzCore:onCreateObject(h);
-end
-
-function afterSave()
-	bzCore:afterSave();
-end
-
-function afterLoad()
-	bzCore:afterLoad();
-	loaded = false;
+function Load(...)	
+    if select('#', ...) > 0 then
+		M
+		= ...
+    end
 end
 
 local function UpdateObjectives() -- Handle Objectives.
@@ -116,6 +84,7 @@ end
 
 local function SpawnNav(num)
 	local nav = BuildObject("apcamr", 1, M.NavCoords[num]);
+	M.Nav[num] = nav;
 	SetLabel(nav, "nav"..num);
 	
 	if num == 2 then
@@ -134,23 +103,17 @@ local function SpawnNav(num)
 	M.ObjectiveNav = nav; -- Sets the new nav to the ObjectiveNav so that the next time this function is called, it can switch off of it.
 end
 
-function Update(dtime)
-	bzCore:update(dtime);
-	
-	if(loaded) then
-		afterLoad();
-	end
+function Update()
 
 	M.Player = GetPlayerHandle();
 	
 	if not M.StartDone then
 		
 		M.Mammoth = GetHandle("mammoth");
-		SetIndependence(M.Mammoth, 0); -- Nope.
+		SetIndependence(M.Mammoth, 0);
 		M.MammothDecoy = GetHandle("badmammoth");
-		SetIndependence(M.MammothDecoy, 0); -- Nope.
-
-		-- In BZ64, navs are invincible, maybe keep it that way for now. (units in this mission use navs to goto)
+		SetIndependence(M.MammothDecoy, 0);
+		
 		for i = 1, 2 do
 			local tmpnav = GetHandle("nav" .. i);
 			M.NavCoords[i] = GetPosition(tmpnav);
@@ -159,44 +122,44 @@ function Update(dtime)
 		
 		M.StartDone = true;
 		
-		-- Start up the mission.
-		M.Aud1 = AudioMessage("rbdnew0301.wav");
+		M.Aud1 = AudioMessage(audio.intro);
 		UpdateObjectives();
 		SpawnNav(1);
 	end
 	
-	-- You're there, but it's a trap!
-	if not M.Nav1Reached and GetDistance(M.Player, M.ObjectiveNav) < 175.0 then
+	if not M.DecoyTriggered and IsWithin(M.Player, M.MammothDecoy, 150.0) then
+		-- Spawn Armada
+		
 		Attack(BuildObject("svhraz", 2, "spawn_svhraz1"), M.Player);
 		Attack(BuildObject("svhraz", 2, "spawn_svhraz2"), M.Player);
 		Attack(BuildObject("svfigh", 2, "spawn_svfigh1"), M.Player);
 		Attack(BuildObject("svfigh", 2, "spawn_svfigh2"), M.Player);
 		Attack(BuildObject("svrckt", 2, "spawn_svrkct1"), M.Player);
 		Attack(BuildObject("svrckt", 2, "spawn_svrckt2"), M.Player);
-		M.Nav1Reached = true;
-		UpdateObjectives();
-	end
-	
-	-- IMPROVEMENT? Move spawn up to here, closer to when u get to mammoth decoy?
-	if not M.DecoyTriggered and IsWithin(M.Player, M.MammothDecoy, 150.0) then
-		BuildObject("xbmbxpl", 0, M.MammothDecoy);
-		Damage(M.MammothDecoy, 9001); -- It's over 9000!!!
-		M.Aud1 = AudioMessage("rbdnew0302.wav");
+		
+		--Blow up da mammoth
+		MakeExplosion("xbmbxpl", M.MammothDecoy);
+		Damage(M.MammothDecoy, 90000);
+		M.Aud1 = AudioMessage(audio.itsatrap);
+		
+		--Blind Player
+		ColorFade(2.0, 1, 255, 255, 255);
+		ColorFade(2.0, 1, 255, 255, 255);
+		
 		M.DecoyTriggered = true;
 		UpdateObjectives();
 	end
 	
-	-- Okay, your (IT'S YOU'RE) safe.
-	if M.DecoyTriggered and not M.TrapEscaped and GetDistance(M.Player, M.ObjectiveNav) > 400.0 then
-		M.Aud1 = AudioMessage("rbdnew0303.wav");
+	if M.DecoyTriggered and not M.TrapEscaped and not IsWithin(M.Player, M.Nav[1], 400.0) then
+		M.Aud1 = AudioMessage(audio.freedom);
 		SetObjectiveOn(M.Mammoth);
+		
 		M.TrapEscaped = true;
 		UpdateObjectives();
 	end
 	
-	-- Did you do the deed yet?
 	if not M.MammothStolen and M.Player == M.Mammoth then
-		M.Aud1 = AudioMessage("rbdnew0304.wav");
+		M.Aud1 = AudioMessage(audio.gtfo);
 		SetObjectiveOff(M.Mammoth);
 		SpawnNav(2);
 		M.MammothStolen = true;
@@ -212,7 +175,7 @@ function Update(dtime)
 	end
 	
 	-- Lose Conditions
-	if not M.MissionOver and not IsValid(M.Mammoth) then
+	if not M.MissionOver and not IsValid(M.Mammoth) then -- YA BLEW UP THE MAMMOTH YA GOOF
 		FailMission(GetTime()+5.0, "rbdnew03l1.des");
 		M.MammothDead = true;
 		M.MissionOver = true;
