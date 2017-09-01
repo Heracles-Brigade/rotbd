@@ -1,6 +1,8 @@
 -- Battlezone: Rise of the Black Dogs Redux, Mission 3 "The Mammoth Project" recoded by Vemahk and Seqan based off GBD's 1:1 script
 
+
 require("bz_logging");
+
 
 local audio = {
 intro = "rbdnew0301.wav";

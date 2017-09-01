@@ -1,0 +1,69 @@
+[GameObjectClass]
+baseName = "svartl"
+classLabel = "howitzer"
+scrapValue = 6
+scrapCost = 0
+buildTime = 5.0
+maxHealth = 2000
+maxAmmo = 2000
+unitName = "Howitzer"
+aiName = "ArtilleryFriend"
+aiName2 = "ArtilleryEnemy"
+heatSignature = 0.2
+imageSignature = 2.0
+radarSignature = 1.0
+
+weaponHard1 = "GM1"
+weaponName1 = "ghartill"
+
+[CraftClass]
+rangeScan = 400.0f
+periodScan = 5.0f
+velocJam = 0.0f
+
+goMsg = "svartlv0.wav"
+followMsg = "svartlvn.wav"
+followMeMsg = "svartlv3.wav"
+repairMsg = "svartlv4.wav"
+reloadMsg = "svartlv5.wav"
+rescueMsg = "svartlv7.wav"
+recycleMsg = "svartlv8.wav"
+attackMsg = "svartlvb.wav"
+otherMsg = "svartlvm.wav"
+user1Msg = "svartlve.wav"
+
+selectWaitMsg = "svartlvc.wav"
+selectGoMsg = "svartlvh.wav"
+selectDeployingMsg = "svartlvj.wav"
+selectAttackMsg = "svartlvk.wav"
+selectOtherMsg = "svartlvn.wav"
+
+deployedMsg = "svartlvg.wav"
+packedMsg = "svartlvf.wav"
+killedMsg = "svartlvp.wav"
+diedMsg = "sbetty2.wav"
+
+
+[HoverCraftClass]
+setAltitude = 1.5
+accelDragStop = 4.0
+accelDragFull = 1.0
+alphaTrack = 20.0
+alphaDamp = 5.0
+pitchPitch = 0.3
+pitchThrust = 0.1
+rollStrafe = 0.1
+rollSteer = 0.1
+
+velocForward = 8.0
+velocReverse = 8.0
+velocStrafe = 8.0
+accelThrust = 50.0
+accelBrake = 75.0
+omegaSpin = 3.5
+omegaTurn = 1.5
+alphaSteer = 5.0
+accelJump = 15.0
+
+soundThrust = "avartle1.wav"
+soundSteer = "avartle6.wav"

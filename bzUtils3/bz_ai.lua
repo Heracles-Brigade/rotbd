@@ -134,9 +134,23 @@ local AiManager = Decorate(
         if(not IsRemote(handle)) then
           self:checkHandle(handle);
         end
+        for i, v in pairs(self.all) do
+          for i2, v2 in pairs(v) do
+            if((not Meta(v2).suspended) and v2.onCreateObject) then
+              v2:onCreateObject(handle)
+            end
+          end
+        end
       end,
       onAddObject = function(handle,...)
         self:checkHandle(handle);
+        for i, v in pairs(self.all) do
+          for i2, v2 in pairs(v) do
+            if((not Meta(v2).suspended) and v2.onAddObject) then
+              v2:onAddObject(handle)
+            end
+          end
+        end
       end,
       onDeleteObject = function(handle,...)
         if(self.all[handle]) then
@@ -145,6 +159,13 @@ local AiManager = Decorate(
           end
         end
         self.all[handle] = nil;
+        for i, v in pairs(self.all) do
+          for i2, v2 in pairs(v) do
+            if((not Meta(v2).suspended) and v2.onDeleteObject) then
+              v2:onDeleteObject(handle)
+            end
+          end
+        end
       end,
       onReceive = function(...)
       end,

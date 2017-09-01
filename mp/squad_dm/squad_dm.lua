@@ -17,7 +17,7 @@ local Class = OOP.Class;
 local playerNavs = {};
 local Routine = bzRoutine.Routine;
 
-require("spectate_r");
+local _ = require("spectate_r");
 
 local killOnNext = {};
   

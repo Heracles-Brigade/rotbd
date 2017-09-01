@@ -9,6 +9,10 @@ local TaskSequencer;
 local TaskManager;
 
 
+local function isBzr() 
+    return string.gmatch(GameVersion, "%d+")() == "2";
+end
+
 local function fixTugs()
     for v in AllCraft() do
         if(HasCargo(v)) then
@@ -69,9 +73,9 @@ local function spawnAtPath(odf,team,path)
 end
 --Returns true of all of the handles given are dead
 --areAnyAlive = not areAllDead
-local function areAllDead(handles)
+local function areAllDead(handles, team)
     for i,v in pairs(handles) do
-        if(IsAlive(v)) then
+        if(IsAlive(v) and (team~=nil and team == GetTeamNum(v))) then
             return false;
         end
     end
@@ -134,8 +138,8 @@ local function spawnInFormation(formation,location,dir,units,team,seperation)
     return tempH, lead;
 end
 
-local function spawnInFormation2(formation,location,units,team,seperation)
-    return spawnInFormation(formation,GetPosition(location,0),GetPosition(location,1) - GetPosition(location,0),units,team,seperation);
+local function spawnInFormation2(formation,location,...)
+    return spawnInFormation(formation,GetPosition(location,0),GetPosition(location,1) - GetPosition(location,0),...);
 end
 
 TaskSequencer = {
@@ -408,7 +412,7 @@ ObjectiveInstance = {
             return self.parentRef:dispatchEvent(event,self,...)
         end,
         call = function(self,...)
-            return self:parentCall(...);
+            return unpack(self:parentCall(...)[1] or {});
         end,
         start = function(self,...)
             self:parentCall('start',...);
@@ -516,6 +520,13 @@ ObjectiveInstance = {
         end,
         taskCount = function(self)
             return self.subCount;
+        end,
+        taskEnd = function(self,name)
+            if(self.subTasks[name]) then
+                local t = self.subTasks[name];
+                t.done = true;
+                --t.state = 1;
+            end
         end,
         taskSucceed = function(self,name,...)
             if(self.subTasks[name]) then
@@ -794,6 +805,8 @@ MissionManager = {
     end
 }
 
+
+
 return {    
     Objective = Objective,
     Update = MissionManager.Update,
@@ -813,5 +826,6 @@ return {
     areAnyDead = areAnyDead,
     TaskManager = TaskManager,
     createWave = createWave,
-    fixTugs = fixTugs
+    fixTugs = fixTugs,
+    isBzr = isBzr
 }

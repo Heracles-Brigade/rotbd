@@ -1,12 +1,13 @@
 [WeaponClass]
-classLabel = "snipergun"
+classLabel = "cannon"
 ordName = "rpg"
 wpnName = "RPG"
 fireSound = "gpopp00.wav"
 wpnReticle = "grpg"
 wpnPriority = 0
 wpnCategory = "CANN"
+shotAlternate = true
 
 [CannonClass]
-shotDelay = 2.5
+shotDelay = 1.5
 

@@ -1,0 +1,8 @@
+PARENT diag.voices
+START
+NTRG: What do you know about the Fury Project, Lieutenant? [250];
+CBRA: Not much [100] I know it was a superweapon the Cthonians fought over [25] and I know we were trying to beat the
+Soviets to discovering how to make it [150] That is about it [250];
+NTRG: Close [125] The Furies were a new type of Hadean unit [25] one they built as a last-ditch effort to win the war [80] They were sentient [50] and insane [100] They went rogue and the Cthonians ended up sacrificing their entire planet to stop them [250]; 
+CBRA: Why are you telling me all this? [250];
+NTRG: Because you fought them [100] More importantly [50] you fought something the rest of us have never seen before [100] [500] What is the Vanguard [25] Lieutenant?; 

@@ -1,0 +1,13 @@
+[WeaponClass]
+classLabel = "cannon"
+ordName = "fireball"
+wpnName = "Fireball"
+fireSound = "gpopp00.wav"
+wpnReticle = "gsandbag"
+wpnPriority = 6
+wpnCategory = "CANN"
+shotAlternate = 1
+
+[CannonClass]
+shotDelay = 1.2
+

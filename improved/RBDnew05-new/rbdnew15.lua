@@ -1,10 +1,9 @@
 --Combination of The Last Stand and Evacuate Venus
---Contributors:
-    --Jarle Trollebø(Mario)
+
 
 local pwers = {};
 
-require("bz_logging");
+local _ = require("bz_logging");
 local orig15setup = require("orig15p");
 local core = require("bz_core");
 local OOP = require("oop");
@@ -13,7 +12,6 @@ local bzRoutine = require("bz_routine");
 local bzObjects = require("bz_objects");
 
 local IsIn = OOP.isIn;
-local ConstructorAi = buildAi.ConstructorAi;
 local ProducerAi = buildAi.ProducerAi;
 local ProductionJob = buildAi.ProductionJob;
 local PatrolController = require("patrolc");
@@ -24,8 +22,11 @@ SetAIControl(3,false);
 
 --[[
 TODO:
-  * add fail for leaving relic too early
-  * might be better to check relics health instead of using GetWhoShotMe
+  * split CCA in two forces
+    - the first one arrives and attacks the player's forces
+    - the second one arrives as the DW is landing and is set to just be near the relics
+    
+
 ]]
 
 local audio = {
@@ -53,6 +54,7 @@ local intro = mission.Objective:define("introObjective"):createTasks(
       rendezvous = "wait_for_units",
       wait_for_units = "goto_relic"
     };
+    self.relic = GetHandle("relic_1")
   end,
   start = function(self)
     --Set up patrol paths
@@ -132,6 +134,11 @@ local intro = mission.Objective:define("introObjective"):createTasks(
     --For each unit produced for the player, set the team number to 1
     SetTeamNum(handle,1);
   end,
+  delete_object = function(self,handle)
+    --if(not IsValid(GetConstructorHandle(3))) then
+    --  ProducerAi:queueJob(ProductionJob("bvcnst",3));
+    --end
+  end,
   _doneProducing1 = function(self,bundle,handle)
     --When all the player's units have been made, succeed wait_for_units
     self:taskSucceed("wait_for_units");
@@ -184,7 +191,7 @@ local intro = mission.Objective:define("introObjective"):createTasks(
         self:taskSucceed("rendezvous");
       end
     elseif(self:isTaskActive("goto_relic")) then
-      if(IsInfo("hbcrys")) then
+      if(IsInfo(GetOdf(self.relic))) then
         self:taskSucceed("goto_relic");
       end
     elseif(not self:isTaskActive("wait_for_units")) then
@@ -275,13 +282,14 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
     if(name == "nuke") then
       self.day_id = ProducerAi:queueJob(ProductionJob("apwrckz",3,self.relic));
       self:call("_setUpProdListeners",self.day_id,"_setDayWrecker");
-      local units, lead = mission.spawnInFormation2({"   1   "," 22222 ", "3333333"},"cca_relic_attack",{"svtank","svrckt","svfigh"},2,15);
+      local units, lead = mission.spawnInFormation2({"   1   ","1 1 2 2", "3 3 3 3"},"cca_relic_attack",{"svtank","svrckt","svfigh"},2,15);
       for i, v in pairs(units) do
         if(v ~= lead) then
           Defend2(v,lead);
         end
         local s = mission.TaskManager:sequencer(v);
         s:queue2("Goto","cca_relic_attack");
+        s:queue2("Defend2", self.relic);
         s:queue2("Defend");
       end
     elseif(name == "cca_attack_base") then
@@ -298,6 +306,17 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
         {loc = "base_attack2",formation={"2 2","1 1"}}
       };
       self.attack_timer = nil;
+    elseif(name == "destroy_relic") then
+      local units, lead = mission.spawnInFormation2({"   1   ","1   2 2", "3   3  "},"relic_light",{"svtank","svltnk","svfigh"},2,15);
+      for i, v in pairs(units) do
+        if(v ~= lead) then
+          Defend2(v,lead);
+        end
+        local s = mission.TaskManager:sequencer(v);
+        s:queue2("Goto","cca_relic_attack");
+        s:queue2("Defend2", self.relic);
+        s:queue2("Defend");
+      end
     end
   end,
   _setDayWrecker = function(self,job,handle)
@@ -377,7 +396,7 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
             self.nuke_state = 3;
           end
         elseif(self.nuke_state == 3) then
-          if(Length(GetPosition(self.daywrecker) - GetPosition(self.relic)) < 50) then
+          if(Length(GetPosition(self.daywrecker) - GetPosition(self.relic)) < 100) then
             RemoveObjective(self.nuke_state < 2 and "rbd0530.otf" or "rbd0531.otf");
             AddObjective("rbd0534.otf","green");
             AudioMessage(audio.done_d);

@@ -1,0 +1,17 @@
+[GameObjectClass]
+classLabel = "wpnpower"
+baseName = "aphade"
+scrapCost = 10
+scrapValue = 0
+maxHealth = 250
+maxAmmo = 0
+unitName = NULL
+aiName = "PowerUpProcess"
+
+[WeaponPowerupClass]
+weaponName = "gfirebal"
+
+[PowerUpClass]
+soundPickup = "apcann.wav"
+soundReject = "mnu_buzz.wav"
+
