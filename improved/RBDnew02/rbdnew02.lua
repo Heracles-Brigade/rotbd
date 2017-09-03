@@ -191,7 +191,7 @@ local function keepOutside(h1,h2) -- This is the shield function for the Mammoth
   local d = Length(pp-p);
   local vel = GetVelocity(h1);
   local dprod = DotProduct(vel,-dv);
-  local nvel = vel - dprod*dv*(1+GetTimeStep());
+  local nvel = vel + dprod*dv*(1+GetTimeStep());
   if(d < r) then
     local newp = (p + dv*r);
     local h = GetTerrainHeightAndNormal(newp);
