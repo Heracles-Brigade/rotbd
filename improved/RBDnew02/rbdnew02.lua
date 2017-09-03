@@ -7,6 +7,8 @@
 --]]
 local _ = require("bz_logging");
 
+local aud = {}
+
 --[[local audio = {
 	intro = "rbd0201.wav",
 	commwarn = "rbd0201W.wav",
