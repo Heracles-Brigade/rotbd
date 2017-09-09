@@ -58,7 +58,7 @@ local intro = mission.Objective:define("introObjective"):createTasks(
   end,
   start = function(self)
     --Set up patrol paths
-    local patrol_rid, patrol_r = bzRoutine.routineManager:startRoutine("PatrolRoutine");
+    local patrol_rid, patrol_r = bzRoutine.routineManager:startRoutine("PatrolRoutine", nil, true);
     --what are our `checkpoint` locations?
     patrol_r:registerLocations({"l_command","l_center","l_north","l_front"});
     --l_command connects to l_center via p_command_center path

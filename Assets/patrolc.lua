@@ -25,6 +25,7 @@ local PatrolController = Decorate(
       self.path_map = {};
       self.patrol_units = {};
       self.locations = {};
+      self.forcedAlert = false;
     end,
     methods = {
       onDeleteObject = function(handle)
@@ -72,7 +73,9 @@ local PatrolController = Decorate(
         if(pair) then
           o.oldLocation = o.location;
           o.location = pair.location;
-          o.timeout = 5;
+          o.timeout = math.random() * 5 + 1;
+          o.path = pair.path;
+          o.busy = false;
           Goto(handle,pair.path);
         end
       end,
@@ -91,7 +94,9 @@ local PatrolController = Decorate(
           handle = handle,
           location = location,
           oldLocation = nil,
-          timeout = 1
+          timeout = 1,
+          path = nil,
+          busy = false
         };
         self:giveRoute(handle);
       end,
@@ -113,16 +118,29 @@ local PatrolController = Decorate(
         for i,v in pairs(self.patrol_units) do
           v.timeout = v.timeout - dtime;
           if(v.timeout <= 0) then
-            if(GetCurrentCommand(i) == AiCommand["NONE"]) then
+            local n = GetNearestEnemy(i);
+            local c = GetCurrentCommand(i)
+            if(self.forcedAlert) then
+              print(n, IsAlive(n))
+              if(c ~= AiCommand["ATTACK"] and IsAlive(n) and IsWithin(i,n,125)) then
+                Attack(i, n);
+                v.busy = true;
+              end
+            end
+            if((not v.busy) and c == AiCommand["NONE"]) then
               self:giveRoute(i);
+            elseif(v.busy and c == AiCommand["NONE"]) then
+              v.busy = false;
+              Goto(i, v.path);
             end
           end
         end
       end,
-      onInit = function(handles)
+      onInit = function(handles, forcedAlert)
         for i,v in pairs(handles or {}) do
           self:addHandle(v);
         end
+        self.forcedAlert = not not forcedAlert;
       end,
       onAddObject = function()
         --Do nothing
