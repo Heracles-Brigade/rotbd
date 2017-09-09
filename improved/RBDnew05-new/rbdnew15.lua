@@ -135,9 +135,10 @@ local intro = mission.Objective:define("introObjective"):createTasks(
     SetTeamNum(handle,1);
   end,
   delete_object = function(self,handle)
-    --if(not IsValid(GetConstructorHandle(3))) then
-    --  ProducerAi:queueJob(ProductionJob("bvcnst",3));
-    --end
+    local c = GetConstructorHandle(3);
+    if(c ~= nil and not IsAlive(c)) then
+      ProducerAi:queueJob(ProductionJob("bvcnst",3));
+    end
   end,
   _doneProducing1 = function(self,bundle,handle)
     --When all the player's units have been made, succeed wait_for_units
@@ -307,6 +308,7 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
       };
       self.attack_timer = nil;
     elseif(name == "destroy_relic") then
+      SetTeamNum(self.relic, 2);
       local units, lead = mission.spawnInFormation2({"   1   ","1   2 2", "3   3  "},"relic_light",{"svtank","svltnk","svfigh"},2,15);
       for i, v in pairs(units) do
         if(v ~= lead) then
