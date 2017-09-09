@@ -278,9 +278,7 @@ local ProducerAi = Decorate(
         local nc = self.handle:getCurrentCommand();
         if(nc ~= self.last_command) then
           if((not isIn(AiCommand[nc],{"DROPOFF","NONE","BUILD"})) and self.buildState ~= 0) then
-            self.currentJob:unAssign();
-            self.currentJob = nil;
-            self.buildState = 0;
+            self:_clearJob();
           end
         end
         self.last_command = nc;
@@ -291,7 +289,6 @@ local ProducerAi = Decorate(
             local cmatch = nil;
             local dist = 300;
             for i, handle in pairs(self._check_next) do
-              print("Odf match?", IsOdf(handle,self.currentJob.odf), self.handle:getDistance(handle))
               if(IsOdf(handle,self.currentJob.odf)) then
                 local nl = self.handle:getDistance(handle);
                 if(nl < dist) then
@@ -300,25 +297,26 @@ local ProducerAi = Decorate(
               end
             end
             self._check_next = {}
-            --if(IsValid(cmatch)) then
-              self.currentJob:finish(cmatch);
-              self.buildState = 0;
-              self.currentJob = nil;
-            --else
-              --self.currentJob:unAssign();
-            --end
+            self.currentJob:finish(cmatch);
+            self:_clearJob();
           end
         end
         if(self.wait <= 0) then
           if((not self.handle:canBuild()) and self.currentJob) then
-            self.currentJob:unAssign();
-            self.currentJob = nil;
-            self.buildState = 0;
+            self:_clearJob();
           end
           if(self.handle:canBuild() and not (self.handle:isBusy())) then
             self:_requestJob();
           end
         end
+      end,
+      _clearJob = function()
+        self.handle:stop(0);
+        if(self.currentJob and not self.currentJob:isFinished()) then
+          self.currentJob:unAssign();
+        end
+        self.currentJob = nil;
+        self.buildState = 0;
       end,
       _requestJob = function()
         local job = class:requestJob(self.handle);
@@ -333,12 +331,7 @@ local ProducerAi = Decorate(
       onInit = function()
       end,
       onReset = function()
-        self.handle:stop(0);
-        if(self.currentJob) then
-          self.currentJob:unAssign();
-          self.currentJob = nil;
-          self.buildState = 0;
-        end
+        self:_clearJob();
         self:onInit();
       end,
       save = function()
