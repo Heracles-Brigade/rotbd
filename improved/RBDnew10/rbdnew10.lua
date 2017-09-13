@@ -73,27 +73,9 @@ function FindTarget(handle,alt,sequencer)
   end
 end
 
-local function choose(...)
-  local t = {...};
-  local rn = math.random(#t);
-  return t[rn];
-end
+local choose = mission.choose;
+local chooseA = mission.chooseA;
 
-local function chooseA(...)
-  local t = {...};
-  local m = 0;
-  for i, v in pairs(t) do
-    m = m + v.chance; 
-  end
-  local rn = math.random()*m;
-  local n = 0;
-  for i, v in ipairs(t) do
-    if (v.chance+n) > rn then
-      return v.item;
-    end
-    n = n + v.chance;
-  end
-end
 
 local function spawnWave(wave_table,faction,location)
   print("Spawn Wave",wave_table,faction,location,units[faction]);

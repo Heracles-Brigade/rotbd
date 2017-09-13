@@ -20,6 +20,9 @@ local tracker = mission.UnitTracker:new();
     two scouts/fighters
 ]]
 
+local choose = mission.choose;
+local chooseA = mission.chooseA;
+
 --"Warming" up the RNG
 for i=1, math.random(100,1000) do
   math.random();
@@ -227,7 +230,7 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
     }
     self.tug = GetHandle(tugL);
     self.recy = GetRecyclerHandle();
-    self.waveInterval = 140;
+    self.waveInterval = 160;
   end,
   start = function(self)
     --Spawn attack @ nsdf_attack
@@ -282,8 +285,13 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
       self.waveTimer[f] = self.waveTimer[f] - dtime;
       if(self.waveTimer[f] <= 0) then
         self.waveTimer[f] = self.waveInterval;
-        local possibleWaves = {{" 2 ","1 1"},{" 2 ","6 6"}};
-        local wave = possibleWaves[math.random(1,2)];
+        --local possibleWaves = {{" 2 ","1 1"},{" 2 ","6 6"}};
+        local wave = chooseA(
+          {item = {" 2 ", "1 1"}, chance = 10}, -- tank, two fighters
+          {item = {" 2 ", "3 5"}, chance = 9}, -- tank, one rkct tank and one light tank
+          {item = {" 2 ", "6 6"}, chance = 5} -- tank and two bombers
+        );
+        --local wave = possibleWaves[math.random(1,2)];
         local lead;
         for i,v in pairs(mission.spawnInFormation2(wave,("%s_path"):format(f),self.vehicles[f],2,15)) do
           local def_seq = mission.TaskManager:sequencer(v);

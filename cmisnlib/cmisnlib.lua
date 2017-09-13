@@ -21,6 +21,30 @@ local function fixTugs()
     end
 end
 
+
+local function choose(...)
+    local t = {...};
+    local rn = math.random(#t);
+    return t[rn];
+end
+
+local function chooseA(...)
+    local t = {...};
+    local m = 0;
+    for i, v in pairs(t) do
+        m = m + v.chance; 
+    end
+    local rn = math.random()*m;
+    local n = 0;
+    for i, v in ipairs(t) do
+        if (v.chance+n) > rn then
+        return v.item;
+        end
+        n = n + v.chance;
+    end
+end
+
+
 local function createWave(odf,path_list,follow)
     local ret = {};
     for i,v in pairs(path_list) do
@@ -827,5 +851,7 @@ return {
     TaskManager = TaskManager,
     createWave = createWave,
     fixTugs = fixTugs,
-    isBzr = isBzr
+    isBzr = isBzr,
+    choose = choose,
+    chooseA = chooseA
 }
