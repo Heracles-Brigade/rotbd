@@ -107,10 +107,10 @@ local PatrolController = Decorate(
         self.patrol_units[handle] = nil;
       end,
       save = function()
-        return self.patrol_units, self.locations, self.path_map;
+        return self.patrol_units, self.locations, self.path_map, self.forcedAlert;
       end,
       load = function(...)
-        self.patrol_units, self.locations, self.path_map = ...;
+        self.patrol_units, self.locations, self.path_map, self.forcedAlert = ...;
       end,
       update = function(dtime)
         --Check all units, if they are not doing anything check their location,
