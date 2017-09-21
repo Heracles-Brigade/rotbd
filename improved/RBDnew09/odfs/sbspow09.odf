@@ -15,4 +15,4 @@ radarSignature = 1.0
 soundAmbient = NULL
 
 [PowerPlantClass]
-powerRadius = 2000.0
+powerRadius = 1900.0
