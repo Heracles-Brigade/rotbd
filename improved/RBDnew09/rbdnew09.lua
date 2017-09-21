@@ -157,7 +157,8 @@ local captureRelic = mission.Objective:define("captureRelic"):createTasks(
     self.cframe = 0;
     self.otfs = {
       findRelic = "rbd0901.otf",
-      secureSite = "rbd0902.otf"
+      secureSite = "rbd0902.otf",
+      captureRecycler = "rbd0902b.otf"
     }
   end,
   start = function(self,patrol_id,patrol_units)
@@ -167,11 +168,11 @@ local captureRelic = mission.Objective:define("captureRelic"):createTasks(
     AudioMessage(audio.intro);
   end,
   task_start = function(self,name)
+    if(name == "captureRecycler") then
+      ClearObjectives();
+    end
     if(self.otfs[name] ~= nil) then
       AddObjective(self.otfs[name]);
-    end
-    if(name == "captureRecycler") then
-      Goto(self.apc,GetPositionNear(GetPosition(self.recy),30,35));
     end
   end,
   task_fail = function(self,name)
@@ -191,7 +192,7 @@ local captureRelic = mission.Objective:define("captureRelic"):createTasks(
       AudioMessage(audio.clear);
       local pp = GetPathPoints("relic_site");
       for obj in ObjectsInRange(Length(pp[2]-pp[1]),pp[1]) do
-        if(IsBuilding(obj) and GetTeamNum(obj) == 2) then
+        if((GetClassLabel(obj) == "turret" or IsBuilding(obj)) and GetTeamNum(obj) == 2) then
           SetTeamNum(obj,1);
         end
       end
@@ -219,11 +220,20 @@ local captureRelic = mission.Objective:define("captureRelic"):createTasks(
       if(self.cframe > 50) then
         self.cframe = 0;
         local secure = true;
+        local tMap = {};
         local pp = GetPathPoints("relic_site");
         for obj in ObjectsInRange(Length(pp[2]-pp[1]),pp[1]) do
-          if(IsCraft(obj) and GetTeamNum(obj) == 2) then
-            secure = false;
-            break;
+          local cp = GetClassLabel(obj);
+          if(GetTeamNum(obj) == 2 and IsAlive(obj)) then
+            tMap[cp] = true;
+            other = ({turret="powerplant",powerplant="turret"})[cp];
+            if other~=nil and tMap[other] then
+              secure = false;
+              break;
+            elseif(other==nil and IsCraft(obj)) then
+              secure = false;
+              break;
+            end
           end
         end
         if(secure) then
