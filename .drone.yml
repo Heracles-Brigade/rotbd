@@ -4,7 +4,7 @@ workspace:
 
 pipeline:
   pre-process:
-    image: docker.studynator.me/bzone/bztools:latest
+    image: docker.faavne.no/bzone/bztools:latest
     pull: true
     when:
       event:
@@ -29,7 +29,7 @@ pipeline:
 
   snapshot-branch:
     group: deploy
-    image: docker.studynator.me/bzone/bztools:latest
+    image: docker.faavne.no/bzone/bztools:latest
     when:
       event:
         - push
@@ -46,7 +46,7 @@ pipeline:
 
   release:
     group: deploy
-    image: docker.studynator.me/bzone/bztools:latest
+    image: docker.faavne.no/bzone/bztools:latest
     when:
       event:
         - tag
