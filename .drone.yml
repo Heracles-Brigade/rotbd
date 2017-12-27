@@ -41,7 +41,7 @@ pipeline:
       - cp /rotbd/output/bundle.zip /drone/deploy/${DRONE_BRANCH}/rotbd_latest.zip || true
       - mv /drone/deploy/${DRONE_BRANCH}/rotbd_latest1.5c.zip /drone/deploy/${DRONE_BRANCH}/rotbd1.5c_"$FILE_COUNT".zip || true
       - cp /rotbd/output/bundle1.5.zip /drone/deploy/${DRONE_BRANCH}/rotbd1.5c_latest.zip || true
-      - python3 /bztools/webhook.py /rotbd/.webhook.payload $${WEBHOOK} -kv "status=${}" "tag=${DRONE_TAG}" "buildlink=${DRONE_BUILD_LINK}" "repolink=${DRONE_REPO_LINK}" "repo=${DRONE_REPO_NAME}" "event=${DRONE_BUILD_EVENT}"
+      - python3 /bztools/webhook.py /rotbd/.webhook.payload $${WEBHOOK} -kv "status=${DRONE_BUILD_STATUS}" "tag=${DRONE_TAG}" "buildlink=${DRONE_BUILD_LINK}" "repolink=${DRONE_REPO_LINK}" "repo=${DRONE_REPO_NAME}" "event=${DRONE_BUILD_EVENT}"
     volumes:
       - /root/studynator/nginx-fs/private/rotbd/builds/branches:/drone/deploy
 
