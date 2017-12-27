@@ -60,7 +60,7 @@ pipeline:
     image: docker.faavne.no/bzone/bztools:latest
     secrets: [ webhook ]
     when:
-      event: [ tag, push ]
+      event: [ tag ]
       status: [ success ]
     commands:
       - python3 /bztools/webhook.py /rotbd/.webhook.payload $${WEBHOOK} -kv "status=SUCCESS" "tag=${DRONE_TAG}" "buildlink=${DRONE_BUILD_LINK}" "repolink=${DRONE_REPO_LINK}" "repo=${DRONE_REPO_NAME}" "event=${DRONE_BUILD_EVENT}"

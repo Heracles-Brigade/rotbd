@@ -9,7 +9,7 @@
       "value": "[Battlezone 1.5](https://media.faavne.no/rotbd/builds/releases/rotbd1.5c_{tag}.zip)\n[Battlezone Redux](https://media.faavne.no/rotbd/builds/releases/rotbd_{tag}.zip)"
     },{
       "name":"Build info",
-      "value": "status: {status}\n[Build log]({buildlink})\nevent:  {event}\nrepo:  [{repo}]({repolink})"
+      "value": "[Build log]({buildlink})\nstatus: {status}\nevent:  {event}\nrepo:  [{repo}]({repolink})"
     }]
   }]
 }
