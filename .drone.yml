@@ -1,6 +1,6 @@
 workspace:
   base: /rotbd
-  path: src/${DRONE_REPO_SLUG}
+  path: /${DRONE_REPO_SLUG}/
 
 pipeline:
   pre-process:
