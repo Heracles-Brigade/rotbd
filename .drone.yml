@@ -1,6 +1,6 @@
 workspace:
   base: /rotbd
-  path: src/${DRONE_REPO_SLUG}
+  path: /${DRONE_REPO_SLUG}/
 
 pipeline:
   pre-process:
@@ -33,6 +33,8 @@ pipeline:
     when:
       event:
         - push
+      branch:
+        - master
         
     commands:
       - mkdir -p /drone/deploy/${DRONE_BRANCH} || true
@@ -42,7 +44,7 @@ pipeline:
       - mv /drone/deploy/${DRONE_BRANCH}/rotbd_latest1.5c.zip /drone/deploy/${DRONE_BRANCH}/rotbd1.5c_"$FILE_COUNT".zip || true
       - cp /rotbd/output/bundle1.5.zip /drone/deploy/${DRONE_BRANCH}/rotbd1.5c_latest.zip || true
     volumes:
-      - /root/studynator/nginx-fs/private/rotbd/builds/branches:/drone/deploy
+      - /mnt/nginx-fs/files/private/rotbd/builds/branches:/drone/deploy
 
   release:
     group: deploy
@@ -54,4 +56,24 @@ pipeline:
       - \cp -f /rotbd/output/bundle.zip /drone/deploy/rotbd_${DRONE_TAG}.zip || true
       - \cp -f /rotbd/output/bundle1.5.zip /drone/deploy/rotbd1.5c_${DRONE_TAG}.zip || true
     volumes:
-      - /root/studynator/nginx-fs/private/rotbd/builds/releases:/drone/deploy
+      - /mnt/nginx-fs/files/private/rotbd/builds/releases:/drone/deploy
+
+  notification-success:
+    image: docker.faavne.no/bzone/bztools:latest
+    secrets: [ webhook ]
+    when:
+      event: [ tag ]
+      status: [ success ]
+    commands:
+      - python3 /bztools/webhook.py /rotbd/.webhook.payload $${WEBHOOK} -kv "status=SUCCESS" "tag=${DRONE_TAG}" "buildlink=${DRONE_BUILD_LINK}" "repolink=${DRONE_REPO_LINK}" "repo=${DRONE_REPO_NAME}" "event=${DRONE_BUILD_EVENT}"
+  
+  notification-fail:
+    image: docker.faavne.no/bzone/bztools:latest
+    secrets: [ webhook ]
+    when:
+      event: [ tag ]
+      status: [ fail ]
+    commands: 
+      - python3 /bztools/webhook.py /rotbd/.webhook.fail $${WEBHOOK} -kv "status=FAIL" "tag=${DRONE_TAG}" "buildlink=${DRONE_BUILD_LINK}" "repolink=${DRONE_REPO_LINK}" "repo=${DRONE_REPO_NAME}" "event=${DRONE_BUILD_EVENT}"
+    
+

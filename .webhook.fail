@@ -1,0 +1,12 @@
+{
+  "avatar_url": "https://media.faavne.no/rotbd/rotbd_dog.png",
+  "embeds": [{
+    "title": "Rise of the Black Dogs",
+    "description": "Build for RotBD {tag} failed!",
+    "color": 16711680,
+    "fields": [{
+      "name":"Build info",
+      "value": "[Build log]({buildlink})\nstatus: {status}\nevent:  {event}\nrepo:  [{repo}]({repolink})"
+    }]
+  }]
+}
