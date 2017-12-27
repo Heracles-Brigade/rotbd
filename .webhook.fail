@@ -1,0 +1,11 @@
+{
+  "embeds": [{
+    "title": "Rise of the Black Dogs",
+    "description": "Build for RotBD {tag} failed!",
+    "color": 16711680,
+    "fields": [{
+      "name":"Build status",
+      "value": "status: {status}\n[Build log]({buildlink})\nevent:  {event}\nrepo:  [{repo}]({repolink})"
+    }]
+  }]
+}

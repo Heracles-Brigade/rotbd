@@ -1,8 +1,9 @@
 {
+  "avatar_url": "https://media.faavne.no/rotbd/rotbd_dog.png",
   "embeds": [{
     "title": "Rise of the Black Dogs",
-    "description": "RotBD {tag} is now released, pleace download and test it\n[Release Notes]({link}/releases/tag/{tag})",
-    "color": 255,
+    "description": "RotBD {tag} is now released, please download and test it\n[Release Notes]({link}/releases/tag/{tag})",
+    "color": 65280,
     "fields": [{
       "name": "Download",
       "value": "[Battlezone 1.5](https://media.faavne.no/rotbd/builds/releases/rotbd1.5c_{tag}.zip)\n[Battlezone Redux](https://media.faavne.no/rotbd/builds/releases/rotbd_{tag}.zip)"
