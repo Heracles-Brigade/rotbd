@@ -42,7 +42,7 @@ pipeline:
       - mv /drone/deploy/${DRONE_BRANCH}/rotbd_latest1.5c.zip /drone/deploy/${DRONE_BRANCH}/rotbd1.5c_"$FILE_COUNT".zip || true
       - cp /rotbd/output/bundle1.5.zip /drone/deploy/${DRONE_BRANCH}/rotbd1.5c_latest.zip || true
     volumes:
-      - /root/studynator/nginx-fs/private/rotbd/builds/branches:/drone/deploy
+      - /mnt/nginx-fs/files/private/rotbd/builds/branches:/drone/deploy
 
   release:
     group: deploy
@@ -54,7 +54,7 @@ pipeline:
       - \cp -f /rotbd/output/bundle.zip /drone/deploy/rotbd_${DRONE_TAG}.zip || true
       - \cp -f /rotbd/output/bundle1.5.zip /drone/deploy/rotbd1.5c_${DRONE_TAG}.zip || true
     volumes:
-      - /root/studynator/nginx-fs/private/rotbd/builds/releases:/drone/deploy
+      - /mnt/nginx-fs/files/private/rotbd/builds/releases:/drone/deploy
 
   notification-success:
     image: docker.faavne.no/bzone/bztools:latest
