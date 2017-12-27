@@ -33,6 +33,8 @@ pipeline:
     when:
       event:
         - push
+      branch:
+        - master
         
     commands:
       - mkdir -p /drone/deploy/${DRONE_BRANCH} || true
