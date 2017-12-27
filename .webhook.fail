@@ -4,7 +4,7 @@
     "description": "Build for RotBD {tag} failed!",
     "color": 16711680,
     "fields": [{
-      "name":"Build status",
+      "name":"Build info",
       "value": "status: {status}\n[Build log]({buildlink})\nevent:  {event}\nrepo:  [{repo}]({repolink})"
     }]
   }]

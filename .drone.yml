@@ -62,8 +62,8 @@ pipeline:
     when:
       event: [ tag, push ]
       status: [ success ]
-      commands:
-        - python3 /bztools/webhook.py /rotbd/.webhook.payload $${WEBHOOK} -kv "status=SUCCESS" "tag=${DRONE_TAG}" "buildlink=${DRONE_BUILD_LINK}" "repolink=${DRONE_REPO_LINK}" "repo=${DRONE_REPO_NAME}" "event=${DRONE_BUILD_EVENT}"
+    commands:
+      - python3 /bztools/webhook.py /rotbd/.webhook.payload $${WEBHOOK} -kv "status=SUCCESS" "tag=${DRONE_TAG}" "buildlink=${DRONE_BUILD_LINK}" "repolink=${DRONE_REPO_LINK}" "repo=${DRONE_REPO_NAME}" "event=${DRONE_BUILD_EVENT}"
   
   notification-fail:
     image: docker.faavne.no/bzone/bztools:latest
@@ -71,7 +71,7 @@ pipeline:
     when:
       event: [ tag ]
       status: [ fail ]
-      commands: 
-        - python3 /bztools/webhook.py /rotbd/.webhook.fail $${WEBHOOK} -kv "status=FAIL" "tag=${DRONE_TAG}" "buildlink=${DRONE_BUILD_LINK}" "repolink=${DRONE_REPO_LINK}" "repo=${DRONE_REPO_NAME}" "event=${DRONE_BUILD_EVENT}"
+    commands: 
+      - python3 /bztools/webhook.py /rotbd/.webhook.fail $${WEBHOOK} -kv "status=FAIL" "tag=${DRONE_TAG}" "buildlink=${DRONE_BUILD_LINK}" "repolink=${DRONE_REPO_LINK}" "repo=${DRONE_REPO_NAME}" "event=${DRONE_BUILD_EVENT}"
     
 
