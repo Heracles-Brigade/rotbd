@@ -30,6 +30,7 @@ pipeline:
   snapshot-branch:
     group: deploy
     image: docker.faavne.no/bzone/bztools:latest
+    secrets: [webhook]
     when:
       event:
         - push
