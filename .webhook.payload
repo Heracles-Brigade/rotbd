@@ -2,7 +2,7 @@
   "avatar_url": "https://media.faavne.no/rotbd/rotbd_dog.png",
   "embeds": [{
     "title": "Rise of the Black Dogs",
-    "description": "RotBD {tag} is now released, please download and test it\n[Release Notes]({link}/releases/tag/{tag})",
+    "description": "RotBD {tag} is now released, please download and test it\n[Release Notes]({repolink}/releases/tag/{tag})",
     "color": 65280,
     "fields": [{
       "name": "Download",
