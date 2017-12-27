@@ -10,9 +10,7 @@ pipeline:
       event:
         - push
         - tag
-      branch:
-        - master
-        
+
     commands:
       - mkdir /tmp/files
       - mkdir /tmp/lua
