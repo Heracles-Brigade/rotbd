@@ -325,26 +325,15 @@ function Start()
     SetMaxHealth(comm, 0); -- These can't be killed.
   end
 end
-local pwers = {};
+
 function Update(dtime)
   core:update(dtime);
   mission:Update(dtime);
-  for i,v in pairs(pwers) do
-    if GetCurrentCommand(v.h) == AiCommand["GO"] then
-      SetTeamNum(v.h,v.t);
-      pwers[i] = nil;
-    end
-  end
 end
 
 function CreateObject(handle)
   core:onCreateObject(handle);
   mission:CreateObject(handle);
-  local l = GetClassLabel(handle);
-  if(IsIn(l,{"ammopack","repairkit","daywrecker","wpnpower","camerapod"})) then
-    table.insert(pwers,{h=handle,t=GetTeamNum(handle)});
-    SetTeamNum(handle,1);
-  end
 end
 
 function AddObject(handle)

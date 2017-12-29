@@ -99,7 +99,7 @@ end
 --areAnyAlive = not areAllDead
 local function areAllDead(handles, team)
     for i,v in pairs(handles) do
-        if(IsAlive(v) and (team~=nil and team == GetTeamNum(v))) then
+        if(IsAlive(v) and (team==nil or team == GetTeamNum(v))) then
             return false;
         end
     end
