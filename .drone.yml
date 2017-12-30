@@ -39,7 +39,7 @@ pipeline:
       - FILE_COUNT=$(ls /drone/deploy/${DRONE_BRANCH} | wc -l) || true
       - mv /drone/deploy/${DRONE_BRANCH}/rotbd_latest.zip /drone/deploy/${DRONE_BRANCH}/rotbd_"$FILE_COUNT".zip || true
       - cp /rotbd/output/bundle.zip /drone/deploy/${DRONE_BRANCH}/rotbd_latest.zip || true
-      - mv /drone/deploy/${DRONE_BRANCH}/rotbd_latest1.5c.zip /drone/deploy/${DRONE_BRANCH}/rotbd1.5c_"$FILE_COUNT".zip || true
+      - mv /drone/deploy/${DRONE_BRANCH}/rotbd1.5c_latest.zip /drone/deploy/${DRONE_BRANCH}/rotbd1.5c_"$FILE_COUNT".zip || true
       - cp /rotbd/output/bundle1.5.zip /drone/deploy/${DRONE_BRANCH}/rotbd1.5c_latest.zip || true
     volumes:
       - /mnt/nginx-fs/files/private/rotbd/builds/branches:/drone/deploy
