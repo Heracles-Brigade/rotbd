@@ -94,8 +94,9 @@ local function UpdateObjectives() -- Handle Objectives.
 					else
 						AddObjective(objs.mine, "GREEN");
 					end
+				end
 			else
-				AddObjective(objs.extraction, "GREEN");
+					AddObjective(objs.extraction, "GREEN");
 			end
 		end
 	else -- ITS DEAD! NOOOOO! NEW Fail objective. -GBD
@@ -122,6 +123,16 @@ local function SpawnNav(num)
 	end
 	SetObjectiveOn(nav);
 	M.ObjectiveNav = nav; -- Sets the new nav to the ObjectiveNav so that the next time this function is called, it can switch off of it.
+end
+
+local function SpawnBaker()
+	M.Baker = BuildObject("bvhaul", 3, "bakerspawn");
+	Defend2(BuildObject("bvfigh", 3, "bakerspawn"), M.Baker, 1);
+	Defend2(BuildObject("bvfigh", 3, "bakerspawn"), M.Baker, 1);
+	Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
+	Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
+	Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
+	Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
 end
 
 function Update()
@@ -198,28 +209,14 @@ function Update()
 		if M.TrapEscaped then
 			M.Aud1 = AudioMessage(audio.gtfo);
 			SpawnNav(3);
-			SetLabel(BuildObject("bvhaul", 3, "bakerspawn"), "Baker");
-			M.Baker = "Baker";
-			Defend2(BuildObject("bvfigh", 3, "bakerspawn"), M.Baker, 1);
-			Defend2(BuildObject("bvfigh", 3, "bakerspawn"), M.Baker, 1);
-			Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
-			Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
-			Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
-			Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
+			BakerSpawn();
 			SetPerceivedTeam(M.Player, 1)
 			M.MammothStolen = true;
 			UpdateObjectives();
 		else
 			M.Aud1 = AudioMessage(audio.bypass);
 			SpawnNav(3);
-			SetLabel(BuildObject("bvhaul", 3, "bakerspawn"), "Baker");
-			M.Baker = "Baker";
-			Defend2(BuildObject("bvfigh", 3, "bakerspawn"), M.Baker, 1);
-			Defend2(BuildObject("bvfigh", 3, "bakerspawn"), M.Baker, 1);
-			Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
-			Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
-			Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
-			Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
+			BakerSpawn();
 			SetPerceivedTeam(M.Player, 1)
 			M.MammothStolen = true;
 			UpdateObjectives();
@@ -249,7 +246,7 @@ function Update()
 	end
 	
 	-- Win Conditions:
-	if not M.MissionOver and M.MammothStolen and M.Player == M.Mammoth and IsWithin(M.Player, M.Nav[3], 50.0) then
+	if not M.MissionOver and M.MammothStolen and M.Player == M.Mammoth and IsWithin(M.Player, M.Nav[3], 75.0) and M.RecoveryBeaten then
 		M.Aud1 = AudioMessage(audio.homefree);
 		SucceedMission(GetTime()+5.0, "rbdnew03wn.des");
 		M.MissionOver = true;
