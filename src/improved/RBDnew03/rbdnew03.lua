@@ -11,7 +11,8 @@ freedom = "rbdnew0303.wav",
 gtfo = "rbdnew0304.wav",
 bypass = "",
 wasatrap = "",
-wantitback = ""
+wantitback = "",
+homefree = ""
 }
 
 local objs = {
@@ -224,7 +225,7 @@ function Update()
 	
 	-- Win Conditions:
 	if not M.MissionOver and M.MammothStolen and M.Player == M.Mammoth and IsWithin(M.Player, M.Nav[3], 50.0) then
-		M.Aud1 = AudioMessage(audio.freedom);
+		M.Aud1 = AudioMessage(audio.homefree);
 		SucceedMission(GetTime()+5.0, "rbdnew03wn.des");
 		M.MissionOver = true;
 		M.DropZoneReached = true;
