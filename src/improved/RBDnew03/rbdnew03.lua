@@ -194,6 +194,7 @@ function Update()
 			Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
 			Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
 			Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
+			SetPerceivedTeam(M.Player, 1)
 			M.MammothStolen = true;
 			UpdateObjectives();
 		else
@@ -207,6 +208,7 @@ function Update()
 			Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
 			Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
 			Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
+			SetPerceivedTeam(M.Player, 1)
 			M.MammothStolen = true;
 			UpdateObjectives();
 		end
