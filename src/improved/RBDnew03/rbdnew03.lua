@@ -130,6 +130,9 @@ function Update()
 		SetIndependence(M.Mammoth, 0);
 		M.MammothDecoy = GetHandle("badmammoth");
 		SetIndependence(M.MammothDecoy, 0);
+		SetMaxScrap(1, 45);
+		SetScrap(1, 40);
+		RemovePilot(M.Mammoth);
 		
 		for i = 1,3 do
 			local tmpnav = GetHandle("nav" .. i);
@@ -158,7 +161,7 @@ function Update()
 				BuildObject("svfigh", 2, "spawn_svfigh2"),
 				BuildObject("svrckt", 2, "spawn_svrckt1"),
 				BuildObject("svrckt", 2, "spawn_svrckt2")
-				}
+			}
 		
 			for i = 1,#M.DecoyAmbush do
 				Attack(M.DecoyAmbush[i], M.Player);
@@ -215,12 +218,13 @@ function Update()
 		for i = 1,#M.RecoverySquad do
 			Attack(M.DecoyAmbush[i], M.Player);
 		end
-		M.Aud1 = AudoMessage(audio.wantitback);
+		M.Aud1 = AudioMessage(audio.wantitback);
 		M.WantItBack = true;
 	end
 	
 	-- Win Conditions:
 	if not M.MissionOver and M.MammothStolen and M.Player == M.Mammoth and IsWithin(M.Player, M.Nav[3], 50.0) then
+		M.Aud1 = AudioMessage(audio.freedom);
 		SucceedMission(GetTime()+5.0, "rbdnew03wn.des");
 		M.MissionOver = true;
 		M.DropZoneReached = true;
