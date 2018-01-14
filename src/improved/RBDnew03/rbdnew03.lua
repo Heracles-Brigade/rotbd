@@ -206,22 +206,20 @@ function Update()
 		end
 	end
 	
-	if IsValid(GetHandle(nav3)) and M.Player == M.Mammoth then
-		if M.MammothStolen and IsWithin(M.Player, GetHandle(nav3), 450) and not M.WantItBack then
-			M.RecoverySquad = {
-			BuildObject("svfigh", 2, "final_spawn3"),
-			BuildObject("svfigh", 2, "final_spawn4"),
-			BuildObject("svfigh", 2, "final_spawn6"),
-			BuildObject("svfigh", 2, "final_spawn7"),
-			BuildObject("svrckt", 2, "final_spawn1"),
-			BuildObject("svrckt", 2, "final_spawn2")
-			}
-			for i = 1,#M.RecoverySquad do
-				Attack(M.DecoyAmbush[i], M.Player);
-			end
-			M.Aud1 = AudioMessage(audio.wantitback);
-			M.WantItBack = true;
+	if M.MammothStolen and GetDistance(M.Player, M.ObjectiveNav) < 1200 and not M.WantItBack and GetLabel(M.ObjectiveNav) == "nav3" then
+		M.RecoverySquad = {
+		BuildObject("svfigh", 2, "final_spawn3"),
+		BuildObject("svfigh", 2, "final_spawn4"),
+		BuildObject("svfigh", 2, "final_spawn6"),
+		BuildObject("svfigh", 2, "final_spawn7"),
+		BuildObject("svrckt", 2, "final_spawn1"),
+		BuildObject("svrckt", 2, "final_spawn2")
+		}
+		for i = 1,#M.RecoverySquad do
+			Attack(M.DecoyAmbush[i], M.Player);
 		end
+		M.Aud1 = AudioMessage(audio.wantitback);
+		M.WantItBack = true;
 	end
 	
 	-- Win Conditions:
