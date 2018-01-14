@@ -42,6 +42,7 @@ Mammoth = nil,
 MammothDecoy = nil,
 DecoyAmbush = { },
 RecoverySquad = { },
+Baker = nil,
 
 -- Ints
 Aud1 = 0,
@@ -186,28 +187,32 @@ function Update()
 			M.Aud1 = AudioMessage(audio.gtfo);
 			SpawnNav(3);
 			SetLabel(BuildObject("bvhaul", 3, "bakerspawn"), "Baker");
-			Defend2(BuildObject("bvfigh", 3, "bakerspawn"), "Baker", 1);
-			Defend2(BuildObject("bvfigh", 3, "bakerspawn"), "Baker", 1);
-			Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);
-			Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);
-			Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);
-			Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);			M.MammothStolen = true;
+			M.Baker = "Baker";
+			Defend2(BuildObject("bvfigh", 3, "bakerspawn"), M.Baker, 1);
+			Defend2(BuildObject("bvfigh", 3, "bakerspawn"), M.Baker, 1);
+			Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
+			Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
+			Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
+			Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
+			M.MammothStolen = true;
 			UpdateObjectives();
 		else
 			M.Aud1 = AudioMessage(audio.bypass);
 			SpawnNav(3);
 			SetLabel(BuildObject("bvhaul", 3, "bakerspawn"), "Baker");
-			Defend2(BuildObject("bvfigh", 3, "bakerspawn"), "Baker", 1);
-			Defend2(BuildObject("bvfigh", 3, "bakerspawn"), "Baker", 1);
-			Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);
-			Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);
-			Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);
-			Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);			M.MammothStolen = true;
+			M.Baker = "Baker";
+			Defend2(BuildObject("bvfigh", 3, "bakerspawn"), M.Baker, 1);
+			Defend2(BuildObject("bvfigh", 3, "bakerspawn"), M.Baker, 1);
+			Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
+			Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
+			Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
+			Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
+			M.MammothStolen = true;
 			UpdateObjectives();
 		end
 	end
 	
-	if M.MammothStolen and GetDistance(M.Player, M.ObjectiveNav) < 1200 and not M.WantItBack and GetLabel(M.ObjectiveNav) == "nav3" then
+	if M.MammothStolen and GetLabel(M.ObjectiveNav) == "nav3" and GetDistance(M.Player, M.ObjectiveNav) < 1200 and not M.WantItBack then
 		M.RecoverySquad = {
 		BuildObject("svfigh", 2, "final_spawn3"),
 		BuildObject("svfigh", 2, "final_spawn4"),
@@ -217,7 +222,7 @@ function Update()
 		BuildObject("svrckt", 2, "final_spawn2")
 		}
 		for i = 1,#M.RecoverySquad do
-			Attack(M.DecoyAmbush[i], M.Player);
+			Attack(M.RecoverySquad[i], M.Player);
 		end
 		M.Aud1 = AudioMessage(audio.wantitback);
 		M.WantItBack = true;
