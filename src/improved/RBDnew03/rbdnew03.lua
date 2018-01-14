@@ -110,16 +110,6 @@ local function SpawnNav(num)
 	M.ObjectiveNav = nav; -- Sets the new nav to the ObjectiveNav so that the next time this function is called, it can switch off of it.
 end
 
-local function SpawnBaker()
-	SetLabel(BuildObject("bvhaul", 3, "bakerspawn"), "Baker");
-	Defend2(BuildObject("bvfigh", 3, "bakerspawn"), "Baker", 1);
-	Defend2(BuildObject("bvfigh", 3, "bakerspawn"), "Baker", 1);
-	Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);
-	Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);
-	Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);
-	Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);
-end
-
 function Update()
 
 	M.Player = GetPlayerHandle();
@@ -194,19 +184,29 @@ function Update()
 		if M.TrapEscaped then
 			M.Aud1 = AudioMessage(audio.gtfo);
 			SpawnNav(3);
-			SpawnBaker();
-			M.MammothStolen = true;
+			SetLabel(BuildObject("bvhaul", 3, "bakerspawn"), "Baker");
+			Defend2(BuildObject("bvfigh", 3, "bakerspawn"), "Baker", 1);
+			Defend2(BuildObject("bvfigh", 3, "bakerspawn"), "Baker", 1);
+			Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);
+			Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);
+			Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);
+			Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);			M.MammothStolen = true;
 			UpdateObjectives();
 		else
 			M.Aud1 = AudioMessage(audio.bypass);
 			SpawnNav(3);
-			SpawnBaker();
-			M.MammothStolen = true;
+			SetLabel(BuildObject("bvhaul", 3, "bakerspawn"), "Baker");
+			Defend2(BuildObject("bvfigh", 3, "bakerspawn"), "Baker", 1);
+			Defend2(BuildObject("bvfigh", 3, "bakerspawn"), "Baker", 1);
+			Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);
+			Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);
+			Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);
+			Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);			M.MammothStolen = true;
 			UpdateObjectives();
 		end
 	end
 	
-	if M.MammothStolen and IsWithin(M.Player, nav3, 450) and not M.WantItBack then
+	if M.MammothStolen and IsWithin(M.Player, GetHandle(nav3), 450) and not M.WantItBack then
 		M.RecoverySquad = {
 			BuildObject("svfigh", 2, "final_spawn3"),
 			BuildObject("svfigh", 2, "final_spawn4"),
