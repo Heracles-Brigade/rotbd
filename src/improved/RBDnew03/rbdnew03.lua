@@ -16,7 +16,11 @@ homefree = ""
 }
 
 local objs = {
-
+recon = "rbdnew0301.otf",
+escape = "rbdnew0302.otf",
+findit = "rbdnew0303.otf",
+extraction = "rbdnew0304.otf",
+mine = "rbdnew0306.otf"
 }
 
 local M = {
@@ -30,6 +34,7 @@ TrapEscaped = false, -- Whew, close one!
 MammothStolen = false, -- Steal the Mammoth!
 MammothDead = false, -- You can't kill something that's extinct.
 WantItBack = false, -- They're coming for you
+RecoveryBeaten = false, -- You ditched the recall effort
 DropZoneReached = false, -- Are we there yet?
 MissionOver = false, -- Yay!
 
@@ -69,21 +74,28 @@ local function UpdateObjectives() -- Handle Objectives.
 		if not M.MammothStolen then
 			-- First order, investigate the Mammoth.
 			if not M.DecoyTriggered then
-				AddObjective("rbdnew0301.otf", "WHITE");
+				AddObjective(objs.recon, "WHITE");
 			else
 				-- but bad news!
 				if not M.TrapEscaped then
-					AddObjective("rbdnew0302.otf", "WHITE");
+					AddObjective(objs.escape, "WHITE");
 				else -- Go find me a Mammoth.
-					AddObjective("rbdnew0302.otf", "GREEN");
-					AddObjective("rbdnew0303.otf", "WHITE");
+					AddObjective(objs.escape, "GREEN");
+					AddObjective(objs.findit, "WHITE");
 				end
 			end		
 		else -- Get to the drop zone.
 			if not M.DropZoneReached then
-				AddObjective("rbdnew0304.otf", "WHITE");
+				AddObjective(objs.findit, "GREEN");
+				AddObjective(objs.extraction, "WHITE");
+				if M.WantItBack then
+					if not M.RecoveryBeaten then
+						AddObjective(objs.mine, "WHITE");
+					else
+						AddObjective(objs.mine, "GREEN");
+					end
 			else
-				AddObjective("rbdnew0304.otf", "GREEN");
+				AddObjective(objs.extraction, "GREEN");
 			end
 		end
 	else -- ITS DEAD! NOOOOO! NEW Fail objective. -GBD
@@ -228,6 +240,12 @@ function Update()
 		end
 		M.Aud1 = AudioMessage(audio.wantitback);
 		M.WantItBack = true;
+		UpdateObjectives();
+	end
+	
+	if M.MammothStolen and M.WantItBack and areAllDead(M.RecoverySquad) and M.Player == M.Mammoth then
+		M.RecoveryBeaten = true;
+		UpdateObjectives();
 	end
 	
 	-- Win Conditions:
