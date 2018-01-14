@@ -206,20 +206,22 @@ function Update()
 		end
 	end
 	
-	if M.MammothStolen and IsWithin(M.Player, GetHandle(nav3), 450) and not M.WantItBack then
-		M.RecoverySquad = {
+	if IsValid(GetHandle(nav3)) and M.Player == M.Mammoth then
+		if M.MammothStolen and IsWithin(M.Player, GetHandle(nav3), 450) and not M.WantItBack then
+			M.RecoverySquad = {
 			BuildObject("svfigh", 2, "final_spawn3"),
 			BuildObject("svfigh", 2, "final_spawn4"),
 			BuildObject("svfigh", 2, "final_spawn6"),
 			BuildObject("svfigh", 2, "final_spawn7"),
 			BuildObject("svrckt", 2, "final_spawn1"),
 			BuildObject("svrckt", 2, "final_spawn2")
-		}
-		for i = 1,#M.RecoverySquad do
-			Attack(M.DecoyAmbush[i], M.Player);
+			}
+			for i = 1,#M.RecoverySquad do
+				Attack(M.DecoyAmbush[i], M.Player);
+			end
+			M.Aud1 = AudioMessage(audio.wantitback);
+			M.WantItBack = true;
 		end
-		M.Aud1 = AudioMessage(audio.wantitback);
-		M.WantItBack = true;
 	end
 	
 	-- Win Conditions:
