@@ -209,14 +209,14 @@ function Update()
 		if M.TrapEscaped then
 			M.Aud1 = AudioMessage(audio.gtfo);
 			SpawnNav(3);
-			BakerSpawn();
+			SpawnBaker();
 			SetPerceivedTeam(M.Player, 1)
 			M.MammothStolen = true;
 			UpdateObjectives();
 		else
 			M.Aud1 = AudioMessage(audio.bypass);
 			SpawnNav(3);
-			BakerSpawn();
+			SpawnBaker();
 			SetPerceivedTeam(M.Player, 1)
 			M.MammothStolen = true;
 			UpdateObjectives();
