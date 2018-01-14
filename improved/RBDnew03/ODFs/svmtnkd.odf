@@ -1,0 +1,77 @@
+[GameObjectClass]
+baseName = "svmtnk"
+classLabel = "wingman"
+scrapValue = 7
+scrapCost = 12
+pilotName = ""
+buildTime = 20.0
+maxHealth = 6500
+maxAmmo = 1800
+unitName = "Mammoth"
+aiName = "TankFriend"
+aiName2 = "TankEnemy"
+heatSignature = 2.4
+imageSignature = 3.0
+radarSignature = 0.5
+
+weaponHard1 = "GC1"
+weaponName1 = "gspstab"
+weaponHard2 = "GC3"
+weaponName2 = "gspstab"
+weaponHard3 = "GC2"
+weaponName3 = "gminisov"
+weaponHard4 = "GC4"
+weaponName4 = "gminisov"
+weaponHard5 = "GS1"
+weaponName5 = "gquake"
+weaponMask = 01111
+
+[CraftClass]
+rangeScan = 300.0f
+periodScan = 5.0f
+velocJam = 0.0f
+
+selectWaitMsg = "svtankv0.wav"
+selectAttackMsg = "svtankvj.wav"
+selectFollowMsg = "svtankvn.wav"
+selectGoMsg = "svtankvm.wav"
+selectOtherMsg = "svtankvp.wav"
+
+goMsg = "svtankv1.wav"
+goObjectMsg = "svtankv1.wav"
+attackMsg = "svtankv2.wav"
+followMsg = "svtankvk.wav"
+followMeMsg = "svtankv4.wav"
+repairMsg = "svtankv8.wav"
+reloadMsg = "svtankv9.wav"
+rescueMsg = "svtankvc.wav"
+recycleMsg = "svtankvd.wav"
+otherMsg = "svtankvh.wav"
+
+user1Msg = "svtankva.wav"
+killedMsg = "svtankv3.wav"
+diedMsg = "sbetty3.wav"
+
+[HoverCraftClass]
+setAltitude = 0.8
+accelDragStop = 3.5
+accelDragFull = 1.0
+alphaTrack = 20.0
+alphaDamp = 5.0
+pitchPitch = 0.15
+pitchThrust = 0.05
+rollStrafe = 0.15
+rollSteer = 0.15
+
+velocForward = 12.5
+velocReverse = 12.5
+velocStrafe = 10.0
+accelThrust = 15.0
+accelBrake = 7.5
+omegaSpin = 1.5
+omegaTurn = 1.0
+alphaSteer = 2.5
+accelJump = 5.0
+
+soundThrust = "svtanke0.wav"
+soundTurbo = "svtanke3.wav"

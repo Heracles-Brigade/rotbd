@@ -1,12 +1,17 @@
 -- Battlezone: Rise of the Black Dogs Redux, Mission 3 "The Mammoth Project" recoded by Vemahk and Seqan based off GBD's 1:1 script
 
 require("bz_logging");
+local missionlib = require("cmisnlib");
+local areAllDead = missionlib.areAllDead;
 
 local audio = {
-intro = "rbdnew0301.wav";
-itsatrap = "rbdnew0302.wav";
-freedom = "rbdnew0303.wav";
-gtfo = "rbdnew0304.wav";
+intro = "rbdnew0301.wav",
+itsatrap = "rbdnew0302.wav",
+freedom = "rbdnew0303.wav",
+gtfo = "rbdnew0304.wav",
+bypass = "",
+wasatrap = "",
+wantitback = ""
 }
 
 local objs = {
@@ -23,6 +28,7 @@ DecoyTriggered = false, -- It's a Trap!
 TrapEscaped = false, -- Whew, close one!
 MammothStolen = false, -- Steal the Mammoth!
 MammothDead = false, -- You can't kill something that's extinct.
+WantItBack = false, -- They're coming for you
 DropZoneReached = false, -- Are we there yet?
 MissionOver = false, -- Yay!
 
@@ -33,9 +39,12 @@ Nav = { },
 ObjectiveNav = nil,
 Mammoth = nil,
 MammothDecoy = nil,
+DecoyAmbush = { },
+RecoverySquad = { },
 
 -- Ints
-Aud1 = 0
+Aud1 = 0,
+DecoyTime = 0
 }
 
 function Save()
@@ -85,8 +94,8 @@ local function SpawnNav(num)
 	M.Nav[num] = nav;
 	SetLabel(nav, "nav"..num);
 	
-	if num == 2 then
-		SetName(nav, "Pickup Site");
+	if num == 3 then
+		SetName(nav, "Extraction Point");
 	else
 		SetName(nav, "Nav "..num);
 	end
@@ -101,18 +110,28 @@ local function SpawnNav(num)
 	M.ObjectiveNav = nav; -- Sets the new nav to the ObjectiveNav so that the next time this function is called, it can switch off of it.
 end
 
+local function SpawnBaker()
+	SetLabel(BuildObject("bvhaul", 3, "bakerspawn"), "Baker");
+	Defend2(BuildObject("bvfigh", 3, "bakerspawn"), "Baker", 1);
+	Defend2(BuildObject("bvfigh", 3, "bakerspawn"), "Baker", 1);
+	Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);
+	Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);
+	Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);
+	Defend2(BuildObject("bvtank", 3, "bakerspawn"), "Baker", 1);
+end
+
 function Update()
 
 	M.Player = GetPlayerHandle();
 	
 	if not M.StartDone then
-		
+		Ally(1,3)
 		M.Mammoth = GetHandle("mammoth");
 		SetIndependence(M.Mammoth, 0);
 		M.MammothDecoy = GetHandle("badmammoth");
 		SetIndependence(M.MammothDecoy, 0);
 		
-		for i = 1, 2 do
+		for i = 1, 3 do
 			local tmpnav = GetHandle("nav" .. i);
 			M.NavCoords[i] = GetPosition(tmpnav);
 			RemoveObject(tmpnav);
@@ -125,47 +144,84 @@ function Update()
 		SpawnNav(1);
 	end
 	
-	if not M.DecoyTriggered and IsWithin(M.Player, M.MammothDecoy, 150.0) then
-		-- Spawn Armada
-		
-		Attack(BuildObject("svhraz", 2, "spawn_svhraz1"), M.Player);
-		Attack(BuildObject("svhraz", 2, "spawn_svhraz2"), M.Player);
-		Attack(BuildObject("svfigh", 2, "spawn_svfigh1"), M.Player);
-		Attack(BuildObject("svfigh", 2, "spawn_svfigh2"), M.Player);
-		Attack(BuildObject("svrckt", 2, "spawn_svrkct1"), M.Player);
-		Attack(BuildObject("svrckt", 2, "spawn_svrckt2"), M.Player);
-		
-		--Blow up da mammoth
-		MakeExplosion("xbmbxpl", M.MammothDecoy);
-		Damage(M.MammothDecoy, 90000);
+	if not M.DecoyTriggered and IsWithin(M.Player, M.MammothDecoy, 250.0) and not M.Player == M.Mammoth and M.DecoyTime == 0 then
+		M.DecoyTime = GetTime() + 4.0;
+	end	
+	
+	if not M.DecoyTriggered and IsWithin(M.Player, M.MammothDecoy, 250.0) and not M.Player == M.Mammoth then
 		M.Aud1 = AudioMessage(audio.itsatrap);
+		if GetTime() > M.DecoyTime then
+			-- Spawn Armada
+			M.DecoyAmbush = {
+				GetHandle(BuildObject("svtank", 2, "spawn_svhraz1")),
+				GetHandle(BuildObject("svtank", 2, "spawn_svhraz2")),
+				GetHandle(BuildObject("svfigh", 2, "spawn_svfigh1")),
+				GetHandle(BuildObject("svfigh", 2, "spawn_svfigh2")),
+				GetHandle(BuildObject("svrckt", 2, "spawn_svrckt1")),
+				GetHandle(BuildObject("svrckt", 2, "spawn_svrckt2"))
+			}
 		
-		--Blind Player
-		ColorFade(2.0, 1, 255, 255, 255);
-		ColorFade(2.0, 1, 255, 255, 255);
+			for i = 1,#M.DecoyAmbush do
+				Attack(M.DecoyAmbush[i], M.Player);
+			end
 		
-		M.DecoyTriggered = true;
-		UpdateObjectives();
+			--Blow up da mammoth
+			MakeExplosion("xbmbxpl", M.MammothDecoy);
+			Damage(M.MammothDecoy, 90000);
+		
+			--Blind Player
+			ColorFade(2.0, 1, 255, 255, 255);
+			M.DecoyTriggered = true;
+			UpdateObjectives();
+		end
 	end
 	
-	if M.DecoyTriggered and not M.TrapEscaped and not IsWithin(M.Player, M.Nav[1], 400.0) then
+	if not M.DecoyTriggered and IsWithin(M.Player, M.MammothDecoy, 100.0) and M.Player == M.Mammoth then
+		M.Aud1 = AudioMessage(audio.wasatrap);
+		M.DecoyTriggered = true;
+	end
+	
+	if M.DecoyTriggered and not M.TrapEscaped and areAllDead(M.DecoyAmbush) and not M.Player == M.Mammoth then
 		M.Aud1 = AudioMessage(audio.freedom);
-		SetObjectiveOn(M.Mammoth);
-		
 		M.TrapEscaped = true;
+		SpawnNav(2);
 		UpdateObjectives();
 	end
 	
 	if not M.MammothStolen and M.Player == M.Mammoth then
-		M.Aud1 = AudioMessage(audio.gtfo);
-		SetObjectiveOff(M.Mammoth);
-		SpawnNav(2);
-		M.MammothStolen = true;
-		UpdateObjectives();
+		if M.TrapEscaped then
+			M.Aud1 = AudioMessage(audio.gtfo);
+			SpawnNav(3);
+			SpawnBaker();
+			M.MammothStolen = true;
+			UpdateObjectives();
+		else
+			M.Aud1 = AudioMessage(audio.bypass);
+			SpawnNav(3);
+			SpawnBaker();
+			M.MammothStolen = true;
+			UpdateObjectives();
+		end
+	end
+	
+	if M.MammothStolen and IsWithin(M.Player, final_spawn5, 100) and not M.WantItBack then
+		M.RecoverySquad = {
+			GetHandle(BuildObject("svfigh", 2, "final_spawn3")),
+			GetHandle(BuildObject("svfigh", 2, "final_spawn4")),
+			GetHandle(BuildObject("svfigh", 2, "final_spawn6")),
+			GetHandle(BuildObject("svfigh", 2, "final_spawn7")),
+			GetHandle(BuildObject("svrckt", 2, "final_spawn1")),
+			GetHandle(BuildObject("svrckt", 2, "final_spawn2"))
+		}
+		for i = 1,#M.RecoverySquad do
+			Attack(M.DecoyAmbush[i], M.Player);
+		end
+		M.Aud1 = AudoMessage(audio.wantitback);
+		M.WantItBack = true;
 	end
 	
 	-- Win Conditions:
-	if not M.MissionOver and M.MammothStolen and M.Player == M.Mammoth and IsWithin(M.Player, M.Nav[2], 50.0) then
+	if not M.MissionOver and M.MammothStolen and M.Player == M.Mammoth and IsWithin(M.Player, M.Nav[3], 50.0) then
 		SucceedMission(GetTime()+5.0, "rbdnew03wn.des");
 		M.MissionOver = true;
 		M.DropZoneReached = true;
