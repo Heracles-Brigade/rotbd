@@ -131,7 +131,7 @@ function Update()
 		M.MammothDecoy = GetHandle("badmammoth");
 		SetIndependence(M.MammothDecoy, 0);
 		
-		for i = 1, 3 do
+		for i = 1,3 do
 			local tmpnav = GetHandle("nav" .. i);
 			M.NavCoords[i] = GetPosition(tmpnav);
 			RemoveObject(tmpnav);
@@ -144,22 +144,21 @@ function Update()
 		SpawnNav(1);
 	end
 	
-	if not M.DecoyTriggered and IsWithin(M.Player, M.MammothDecoy, 250.0) and not M.Player == M.Mammoth and M.DecoyTime == 0 then
-		M.DecoyTime = GetTime() + 4.0;
-	end	
-	
-	if not M.DecoyTriggered and IsWithin(M.Player, M.MammothDecoy, 250.0) and not M.Player == M.Mammoth then
-		M.Aud1 = AudioMessage(audio.itsatrap);
+	if not M.DecoyTriggered and IsWithin(M.Player, M.MammothDecoy, 250.0) and M.Player ~= M.Mammoth then
+		if M.DecoyTime == 0 then
+            M.DecoyTime = GetTime() + 4.0;
+            M.Aud1 = AudioMessage(audio.itsatrap);
+        end
 		if GetTime() > M.DecoyTime then
 			-- Spawn Armada
 			M.DecoyAmbush = {
-				GetHandle(BuildObject("svtank", 2, "spawn_svhraz1")),
-				GetHandle(BuildObject("svtank", 2, "spawn_svhraz2")),
-				GetHandle(BuildObject("svfigh", 2, "spawn_svfigh1")),
-				GetHandle(BuildObject("svfigh", 2, "spawn_svfigh2")),
-				GetHandle(BuildObject("svrckt", 2, "spawn_svrckt1")),
-				GetHandle(BuildObject("svrckt", 2, "spawn_svrckt2"))
-			}
+				BuildObject("svtank", 2, "spawn_svhraz1"),
+				BuildObject("svtank", 2, "spawn_svhraz2"),
+				BuildObject("svfigh", 2, "spawn_svfigh1"),
+				BuildObject("svfigh", 2, "spawn_svfigh2"),
+				BuildObject("svrckt", 2, "spawn_svrckt1"),
+				BuildObject("svrckt", 2, "spawn_svrckt2")
+				}
 		
 			for i = 1,#M.DecoyAmbush do
 				Attack(M.DecoyAmbush[i], M.Player);
@@ -181,7 +180,7 @@ function Update()
 		M.DecoyTriggered = true;
 	end
 	
-	if M.DecoyTriggered and not M.TrapEscaped and areAllDead(M.DecoyAmbush) and not M.Player == M.Mammoth then
+	if M.DecoyTriggered and not M.TrapEscaped and areAllDead(M.DecoyAmbush) and M.Player ~= M.Mammoth then
 		M.Aud1 = AudioMessage(audio.freedom);
 		M.TrapEscaped = true;
 		SpawnNav(2);
@@ -206,12 +205,12 @@ function Update()
 	
 	if M.MammothStolen and IsWithin(M.Player, final_spawn5, 100) and not M.WantItBack then
 		M.RecoverySquad = {
-			GetHandle(BuildObject("svfigh", 2, "final_spawn3")),
-			GetHandle(BuildObject("svfigh", 2, "final_spawn4")),
-			GetHandle(BuildObject("svfigh", 2, "final_spawn6")),
-			GetHandle(BuildObject("svfigh", 2, "final_spawn7")),
-			GetHandle(BuildObject("svrckt", 2, "final_spawn1")),
-			GetHandle(BuildObject("svrckt", 2, "final_spawn2"))
+			BuildObject("svfigh", 2, "final_spawn3"),
+			BuildObject("svfigh", 2, "final_spawn4"),
+			BuildObject("svfigh", 2, "final_spawn6"),
+			BuildObject("svfigh", 2, "final_spawn7"),
+			BuildObject("svrckt", 2, "final_spawn1"),
+			BuildObject("svrckt", 2, "final_spawn2")
 		}
 		for i = 1,#M.RecoverySquad do
 			Attack(M.DecoyAmbush[i], M.Player);
