@@ -223,7 +223,7 @@ function Update()
 		end
 	end
 	
-	if M.MammothStolen and GetLabel(M.ObjectiveNav) == "nav3" and GetDistance(M.Player, M.ObjectiveNav) < 1200 and not M.WantItBack then
+	if M.MammothStolen and GetLabel(M.ObjectiveNav) == "nav3" and GetDistance(M.Player, M.ObjectiveNav) < 1450 and not M.WantItBack then
 		M.RecoverySquad = {
 		BuildObject("svfigh", 2, "final_spawn3"),
 		BuildObject("svfigh", 2, "final_spawn4"),
