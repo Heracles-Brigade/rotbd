@@ -203,7 +203,7 @@ function Update()
 		end
 	end
 	
-	if M.MammothStolen and GetDistance(M.Player, final_spawn5, 1) <= 100 and not M.WantItBack then
+	if M.MammothStolen and IsWithin(M.Player, nav3, 450 and not M.WantItBack then
 		M.RecoverySquad = {
 			BuildObject("svfigh", 2, "final_spawn3"),
 			BuildObject("svfigh", 2, "final_spawn4"),
