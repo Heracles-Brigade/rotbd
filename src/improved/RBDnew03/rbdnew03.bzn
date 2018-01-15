@@ -4,12 +4,12 @@ binarySave [1] =
 false
 msn_filename = rbdnew03.bzn
 seq_count [1] =
-310
+322
 missionSave [1] =
 true
 TerrainName = rbdnew03
 size [1] =
-72
+84
 [GameObject]
 PrjID [1] =
 bvtank
@@ -17,11 +17,11 @@ seqno [1] =
 155
 pos [1] =
   x [1] =
-1228
+1234.81
   y [1] =
-1.00002
+1
   z [1] =
-101087
+101088
 team [1] =
 1
 label = bzn64label_0001
@@ -30,29 +30,29 @@ isUser [1] =
 obj_addr = 00000001
 transform [1] =
   right_x [1] =
-0.814907
+0.775484
   right_y [1] =
--5.23229e-005
+7.06478e-005
   right_z [1] =
-0.579592
+0.631368
   up_x [1] =
--0.00216736
+0.00586131
   up_y [1] =
-0.999993
+0.999956
   up_z [1] =
-0.00313759
+-0.0073111
   front_x [1] =
--0.579588
+-0.631341
   front_y [1] =
--0.00381302
+0.00937028
   front_z [1] =
-0.814901
+0.775449
   posit_x [1] =
-1228
+1234.81
   posit_y [1] =
-1.00002
+1
   posit_z [1] =
-101087
+101088
 abandoned [1] =
 0
 cloakState = 00000000
@@ -64,45 +64,45 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-1228.21
+1235.04
   y [1] =
-2.36554
+2.36071
   z [1] =
-101087
+101088
 euler =
  mass [1] =
 1750
  mass_inv [1] =
 0.000666667
  v_mag [1] =
-0.00132119
+8.13187e-008
  v_mag_inv [1] =
-756.893
+1.22973e+007
  I [1] =
 1500
  k_i [1] =
 1
  v [1] =
   x [1] =
-0.00107666
+-4.77443e-010
   y [1] =
--8.32836e-006
+-8.13152e-008
   z [1] =
-0.000765688
+5.96394e-010
  omega [1] =
   x [1] =
--8.86759e-006
+-0.00139573
   y [1] =
-0.00260171
+0.0239037
   z [1] =
--0.000251021
+0.000393647
  Accel [1] =
   x [1] =
--0.00340462
+4.58831e-011
   y [1] =
--0.000477562
+6.61245e-017
   z [1] =
--0.00241908
+-1.05774e-010
 seqNo [1] =
 155
 name = 
@@ -113,9 +113,9 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-a
+ffffffff
 seen [1] =
-a
+2
 healthRatio [1] =
 1
 curHealth [1] =
@@ -1222,7 +1222,7 @@ transform [1] =
   posit_z [1] =
 98432.3
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 1658.23
@@ -1274,7 +1274,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-0
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -1316,7 +1316,7 @@ pos [1] =
   x [1] =
 1658.36
   y [1] =
-43.6
+45.1
   z [1] =
 98432.5
 team [1] =
@@ -1347,7 +1347,7 @@ transform [1] =
   posit_x [1] =
 1658.36
   posit_y [1] =
-43.6
+45.1
   posit_z [1] =
 98432.5
 undefptr = 00000000
@@ -1356,11 +1356,11 @@ timeDeploy [1] =
 timeUndeploy [1] =
 5
 undefptr = 0000000A
-state = 02000000
+state = 01000000
 delayTimer [1] =
 -2.111
 nextRepair [1] =
-169.559
+1.001
 buildClass [1] =
 
 buildDoneTime [1] =
@@ -1373,12 +1373,12 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 1658.36
   y [1] =
-50.9602
+52.4602
   z [1] =
 98432.5
 euler =
@@ -1425,7 +1425,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -1613,7 +1613,7 @@ transform [1] =
   right_z [1] =
 -0.000641656
   up_x [1] =
--0
+0
   up_y [1] =
 1
   up_z [1] =
@@ -1621,7 +1621,7 @@ transform [1] =
   front_x [1] =
 0.000641656
   front_y [1] =
-0
+-0
   front_z [1] =
 1
   posit_x [1] =
@@ -1638,7 +1638,7 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 1742.52
@@ -1690,7 +1690,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -1749,7 +1749,7 @@ transform [1] =
   right_z [1] =
 -0.000633173
   up_x [1] =
--0
+0
   up_y [1] =
 1
   up_z [1] =
@@ -1757,7 +1757,7 @@ transform [1] =
   front_x [1] =
 0.000633173
   front_y [1] =
-0
+-0
   front_z [1] =
 1
   posit_x [1] =
@@ -1774,7 +1774,7 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 1682.24
@@ -1826,7 +1826,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -2255,7 +2255,7 @@ pos [1] =
   x [1] =
 1796.47
   y [1] =
-9.63782
+10.1378
   z [1] =
 101231
 team [1] =
@@ -2286,7 +2286,7 @@ transform [1] =
   posit_x [1] =
 1796.47
   posit_y [1] =
-9.63782
+10.1378
   posit_z [1] =
 101231
 undeffloat [1] =
@@ -2310,12 +2310,12 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 1797.19
   y [1] =
-11.6274
+12.1274
   z [1] =
 101231
 euler =
@@ -2340,11 +2340,11 @@ euler =
 0
  omega [1] =
   x [1] =
--3.57006e-008
+0
   y [1] =
 0
   z [1] =
--9.5806e-008
+0
  Accel [1] =
   x [1] =
 0
@@ -2362,7 +2362,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -2404,7 +2404,7 @@ pos [1] =
   x [1] =
 1821.92
   y [1] =
-3.9927
+3.94577
   z [1] =
 101243
 team [1] =
@@ -2415,7 +2415,7 @@ isUser [1] =
 obj_addr = 00000013
 transform [1] =
   right_x [1] =
--0.224253
+-0.224254
   right_y [1] =
 -0.010613
   right_z [1] =
@@ -2435,7 +2435,7 @@ transform [1] =
   posit_x [1] =
 1821.92
   posit_y [1] =
-3.9927
+3.94577
   posit_z [1] =
 101243
 abandoned [1] =
@@ -2446,12 +2446,12 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 1820.81
   y [1] =
-5.8263
+5.77938
   z [1] =
 101243
 euler =
@@ -2476,11 +2476,11 @@ euler =
 -0.0298653
  omega [1] =
   x [1] =
--0.000405117
+0
   y [1] =
 0
   z [1] =
-0.000788082
+0
  Accel [1] =
   x [1] =
 -0.708523
@@ -2498,7 +2498,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -2540,7 +2540,7 @@ pos [1] =
   x [1] =
 935.135
   y [1] =
-15.2199
+15.7199
   z [1] =
 101426
 team [1] =
@@ -2553,7 +2553,7 @@ transform [1] =
   right_x [1] =
 -0.186383
   right_y [1] =
-0.0261344
+0.0261345
   right_z [1] =
 -0.98213
   up_x [1] =
@@ -2565,13 +2565,13 @@ transform [1] =
   front_x [1] =
 0.982477
   front_y [1] =
-0.0049579
+0.00495791
   front_z [1] =
 -0.186317
   posit_x [1] =
 935.135
   posit_y [1] =
-15.2199
+15.7199
   posit_z [1] =
 101426
 undeffloat [1] =
@@ -2595,12 +2595,12 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 935.168
   y [1] =
-17.2835
+17.7835
   z [1] =
 101425
 euler =
@@ -2625,11 +2625,11 @@ euler =
 0
  omega [1] =
   x [1] =
--1.08655e-008
+0
   y [1] =
 0
   z [1] =
--4.34617e-008
+0
  Accel [1] =
   x [1] =
 0
@@ -2647,7 +2647,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -2731,7 +2731,7 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 1484.98
@@ -2783,7 +2783,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 6
 healthRatio [1] =
@@ -2825,7 +2825,7 @@ pos [1] =
   x [1] =
 1621.53
   y [1] =
-2.29138
+2.79138
   z [1] =
 101187
 team [1] =
@@ -2856,7 +2856,7 @@ transform [1] =
   posit_x [1] =
 1621.53
   posit_y [1] =
-2.29138
+2.79138
   posit_z [1] =
 101187
 undeffloat [1] =
@@ -2880,12 +2880,12 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 1621.35
   y [1] =
-4.3859
+4.8859
   z [1] =
 101187
 euler =
@@ -2910,11 +2910,11 @@ euler =
 0
  omega [1] =
   x [1] =
--3.72533e-008
+0
   y [1] =
 0
   z [1] =
--8.69233e-008
+0
  Accel [1] =
   x [1] =
 0
@@ -2932,7 +2932,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -2974,7 +2974,7 @@ pos [1] =
   x [1] =
 2373.82
   y [1] =
-26.3602
+26.8602
   z [1] =
 101286
 team [1] =
@@ -3005,7 +3005,7 @@ transform [1] =
   posit_x [1] =
 2373.82
   posit_y [1] =
-26.3602
+26.8602
   posit_z [1] =
 101286
 undeffloat [1] =
@@ -3029,12 +3029,12 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 2373.28
   y [1] =
-28.3815
+28.8815
   z [1] =
 101285
 euler =
@@ -3059,11 +3059,11 @@ euler =
 0
  omega [1] =
   x [1] =
--8.69233e-008
+0
   y [1] =
 0
   z [1] =
-4.66615e-017
+0
  Accel [1] =
   x [1] =
 0
@@ -3081,7 +3081,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -3140,7 +3140,7 @@ transform [1] =
   right_z [1] =
 -0.694338
   up_x [1] =
--0
+0
   up_y [1] =
 1
   up_z [1] =
@@ -3148,7 +3148,7 @@ transform [1] =
   front_x [1] =
 0.694338
   front_y [1] =
-0
+-0
   front_z [1] =
 0.719649
   posit_x [1] =
@@ -3165,7 +3165,7 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 1756.69
@@ -3217,7 +3217,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -3276,7 +3276,7 @@ transform [1] =
   right_z [1] =
 -0.64269
   up_x [1] =
--0
+0
   up_y [1] =
 1
   up_z [1] =
@@ -3284,7 +3284,7 @@ transform [1] =
   front_x [1] =
 0.64269
   front_y [1] =
-0
+-0
   front_z [1] =
 0.766126
   posit_x [1] =
@@ -3301,7 +3301,7 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 1800.42
@@ -3353,7 +3353,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -3666,9 +3666,9 @@ transform [1] =
   right_x [1] =
 0.767139
   right_y [1] =
--0.00343639
+-0.00343641
   right_z [1] =
--0.641471
+-0.641472
   up_x [1] =
 -0.0066615
   up_y [1] =
@@ -3678,7 +3678,7 @@ transform [1] =
   front_x [1] =
 0.641446
   front_y [1] =
-0.0144937
+0.0144938
   front_z [1] =
 0.767031
   posit_x [1] =
@@ -3695,7 +3695,7 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 3526.55
@@ -3725,11 +3725,11 @@ euler =
 -0.0066507
  omega [1] =
   x [1] =
--1.39698e-008
+0
   y [1] =
 0
   z [1] =
-1.74623e-008
+0
  Accel [1] =
   x [1] =
 0.195609
@@ -3747,7 +3747,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -3789,7 +3789,7 @@ pos [1] =
   x [1] =
 1827.55
   y [1] =
-24.6215
+25.1215
   z [1] =
 98773
 team [1] =
@@ -3820,7 +3820,7 @@ transform [1] =
   posit_x [1] =
 1827.55
   posit_y [1] =
-24.6215
+25.1215
   posit_z [1] =
 98773
 undeffloat [1] =
@@ -3844,12 +3844,12 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 1827.81
   y [1] =
-26.5864
+27.0864
   z [1] =
 98773.9
 euler =
@@ -3874,11 +3874,11 @@ euler =
 0
  omega [1] =
   x [1] =
--4.96705e-008
+0
   y [1] =
 0
   z [1] =
--2.01628e-015
+0
  Accel [1] =
   x [1] =
 0
@@ -3896,7 +3896,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -4078,23 +4078,23 @@ isUser [1] =
 obj_addr = 0000001F
 transform [1] =
   right_x [1] =
--0.667682
+-0.667688
   right_y [1] =
--0.000511549
+-0.00153502
   right_z [1] =
-0.744446
+0.744439
   up_x [1] =
-0.00666363
+0.019992
   up_y [1] =
-0.999956
+0.9996
   up_z [1] =
-0.00666363
+0.019992
   front_x [1] =
--0.744417
+-0.744172
   front_y [1] =
-0.0094099
+0.0282313
   front_z [1] =
--0.667649
+-0.667391
   posit_x [1] =
 2853.31
   posit_y [1] =
@@ -4109,14 +4109,14 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
-2852.05
+2852.15
   y [1] =
-7.17102
+7.18045
   z [1] =
-100429
+100430
 euler =
  mass [1] =
 1750
@@ -4139,11 +4139,11 @@ euler =
 0
  omega [1] =
   x [1] =
-8.29725e-006
+0
   y [1] =
 0
   z [1] =
-4.59698e-007
+0
  Accel [1] =
   x [1] =
 0
@@ -4161,7 +4161,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -4343,23 +4343,23 @@ isUser [1] =
 obj_addr = 00000021
 transform [1] =
   right_x [1] =
--0.00314688
+-0.00323515
   right_y [1] =
-0.00664277
+0.0199312
   right_z [1] =
-0.999973
+0.999796
   up_x [1] =
--0.00666363
+-0.019992
   up_y [1] =
-0.999956
+0.9996
   up_z [1] =
--0.00666363
+-0.019992
   front_x [1] =
--0.999973
+-0.999795
   front_y [1] =
--0.00668442
+-0.0200526
   front_z [1] =
--0.00310247
+-0.0028354
   posit_x [1] =
 2881.35
   posit_y [1] =
@@ -4374,12 +4374,12 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
-2880.6
+2880.51
   y [1] =
-7.22145
+7.22522
   z [1] =
 100480
 euler =
@@ -4404,11 +4404,11 @@ euler =
 0
  omega [1] =
   x [1] =
--5.89386e-006
+0
   y [1] =
 0
   z [1] =
--5.86988e-006
+0
  Accel [1] =
   x [1] =
 0
@@ -4426,7 +4426,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -4468,7 +4468,7 @@ pos [1] =
   x [1] =
 1482.09
   y [1] =
-3.20961
+2.12806
   z [1] =
 98538.2
 team [1] =
@@ -4483,7 +4483,7 @@ transform [1] =
   right_y [1] =
 -0.01491
   right_z [1] =
--0.554632
+-0.554633
   up_x [1] =
 0.0224867
   up_y [1] =
@@ -4499,7 +4499,7 @@ transform [1] =
   posit_x [1] =
 1482.09
   posit_y [1] =
-3.20961
+2.12806
   posit_z [1] =
 98538.2
 scrapHeld [1] =
@@ -4512,12 +4512,12 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 1481.94
   y [1] =
-9.42416
+8.34262
   z [1] =
 98537.8
 euler =
@@ -4542,11 +4542,11 @@ euler =
 12.4526
  omega [1] =
   x [1] =
-0.0203514
+0
   y [1] =
--0.00104217
+0
   z [1] =
--0.00391107
+0
  Accel [1] =
   x [1] =
 -0.0936288
@@ -4564,7 +4564,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -4700,9 +4700,9 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-a
+ffffffff
 seen [1] =
-a
+2
 healthRatio [1] =
 1
 curHealth [1] =
@@ -4742,7 +4742,7 @@ pos [1] =
   x [1] =
 1255.1
   y [1] =
-1.50202
+1.502
   z [1] =
 101089
 team [1] =
@@ -4773,7 +4773,7 @@ transform [1] =
   posit_x [1] =
 1255.1
   posit_y [1] =
-1.50202
+1.502
   posit_z [1] =
 101089
 abandoned [1] =
@@ -4787,9 +4787,9 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-1254.96
+1254.97
   y [1] =
-3.27734
+3.27732
   z [1] =
 101089
 euler =
@@ -4814,11 +4814,11 @@ euler =
 -9.39773e-011
  omega [1] =
   x [1] =
--8.03419e-007
+0
   y [1] =
 0
   z [1] =
-6.3595e-007
+0
  Accel [1] =
   x [1] =
 -2.55372e-007
@@ -4836,9 +4836,9 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-a
+ffffffff
 seen [1] =
-a
+2
 healthRatio [1] =
 1
 curHealth [1] =
@@ -4878,7 +4878,7 @@ pos [1] =
   x [1] =
 2515.2
   y [1] =
-25.6623
+26.1623
   z [1] =
 99205.5
 team [1] =
@@ -4909,7 +4909,7 @@ transform [1] =
   posit_x [1] =
 2515.2
   posit_y [1] =
-25.6623
+26.1623
   posit_z [1] =
 99205.5
 undeffloat [1] =
@@ -4933,12 +4933,12 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 2514.4
   y [1] =
-27.6626
+28.1626
   z [1] =
 99205.6
 euler =
@@ -4963,11 +4963,11 @@ euler =
 0
  omega [1] =
   x [1] =
-1.24176e-007
+0
   y [1] =
 0
   z [1] =
--1.61429e-007
+0
  Accel [1] =
   x [1] =
 0
@@ -4985,7 +4985,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -5027,7 +5027,7 @@ pos [1] =
   x [1] =
 2376.23
   y [1] =
-25.3303
+25.2955
   z [1] =
 101262
 team [1] =
@@ -5040,9 +5040,9 @@ transform [1] =
   right_x [1] =
 0.845833
   right_y [1] =
-0.00597398
+0.00597396
   right_z [1] =
-0.533415
+0.533414
   up_x [1] =
 0.00627519
   up_y [1] =
@@ -5058,7 +5058,7 @@ transform [1] =
   posit_x [1] =
 2376.23
   posit_y [1] =
-25.3303
+25.2955
   posit_z [1] =
 101262
 abandoned [1] =
@@ -5069,12 +5069,12 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 2376.21
   y [1] =
-26.3257
+26.2909
   z [1] =
 101262
 euler =
@@ -5099,11 +5099,11 @@ euler =
 -0.00307675
  omega [1] =
   x [1] =
--0.00484531
+0
   y [1] =
 0
   z [1] =
-0.0013238
+0
  Accel [1] =
   x [1] =
 -3.27986
@@ -5121,7 +5121,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -5205,7 +5205,7 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 1782.06
@@ -5257,7 +5257,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -5316,7 +5316,7 @@ transform [1] =
   right_z [1] =
 -0.706714
   up_x [1] =
--0
+0
   up_y [1] =
 1
   up_z [1] =
@@ -5324,7 +5324,7 @@ transform [1] =
   front_x [1] =
 0.706714
   front_y [1] =
-0
+-0
   front_z [1] =
 0.7075
   posit_x [1] =
@@ -5341,7 +5341,7 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 1642.9
@@ -5393,7 +5393,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -5693,7 +5693,7 @@ pos [1] =
   x [1] =
 1604.94
   y [1] =
-25.2945
+25.7945
   z [1] =
 98793.4
 team [1] =
@@ -5706,7 +5706,7 @@ transform [1] =
   right_x [1] =
 0.998593
   right_y [1] =
-0.0528365
+0.0528366
   right_z [1] =
 0.00444375
   up_x [1] =
@@ -5724,7 +5724,7 @@ transform [1] =
   posit_x [1] =
 1604.94
   posit_y [1] =
-25.2945
+25.7945
   posit_z [1] =
 98793.4
 undeffloat [1] =
@@ -5748,12 +5748,12 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 1605.49
   y [1] =
-27.3757
+27.8757
   z [1] =
 98793.5
 euler =
@@ -5778,11 +5778,11 @@ euler =
 0
  omega [1] =
   x [1] =
-3.7253e-008
+0
   y [1] =
 0
   z [1] =
--2.52742e-007
+0
  Accel [1] =
   x [1] =
 0
@@ -5800,7 +5800,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -5884,12 +5884,12 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
-3550.35
+3550.36
   y [1] =
-28.7902
+28.7901
   z [1] =
 99443.5
 euler =
@@ -5914,11 +5914,11 @@ euler =
 1.16415e-010
  omega [1] =
   x [1] =
-1.21683e-005
+0
   y [1] =
 0
   z [1] =
--2.89951e-005
+0
  Accel [1] =
   x [1] =
 0.554596
@@ -5936,7 +5936,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -6020,10 +6020,10 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
-2058.4
+2058.39
   y [1] =
 15.2868
   z [1] =
@@ -6050,11 +6050,11 @@ euler =
 0.0039931
  omega [1] =
   x [1] =
-6.66761e-006
+0
   y [1] =
 0
   z [1] =
-7.18765e-006
+0
  Accel [1] =
   x [1] =
 0.312142
@@ -6072,7 +6072,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -6114,7 +6114,7 @@ pos [1] =
   x [1] =
 904.577
   y [1] =
-0.935817
+0.89151
   z [1] =
 101270
 team [1] =
@@ -6127,7 +6127,7 @@ transform [1] =
   right_x [1] =
 -0.0381659
   right_y [1] =
-0.00729317
+0.00729316
   right_z [1] =
 -0.999245
   up_x [1] =
@@ -6139,13 +6139,13 @@ transform [1] =
   front_x [1] =
 0.999214
   front_y [1] =
-0.0110071
+0.0110072
   front_z [1] =
 -0.0380844
   posit_x [1] =
 904.577
   posit_y [1] =
-0.935817
+0.89151
   posit_z [1] =
 101270
 abandoned [1] =
@@ -6156,12 +6156,12 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 905.186
   y [1] =
-2.69061
+2.64631
   z [1] =
 101270
 euler =
@@ -6186,11 +6186,11 @@ euler =
 0.0475471
  omega [1] =
   x [1] =
--0.00161286
+0
   y [1] =
 0
   z [1] =
--0.00104671
+0
  Accel [1] =
   x [1] =
 0.308823
@@ -6208,7 +6208,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -6250,7 +6250,7 @@ pos [1] =
   x [1] =
 910.235
   y [1] =
-0.92802
+0.90937
   z [1] =
 101295
 team [1] =
@@ -6281,7 +6281,7 @@ transform [1] =
   posit_x [1] =
 910.235
   posit_y [1] =
-0.92802
+0.90937
   posit_z [1] =
 101295
 abandoned [1] =
@@ -6292,12 +6292,12 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
-910.834
+910.835
   y [1] =
-2.68354
+2.66489
   z [1] =
 101295
 euler =
@@ -6322,11 +6322,11 @@ euler =
 -0.0175666
  omega [1] =
   x [1] =
--0.000901572
+0
   y [1] =
 0
   z [1] =
-0.00396569
+0
  Accel [1] =
   x [1] =
 -1.1864
@@ -6344,7 +6344,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -6399,7 +6399,7 @@ transform [1] =
   right_x [1] =
 0.999734
   right_y [1] =
--0.0130624
+-0.0130625
   right_z [1] =
 0.0190074
   up_x [1] =
@@ -6411,7 +6411,7 @@ transform [1] =
   front_x [1] =
 -0.0188301
   front_y [1] =
-0.0135663
+0.0135664
   front_z [1] =
 0.999731
   posit_x [1] =
@@ -6428,10 +6428,10 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
-2165.17
+2165.18
   y [1] =
 4.80908
   z [1] =
@@ -6458,11 +6458,11 @@ euler =
 -0.00664274
  omega [1] =
   x [1] =
-1.39751e-008
+0
   y [1] =
 0
   z [1] =
-1.42519e-008
+0
  Accel [1] =
   x [1] =
 -0.39075
@@ -6480,7 +6480,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -6522,7 +6522,7 @@ pos [1] =
   x [1] =
 2071.27
   y [1] =
-15.1467
+15.0761
   z [1] =
 100625
 team [1] =
@@ -6533,11 +6533,11 @@ isUser [1] =
 obj_addr = 00000031
 transform [1] =
   right_x [1] =
--0.284709
+-0.28471
   right_y [1] =
 -0.0108401
   right_z [1] =
-0.958553
+0.958552
   up_x [1] =
 -0.0210305
   up_y [1] =
@@ -6553,7 +6553,7 @@ transform [1] =
   posit_x [1] =
 2071.27
   posit_y [1] =
-15.1467
+15.0761
   posit_z [1] =
 100625
 abandoned [1] =
@@ -6564,12 +6564,12 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
-2071.21
+2071.2
   y [1] =
-16.1402
+16.0695
   z [1] =
 100625
 euler =
@@ -6594,11 +6594,11 @@ euler =
 0.00519026
  omega [1] =
   x [1] =
--0.00267407
+0
   y [1] =
 0
   z [1] =
--0.00164545
+0
  Accel [1] =
   x [1] =
 2.92866
@@ -6616,7 +6616,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -6658,7 +6658,7 @@ pos [1] =
   x [1] =
 2042.38
   y [1] =
-2.62808
+2.61597
   z [1] =
 98692.3
 team [1] =
@@ -6673,7 +6673,7 @@ transform [1] =
   right_y [1] =
 -0.026573
   right_z [1] =
--0.376684
+-0.376685
   up_x [1] =
 0.0322196
   up_y [1] =
@@ -6689,7 +6689,7 @@ transform [1] =
   posit_x [1] =
 2042.38
   posit_y [1] =
-2.62808
+2.61597
   posit_z [1] =
 98692.3
 abandoned [1] =
@@ -6700,14 +6700,14 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 2042.43
   y [1] =
-3.62111
+3.609
   z [1] =
-98692.3
+98692.4
 euler =
  mass [1] =
 1750
@@ -6730,11 +6730,11 @@ euler =
 -0.0172352
  omega [1] =
   x [1] =
-0.000258234
+0
   y [1] =
 0
   z [1] =
-0.00107522
+0
  Accel [1] =
   x [1] =
 1.0232
@@ -6752,7 +6752,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -6794,7 +6794,7 @@ pos [1] =
   x [1] =
 1418.43
   y [1] =
-13.6603
+13.6605
   z [1] =
 98650.2
 team [1] =
@@ -6817,7 +6817,7 @@ transform [1] =
   up_z [1] =
 0.00833612
   front_x [1] =
-0.999185
+0.999186
   front_y [1] =
 0.00299281
   front_z [1] =
@@ -6825,7 +6825,7 @@ transform [1] =
   posit_x [1] =
 1418.43
   posit_y [1] =
-13.6603
+13.6605
   posit_z [1] =
 98650.2
 abandoned [1] =
@@ -6836,12 +6836,12 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
-1418.47
+1418.48
   y [1] =
-14.655
+14.6552
   z [1] =
 98650.2
 euler =
@@ -6866,11 +6866,11 @@ euler =
 0.00499551
  omega [1] =
   x [1] =
--1.049e-005
+0
   y [1] =
 0
   z [1] =
--0.000260011
+0
  Accel [1] =
   x [1] =
 -3.80552e-005
@@ -6888,7 +6888,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -6930,7 +6930,7 @@ pos [1] =
   x [1] =
 1456.6
   y [1] =
-2.25684
+1.84609
   z [1] =
 98529.1
 team [1] =
@@ -6941,7 +6941,7 @@ isUser [1] =
 obj_addr = 00000034
 transform [1] =
   right_x [1] =
-0.779088
+0.779087
   right_y [1] =
 -0.00643037
   right_z [1] =
@@ -6955,13 +6955,13 @@ transform [1] =
   front_x [1] =
 0.626897
   front_y [1] =
-0.00036082
+0.000360822
   front_z [1] =
 0.779102
   posit_x [1] =
 1456.6
   posit_y [1] =
-2.25684
+1.84609
   posit_z [1] =
 98529.1
 scrapHeld [1] =
@@ -6974,14 +6974,14 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 1456.3
   y [1] =
-8.46331
+8.05255
   z [1] =
-98528.6
+98528.7
 euler =
  mass [1] =
 1750
@@ -7004,11 +7004,11 @@ euler =
 11.2059
  omega [1] =
   x [1] =
--0.0303089
+0
   y [1] =
-1.61539e-005
+0
   z [1] =
-0.0111366
+0
  Accel [1] =
   x [1] =
 0.0134351
@@ -7026,7 +7026,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -7068,7 +7068,7 @@ pos [1] =
   x [1] =
 1713.75
   y [1] =
-43.5772
+44.4
   z [1] =
 98350.7
 team [1] =
@@ -7099,7 +7099,7 @@ transform [1] =
   posit_x [1] =
 1713.75
   posit_y [1] =
-43.5772
+44.4
   posit_z [1] =
 98350.7
 abandoned [1] =
@@ -7110,12 +7110,12 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 1713.75
   y [1] =
-45.7896
+46.6124
   z [1] =
 98350.5
 euler =
@@ -7162,7 +7162,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -7246,7 +7246,7 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 3573.29
@@ -7298,7 +7298,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -7434,9 +7434,9 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-a
+ffffffff
 seen [1] =
-a
+2
 healthRatio [1] =
 1
 curHealth [1] =
@@ -7570,9 +7570,9 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-a
+ffffffff
 seen [1] =
-a
+2
 healthRatio [1] =
 1
 curHealth [1] =
@@ -7706,9 +7706,9 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-a
+ffffffff
 seen [1] =
-a
+2
 healthRatio [1] =
 1
 curHealth [1] =
@@ -7842,9 +7842,9 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-a
+ffffffff
 seen [1] =
-a
+2
 healthRatio [1] =
 1
 curHealth [1] =
@@ -7884,7 +7884,7 @@ pos [1] =
   x [1] =
 1230.73
   y [1] =
-3.7605
+3.73041
   z [1] =
 101039
 team [1] =
@@ -7915,7 +7915,7 @@ transform [1] =
   posit_x [1] =
 1230.73
   posit_y [1] =
-3.7605
+3.73041
   posit_z [1] =
 101039
 timeDeploy [1] =
@@ -7945,7 +7945,7 @@ pos [1] =
   x [1] =
 1229.64
   y [1] =
-6.93695
+6.90686
   z [1] =
 101040
 euler =
@@ -7970,11 +7970,11 @@ euler =
 0.0166504
  omega [1] =
   x [1] =
--0.00106905
+0
   y [1] =
 0
   z [1] =
-0.000233374
+0
  Accel [1] =
   x [1] =
 3.66787
@@ -7992,9 +7992,9 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-a
+ffffffff
 seen [1] =
-8000000e
+6
 healthRatio [1] =
 1
 curHealth [1] =
@@ -8128,9 +8128,9 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-a
+ffffffff
 seen [1] =
-a
+2
 healthRatio [1] =
 1
 curHealth [1] =
@@ -8264,9 +8264,9 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-a
+ffffffff
 seen [1] =
-a
+2
 healthRatio [1] =
 1
 curHealth [1] =
@@ -8400,9 +8400,9 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-a
+ffffffff
 seen [1] =
-a
+2
 healthRatio [1] =
 1
 curHealth [1] =
@@ -8442,7 +8442,7 @@ pos [1] =
   x [1] =
 1254.51
   y [1] =
-1.49123
+1.47825
   z [1] =
 101039
 team [1] =
@@ -8453,11 +8453,11 @@ isUser [1] =
 obj_addr = 0000003F
 transform [1] =
   right_x [1] =
-0.746265
+0.746264
   right_y [1] =
 -0.0468148
   right_z [1] =
-0.664001
+0.664002
   up_x [1] =
 0.0381822
   up_y [1] =
@@ -8467,13 +8467,13 @@ transform [1] =
   front_x [1] =
 -0.664554
   front_y [1] =
-0.00482078
+0.00482085
   front_z [1] =
 0.747225
   posit_x [1] =
 1254.51
   posit_y [1] =
-1.49123
+1.47825
   posit_z [1] =
 101039
 abandoned [1] =
@@ -8487,9 +8487,9 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-1254.79
+1254.8
   y [1] =
-2.91713
+2.90415
   z [1] =
 101039
 euler =
@@ -8514,11 +8514,11 @@ euler =
 0.0289515
  omega [1] =
   x [1] =
--0.00193978
+0
   y [1] =
 0
   z [1] =
--0.000698402
+0
  Accel [1] =
   x [1] =
 -1.74467
@@ -8536,9 +8536,9 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-a
+ffffffff
 seen [1] =
-a
+2
 healthRatio [1] =
 1
 curHealth [1] =
@@ -8965,7 +8965,7 @@ pos [1] =
   x [1] =
 1356.54
   y [1] =
-25.9217
+25.9433
   z [1] =
 100149
 team [1] =
@@ -8976,27 +8976,27 @@ isUser [1] =
 obj_addr = 00000043
 transform [1] =
   right_x [1] =
--0.728699
+-0.724655
   right_y [1] =
--0.0375018
+-0.112364
   right_z [1] =
--0.683807
+-0.679889
   up_x [1] =
--0.0265312
+-0.0794929
   up_y [1] =
-0.999296
+0.993661
   up_z [1] =
--0.0265312
+-0.0794929
   front_x [1] =
-0.68432
+0.684511
   front_y [1] =
--0.00119103
+-0.00355859
   front_z [1] =
--0.729181
+-0.728994
   posit_x [1] =
 1356.54
   posit_y [1] =
-25.9217
+25.9433
   posit_z [1] =
 100149
 abandoned [1] =
@@ -9007,12 +9007,12 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
-1355.98
+1355.6
   y [1] =
-32.9834
+32.8753
   z [1] =
 100147
 euler =
@@ -9037,11 +9037,11 @@ euler =
 0
  omega [1] =
   x [1] =
--1.05094e-006
+0
   y [1] =
 0
   z [1] =
-3.31555e-005
+0
  Accel [1] =
   x [1] =
 0
@@ -9059,7 +9059,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -9101,7 +9101,7 @@ pos [1] =
   x [1] =
 1289.06
   y [1] =
-22.3018
+22.2999
   z [1] =
 100120
 team [1] =
@@ -9112,27 +9112,27 @@ isUser [1] =
 obj_addr = 00000044
 transform [1] =
   right_x [1] =
--0.971806
+-0.971686
   right_y [1] =
-0.00314135
+0.0188418
   right_z [1] =
--0.235761
+-0.235523
   up_x [1] =
--1.39698e-009
+0
   up_y [1] =
-0.999911
+0.996815
   up_z [1] =
-0.0133231
+0.0797452
   front_x [1] =
-0.235782
+0.236275
   front_y [1] =
-0.0129475
+0.0774873
   front_z [1] =
--0.97172
+-0.968592
   posit_x [1] =
 1289.06
   posit_y [1] =
-22.3018
+22.2999
   posit_z [1] =
 100120
 abandoned [1] =
@@ -9143,14 +9143,14 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
 1288.08
   y [1] =
-29.4255
+29.4651
   z [1] =
-100119
+100120
 euler =
  mass [1] =
 1750
@@ -9173,11 +9173,11 @@ euler =
 0
  omega [1] =
   x [1] =
-1.14187e-005
+0
   y [1] =
 0
   z [1] =
--2.7752e-006
+0
  Accel [1] =
   x [1] =
 0
@@ -9195,7 +9195,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -9262,7 +9262,7 @@ transform [1] =
   front_x [1] =
 -0.900286
   front_y [1] =
--0.029865
+-0.0298652
   front_z [1] =
 -0.434274
   posit_x [1] =
@@ -9275,7 +9275,7 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-1289.48
+1289.47
   y [1] =
 30.0481
   z [1] =
@@ -9377,11 +9377,11 @@ isUser [1] =
 obj_addr = 00000046
 transform [1] =
   right_x [1] =
-0.883536
+0.883535
   right_y [1] =
 0.0145061
   right_z [1] =
--0.468139
+-0.46814
   up_x [1] =
 -0.0791808
   up_y [1] =
@@ -9406,7 +9406,7 @@ pos [1] =
   x [1] =
 1379.86
   y [1] =
-29.977
+29.9769
   z [1] =
 100132
 euler =
@@ -9506,9 +9506,9 @@ isUser [1] =
 obj_addr = 00000047
 transform [1] =
   right_x [1] =
-0.79712
+0.797121
   right_y [1] =
--0.00672744
+-0.00672742
   right_z [1] =
 0.603783
   up_x [1] =
@@ -9537,14 +9537,14 @@ cloakTransBeginTime [1] =
 cloakTransEndTime [1] =
 0
 illumination [1] =
-0
+1
 pos [1] =
   x [1] =
-1365.97
+1365.98
   y [1] =
 30.4632
   z [1] =
-100077
+100076
 euler =
  mass [1] =
 875
@@ -9567,11 +9567,11 @@ euler =
 0.0039931
  omega [1] =
   x [1] =
-9.2801e-006
+0
   y [1] =
 0
   z [1] =
--3.13183e-006
+0
  Accel [1] =
   x [1] =
 0.312142
@@ -9589,7 +9589,7 @@ false
 isSelected [1] =
 false
 isVisible [1] =
-4
+ffffffff
 seen [1] =
 4
 healthRatio [1] =
@@ -9644,7 +9644,7 @@ transform [1] =
   right_x [1] =
 0.474188
   right_y [1] =
-0
+-0
   right_z [1] =
 0.880423
   up_x [1] =
@@ -9698,7 +9698,7 @@ euler =
   x [1] =
 0
   y [1] =
-0.2
+0
   z [1] =
 0
  Accel [1] =
@@ -9726,7 +9726,7 @@ healthRatio [1] =
 curHealth [1] =
 750
 maxHealth [1] =
-0
+750
 ammoRatio [1] =
 0
 curAmmo [1] =
@@ -9751,8 +9751,1558 @@ curPilot [1] =
 
 perceivedTeam [1] =
 1
+[GameObject]
+PrjID [1] =
+apcamr
+seqno [1] =
+310
+pos [1] =
+  x [1] =
+1941.65
+  y [1] =
+2.91438
+  z [1] =
+99043.8
+team [1] =
+1
+label = nav2
+isUser [1] =
+0
+obj_addr = 00000049
+transform [1] =
+  right_x [1] =
+1
+  right_y [1] =
+0
+  right_z [1] =
+0
+  up_x [1] =
+0
+  up_y [1] =
+1
+  up_z [1] =
+0
+  front_x [1] =
+0
+  front_y [1] =
+0
+  front_z [1] =
+1
+  posit_x [1] =
+1941.65
+  posit_y [1] =
+2.91438
+  posit_z [1] =
+99043.8
+illumination [1] =
+1
+pos [1] =
+  x [1] =
+1941.65
+  y [1] =
+4.77224
+  z [1] =
+99043.9
+euler =
+ mass [1] =
+0
+ mass_inv [1] =
+1e+030
+ v_mag [1] =
+0
+ v_mag_inv [1] =
+1e+030
+ I [1] =
+1
+ k_i [1] =
+0
+ v [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ omega [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ Accel [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+seqNo [1] =
+310
+name = 
+isCritical [1] =
+false
+isObjective [1] =
+false
+isSelected [1] =
+false
+isVisible [1] =
+ffffffff
+seen [1] =
+0
+healthRatio [1] =
+1
+curHealth [1] =
+750
+maxHealth [1] =
+750
+ammoRatio [1] =
+0
+curAmmo [1] =
+0
+maxAmmo [1] =
+0
+priority [1] =
+0
+what = 00000000
+who [1] =
+0
+where = 00000000
+param [1] =
+
+aiProcess [1] =
+true
+isCargo [1] =
+false
+independence [1] =
+1
+curPilot [1] =
+
+perceivedTeam [1] =
+1
+[GameObject]
+PrjID [1] =
+apcamr
+seqno [1] =
+311
+pos [1] =
+  x [1] =
+385.284
+  y [1] =
+30.4981
+  z [1] =
+100813
+team [1] =
+1
+label = nav3
+isUser [1] =
+0
+obj_addr = 0000004A
+transform [1] =
+  right_x [1] =
+1
+  right_y [1] =
+0
+  right_z [1] =
+0
+  up_x [1] =
+0
+  up_y [1] =
+1
+  up_z [1] =
+0
+  front_x [1] =
+0
+  front_y [1] =
+0
+  front_z [1] =
+1
+  posit_x [1] =
+385.284
+  posit_y [1] =
+30.4981
+  posit_z [1] =
+100813
+illumination [1] =
+1
+pos [1] =
+  x [1] =
+385.284
+  y [1] =
+32.356
+  z [1] =
+100813
+euler =
+ mass [1] =
+0
+ mass_inv [1] =
+1e+030
+ v_mag [1] =
+0
+ v_mag_inv [1] =
+1e+030
+ I [1] =
+1
+ k_i [1] =
+0
+ v [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ omega [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ Accel [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+seqNo [1] =
+311
+name = 
+isCritical [1] =
+false
+isObjective [1] =
+false
+isSelected [1] =
+false
+isVisible [1] =
+ffffffff
+seen [1] =
+0
+healthRatio [1] =
+1
+curHealth [1] =
+750
+maxHealth [1] =
+750
+ammoRatio [1] =
+0
+curAmmo [1] =
+0
+maxAmmo [1] =
+0
+priority [1] =
+0
+what = 00000000
+who [1] =
+0
+where = 00000000
+param [1] =
+
+aiProcess [1] =
+true
+isCargo [1] =
+false
+independence [1] =
+1
+curPilot [1] =
+
+perceivedTeam [1] =
+1
+[GameObject]
+PrjID [1] =
+sfield
+seqno [1] =
+312
+pos [1] =
+  x [1] =
+1325.32
+  y [1] =
+4.15952
+  z [1] =
+98779.6
+team [1] =
+0
+label = sfield1_scrapfield
+isUser [1] =
+0
+obj_addr = 0000004B
+transform [1] =
+  right_x [1] =
+1
+  right_y [1] =
+0
+  right_z [1] =
+0
+  up_x [1] =
+0
+  up_y [1] =
+1
+  up_z [1] =
+0
+  front_x [1] =
+0
+  front_y [1] =
+0
+  front_z [1] =
+1
+  posit_x [1] =
+1325.32
+  posit_y [1] =
+4.15952
+  posit_z [1] =
+98779.6
+illumination [1] =
+1
+pos [1] =
+  x [1] =
+1325.32
+  y [1] =
+10.6013
+  z [1] =
+98779.6
+euler =
+ mass [1] =
+0
+ mass_inv [1] =
+1e+030
+ v_mag [1] =
+0
+ v_mag_inv [1] =
+1e+030
+ I [1] =
+1
+ k_i [1] =
+0
+ v [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ omega [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ Accel [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+seqNo [1] =
+312
+name = 
+isCritical [1] =
+false
+isObjective [1] =
+false
+isSelected [1] =
+false
+isVisible [1] =
+ffffffff
+seen [1] =
+0
+healthRatio [1] =
+1
+curHealth [1] =
+0
+maxHealth [1] =
+0
+ammoRatio [1] =
+0
+curAmmo [1] =
+0
+maxAmmo [1] =
+0
+priority [1] =
+0
+what = 00000000
+who [1] =
+0
+where = 00000000
+param [1] =
+
+aiProcess [1] =
+false
+isCargo [1] =
+false
+independence [1] =
+1
+curPilot [1] =
+
+perceivedTeam [1] =
+0
+[GameObject]
+PrjID [1] =
+sfield
+seqno [1] =
+313
+pos [1] =
+  x [1] =
+1288.56
+  y [1] =
+4.4475
+  z [1] =
+98733.3
+team [1] =
+0
+label = sfield1_scrapfield
+isUser [1] =
+0
+obj_addr = 0000004C
+transform [1] =
+  right_x [1] =
+1
+  right_y [1] =
+0
+  right_z [1] =
+0
+  up_x [1] =
+0
+  up_y [1] =
+1
+  up_z [1] =
+0
+  front_x [1] =
+0
+  front_y [1] =
+0
+  front_z [1] =
+1
+  posit_x [1] =
+1288.56
+  posit_y [1] =
+4.4475
+  posit_z [1] =
+98733.3
+illumination [1] =
+1
+pos [1] =
+  x [1] =
+1288.56
+  y [1] =
+10.8893
+  z [1] =
+98733.3
+euler =
+ mass [1] =
+0
+ mass_inv [1] =
+1e+030
+ v_mag [1] =
+0
+ v_mag_inv [1] =
+1e+030
+ I [1] =
+1
+ k_i [1] =
+0
+ v [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ omega [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ Accel [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+seqNo [1] =
+313
+name = 
+isCritical [1] =
+false
+isObjective [1] =
+false
+isSelected [1] =
+false
+isVisible [1] =
+ffffffff
+seen [1] =
+0
+healthRatio [1] =
+1
+curHealth [1] =
+0
+maxHealth [1] =
+0
+ammoRatio [1] =
+0
+curAmmo [1] =
+0
+maxAmmo [1] =
+0
+priority [1] =
+0
+what = 00000000
+who [1] =
+0
+where = 00000000
+param [1] =
+
+aiProcess [1] =
+false
+isCargo [1] =
+false
+independence [1] =
+1
+curPilot [1] =
+
+perceivedTeam [1] =
+0
+[GameObject]
+PrjID [1] =
+sfield
+seqno [1] =
+314
+pos [1] =
+  x [1] =
+1266.19
+  y [1] =
+6.95773
+  z [1] =
+98678.9
+team [1] =
+0
+label = sfield1_scrapfield
+isUser [1] =
+0
+obj_addr = 0000004D
+transform [1] =
+  right_x [1] =
+1
+  right_y [1] =
+0
+  right_z [1] =
+0
+  up_x [1] =
+0
+  up_y [1] =
+1
+  up_z [1] =
+0
+  front_x [1] =
+0
+  front_y [1] =
+0
+  front_z [1] =
+1
+  posit_x [1] =
+1266.19
+  posit_y [1] =
+6.95773
+  posit_z [1] =
+98678.9
+illumination [1] =
+1
+pos [1] =
+  x [1] =
+1266.19
+  y [1] =
+13.3995
+  z [1] =
+98678.9
+euler =
+ mass [1] =
+0
+ mass_inv [1] =
+1e+030
+ v_mag [1] =
+0
+ v_mag_inv [1] =
+1e+030
+ I [1] =
+1
+ k_i [1] =
+0
+ v [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ omega [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ Accel [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+seqNo [1] =
+314
+name = 
+isCritical [1] =
+false
+isObjective [1] =
+false
+isSelected [1] =
+false
+isVisible [1] =
+ffffffff
+seen [1] =
+0
+healthRatio [1] =
+1
+curHealth [1] =
+0
+maxHealth [1] =
+0
+ammoRatio [1] =
+0
+curAmmo [1] =
+0
+maxAmmo [1] =
+0
+priority [1] =
+0
+what = 00000000
+who [1] =
+0
+where = 00000000
+param [1] =
+
+aiProcess [1] =
+false
+isCargo [1] =
+false
+independence [1] =
+1
+curPilot [1] =
+
+perceivedTeam [1] =
+0
+[GameObject]
+PrjID [1] =
+sfield
+seqno [1] =
+315
+pos [1] =
+  x [1] =
+1248.62
+  y [1] =
+7.34463
+  z [1] =
+98600.6
+team [1] =
+0
+label = sfield1_scrapfield
+isUser [1] =
+0
+obj_addr = 0000004E
+transform [1] =
+  right_x [1] =
+1
+  right_y [1] =
+0
+  right_z [1] =
+0
+  up_x [1] =
+0
+  up_y [1] =
+1
+  up_z [1] =
+0
+  front_x [1] =
+0
+  front_y [1] =
+0
+  front_z [1] =
+1
+  posit_x [1] =
+1248.62
+  posit_y [1] =
+7.34463
+  posit_z [1] =
+98600.6
+illumination [1] =
+1
+pos [1] =
+  x [1] =
+1248.62
+  y [1] =
+13.7864
+  z [1] =
+98600.6
+euler =
+ mass [1] =
+0
+ mass_inv [1] =
+1e+030
+ v_mag [1] =
+0
+ v_mag_inv [1] =
+1e+030
+ I [1] =
+1
+ k_i [1] =
+0
+ v [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ omega [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ Accel [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+seqNo [1] =
+315
+name = 
+isCritical [1] =
+false
+isObjective [1] =
+false
+isSelected [1] =
+false
+isVisible [1] =
+ffffffff
+seen [1] =
+0
+healthRatio [1] =
+1
+curHealth [1] =
+0
+maxHealth [1] =
+0
+ammoRatio [1] =
+0
+curAmmo [1] =
+0
+maxAmmo [1] =
+0
+priority [1] =
+0
+what = 00000000
+who [1] =
+0
+where = 00000000
+param [1] =
+
+aiProcess [1] =
+false
+isCargo [1] =
+false
+independence [1] =
+1
+curPilot [1] =
+
+perceivedTeam [1] =
+0
+[GameObject]
+PrjID [1] =
+sfield
+seqno [1] =
+316
+pos [1] =
+  x [1] =
+1263
+  y [1] =
+4.79637
+  z [1] =
+98520.7
+team [1] =
+0
+label = sfield1_scrapfield
+isUser [1] =
+0
+obj_addr = 0000004F
+transform [1] =
+  right_x [1] =
+1
+  right_y [1] =
+0
+  right_z [1] =
+0
+  up_x [1] =
+0
+  up_y [1] =
+1
+  up_z [1] =
+0
+  front_x [1] =
+0
+  front_y [1] =
+0
+  front_z [1] =
+1
+  posit_x [1] =
+1263
+  posit_y [1] =
+4.79637
+  posit_z [1] =
+98520.7
+illumination [1] =
+1
+pos [1] =
+  x [1] =
+1263
+  y [1] =
+11.2381
+  z [1] =
+98520.7
+euler =
+ mass [1] =
+0
+ mass_inv [1] =
+1e+030
+ v_mag [1] =
+0
+ v_mag_inv [1] =
+1e+030
+ I [1] =
+1
+ k_i [1] =
+0
+ v [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ omega [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ Accel [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+seqNo [1] =
+316
+name = 
+isCritical [1] =
+false
+isObjective [1] =
+false
+isSelected [1] =
+false
+isVisible [1] =
+ffffffff
+seen [1] =
+0
+healthRatio [1] =
+1
+curHealth [1] =
+0
+maxHealth [1] =
+0
+ammoRatio [1] =
+0
+curAmmo [1] =
+0
+maxAmmo [1] =
+0
+priority [1] =
+0
+what = 00000000
+who [1] =
+0
+where = 00000000
+param [1] =
+
+aiProcess [1] =
+false
+isCargo [1] =
+false
+independence [1] =
+1
+curPilot [1] =
+
+perceivedTeam [1] =
+0
+[GameObject]
+PrjID [1] =
+sfield
+seqno [1] =
+317
+pos [1] =
+  x [1] =
+1349.29
+  y [1] =
+0.464178
+  z [1] =
+98429.6
+team [1] =
+0
+label = sfield1_scrapfield
+isUser [1] =
+0
+obj_addr = 00000050
+transform [1] =
+  right_x [1] =
+1
+  right_y [1] =
+0
+  right_z [1] =
+0
+  up_x [1] =
+0
+  up_y [1] =
+1
+  up_z [1] =
+0
+  front_x [1] =
+0
+  front_y [1] =
+0
+  front_z [1] =
+1
+  posit_x [1] =
+1349.29
+  posit_y [1] =
+0.464178
+  posit_z [1] =
+98429.6
+illumination [1] =
+1
+pos [1] =
+  x [1] =
+1349.29
+  y [1] =
+6.90594
+  z [1] =
+98429.6
+euler =
+ mass [1] =
+0
+ mass_inv [1] =
+1e+030
+ v_mag [1] =
+0
+ v_mag_inv [1] =
+1e+030
+ I [1] =
+1
+ k_i [1] =
+0
+ v [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ omega [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ Accel [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+seqNo [1] =
+317
+name = 
+isCritical [1] =
+false
+isObjective [1] =
+false
+isSelected [1] =
+false
+isVisible [1] =
+ffffffff
+seen [1] =
+0
+healthRatio [1] =
+1
+curHealth [1] =
+0
+maxHealth [1] =
+0
+ammoRatio [1] =
+0
+curAmmo [1] =
+0
+maxAmmo [1] =
+0
+priority [1] =
+0
+what = 00000000
+who [1] =
+0
+where = 00000000
+param [1] =
+
+aiProcess [1] =
+false
+isCargo [1] =
+false
+independence [1] =
+1
+curPilot [1] =
+
+perceivedTeam [1] =
+0
+[GameObject]
+PrjID [1] =
+sbsilo
+seqno [1] =
+318
+pos [1] =
+  x [1] =
+1368.46
+  y [1] =
+11.2256
+  z [1] =
+98618.2
+team [1] =
+2
+label = sbsilo1_scrapsilo
+isUser [1] =
+0
+obj_addr = 00000051
+transform [1] =
+  right_x [1] =
+1
+  right_y [1] =
+0
+  right_z [1] =
+0
+  up_x [1] =
+0
+  up_y [1] =
+1
+  up_z [1] =
+0
+  front_x [1] =
+0
+  front_y [1] =
+0
+  front_z [1] =
+1
+  posit_x [1] =
+1368.46
+  posit_y [1] =
+11.2256
+  posit_z [1] =
+98618.2
+undefptr = 00000000
+illumination [1] =
+1
+pos [1] =
+  x [1] =
+1368.46
+  y [1] =
+16.0154
+  z [1] =
+98618.2
+euler =
+ mass [1] =
+0
+ mass_inv [1] =
+1e+030
+ v_mag [1] =
+0
+ v_mag_inv [1] =
+1e+030
+ I [1] =
+1
+ k_i [1] =
+0
+ v [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ omega [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ Accel [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+seqNo [1] =
+318
+name = 
+isCritical [1] =
+false
+isObjective [1] =
+false
+isSelected [1] =
+false
+isVisible [1] =
+ffffffff
+seen [1] =
+0
+healthRatio [1] =
+1
+curHealth [1] =
+3000
+maxHealth [1] =
+3000
+ammoRatio [1] =
+0
+curAmmo [1] =
+0
+maxAmmo [1] =
+0
+priority [1] =
+0
+what = 00000000
+who [1] =
+0
+where = 00000000
+param [1] =
+
+aiProcess [1] =
+false
+isCargo [1] =
+false
+independence [1] =
+1
+curPilot [1] =
+
+perceivedTeam [1] =
+2
+[GameObject]
+PrjID [1] =
+sfield
+seqno [1] =
+319
+pos [1] =
+  x [1] =
+3548.16
+  y [1] =
+0.235046
+  z [1] =
+100292
+team [1] =
+0
+label = sfield1_scrapfield
+isUser [1] =
+0
+obj_addr = 00000052
+transform [1] =
+  right_x [1] =
+1
+  right_y [1] =
+0
+  right_z [1] =
+0
+  up_x [1] =
+0
+  up_y [1] =
+1
+  up_z [1] =
+0
+  front_x [1] =
+0
+  front_y [1] =
+0
+  front_z [1] =
+1
+  posit_x [1] =
+3548.16
+  posit_y [1] =
+0.235046
+  posit_z [1] =
+100292
+illumination [1] =
+1
+pos [1] =
+  x [1] =
+3548.16
+  y [1] =
+6.67681
+  z [1] =
+100292
+euler =
+ mass [1] =
+0
+ mass_inv [1] =
+1e+030
+ v_mag [1] =
+0
+ v_mag_inv [1] =
+1e+030
+ I [1] =
+1
+ k_i [1] =
+0
+ v [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ omega [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ Accel [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+seqNo [1] =
+319
+name = 
+isCritical [1] =
+false
+isObjective [1] =
+false
+isSelected [1] =
+false
+isVisible [1] =
+ffffffff
+seen [1] =
+0
+healthRatio [1] =
+1
+curHealth [1] =
+0
+maxHealth [1] =
+0
+ammoRatio [1] =
+0
+curAmmo [1] =
+0
+maxAmmo [1] =
+0
+priority [1] =
+0
+what = 00000000
+who [1] =
+0
+where = 00000000
+param [1] =
+
+aiProcess [1] =
+false
+isCargo [1] =
+false
+independence [1] =
+1
+curPilot [1] =
+
+perceivedTeam [1] =
+0
+[GameObject]
+PrjID [1] =
+sfield
+seqno [1] =
+320
+pos [1] =
+  x [1] =
+3249.77
+  y [1] =
+0
+  z [1] =
+100173
+team [1] =
+0
+label = sfield1_scrapfield
+isUser [1] =
+0
+obj_addr = 00000053
+transform [1] =
+  right_x [1] =
+1
+  right_y [1] =
+0
+  right_z [1] =
+0
+  up_x [1] =
+0
+  up_y [1] =
+1
+  up_z [1] =
+0
+  front_x [1] =
+0
+  front_y [1] =
+0
+  front_z [1] =
+1
+  posit_x [1] =
+3249.77
+  posit_y [1] =
+0
+  posit_z [1] =
+100173
+illumination [1] =
+1
+pos [1] =
+  x [1] =
+3249.77
+  y [1] =
+6.44176
+  z [1] =
+100173
+euler =
+ mass [1] =
+0
+ mass_inv [1] =
+1e+030
+ v_mag [1] =
+0
+ v_mag_inv [1] =
+1e+030
+ I [1] =
+1
+ k_i [1] =
+0
+ v [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ omega [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ Accel [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+seqNo [1] =
+320
+name = 
+isCritical [1] =
+false
+isObjective [1] =
+false
+isSelected [1] =
+false
+isVisible [1] =
+ffffffff
+seen [1] =
+0
+healthRatio [1] =
+1
+curHealth [1] =
+0
+maxHealth [1] =
+0
+ammoRatio [1] =
+0
+curAmmo [1] =
+0
+maxAmmo [1] =
+0
+priority [1] =
+0
+what = 00000000
+who [1] =
+0
+where = 00000000
+param [1] =
+
+aiProcess [1] =
+false
+isCargo [1] =
+false
+independence [1] =
+1
+curPilot [1] =
+
+perceivedTeam [1] =
+0
+[GameObject]
+PrjID [1] =
+sbsilo
+seqno [1] =
+321
+pos [1] =
+  x [1] =
+3535.98
+  y [1] =
+12.7208
+  z [1] =
+100176
+team [1] =
+2
+label = sbsilo2_scrapsilo
+isUser [1] =
+0
+obj_addr = 00000054
+transform [1] =
+  right_x [1] =
+1
+  right_y [1] =
+0
+  right_z [1] =
+0
+  up_x [1] =
+0
+  up_y [1] =
+1
+  up_z [1] =
+0
+  front_x [1] =
+0
+  front_y [1] =
+0
+  front_z [1] =
+1
+  posit_x [1] =
+3535.98
+  posit_y [1] =
+12.7208
+  posit_z [1] =
+100176
+undefptr = 00000000
+illumination [1] =
+1
+pos [1] =
+  x [1] =
+3535.98
+  y [1] =
+17.5106
+  z [1] =
+100176
+euler =
+ mass [1] =
+0
+ mass_inv [1] =
+1e+030
+ v_mag [1] =
+0
+ v_mag_inv [1] =
+1e+030
+ I [1] =
+1
+ k_i [1] =
+0
+ v [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ omega [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+ Accel [1] =
+  x [1] =
+0
+  y [1] =
+0
+  z [1] =
+0
+seqNo [1] =
+321
+name = 
+isCritical [1] =
+false
+isObjective [1] =
+false
+isSelected [1] =
+false
+isVisible [1] =
+ffffffff
+seen [1] =
+0
+healthRatio [1] =
+1
+curHealth [1] =
+3000
+maxHealth [1] =
+3000
+ammoRatio [1] =
+0
+curAmmo [1] =
+0
+maxAmmo [1] =
+0
+priority [1] =
+0
+what = 00000000
+who [1] =
+0
+where = 00000000
+param [1] =
+
+aiProcess [1] =
+false
+isCargo [1] =
+false
+independence [1] =
+1
+curPilot [1] =
+
+perceivedTeam [1] =
+2
 name = LuaMission
-sObject = 00000049
+sObject = 00000055
 [AiMission]
 [AOIs]
 size [1] =
@@ -9761,7 +11311,7 @@ size [1] =
 count [1] =
 28
 [AiPath]
-old_ptr = 0000004A
+old_ptr = 00000056
 size [1] =
 9
 label = edge_path
@@ -9778,7 +11328,7 @@ points [2] =
 98027.1
 pathType = 00000000
 [AiPath]
-old_ptr = 0000004B
+old_ptr = 00000057
 size [1] =
 0
 pointCount [1] =
@@ -9802,7 +11352,7 @@ points [4] =
 98447.1
 pathType = 00000000
 [AiPath]
-old_ptr = 0000004C
+old_ptr = 00000058
 size [1] =
 13
 label = spawn_svhraz1
@@ -9815,7 +11365,7 @@ points [1] =
 101106
 pathType = 00000000
 [AiPath]
-old_ptr = 0000004D
+old_ptr = 00000059
 size [1] =
 13
 label = spawn_svhraz2
@@ -9828,7 +11378,7 @@ points [1] =
 101077
 pathType = 00000000
 [AiPath]
-old_ptr = 0000004E
+old_ptr = 0000005A
 size [1] =
 13
 label = spawn_svrckt1
@@ -9841,7 +11391,7 @@ points [1] =
 101138
 pathType = 00000000
 [AiPath]
-old_ptr = 0000004F
+old_ptr = 0000005B
 size [1] =
 13
 label = spawn_svrckt2
@@ -9854,7 +11404,7 @@ points [1] =
 101111
 pathType = 00000000
 [AiPath]
-old_ptr = 00000050
+old_ptr = 0000005C
 size [1] =
 13
 label = spawn_svfigh1
@@ -9867,7 +11417,7 @@ points [1] =
 101177
 pathType = 00000000
 [AiPath]
-old_ptr = 00000051
+old_ptr = 0000005D
 size [1] =
 13
 label = spawn_svfigh2
@@ -9880,7 +11430,7 @@ points [1] =
 101142
 pathType = 00000000
 [AiPath]
-old_ptr = 00000052
+old_ptr = 0000005E
 size [1] =
 12
 label = final_spawn1
@@ -9893,7 +11443,7 @@ points [1] =
 99731.1
 pathType = 00000000
 [AiPath]
-old_ptr = 00000053
+old_ptr = 0000005F
 size [1] =
 12
 label = final_spawn2
@@ -9906,7 +11456,7 @@ points [1] =
 99854.9
 pathType = 00000000
 [AiPath]
-old_ptr = 00000054
+old_ptr = 00000060
 size [1] =
 12
 label = final_spawn3
@@ -9919,7 +11469,7 @@ points [1] =
 99689.9
 pathType = 00000000
 [AiPath]
-old_ptr = 00000055
+old_ptr = 00000061
 size [1] =
 12
 label = final_spawn4
@@ -9932,7 +11482,7 @@ points [1] =
 99851.2
 pathType = 00000000
 [AiPath]
-old_ptr = 00000056
+old_ptr = 00000062
 size [1] =
 0
 pointCount [1] =
@@ -9948,7 +11498,7 @@ points [2] =
 98426.6
 pathType = 00000000
 [AiPath]
-old_ptr = 00000057
+old_ptr = 00000063
 size [1] =
 0
 pointCount [1] =
@@ -9964,7 +11514,7 @@ points [2] =
 98426.6
 pathType = 00000000
 [AiPath]
-old_ptr = 00000058
+old_ptr = 00000064
 size [1] =
 0
 pointCount [1] =
@@ -9980,7 +11530,7 @@ points [2] =
 98432.5
 pathType = 00000000
 [AiPath]
-old_ptr = 00000059
+old_ptr = 00000065
 size [1] =
 0
 pointCount [1] =
@@ -10092,7 +11642,7 @@ points [26] =
 98412.2
 pathType = 00000000
 [AiPath]
-old_ptr = 0000005A
+old_ptr = 00000066
 size [1] =
 12
 label = final_spawn5
@@ -10105,7 +11655,7 @@ points [1] =
 100190
 pathType = 00000000
 [AiPath]
-old_ptr = 0000005B
+old_ptr = 00000067
 size [1] =
 12
 label = final_spawn6
@@ -10118,7 +11668,7 @@ points [1] =
 99850.4
 pathType = 00000000
 [AiPath]
-old_ptr = 0000005C
+old_ptr = 00000068
 size [1] =
 12
 label = final_spawn7
@@ -10131,7 +11681,7 @@ points [1] =
 99691.6
 pathType = 00000000
 [AiPath]
-old_ptr = 0000005D
+old_ptr = 00000069
 size [1] =
 10
 label = bakerspawn
@@ -10144,7 +11694,7 @@ points [1] =
 100817
 pathType = 00000000
 [AiPath]
-old_ptr = 0000005E
+old_ptr = 0000006A
 size [1] =
 0
 pointCount [1] =
@@ -10160,7 +11710,7 @@ points [2] =
 98432.5
 pathType = 00000000
 [AiPath]
-old_ptr = 0000005F
+old_ptr = 0000006B
 size [1] =
 0
 pointCount [1] =
@@ -10176,7 +11726,7 @@ points [2] =
 98432.5
 pathType = 00000000
 [AiPath]
-old_ptr = 00000060
+old_ptr = 0000006C
 size [1] =
 0
 pointCount [1] =
@@ -10284,7 +11834,7 @@ points [25] =
 98413.1
 pathType = 00000000
 [AiPath]
-old_ptr = 00000061
+old_ptr = 0000006D
 size [1] =
 0
 pointCount [1] =
@@ -10392,7 +11942,7 @@ points [25] =
 98423.3
 pathType = 00000000
 [AiPath]
-old_ptr = 00000062
+old_ptr = 0000006E
 size [1] =
 0
 pointCount [1] =
@@ -10408,7 +11958,7 @@ points [2] =
 98432.5
 pathType = 00000000
 [AiPath]
-old_ptr = 00000063
+old_ptr = 0000006F
 size [1] =
 0
 pointCount [1] =
@@ -10424,7 +11974,7 @@ points [2] =
 98432.5
 pathType = 00000000
 [AiPath]
-old_ptr = 00000064
+old_ptr = 00000070
 size [1] =
 0
 pointCount [1] =
@@ -10536,7 +12086,7 @@ points [26] =
 98412
 pathType = 00000000
 [AiPath]
-old_ptr = 00000065
+old_ptr = 00000071
 size [1] =
 0
 pointCount [1] =
