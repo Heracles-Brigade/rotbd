@@ -5,8 +5,6 @@
 	 - Vemahk
 	 - Mario
 --]]
-local _ = require("bz_logging");
-
 local aud = {}
 
 --[[local audio = {
