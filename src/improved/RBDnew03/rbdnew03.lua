@@ -7,6 +7,7 @@ local audio = {
 intro = "rbdnew0301.wav",
 itsatrap = "rbdnew0302.wav",
 freedom = "rbdnew0303.wav",
+approach = "",
 gtfo = "rbdnew0304.wav",
 bypass = "",
 wasatrap = "",
