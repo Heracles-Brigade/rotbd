@@ -10,7 +10,7 @@ freedom = "rbdnew0303.wav",
 gtfo = "rbdnew0304.wav",
 bypass = "",
 wasatrap = "",
-wantitback = "",
+wantitback = "rbdnew0306.wav",
 homefree = ""
 }
 

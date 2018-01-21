@@ -1,0 +1,15 @@
+PARENT diag.voices
+START
+NTRG: Now, about the prototype. [25] You led the mission to steal it yourself, yes? [100] They deployed you straight out of
+debriefing from the infiltration? [25] If you had had more time, would you have talked to [200]
+Corporal Baker? [500];
+CBRA: The Soviets had a superweapon hanging over our heads and we had the chance to stop it ever being
+finished [25] maybe even finish it ourselves. [10] Of course I deployed straight out of debriefing,
+I would have stayed out in the field if I could. [25] The hell does Baker have to do with any of this?[200];
+NTRG: Corporal Baker has suggested that there were some indications in the design of the Mammoth to suggest
+some American influence in the design.[50];
+CBRA: Of course there were, the Reds were working with a traitor. [25] For all we know, Arkin could have been in on
+it as well.[500];
+NTRG: Okay. [100] Stealing the prototype [10] could that have been the plan all along? [100];
+CBRA: We all wanted that thing gone for good. [50] Why would Shaw have wanted to steal it? [50];
+NTRG: Precisely.;
