@@ -7,11 +7,12 @@ local audio = {
 intro = "rbdnew0301.wav",
 itsatrap = "rbdnew0302.wav",
 freedom = "rbdnew0303.wav",
-gtfo = "rbdnew0304.wav",
-bypass = "",
-wasatrap = "",
+planschange = "rbdnew0304.wav",
+gtfo = "rbdnew0305.wav",
+bypass = "[rbdnew03a1]",
+wasatrap = "[rbdnew03a2]",
 wantitback = "rbdnew0306.wav",
-homefree = ""
+homefree = "[rbdnew0307.wav]"
 }
 
 local objs = {
@@ -30,6 +31,7 @@ StartDone = false, -- Some things don't work in the actual "Start" function.
 Nav1Reached = false, -- Are we at nav1 yet? 
 DecoyTriggered = false, -- It's a Trap!
 TrapEscaped = false, -- Whew, close one!
+PlansChange = false,
 MammothStolen = false, -- Steal the Mammoth!
 MammothDead = false, -- You can't kill something that's extinct.
 WantItBack = false, -- They're coming for you
@@ -190,6 +192,11 @@ function Update()
 			M.DecoyTriggered = true;
 			UpdateObjectives();
 		end
+	end
+	
+	if M.TrapEscaped and not M.PlansChange and not IsWithin(M.Player, M.Nav[1], 750.0) and M.Player ~= M.Mammoth then
+		M.Aud1 = AudioMessage(audio.planschange);
+		M.PlansChange = true;
 	end
 	
 	if not M.DecoyTriggered and IsWithin(M.Player, M.MammothDecoy, 100.0) and M.Player == M.Mammoth then
