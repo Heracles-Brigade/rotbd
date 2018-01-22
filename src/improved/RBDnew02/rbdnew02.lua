@@ -3,26 +3,29 @@
 	 - Seqan
 	 - GBD
 	 - Vemahk
-	 - Mario
+	 - Janne
 --]]
 local aud = {}
 
---[[local audio = {
-	intro = "rbd0201.wav",
-	commwarn = "rbd0201W.wav",
-	inspect = "rbd0202.wav",
-	tug = "rbd0203.wav",
-	first_a = "rbd0204.wav",
-	dayw = "rbd0205.wav",
-	second_a = "rbd0206.wav",
-	flee = "rbd0207.wav",
-	win = "rbd0208.wav",
-	lose1 = "rbd0201L.wav",
-	lose2 = "",
-	lose3 = "",
-	lose4 = "",
-	lose5 = ""
-}--]]
+local audio = {
+	intro = "rbdnew0201.wav",
+	commwarn = "rbdnew0201W.wav",
+	commclear = "rbdnew0202W.wav",
+	inspect = "rbdnew0202.wav",
+	tug = "rbdnew0203.wav",
+	first_a = "rbdnew0204.wav",
+	dayw = "rbdnew0205.wav",
+	second_a = "rbdnew0206.wav",
+	transint = "",
+	backinrange = "",
+	flee = "rbdnew0207.wav",
+	win = "rbdnew0208.wav",
+	lose1 = "rbdnew0201L.wav", --Mammoth Destroyed/sniped
+	lose2 = "rbdnew0202L.wav", --Failed to extract on time
+	lose3 = "rbdnew0203L.wav", --Detected, loser
+	lose4 = "rbdnew0204L.wav", --Evidently you can't aim Day Wreckers
+	lose5 = "rbdnew0205L.wav" --Why didn't you make a Day Wrecker?
+}
 
 local objectives = {
 	Detection = "rbdnew0200.otf",
@@ -182,7 +185,7 @@ local function SpawnArmy()
 	SpawnFromTo("svwalk", "def5", 1, "def5");
 end
 
-local function keepOutside(h1,h2) -- This is the shield function for the Mammoth. Thank you, Mario
+local function keepOutside(h1,h2) -- This is the shield function for the Mammoth. Thank you, Janne
   local p = GetPosition(h2);
   local r = 125;
   local pp = GetPosition(h1);
@@ -243,7 +246,7 @@ function Update()
 		
 		-- Pre-play setup complete. Time to start the shit.
 		CameraReady();
-		Aud1 = AudioMessage("rbdnew0201.wav");
+		M.Aud1 = AudioMessage(audio.intro);
 	end
 	
 	if not M.IsDetected and GetPerceivedTeam(M.Player) == 1 then
@@ -263,14 +266,14 @@ function Update()
 	for i = 1, 3 do
 		if IsAlive(M.Radar[i].RadarHandle) then
 			if not M.Radar[i].RadarWarn and GetDistance(M.Player, M.Radar[i].RadarHandle) < 100.0 then
-				M.Aud1 = AudioMessage("rbdnew0202.wav");
+				M.Aud1 = AudioMessage(audio.commwarn);
 				M.RadarTime = GetTime();
 				M.Radar[i].RadarWarn = true;
 				StartCockpitTimer(30, 15, 5);
 			else
 				if M.Radar[i].RadarWarn then
 					if GetDistance(M.Player, M.Radar[i].RadarHandle) > 100.0 then
-						Aud1 = AudioMessage("rbdnew0208.wav");
+						Aud1 = AudioMessage(audio.commclear);
 						M.RadarTime = 0;
 						M.Radar[i].RadarWarn = false;
 						StopCockpitTimer();
@@ -287,7 +290,7 @@ function Update()
 	end
 	
 	if not M.HangarInfoed and IsAlive(M.Hangar) and GetDistance(M.Player, M.Hangar) < 50.0 then
-		Aud1 = AudioMessage("rbdnew0203.wav");
+		M.Aud1 = AudioMessage(audio.inspect);
 		SpawnNav(2);
 		M.HangarInfoed = true;
 		UpdateObjectives();
@@ -296,7 +299,7 @@ function Update()
 	if not M.TugAquired and M.Player == M.Tug then
 		M.TugAquired = true;
 		UpdateObjectives();
-		Aud1 = AudioMessage("rbdnew0204.wav");
+		M.Aud1 = AudioMessage(audio.tug);
 		SpawnNav(3)
 	end
 	
@@ -306,7 +309,7 @@ function Update()
 		SetMaxScrap(1, 20);
 		SetScrap(1, 20);
 		M.ShieldDetected = true;
-	--	Aud1 = AudioMessage(audio.first_a);
+		M.Aud1 = AudioMessage(audio.first_a);
 		SpawnNav(4);
 		UpdateObjectives();
 	end
@@ -321,7 +324,7 @@ function Update()
 	end
 	
 	if not M.ControlDead and M.TugAquired and not IsAlive(M.ControlTower) then
-		Aud1 = AudioMessage("rbdnew0205.wav");
+		M.Aud1 = AudioMessage(audio.dayw);
 		SetObjectiveOff(M.ObjectiveNav);
 		SetObjectiveOn(M.Mammoth);
 		SetObjectiveName(M.Mammoth, "Mammoth");
@@ -335,22 +338,22 @@ function Update()
 		M.MammothReached = true;
 		UpdateObjectives();
 		if not M.MammothReachedPrevious then
-			Aud1 = AudioMessage("rbdnew0209.wav");
+			M.Aud1 = AudioMessage(audio.second_a);
 			M.MammothReachedPrevious = true;
 		else
-			Aud1 = AudioMessage(aud.backinrange)
+			M.Aud1 = AudioMessage(audio.backinrange)
 		end
 	end
 	
-	if GetTime() < M.MammothTime and GetDistance(M.Player, M.Mammoth) > 35 then
+	if GetTime() < M.MammothTime and M.MammothReached and GetDistance(M.Player, M.Mammoth) > 35 then
 		M.MammothTime = 0;
 		M.MammothReached = false;
 		UpdateObjectives();
-		Aud1 = AudioMessage(aud.transint);
+		M.Aud1 = AudioMessage(audio.transint);
 	end
 	
     if M.MammothReached and not M.MammothInfoed and GetTime() > M.MammothTime then
-        Aud1 = AudioMessage("rbdnew0206.wav");
+        M.Aud1 = AudioMessage(audio.flee);
         StartCockpitTimer(120, 30, 10);
 		SetObjectiveOff(M.Mammoth);
         SpawnNav(5);
@@ -370,7 +373,7 @@ function Update()
 	
 		-- Win Conditions:
 		if M.MammothInfoed and GetObjectiveName(M.ObjectiveNav) == "Extraction Point" and GetDistance(M.Player, M.ObjectiveNav) < 25.0 then
-			Aud1 = AudioMessage("rbdnew0210.wav");
+			Aud1 = AudioMessage(audio.win);
 			SucceedMission(GetTime()+5.0, "rbdnew02wn.des");
 			M.MissionOver = true;
 			M.SafetyReached = true;
@@ -385,21 +388,22 @@ function Update()
 			UpdateObjectives();
 		end
 
-		if  not IsAlive(M.Mammoth) then --not M.MammothInfoed and 
+		if  not IsAlive(M.Mammoth) then 
+			M.Aud1 = AudioMessage(audio.lose1);
 			FailMission(GetTime()+5.0, "rbdnew02l1.des");
 			M.MissionOver = true;
 			UpdateObjectives();
 		end
 		
 		if M.MammothInfoed and GetCockpitTimer() == 0 and not M.MissionOver then
-		--	Aud1 = AudioMessage(
-			FailMission(GetTime(), "rbdnew02l2.des");
+			Aud1 = AudioMessage(audio.lose2);
+			FailMission(GetTime() + 5.0, "rbdnew02l2.des");
 			M.MissionOver = true;
 			UpdateObjectives();
 		end
 
 		if M.IsDetected and not M.MammothReached then
-			Aud1 = AudioMessage("rbdnew0207.wav"); --audio.fail1
+			Aud1 = AudioMessage(audio.lose4);
 			FailMission(GetTime() + 5.0, "rbdnew02l4.des");
 			M.MissionOver = true;
 			UpdateObjectives();
@@ -409,7 +413,7 @@ function Update()
 			M.WreckTime1 = GetTime() + 1.0;
 		end
 		if M.WreckTime1 ~= 0 and GetTime() >=M.WreckTime1 and not M.ControlDead then
-	--		Aud1 = AudioMessage();
+			M.Aud1 = AudioMessage(audio.lose4);
 			FailMission(GetTime() + 5.0, "rbdnew02l5.des");
 			M.MissionOver = true;
 			UpdateObjective(objectives.Control, "RED");
@@ -419,7 +423,7 @@ function Update()
 			M.WreckTime2 = GetTime() + 1.5;
 		end
 		if M.WreckTime2 ~= 0 and GetTime() > M.WreckTime2 and not M.ControlDead and not M.Wrecker then
-	--		Aud1 = AudioMessage();
+			Aud1 = AudioMessage(audio.lose5);
 			FailMission(GetTime() + 5.0, "rbdnew02l5.des");
 			M.MissionOver = true;
 			UpdateObjective(objectives.Control, "RED");

@@ -9,10 +9,10 @@ itsatrap = "rbdnew0302.wav",
 freedom = "rbdnew0303.wav",
 planschange = "rbdnew0304.wav",
 gtfo = "rbdnew0305.wav",
-bypass = "[rbdnew03a1]",
-wasatrap = "[rbdnew03a2]",
+bypass = "rbdnew03a1.wav",
+wasatrap = "rbdnew03a2.wav",
 wantitback = "rbdnew0306.wav",
-homefree = "[rbdnew0307.wav]"
+homefree = "rbdnew0307.wav"
 }
 
 local objs = {
