@@ -2,12 +2,12 @@ version [1] =
 2016
 binarySave [1] =
 false
-msn_filename = rbdnew03.bzn
+msn_filename = rbdnew04.bzn
 seq_count [1] =
 322
 missionSave [1] =
 true
-TerrainName = rbdnew03
+TerrainName = rbdnew04
 size [1] =
 84
 [GameObject]
