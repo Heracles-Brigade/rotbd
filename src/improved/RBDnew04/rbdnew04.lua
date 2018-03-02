@@ -4,23 +4,23 @@ local missionlib = require("cmisnlib");
 local areAllDead = missionlib.areAllDead;
 
 local audio = {
-intro = "rbdnew0301.wav",
-itsatrap = "rbdnew0302.wav",
-freedom = "rbdnew0303.wav",
-planschange = "rbdnew0304.wav",
-gtfo = "rbdnew0305.wav",
-bypass = "rbdnew03a1.wav",
-wasatrap = "rbdnew03a2.wav",
-wantitback = "rbdnew0306.wav",
-homefree = "rbdnew0307.wav"
+intro = "rbdnew0401.wav",
+itsatrap = "rbdnew0402.wav",
+freedom = "rbdnew0403.wav",
+planschange = "rbdnew0404.wav",
+gtfo = "rbdnew0405.wav",
+bypass = "rbdnew04a1.wav",
+wasatrap = "rbdnew04a2.wav",
+wantitback = "rbdnew0406.wav",
+homefree = "rbdnew0407.wav"
 }
 
 local objs = {
-recon = "rbdnew0301.otf",
-escape = "rbdnew0302.otf",
-findit = "rbdnew0303.otf",
-extraction = "rbdnew0304.otf",
-mine = "rbdnew0306.otf"
+recon = "rbdnew0401.otf",
+escape = "rbdnew0402.otf",
+findit = "rbdnew0403.otf",
+extraction = "rbdnew0404.otf",
+mine = "rbdnew0406.otf"
 }
 
 local M = {
@@ -101,7 +101,7 @@ local function UpdateObjectives() -- Handle Objectives.
 			end
 		end
 	else -- ITS DEAD! NOOOOO! NEW Fail objective. -GBD
-		AddObjective("rbdnew0305.otf", "RED");
+		AddObjective("rbdnew0405.otf", "RED");
 	end
 end
 
@@ -254,7 +254,7 @@ function Update()
 	-- Win Conditions:
 	if not M.MissionOver and M.MammothStolen and M.Player == M.Mammoth and IsWithin(M.Player, M.Nav[3], 75.0) and M.RecoveryBeaten then
 		M.Aud1 = AudioMessage(audio.homefree);
-		SucceedMission(GetTime()+5.0, "rbdnew03wn.des");
+		SucceedMission(GetTime()+5.0, "rbdnew04wn.des");
 		M.MissionOver = true;
 		M.DropZoneReached = true;
 		UpdateObjectives();
@@ -262,7 +262,7 @@ function Update()
 	
 	-- Lose Conditions
 	if not M.MissionOver and not IsValid(M.Mammoth) then -- YA BLEW UP THE MAMMOTH YA GOOF
-		FailMission(GetTime()+5.0, "rbdnew03l1.des");
+		FailMission(GetTime()+5.0, "rbdnew04l1.des");
 		M.MammothDead = true;
 		M.MissionOver = true;
 		UpdateObjectives();
