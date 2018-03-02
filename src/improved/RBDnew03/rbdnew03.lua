@@ -8,35 +8,35 @@
 local aud = {}
 
 local audio = {
-	intro = "rbdnew0201.wav",
-	commwarn = "rbdnew0201W.wav",
-	commclear = "rbdnew0202W.wav",
-	inspect = "rbdnew0202.wav",
-	tug = "rbdnew0203.wav",
-	first_a = "rbdnew0204.wav",
-	dayw = "rbdnew0205.wav",
-	second_a = "rbdnew0206.wav",
+	intro = "rbdnew0301.wav",
+	commwarn = "rbdnew0301W.wav",
+	commclear = "rbdnew0302W.wav",
+	inspect = "rbdnew0302.wav",
+	tug = "rbdnew0303.wav",
+	first_a = "rbdnew0304.wav",
+	dayw = "rbdnew0305.wav",
+	second_a = "rbdnew0306.wav",
 	transint = "",
 	backinrange = "",
-	flee = "rbdnew0207.wav",
-	win = "rbdnew0208.wav",
-	lose1 = "rbdnew0201L.wav", --Mammoth Destroyed/sniped
-	lose2 = "rbdnew0202L.wav", --Failed to extract on time
-	lose3 = "rbdnew0203L.wav", --Detected, loser
-	lose4 = "rbdnew0204L.wav", --Evidently you can't aim Day Wreckers
-	lose5 = "rbdnew0205L.wav" --Why didn't you make a Day Wrecker?
+	flee = "rbdnew0307.wav",
+	win = "rbdnew0308.wav",
+	lose1 = "rbdnew0301L.wav", --Mammoth Destroyed/sniped
+	lose2 = "rbdnew0302L.wav", --Failed to extract on time
+	lose3 = "rbdnew0303L.wav", --Detected, loser
+	lose4 = "rbdnew0304L.wav", --Evidently you can't aim Day Wreckers
+	lose5 = "rbdnew0305L.wav" --Why didn't you make a Day Wrecker?
 }
 
 local objectives = {
-	Detection = "rbdnew0200.otf",
-	Hanger = "rbdnew0201.otf",
-	Tug = "rbdnew0203.otf",
-	Mammoth1 = "rbdnew0202.otf",
-	Control = "rbdnew0204.otf",
-	Mammoth2 = "rbdnew0205.otf",
-	TranStart = "rbdnew0206.otf",
-	TranFin = "rbdnew0207.otf",
-	Extract = "rbdnew0208.otf"
+	Detection = "rbdnew0300.otf",
+	Hanger = "rbdnew0301.otf",
+	Tug = "rbdnew0303.otf",
+	Mammoth1 = "rbdnew0302.otf",
+	Control = "rbdnew0304.otf",
+	Mammoth2 = "rbdnew0305.otf",
+	TranStart = "rbdnew0306.otf",
+	TranFin = "rbdnew0307.otf",
+	Extract = "rbdnew0308.otf"
 }
 
 local M = { --Sets mission flow and progression. Booleans and values will be changed to "true" and appropriate names/integers as mission progresses. Necessary for save files to function as well as objective flow in later if statements.
@@ -374,7 +374,7 @@ function Update()
 		-- Win Conditions:
 		if M.MammothInfoed and GetObjectiveName(M.ObjectiveNav) == "Extraction Point" and GetDistance(M.Player, M.ObjectiveNav) < 25.0 then
 			Aud1 = AudioMessage(audio.win);
-			SucceedMission(GetTime()+5.0, "rbdnew02wn.des");
+			SucceedMission(GetTime()+5.0, "rbdnew03wn.des");
 			M.MissionOver = true;
 			M.SafetyReached = true;
 			UpdateObjectives();
@@ -383,28 +383,28 @@ function Update()
 		-- Lose Conditions:
 		
 		if not M.HangarInfoed and not IsAlive(M.Hangar) then
-			FailMission(GetTime()+5.0, "rbdnew02l3.des");
+			FailMission(GetTime()+5.0, "rbdnew03l3.des");
 			M.MissionOver = true;
 			UpdateObjectives();
 		end
 
 		if  not IsAlive(M.Mammoth) then 
 			M.Aud1 = AudioMessage(audio.lose1);
-			FailMission(GetTime()+5.0, "rbdnew02l1.des");
+			FailMission(GetTime()+5.0, "rbdnew03l1.des");
 			M.MissionOver = true;
 			UpdateObjectives();
 		end
 		
 		if M.MammothInfoed and GetCockpitTimer() == 0 and not M.MissionOver then
 			Aud1 = AudioMessage(audio.lose2);
-			FailMission(GetTime() + 5.0, "rbdnew02l2.des");
+			FailMission(GetTime() + 5.0, "rbdnew03l2.des");
 			M.MissionOver = true;
 			UpdateObjectives();
 		end
 
 		if M.IsDetected and not M.MammothReached then
 			Aud1 = AudioMessage(audio.lose4);
-			FailMission(GetTime() + 5.0, "rbdnew02l4.des");
+			FailMission(GetTime() + 5.0, "rbdnew03l4.des");
 			M.MissionOver = true;
 			UpdateObjectives();
 		end
@@ -414,7 +414,7 @@ function Update()
 		end
 		if M.WreckTime1 ~= 0 and GetTime() >=M.WreckTime1 and not M.ControlDead then
 			M.Aud1 = AudioMessage(audio.lose4);
-			FailMission(GetTime() + 5.0, "rbdnew02l5.des");
+			FailMission(GetTime() + 5.0, "rbdnew03l5.des");
 			M.MissionOver = true;
 			UpdateObjective(objectives.Control, "RED");
 		end
@@ -424,7 +424,7 @@ function Update()
 		end
 		if M.WreckTime2 ~= 0 and GetTime() > M.WreckTime2 and not M.ControlDead and not M.Wrecker then
 			Aud1 = AudioMessage(audio.lose5);
-			FailMission(GetTime() + 5.0, "rbdnew02l5.des");
+			FailMission(GetTime() + 5.0, "rbdnew03l5.des");
 			M.MissionOver = true;
 			UpdateObjective(objectives.Control, "RED");
 		end
