@@ -187,7 +187,7 @@ end
 
 local function keepOutside(h1,h2) -- This is the shield function for the Mammoth. Thank you, Janne
   local p = GetPosition(h2);
-  local r = 125;
+  local r = 40;
   local pp = GetPosition(h1);
   local dv = Normalize(pp-p);
   local vel2 = GetVelocity(h2);

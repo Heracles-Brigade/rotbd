@@ -204,7 +204,7 @@ function Update()
 		M.DecoyTriggered = true;
 	end
 	
-	if M.DecoyTriggered and not M.TrapEscaped and areAllDead(M.DecoyAmbush) and M.Player ~= M.Mammoth then
+	if M.DecoyTriggered and not M.TrapEscaped and areAllDead(M.DecoyAmbush, 2) and M.Player ~= M.Mammoth then
 		M.Aud1 = AudioMessage(audio.freedom);
 		M.TrapEscaped = true;
 		SpawnNav(2);
