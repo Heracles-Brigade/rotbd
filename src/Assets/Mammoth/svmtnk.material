@@ -1,13 +1,13 @@
 import * from "BZBase.material"
 
-material Svmtnk00 : BZBase
+material svmtnk00 : BZBase
 {
-	set_texture_alias DiffuseMap svmtnk_test_d.dds
-	set_texture_alias NormalMap black.dds
-	set_texture_alias SpecularMap black.dds
-	set_texture_alias EmissiveMap svmtnk_test_e.dds
+	set_texture_alias DiffuseMap svmtnk00_d.dds
+	set_texture_alias NormalMap svmtnk00_n.dds
+	set_texture_alias SpecularMap svmtnk00_s.dds
+	set_texture_alias EmissiveMap svmtnk00_e.dds
 	
-	set $diffuse "2 2 2"
+	set $diffuse "1 1 1"
 	set $ambient "1 1 1"
 	set $specular ".7 .7 .7"
 	set $shininess "127"
