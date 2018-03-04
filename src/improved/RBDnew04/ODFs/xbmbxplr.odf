@@ -1,0 +1,113 @@
+[ExplosionClass]
+classLabel = "quakeblast"
+
+//frameName = "rpuff.0"
+frameCount = 16
+frameDelay = 0.2
+//explRadius = 50.0
+explSound = "xemt1.wav"
+damageRadius = 200.0
+damageBallistic = 0
+damageConcussion = 2000
+damageFlame = 0
+damageImpact = 0
+
+particleTypes = 1
+
+particleClass1 = "xbmbxpl.light"
+particleCount1 = 1
+particleVeloc1 = "0.0 3.0 0.0"
+particleBias1 = "0.0 5.0 0.0
+
+particleClass2 = "xbmbxpl.scorch"
+particleCount2 = 1
+particleVeloc2 = "0.0 0.0 0.0"
+
+particleClass3 = "xbmbxpl.smokecenter"
+particleCount3 = 1
+particleVeloc3 = "0.0 5.0 0.0"
+particleBias3 = "0.0 17.0 0.0"
+
+particleClass4 = "xbmbxpl.flamecenter"
+particleCount4 = 1
+particleVeloc4 = "0.0 5.0 0.0"
+particleBias4 = "0.0 15.0 0.0"
+
+particleClass5 = "xbmbxpl.sphere"
+particleCount5 = 1
+particleVeloc5 = "0.0 0.0 0.0"
+
+[QuakeBlastClass]
+quakeCount = 12
+quakeClass = "dayquake"
+
+[Light]
+simulateBase = "sim_smoke"
+lifeTime = 6.0
+renderBase = "draw_light"
+startColor = "255 255 63 10000" //255"
+finishColor = "255 255 255 0"
+startRadius = 500.0
+finishRadius = 500.0
+animateTime = 6.0
+attenuateConstant = 0.0
+attenuateLinear = 1.0
+attenuateQuadratic = 0.0
+
+[Scorch]
+simulateBase = "sim_null"
+lifeTime = 10.0
+renderBase = "draw_planar"
+textureName = "grndchar.tga"
+textureBlend = "srcalpha invsrcalpha modulatealpha"
+startColor = "0 0 0 192"
+finishColor = "0 0 0 0"
+startRadius = 60.0
+finishRadius = 60.0
+animateTime = 10.0
+
+[smokecenter]
+simulateBase = "sim_smoke"
+lifeTime = 8.0
+renderBase = "draw_twirl"
+textureName = "smoke.tga"
+//textureBlend = "srcalpha invsrcalpha modulatealpha"
+startColor = " 63 63 63 127"
+finishColor = "127 127 127 0"
+startRadius = 10.0
+finishRadius = 50.0
+animateTime = 8.0
+rotationRate = 10
+
+[flamecenter]
+simulateBase = "sim_smoke"
+lifeTime = 6.0
+renderBase = "draw_twirl"
+textureName = "flame.tga"
+//textureBlend = "srcalpha invsrcalpha modulatealpha"
+startColor = "255 191 127 255"
+finishColor = "255 127 63 0"
+startRadius = 10.0
+finishRadius = 40.0
+animateTime = 6.0
+rotationRate = 10
+
+[Sphere]
+simulateBase = "sim_null"
+lifeTime = 1.6
+renderBase = "draw_sphere"
+textureName = "vsmoke.tga"
+//textureBlend = "one one modulate"
+startColor = "255 255 255 31"
+finishColor = "31 31 31 0"
+startRadius = 50.0
+finishRadius = 200.0
+animateTime = 1.6
+latitudeBands = 64
+longitudeSegments = 128
+InitialPitch = 0.0
+InitialYaw = 0.0
+InitialRoll = 0.0
+AddPitch = 10.0
+AddYaw = 10.0
+AddRoll = 10.0
