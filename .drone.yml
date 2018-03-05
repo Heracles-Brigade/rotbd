@@ -52,8 +52,10 @@ pipeline:
       event:
         - tag
     commands:
-      - \cp -f /rotbd/output/bundle.zip /drone/deploy/rotbd_${DRONE_TAG}.zip || true
-      - \cp -f /rotbd/output/bundle1.5.zip /drone/deploy/rotbd1.5c_${DRONE_TAG}.zip || true
+      - cp -f /rotbd/output/bundle.zip /drone/deploy/rotbd_${DRONE_TAG}.zip
+      - cp -f /rotbd/output/bundle1.5.zip /drone/deploy/rotbd1.5c_${DRONE_TAG}.zip
+      - ln -f /drone/deploy/rotbd_${DRONE_TAG}.zip /drone/deploy/rotbd_latest.zip
+      - ln -f /drone/deploy/rotbd1.5c_${DRONE_TAG}.zip /drone/deploy/rotbd1.5c_latest.zip
     volumes:
       - /mnt/nginx-fs/files/private/rotbd/builds/releases:/drone/deploy
 
