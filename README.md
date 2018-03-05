@@ -7,5 +7,5 @@
 * [Battlezone Report](https://battlezone.report)
 * [Youtube channel](https://www.youtube.com/channel/UCk2TNixtBnK6kAPfq5RamzA)  
 * [Steam Group](http://steamcommunity.com/groups/HeraclesBrigade)  
-* [Releases](https://media.studynator.me/rotbd/builds/releases)
-* [Snapshots](https://media.studynator.me/rotbd/builds/branches)
+* [Releases](https://media.faavne.no/rotbd/builds/releases) [latest](https://media.faavne.no/rotbd/builds/releases/rotbd_latest.zip)
+* [Snapshots](https://media.faavne.no/rotbd/builds/branches/master) [latest](https://media.faavne.no/rotbd/builds/branches/master/rotbd_latest.zip)
