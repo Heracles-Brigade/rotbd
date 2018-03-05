@@ -4964,7 +4964,7 @@ perceivedTeam [1] =
 1
 [GameObject]
 PrjID [1] =
-bvraz
+bvltnk
 seqno [1] =
 52
 pos [1] =
@@ -4976,7 +4976,7 @@ pos [1] =
 97918.7
 team [1] =
 1
-label = bvraz1_wingman
+label = bvltnk1_wingman
 isUser [1] =
 0
 obj_addr = 00AF7968
