@@ -31,7 +31,7 @@ StartDone = false, -- Some things don't work in the actual "Start" function.
 Nav1Reached = false, -- Are we at nav1 yet? 
 DecoyTriggered = false, -- It's a Trap!
 TrapEscaped = false, -- Whew, close one!
-PlansChange = false,
+PlansChange = false, -- Shaw is a dick
 MammothStolen = false, -- Steal the Mammoth!
 MammothDead = false, -- You can't kill something that's extinct.
 WantItBack = false, -- They're coming for you
@@ -149,6 +149,7 @@ function Update()
 		SetMaxScrap(1, 45);
 		SetScrap(1, 40);
 		RemovePilot(M.Mammoth);
+		SetPerceivedTeam(M.Mammoth, 1);
 		
 		for i = 1,3 do
 			local tmpnav = GetHandle("nav" .. i);

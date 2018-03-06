@@ -234,11 +234,14 @@ function Update()
 			RemoveObject(navtmp);
 		end
 		
-		for i =1, 3 do
+		for i =1, 6 do
 			Patrol(GetHandle("patrol1_" .. i), "patrol_1", 1);
 		end
-		for i =1, 5 do
+		for i =1, 10 do
 			Patrol(GetHandle("patrol2_" .. i), "patrol_2", 1);
+		end
+		for i =1, 9 do
+			Patrol(GetHandle("patrol3_" .. i), "patrol_3", 1)
 		end
 		
 		
