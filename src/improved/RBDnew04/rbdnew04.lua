@@ -52,7 +52,8 @@ Baker = nil,
 
 -- Ints
 Aud1 = 0,
-DecoyTime = 0
+DecoyTime = 0,
+FlashTime = 0
 }
 
 function Save()
@@ -166,32 +167,38 @@ function Update()
 	
 	if not M.DecoyTriggered and IsWithin(M.Player, M.MammothDecoy, 250.0) and M.Player ~= M.Mammoth then
 		if M.DecoyTime == 0 then
-            M.DecoyTime = GetTime() + 4.0;
-            M.Aud1 = AudioMessage(audio.itsatrap);
-        end
-		if GetTime() > M.DecoyTime then
 			-- Spawn Armada
 			M.DecoyAmbush = {
-				BuildObject("svtank", 2, "spawn_svhraz1"),
-				BuildObject("svtank", 2, "spawn_svhraz2"),
-				BuildObject("svfigh", 2, "spawn_svfigh1"),
-				BuildObject("svfigh", 2, "spawn_svfigh2"),
-				BuildObject("svrckt", 2, "spawn_svrckt1"),
-				BuildObject("svrckt", 2, "spawn_svrckt2")
+			BuildObject("svtank", 2, "spawn_svhraz1"),
+			BuildObject("svtank", 2, "spawn_svhraz2"),
+			BuildObject("svfigh", 2, "spawn_svfigh1"),
+			BuildObject("svfigh", 2, "spawn_svfigh2"),
+			BuildObject("svrckt", 2, "spawn_svrckt1"),
+			BuildObject("svrckt", 2, "spawn_svrckt2"),
+			BuildObject("svtank", 2, "spawn_svtank1"),
+			BuildObject("svtank", 2, "spawn_svtank2"),
+			BuildObject("svtank", 2, "spawn_svtank3"),
+			BuildObject("svtank", 2, "spawn_svtank4")
 			}
-		
 			for i = 1,#M.DecoyAmbush do
 				Attack(M.DecoyAmbush[i], M.Player);
 			end
-		
+            M.DecoyTime = GetTime() + 4.0;
+            M.Aud1 = AudioMessage(audio.itsatrap);
+			M.DecoyTriggered = true;
+			UpdateObjectives();
+        end
+		if GetTime() > M.DecoyTime then
+
 			--Blow up da mammoth
 			MakeExplosion("xbmbxpl", M.MammothDecoy);
 			Damage(M.MammothDecoy, 90000);
 		
 			--Blind Player
-			ColorFade(2.0, 1, 255, 255, 255);
-			M.DecoyTriggered = true;
-			UpdateObjectives();
+			M.FlashTime = GetTime() + 3.0;
+		end
+		if GetTime() < M.FlashTime then
+			ColorFade(1.0, 0.75, 255, 255, 255);
 		end
 	end
 	

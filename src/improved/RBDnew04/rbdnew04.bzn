@@ -30,23 +30,23 @@ isUser [1] =
 obj_addr = 00000001
 transform [1] =
   right_x [1] =
-0.775484
+0.775483
   right_y [1] =
-7.06478e-005
+3.6184e-038
   right_z [1] =
 0.631368
   up_x [1] =
-0.00586131
+-2.80601e-038
   up_y [1] =
-0.999956
+1
   up_z [1] =
--0.0073111
+-2.28454e-038
   front_x [1] =
--0.631341
+-0.631368
   front_y [1] =
-0.00937028
+-1.18304e-038
   front_z [1] =
-0.775449
+0.775483
   posit_x [1] =
 1234.81
   posit_y [1] =
@@ -66,7 +66,7 @@ pos [1] =
   x [1] =
 1235.04
   y [1] =
-2.36071
+2.36415
   z [1] =
 101088
 euler =
@@ -75,34 +75,34 @@ euler =
  mass_inv [1] =
 0.000666667
  v_mag [1] =
-8.13187e-008
+9.5116e-008
  v_mag_inv [1] =
-1.22973e+007
+1.05135e+007
  I [1] =
 1500
  k_i [1] =
 1
  v [1] =
   x [1] =
--4.77443e-010
+1.88933e-038
   y [1] =
--8.13152e-008
+9.5116e-008
   z [1] =
-5.96394e-010
+-1.57526e-038
  omega [1] =
   x [1] =
--0.00139573
+-2.57375e-038
   y [1] =
-0.0239037
+0
   z [1] =
-0.000393647
+2.93845e-037
  Accel [1] =
   x [1] =
-4.58831e-011
+-9.52756e-037
   y [1] =
-6.61245e-017
+-9.04705e-017
   z [1] =
--1.05774e-010
+1.17023e-036
 seqNo [1] =
 155
 name = 
@@ -4078,9 +4078,9 @@ isUser [1] =
 obj_addr = 0000001F
 transform [1] =
   right_x [1] =
--0.667688
+-0.667689
   right_y [1] =
--0.00153502
+-0.00153501
   right_z [1] =
 0.744439
   up_x [1] =
@@ -4114,7 +4114,7 @@ pos [1] =
   x [1] =
 2852.15
   y [1] =
-7.18045
+7.18044
   z [1] =
 100430
 euler =
@@ -4343,7 +4343,7 @@ isUser [1] =
 obj_addr = 00000021
 transform [1] =
   right_x [1] =
--0.00323515
+-0.00323516
   right_y [1] =
 0.0199312
   right_z [1] =
@@ -4379,7 +4379,7 @@ pos [1] =
   x [1] =
 2880.51
   y [1] =
-7.22522
+7.22521
   z [1] =
 100480
 euler =
@@ -8976,7 +8976,7 @@ isUser [1] =
 obj_addr = 00000043
 transform [1] =
   right_x [1] =
--0.724655
+-0.724656
   right_y [1] =
 -0.112364
   right_z [1] =
@@ -8990,7 +8990,7 @@ transform [1] =
   front_x [1] =
 0.684511
   front_y [1] =
--0.00355859
+-0.00355864
   front_z [1] =
 -0.728994
   posit_x [1] =
@@ -9116,7 +9116,7 @@ transform [1] =
   right_y [1] =
 0.0188418
   right_z [1] =
--0.235523
+-0.235522
   up_x [1] =
 0
   up_y [1] =
@@ -9849,7 +9849,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-0
+6
 healthRatio [1] =
 1
 curHealth [1] =
@@ -9978,7 +9978,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-0
+2
 healthRatio [1] =
 1
 curHealth [1] =
@@ -10107,7 +10107,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-0
+4
 healthRatio [1] =
 1
 curHealth [1] =
@@ -10236,7 +10236,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-0
+4
 healthRatio [1] =
 1
 curHealth [1] =
@@ -10365,7 +10365,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-0
+4
 healthRatio [1] =
 1
 curHealth [1] =
@@ -10494,7 +10494,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-0
+4
 healthRatio [1] =
 1
 curHealth [1] =
@@ -10623,7 +10623,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-0
+4
 healthRatio [1] =
 1
 curHealth [1] =
@@ -10752,7 +10752,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-0
+4
 healthRatio [1] =
 1
 curHealth [1] =
@@ -10882,7 +10882,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-0
+4
 healthRatio [1] =
 1
 curHealth [1] =
@@ -11309,7 +11309,7 @@ size [1] =
 0
 [AiPaths]
 count [1] =
-28
+32
 [AiPath]
 old_ptr = 00000056
 size [1] =
@@ -11360,9 +11360,9 @@ pointCount [1] =
 1
 points [1] =
   x [1] =
-3674.35
+2939.38
   z [1] =
-101106
+100468
 pathType = 00000000
 [AiPath]
 old_ptr = 00000059
@@ -11373,9 +11373,9 @@ pointCount [1] =
 1
 points [1] =
   x [1] =
-3724.41
+3379.14
   z [1] =
-101077
+100082
 pathType = 00000000
 [AiPath]
 old_ptr = 0000005A
@@ -12196,4 +12196,56 @@ points [26] =
 1658.78
   z [1] =
 98412
+pathType = 00000000
+[AiPath]
+old_ptr = 00000072
+size [1] =
+13
+label = spawn_svtank1
+pointCount [1] =
+1
+points [1] =
+  x [1] =
+2917.67
+  z [1] =
+100507
+pathType = 00000000
+[AiPath]
+old_ptr = 00000073
+size [1] =
+13
+label = spawn_svtank2
+pointCount [1] =
+1
+points [1] =
+  x [1] =
+2910.84
+  z [1] =
+100438
+pathType = 00000000
+[AiPath]
+old_ptr = 00000074
+size [1] =
+13
+label = spawn_svtank3
+pointCount [1] =
+1
+points [1] =
+  x [1] =
+3343.28
+  z [1] =
+100047
+pathType = 00000000
+[AiPath]
+old_ptr = 00000075
+size [1] =
+13
+label = spawn_svtank4
+pointCount [1] =
+1
+points [1] =
+  x [1] =
+3406.52
+  z [1] =
+100047
 pathType = 00000000
