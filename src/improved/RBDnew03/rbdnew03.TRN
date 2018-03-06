@@ -1,9 +1,9 @@
 [NormalView]
 Time=900
-FogStart=60
-FogEnd=120
-FogBreak=30
-VisibilityRange=120
+FogStart=25
+FogEnd=75
+FogBreak=50
+VisibilityRange=75
 Intensity=40
 Ambient=0
 FlatRange=250
