@@ -5,51 +5,51 @@ classLabel = "quakeblast"
 frameCount = 16
 frameDelay = 0.2
 //explRadius = 50.0
-explSound = "xemt1.wav"
-damageRadius = 200.0
+explSound = ""
+damageRadius = 0.0
 damageBallistic = 0
-damageConcussion = 2000
+damageConcussion = 0
 damageFlame = 0
 damageImpact = 0
 
 particleTypes = 1
 
-particleClass1 = "xbmbxpl.light"
+particleClass1 = "xbmbblnd.light"
 particleCount1 = 1
 particleVeloc1 = "0.0 3.0 0.0"
 particleBias1 = "0.0 5.0 0.0
 
-particleClass2 = "xbmbxpl.scorch"
+particleClass2 = "xbmbblnd.scorch"
 particleCount2 = 1
 particleVeloc2 = "0.0 0.0 0.0"
 
-particleClass3 = "xbmbxpl.smokecenter"
+particleClass3 = "xbmbblnd.smokecenter"
 particleCount3 = 1
 particleVeloc3 = "0.0 5.0 0.0"
 particleBias3 = "0.0 17.0 0.0"
 
-particleClass4 = "xbmbxpl.flamecenter"
+particleClass4 = "xbmbblnd.flamecenter"
 particleCount4 = 1
 particleVeloc4 = "0.0 5.0 0.0"
 particleBias4 = "0.0 15.0 0.0"
 
-particleClass5 = "xbmbxpl.sphere"
+particleClass5 = "xbmbblnd.sphere"
 particleCount5 = 1
 particleVeloc5 = "0.0 0.0 0.0"
 
 [QuakeBlastClass]
-quakeCount = 12
-quakeClass = "dayquake"
+quakeCount = 0
+quakeClass = ""
 
 [Light]
 simulateBase = "sim_smoke"
-lifeTime = 6.0
+lifeTime = 3.2
 renderBase = "draw_light"
-startColor = "255 255 63 10000" //255"
+startColor = "255 255 255 2000" //255"
 finishColor = "255 255 255 0"
-startRadius = 500.0
-finishRadius = 500.0
-animateTime = 6.0
+startRadius = 10.0
+finishRadius = 10.0
+animateTime = 3.2
 attenuateConstant = 0.0
 attenuateLinear = 1.0
 attenuateQuadratic = 0.0

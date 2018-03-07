@@ -169,8 +169,8 @@ function Update()
 		if M.DecoyTime == 0 then
 			-- Spawn Armada
 			M.DecoyAmbush = {
-			BuildObject("svtank", 2, "spawn_svhraz1"),
-			BuildObject("svtank", 2, "spawn_svhraz2"),
+			BuildObject("svhraz", 2, "spawn_svhraz1"),
+			BuildObject("svhraz", 2, "spawn_svhraz2"),
 			BuildObject("svfigh", 2, "spawn_svfigh1"),
 			BuildObject("svfigh", 2, "spawn_svfigh2"),
 			BuildObject("svrckt", 2, "spawn_svrckt1"),
@@ -185,20 +185,20 @@ function Update()
 			end
             M.DecoyTime = GetTime() + 4.0;
             M.Aud1 = AudioMessage(audio.itsatrap);
-			M.DecoyTriggered = true;
 			UpdateObjectives();
         end
 		if GetTime() > M.DecoyTime then
-
-			--Blow up da mammoth
+		--	Blow up da mammoth
 			MakeExplosion("xbmbxpl", M.MammothDecoy);
 			Damage(M.MammothDecoy, 90000);
 		
-			--Blind Player
+		--	Blind Player
 			M.FlashTime = GetTime() + 3.0;
 		end
 		if GetTime() < M.FlashTime then
-			ColorFade(1.0, 0.75, 255, 255, 255);
+			ColorFade(100.0, 1.0, 255, 255, 255);
+			MakeExplosion("xbmbblnd", M.Player);
+			M.DecoyTriggered = true;
 		end
 	end
 	
