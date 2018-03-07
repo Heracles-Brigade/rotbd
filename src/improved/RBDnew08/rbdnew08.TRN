@@ -1,151 +1,151 @@
-[Size]
-MinX=0
-MinZ=99840
-Width=2560
-Depth=2560
-Height=0
-
-[NormalView]
-Time=1500
-FogStart=30
-FogEnd=175
-FogBreak=50
-VisibilityRange=200
-Intensity=50
-Ambient=0
-FlatRange=250
-ShadowLuma=0
-FogDirection=1
-TerrainShadowLuma=20
-CarAmbient=10
-
-[World]
-MusicTrack=12
-
-[Sky]
-SunTexture= sun.0
-SkyType= 0
-SkyHeight = 105
-SkyTexture= titan.map
-
-
-BackdropDistance= 400
-BackdropWidth   = 800
-BackdropHeight  = 100
-
-[Clouds]
-Count    = 6
-Type     = 1
-TileSize = 1000
-
-Texture0 = acloud2.map
-Size0    = 500
-Height0  = 100
-
-Texture1 = acloud2.map
-Size1    = 500
-Height1  = 90
-
-Texture2 = acloud2.map
-Size2    = 500
-Height2  = 80
-
-[Stars]
-Radius      = 300
-
-Texture00   = saturn.map
-Size00      = 200
-Azimuth00   = 180
-Elevation00 = 15
-Roll00      = 0
-
-[StarList]
-
-Solid       = 0
-LayerHeight = 15
-Texture     = stars.map
-Radius      = 1000
-
-Start0      = 235
-End0        = 510
-Size0       = 350
-Count0      = 12
-
-Start1      = 235
-End1        = 510
-Size1       = 350
-Count1      = 9 
-
-Start2      = 0
-End2        = 360
-Size2       = 350
-Count2      = 11
-
-[Color]
-Palette=TITAN.ACT
-Luma=TITAN.LUM
-Translucency=TITAN.TBL
-Alpha=TITAN.ALB
-
-
-[TextureType0] // Methane Ocean
-FlatColor= 108
-SolidA0           =ti00sa0.MAP
-SolidA1           =ti00sa1.MAP
-SolidA2           =ti00sa2.MAP
-SolidA3           =ti00sa3.MAP
-
-CapTo1_A0         =ti01ca0.map
-CapTo1_A1         =ti01ca1.map
-CapTo1_A2         =ti01ca2.map
-CapTo1_A3         =ti01ca3.map
-CapTo1_B0         =ti01cb0.map
-CapTo1_B1         =ti01cb1.map
-CapTo1_B2         =ti01cb2.map
-CapTo1_B3         =ti01cb3.map
-CapTo1_C0         =ti01cc0.map
-CapTo1_C1         =ti01cc1.map
-CapTo1_C2         =ti01cc2.map
-CapTo1_C3         =ti01cc3.map
-
-DiagonalTo1_A0    =ti01dA0.map
-DiagonalTo1_A1    =ti01dA1.map
-DiagonalTo1_A2    =ti01dA2.map
-DiagonalTo1_A3    =ti01dA3.map
-
-CapTo3_A0         =ti03ca0.map
-CapTo3_A1         =ti03ca1.map
-CapTo3_A2         =ti03ca2.map
-CapTo3_A3         =ti03ca3.map
-
-DiagonalTo3_A0    =ti03dA0.map
-DiagonalTo3_A1    =ti03dA1.map
-DiagonalTo3_A2    =ti03dA2.map
-DiagonalTo3_A3    =ti03dA3.map
-DiagonalTo3_B0    =ti03dB0.map
-DiagonalTo3_B1    =ti03dB1.map
-DiagonalTo3_B2    =ti03dB2.map
-DiagonalTo3_B3    =ti03dB3.map
-
-[TextureType1] // Base
-FlatColor= 4
-SolidA0           =ti11sa0.MAP
-SolidA1           =ti11sa1.MAP
-SolidA2           =ti11sa2.MAP
-SolidA3           =ti11sa3.MAP
-SolidB0           =ti11sb0.MAP
-SolidB1           =ti11sb1.MAP
-SolidB2           =ti11sb2.MAP
-SolidB3           =ti11sb3.MAP
-
-[TextureType3] // Rock
-FlatColor= 195
-SolidA0           =ti33sA0.map
-SolidA1           =ti33sA1.map
-SolidA2           =ti33sA2.map
-SolidA3           =ti33sA3.map
-SolidB0           =ti33sB0.map
-SolidB1           =ti33sB1.map
-SolidB2           =ti33sB2.map
-SolidB3           =ti33sB3.map
-
+[Size]
+MinX=0
+MinZ=99840
+Width=2560
+Depth=2560
+Height=0
+
+[NormalView]
+Time=1500
+FogStart=30
+FogEnd=175
+FogBreak=50
+VisibilityRange=200
+Intensity=50
+Ambient=0
+FlatRange=250
+ShadowLuma=0
+FogDirection=1
+TerrainShadowLuma=20
+CarAmbient=10
+
+[World]
+MusicTrack=12
+
+[Sky]
+SunTexture= sun.0
+SkyType= 0
+SkyHeight = 105
+SkyTexture= titan.map
+
+
+BackdropDistance= 400
+BackdropWidth   = 800
+BackdropHeight  = 100
+
+[Clouds]
+Count    = 6
+Type     = 1
+TileSize = 1000
+
+Texture0 = acloud2.map
+Size0    = 500
+Height0  = 100
+
+Texture1 = acloud2.map
+Size1    = 500
+Height1  = 90
+
+Texture2 = acloud2.map
+Size2    = 500
+Height2  = 80
+
+[Stars]
+Radius      = 300
+
+Texture00   = saturn.map
+Size00      = 200
+Azimuth00   = 180
+Elevation00 = 15
+Roll00      = 0
+
+[StarList]
+
+Solid       = 0
+LayerHeight = 15
+Texture     = stars.map
+Radius      = 1000
+
+Start0      = 235
+End0        = 510
+Size0       = 350
+Count0      = 12
+
+Start1      = 235
+End1        = 510
+Size1       = 350
+Count1      = 9 
+
+Start2      = 0
+End2        = 360
+Size2       = 350
+Count2      = 11
+
+[Color]
+Palette=TITAN.ACT
+Luma=TITAN.LUM
+Translucency=TITAN.TBL
+Alpha=TITAN.ALB
+
+
+[TextureType0] // Methane Ocean
+FlatColor= 108
+SolidA0           =ti00sa0.MAP
+SolidA1           =ti00sa1.MAP
+SolidA2           =ti00sa2.MAP
+SolidA3           =ti00sa3.MAP
+
+CapTo1_A0         =ti01ca0.map
+CapTo1_A1         =ti01ca1.map
+CapTo1_A2         =ti01ca2.map
+CapTo1_A3         =ti01ca3.map
+CapTo1_B0         =ti01cb0.map
+CapTo1_B1         =ti01cb1.map
+CapTo1_B2         =ti01cb2.map
+CapTo1_B3         =ti01cb3.map
+CapTo1_C0         =ti01cc0.map
+CapTo1_C1         =ti01cc1.map
+CapTo1_C2         =ti01cc2.map
+CapTo1_C3         =ti01cc3.map
+
+DiagonalTo1_A0    =ti01dA0.map
+DiagonalTo1_A1    =ti01dA1.map
+DiagonalTo1_A2    =ti01dA2.map
+DiagonalTo1_A3    =ti01dA3.map
+
+CapTo3_A0         =ti03ca0.map
+CapTo3_A1         =ti03ca1.map
+CapTo3_A2         =ti03ca2.map
+CapTo3_A3         =ti03ca3.map
+
+DiagonalTo3_A0    =ti03dA0.map
+DiagonalTo3_A1    =ti03dA1.map
+DiagonalTo3_A2    =ti03dA2.map
+DiagonalTo3_A3    =ti03dA3.map
+DiagonalTo3_B0    =ti03dB0.map
+DiagonalTo3_B1    =ti03dB1.map
+DiagonalTo3_B2    =ti03dB2.map
+DiagonalTo3_B3    =ti03dB3.map
+
+[TextureType1] // Base
+FlatColor= 4
+SolidA0           =ti11sa0.MAP
+SolidA1           =ti11sa1.MAP
+SolidA2           =ti11sa2.MAP
+SolidA3           =ti11sa3.MAP
+SolidB0           =ti11sb0.MAP
+SolidB1           =ti11sb1.MAP
+SolidB2           =ti11sb2.MAP
+SolidB3           =ti11sb3.MAP
+
+[TextureType3] // Rock
+FlatColor= 195
+SolidA0           =ti33sA0.map
+SolidA1           =ti33sA1.map
+SolidA2           =ti33sA2.map
+SolidA3           =ti33sA3.map
+SolidB0           =ti33sB0.map
+SolidB1           =ti33sB1.map
+SolidB2           =ti33sB2.map
+SolidB3           =ti33sB3.map
+
