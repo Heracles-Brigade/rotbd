@@ -136,9 +136,9 @@ local AiManager = Decorate(
         end
         for i, v in pairs(self.all) do
           for i2, v2 in pairs(v) do
-            if((not Meta(v2).suspended) and v2.onCreateObject) then
-              v2:onCreateObject(handle)
-            end
+            --if((not Meta(v2).suspended) and v2.onCreateObject) then
+            v2:onCreateObject(handle)
+            --end
           end
         end
       end,
@@ -146,9 +146,9 @@ local AiManager = Decorate(
         self:checkHandle(handle);
         for i, v in pairs(self.all) do
           for i2, v2 in pairs(v) do
-            if((not Meta(v2).suspended) and v2.onAddObject) then
-              v2:onAddObject(handle)
-            end
+            --if((not Meta(v2).suspended) and v2.onAddObject) then
+            v2:onAddObject(handle)
+            --end
           end
         end
       end,
@@ -161,9 +161,9 @@ local AiManager = Decorate(
         self.all[handle] = nil;
         for i, v in pairs(self.all) do
           for i2, v2 in pairs(v) do
-            if((not Meta(v2).suspended) and v2.onDeleteObject) then
-              v2:onDeleteObject(handle)
-            end
+            --if((not Meta(v2).suspended) and v2.onDeleteObject) then
+            v2:onDeleteObject(handle)
+            --end
           end
         end
       end,
