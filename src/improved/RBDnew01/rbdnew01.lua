@@ -534,7 +534,7 @@ local destroyComm = mission.Objective:define("destroyComm"):init({
     start = function(self)
         self.nav = spawnNextNav();
         SetObjectiveOn(globals.comm);
-        SetObjectiveName(self.nav, "CCA Base");
+        SetObjectiveName(self.nav, "Research Facility");
         AddObjective(self.otf,"white");
         AddObjective(self.otf2,"white");
         self.camOn = CameraReady();
