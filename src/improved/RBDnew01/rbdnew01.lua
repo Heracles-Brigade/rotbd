@@ -446,7 +446,7 @@ local checkCommand = mission.Objective:define("checkCommand"):init({
             self:fail();
         end
     end,
-    save = function()
+    save = function(self)
         return self.nav;
     end,
     load = function(self,...)
@@ -547,7 +547,7 @@ local destroyComm = mission.Objective:define("destroyComm"):init({
         Follow(apc,tug);
         local tugTasks = mission.TaskManager:sequencer(tug);
         tugTasks:queue2("Pickup",globals.relic);
-        tugTasks:queue2("Goto","spawn_svfigh1");
+        tugTasks:queue2("Goto","leave_path");
         tugTasks:queue2("RemoveConvoy",apc,globals.relic);
         Pickup(tug,globals.relic);
         print("Pickup",tug,globals.relic);
@@ -597,7 +597,7 @@ local patrolControl = mission.Objective:define("destoryNSDF"):init({
             };
             -- Send the reinforcements to Nav 4.
             for i,v in pairs(reinforcements) do
-                Goto(v, globals.navs[4]);
+                Goto(v, GetPosition(globals.navs[4]));
             end
             print("Spawning reinforcements");
             self.spawned = true;
