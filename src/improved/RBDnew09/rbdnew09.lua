@@ -290,11 +290,12 @@ local defendSite = mission.Objective:define("defendSite"):createTasks(
     AddObjective("rbd0903.otf");
     self.wave_timer = 0;
     self:startTask("spawn_waves");
-    self:startTask("kill_waves");
     
   end,
   task_success = function(self,name)
-    if(self:hasTasksSucceeded("spawn_waves","kill_waves")) then
+    if(name == "spawn_waves") then
+      self:startTask("kill_waves");
+    elseif("kill_waves") then
       UpdateObjective("rbd0903.otf","green");
       self:success();
     end
