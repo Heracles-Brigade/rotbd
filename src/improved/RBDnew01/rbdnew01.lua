@@ -554,9 +554,7 @@ local destroyComm = mission.Objective:define("destroyComm"):init({
         Goto(BuildObject("avtank",2,"spawn_tank1"),globals.comm);
         Goto(BuildObject("avtank",2,"spawn_tank2"),globals.comm);
         Goto(BuildObject("avtank",2,"spawn_tank3"),globals.comm);
-        for i,v in pairs(spawnAtPath("bvtank1",1,"extra_tanks")) do
-            Follow(v,GetPlayerHandle(),0);
-        end
+
     end,
     update = function(self)
         if(self.camOn) then
@@ -712,7 +710,9 @@ function Start()
         GetHandle("svfigh4_wingman"),
         GetHandle("svfigh5_wingman")
     };
-        
+    for i,v in pairs(spawnAtPath("bvtank1",1,"extra_tanks")) do
+        --Follow(v,GetPlayerHandle(),0);
+    end
 
     local instance = cinematic:start();
     local instance2 = patrolControl:start();
