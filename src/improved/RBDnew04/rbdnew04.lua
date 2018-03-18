@@ -254,7 +254,7 @@ function Update()
 		UpdateObjectives();
 	end
 	
-	if M.MammothStolen and M.WantItBack and areAllDead(M.RecoverySquad) and M.Player == M.Mammoth then
+	if M.MammothStolen and M.WantItBack and areAllDead(M.RecoverySquad, 2) and M.Player == M.Mammoth then
 		M.RecoveryBeaten = true;
 		UpdateObjectives();
 	end
