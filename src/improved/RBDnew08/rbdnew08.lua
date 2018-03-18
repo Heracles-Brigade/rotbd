@@ -16,7 +16,10 @@ local audio = {
   tower2 = "rbd0803.wav",
   going_in = "rbd0804.wav",
   evacuate = "rbd0805.wav",
-  too_close = "rbd0801L.wav"
+  timer_out = "rbd0806.wav",
+  one_minute = "rbd0807.wav",
+  too_close = "rbd0801L.wav",
+
 }
 
 
@@ -179,6 +182,7 @@ local destroyComms = mission.Objective:define("misison"):createTasks(
   task_start = function(self,name)
     if(name == "destroyComms") then
       self.grigg = BuildObject("avtank",1,"spawn_griggs");
+      self.timerOut = false;
       SetObjectiveName(self.grigg, "Pvt. Grigg");
       SetObjectiveOn(self.grigg);
       local s = mission.TaskManager:sequencer(self.grigg);
@@ -239,11 +243,19 @@ local destroyComms = mission.Objective:define("misison"):createTasks(
   update = function(self,dtime)
     if(self:isTaskActive("destroyComms")) then
       if(mission.areAllDead(self.comms)) then
-        self:taskSucceed("destroyComms");
+        self:taskSucceed("destroyComms", true);
       end
       self.timer = self.timer - dtime;
       if(self.timer < 0) then
-        self:taskFail();
+        if(not self.timerOut)
+          self.timerOut = true;
+        end
+        if(mission.countAlive(self.comms) > 1) then
+          self:taskFail();
+        else -- One tower left when time runs out, player does not fail
+          HideCockpitTimer();
+          -- Play audio message
+        end
       end
     end
     if(self:isTaskActive("wait")) then
@@ -292,10 +304,10 @@ local destroyComms = mission.Objective:define("misison"):createTasks(
     end
   end,
   save = function(self)
-    return self.timer, self.wait_1, self.grigg, self.nextAudio;
+    return self.timer, self.wait_1, self.grigg, self.timerOut, self.nextAudio;
   end,
   load = function(self,...)
-    self.timer, self.wait_1, self.grigg, self.nextAudio = ...;
+    self.timer, self.wait_1, self.grigg, self.timerOut, self.nextAudio = ...;
   end
 });
 
