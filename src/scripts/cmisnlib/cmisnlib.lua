@@ -105,6 +105,26 @@ local function areAllDead(handles, team)
     end
     return true;
 end
+
+local function countDead(handles, team)
+    local c = 0;
+    for i,v in pairs(handles) do
+        if not (IsAlive(v) and (team==nil or team == GetTeamNum(v))) then
+            c = c + 1;
+        end
+    end
+    return c;
+end
+
+local function countAlive(handles, team)
+    local c = 0;
+    for i,v in pairs(handles) do
+        if (IsAlive(v) and (team==nil or team == GetTeamNum(v))) then
+            c = c + 1;
+        end
+    end
+    return c;
+end
 --Returns true of any of the handles given are dead
 --areAllAlive = not areAnyDead
 local function areAnyDead(handles)
@@ -848,6 +868,8 @@ return {
     enemiesInRange = enemiesInRange,
     areAllDead = areAllDead,
     areAnyDead = areAnyDead,
+    countAlive = countAlive,
+    countDead = countDead,
     TaskManager = TaskManager,
     createWave = createWave,
     fixTugs = fixTugs,
