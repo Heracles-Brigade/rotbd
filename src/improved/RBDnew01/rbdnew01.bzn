@@ -12,7 +12,7 @@ size [1] =
 56
 [GameObject]
 PrjID [1] =
-bvtank1
+bvtank
 seqno [1] =
 1
 pos [1] =
@@ -148,7 +148,7 @@ perceivedTeam [1] =
 1
 [GameObject]
 PrjID [1] =
-bvtank1
+bvtank
 seqno [1] =
 2
 pos [1] =
@@ -160,7 +160,7 @@ pos [1] =
 101607
 team [1] =
 1
-label = bvtank10_wingman
+label = bvtank0_wingman
 isUser [1] =
 0
 obj_addr = 00000002
@@ -284,7 +284,7 @@ perceivedTeam [1] =
 1
 [GameObject]
 PrjID [1] =
-bvtank1
+bvtank
 seqno [1] =
 3
 pos [1] =
@@ -296,7 +296,7 @@ pos [1] =
 101618
 team [1] =
 1
-label = bvtank11_wingman
+label = bvtank1_wingman
 isUser [1] =
 0
 obj_addr = 00000003

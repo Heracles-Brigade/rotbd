@@ -650,8 +650,8 @@ local intermediate = mission.Objective:define("intermediate"):init({
             end
             AudioMessage(audio.recycler);
             local recy = BuildObject("bvrecy22",1,"recy_spawn");
-            local e1 = BuildObject("bvtank1",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
-            local e2 = BuildObject("bvtank1",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
+            local e1 = BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
+            local e2 = BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
             Defend2(e1,recy,0);
             Defend2(e2,recy,0);
             --Make recycler follow path
@@ -710,7 +710,7 @@ function Start()
         GetHandle("svfigh4_wingman"),
         GetHandle("svfigh5_wingman")
     };
-    for i,v in pairs(spawnAtPath("bvtank1",1,"extra_tanks")) do
+    for i,v in pairs(spawnAtPath("bvtank",1,"extra_tanks")) do
         --Follow(v,GetPlayerHandle(),0);
     end
 
