@@ -635,8 +635,8 @@ local intermediate = mission.Objective:define("intermediate"):init({
         if(enemiesInRange(270,self.nav)) then
             self.enemiesAtStart = true;
             AddObjective("bdmisn311.otf","white");
-        else
-            AddObjective("bdmisn311b.otf","yellow");
+--      else --Removed due to redundancy
+--          AddObjective("bdmisn311b.otf","yellow");
         end
     end,
     update = function(self,dtime)
