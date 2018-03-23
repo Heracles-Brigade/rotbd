@@ -62,11 +62,11 @@ soundDeploy = "avartle0.wav"
 soundUndeploy = "avartle4.wav"
 
 [ProducerClass]
-buildItem1 = "abspow" //"bbspow" // Enable bbspow for BZR. -GBD
+buildItem1 = "bbspow"
 buildItem2 = "bbtowe"
 buildItem3 = "bbcomm"
-//buildItem4 = "bbbarr"
-//buildItem5 = "bbsilo"
-//buildItem6 = "bbsupp"
-//buildItem7 = "bbhang"
+buildItem4 = "bbbarr"
+buildItem5 = "bbsilo"
+buildItem6 = "bbsupp"
+buildItem7 = "bbhang"
 
