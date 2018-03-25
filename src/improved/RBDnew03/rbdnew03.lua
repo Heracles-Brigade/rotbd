@@ -5,6 +5,9 @@
 	 - Vemahk
 	 - Janne
 --]]
+local cmisnlib = require("cmisnlib");
+local choose = cmisnlib.choose;
+
 local aud = {}
 
 local audio = {
@@ -71,8 +74,13 @@ Supply = nil,
 Wrecker = nil,
 Armory = false,
 Radar = { },
+scrapFields = { };
 Aud1 = 0
 }
+
+Start()
+	scrapFieldsFiller(scrpfld1);
+end
 
 function Save()
     return 
@@ -86,6 +94,28 @@ function Load(...)
     end
 end
 
+local function scrapFieldsFiller(p)
+	local scrapFieldObjs = {};
+	local scrapFieldScrap = {};
+	self.scrapFieldObjs = ObjectsInRange(35,p)
+	for i,v in pairs(self.scrapFieldObjs) do
+		if GetClassLabel(v) = "scrap"
+			table.insert(scrapFieldScrap,v);
+		end
+	end
+	M.scrapFields[p] = scrapFieldScrap;
+end
+
+local function scrapRespawner()
+	for path,field in pairs(M.scrapFields) do
+		for i,scrap in ipairs(field) do
+			if not IsValid(scrap) then
+				local newScrap = BuildObject(choose("npscr1", "npscr2", "npscr3"),0,GetPositionNear(GetPosition(path),1,35));
+				field[i] = newScrap;
+			end
+		end
+	end
+end
 
 local function UpdateObjectives() --This entire function controls objective bubble and makes sure that objectives can flow in a linear order.
 	ClearObjectives();
