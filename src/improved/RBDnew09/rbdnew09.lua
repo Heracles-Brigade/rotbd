@@ -30,19 +30,7 @@ local fail_conditions = {
   apc = "rbd09l01.des"
 }
 
-
-function FindTarget(handle,alt,sequencer)
-  local ne = GetNearestEnemy(handle);
-  if(IsValid(ne)) then
-    sequencer:queue2("Attack",GetNearestEnemy(handle));
-    sequencer:queue3("FindTarget",alt);
-  elseif(GetDistance(handle,alt) > 50) then
-    sequencer:queue2("Goto",alt);
-    sequencer:queue3("FindTarget",alt);
-  else
-    sequencer:queue(AiCommand["Hunt"]);
-  end
-end
+local WaveSpawner = require("wavec").WaveSpawner;
 
 function AddToPatrolTask(handle,p_id,sequencer)
   --Look for enemies
@@ -308,8 +296,8 @@ local defendSite = mission.Objective:define("defendSite"):createTasks(
         done = false;
         local d = tonumber(i);
         if(self.wave_timer >= d) then
-          local wave, lead = mission.spawnInFormation2(v,"nsdf_attack",{"avfigh","avtank","avrckt","avltnk","hvsav"},2);
-          Goto(lead,"nsdf_attack");
+          local wave, lead = mission.spawnInFormation2(v,"attack",{"avfigh","avtank","avrckt","avltnk","hvsav"},2);
+          Goto(lead,"attack");
           for i2, v2 in pairs(wave) do
             local s = mission.TaskManager:sequencer(v2);
             if(v2~=lead) then
@@ -326,8 +314,8 @@ local defendSite = mission.Objective:define("defendSite"):createTasks(
           done = false;
           local d = tonumber(i);
           if(self.wave_timer >= d) then
-            local wave, lead = mission.spawnInFormation2(v,"nsdf_attack",{"avfigh","avtank","avrckt","avltnk","hvsav"},2);
-            --Goto(lead,"nsdf_attack");
+            local wave, lead = mission.spawnInFormation2(v,"attack",{"avfigh","avtank","avrckt","avltnk","hvsav"},2);
+            Goto(lead,"attack");
             for i2, v2 in pairs(wave) do
               local s = mission.TaskManager:sequencer(v2);
               if(v2~=lead) then

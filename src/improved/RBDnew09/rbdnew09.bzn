@@ -30,23 +30,23 @@ isUser [1] =
 obj_addr = 00000001
 transform [1] =
   right_x [1] =
--0.964424
+-0.999629
   right_y [1] =
-5.16778e-022
+0
   right_z [1] =
--0.264361
+-0.0272483
   up_x [1] =
--2.78594e-020
+0
   up_y [1] =
 1
   up_z [1] =
-1.0359e-019
+3.74187e-038
   front_x [1] =
-0.264361
+0.0272483
   front_y [1] =
-1.07269e-019
+3.74326e-038
   front_z [1] =
--0.964424
+-0.999629
   posit_x [1] =
 2027.76
   posit_y [1] =
@@ -64,7 +64,7 @@ illumination [1] =
 1
 pos [1] =
   x [1] =
-2027.66
+2027.75
   y [1] =
 2.36415
   z [1] =
@@ -75,34 +75,34 @@ euler =
  mass_inv [1] =
 0.000666667
  v_mag [1] =
-9.65628e-008
+9.41543e-008
  v_mag_inv [1] =
-1.0356e+007
+1.06209e+007
  I [1] =
 1500
  k_i [1] =
 1
  v [1] =
   x [1] =
--3.18097e-027
+0
   y [1] =
-9.65628e-008
+9.41543e-008
   z [1] =
-1.18278e-026
+0
  omega [1] =
   x [1] =
--3.87094e-018
+1.5381e-037
   y [1] =
-0
+1.17697e-036
   z [1] =
-1.86875e-020
+2.9318e-037
  Accel [1] =
   x [1] =
-1.00321e-025
+0
   y [1] =
--9.32438e-017
+-8.86503e-017
   z [1] =
--3.73039e-025
+0
 seqNo [1] =
 1
 name = 
@@ -115,7 +115,7 @@ false
 isVisible [1] =
 ffffffff
 seen [1] =
-2
+0
 healthRatio [1] =
 0.997333
 curHealth [1] =
@@ -5329,9 +5329,9 @@ seen [1] =
 healthRatio [1] =
 1
 curHealth [1] =
-2500
+1200
 maxHealth [1] =
-2500
+1200
 ammoRatio [1] =
 0
 curAmmo [1] =
@@ -5458,9 +5458,9 @@ seen [1] =
 healthRatio [1] =
 1
 curHealth [1] =
-2500
+1200
 maxHealth [1] =
-2500
+1200
 ammoRatio [1] =
 0
 curAmmo [1] =
@@ -5587,9 +5587,9 @@ seen [1] =
 healthRatio [1] =
 1
 curHealth [1] =
-2500
+1200
 maxHealth [1] =
-2500
+1200
 ammoRatio [1] =
 0
 curAmmo [1] =
@@ -5716,9 +5716,9 @@ seen [1] =
 healthRatio [1] =
 1
 curHealth [1] =
-2500
+1200
 maxHealth [1] =
-2500
+1200
 ammoRatio [1] =
 0
 curAmmo [1] =
@@ -5845,9 +5845,9 @@ seen [1] =
 healthRatio [1] =
 1
 curHealth [1] =
-2500
+1200
 maxHealth [1] =
-2500
+1200
 ammoRatio [1] =
 0
 curAmmo [1] =
@@ -5974,9 +5974,9 @@ seen [1] =
 healthRatio [1] =
 1
 curHealth [1] =
-2500
+1200
 maxHealth [1] =
-2500
+1200
 ammoRatio [1] =
 0
 curAmmo [1] =
@@ -6103,9 +6103,9 @@ seen [1] =
 healthRatio [1] =
 1
 curHealth [1] =
-2500
+1200
 maxHealth [1] =
-2500
+1200
 ammoRatio [1] =
 0
 curAmmo [1] =
@@ -6232,9 +6232,9 @@ seen [1] =
 healthRatio [1] =
 1
 curHealth [1] =
-2500
+1200
 maxHealth [1] =
-2500
+1200
 ammoRatio [1] =
 0
 curAmmo [1] =
@@ -6361,9 +6361,9 @@ seen [1] =
 healthRatio [1] =
 1
 curHealth [1] =
-2500
+1200
 maxHealth [1] =
-2500
+1200
 ammoRatio [1] =
 0
 curAmmo [1] =
@@ -6490,9 +6490,9 @@ seen [1] =
 healthRatio [1] =
 1
 curHealth [1] =
-2500
+1200
 maxHealth [1] =
-2500
+1200
 ammoRatio [1] =
 0
 curAmmo [1] =
@@ -6619,9 +6619,9 @@ seen [1] =
 healthRatio [1] =
 1
 curHealth [1] =
-2500
+1200
 maxHealth [1] =
-2500
+1200
 ammoRatio [1] =
 0
 curAmmo [1] =
@@ -6748,9 +6748,9 @@ seen [1] =
 healthRatio [1] =
 1
 curHealth [1] =
-2500
+1200
 maxHealth [1] =
-2500
+1200
 ammoRatio [1] =
 0
 curAmmo [1] =
@@ -22596,7 +22596,7 @@ priority [1] =
 1
 what = 05000000
 who [1] =
--179306297
+-177209145
 where = 00000000
 param [1] =
 
@@ -23067,7 +23067,7 @@ size [1] =
 0
 [AiPaths]
 count [1] =
-39
+40
 [AiPath]
 old_ptr = 000000B5
 size [1] =
@@ -24311,4 +24311,53 @@ points [2] =
 1962.73
   z [1] =
 101401
+pathType = 00000000
+[AiPath]
+old_ptr = 000000D6
+size [1] =
+6
+label = attack
+pointCount [1] =
+10
+points [10] =
+  x [1] =
+2420.21
+  z [1] =
+99822.2
+  x [1] =
+2477.53
+  z [1] =
+99610.4
+  x [1] =
+2522.39
+  z [1] =
+99528.1
+  x [1] =
+2496.22
+  z [1] =
+99343.7
+  x [1] =
+2437.65
+  z [1] =
+99212.6
+  x [1] =
+2422.7
+  z [1] =
+99044.4
+  x [1] =
+2320.52
+  z [1] =
+98968.3
+  x [1] =
+2229.55
+  z [1] =
+98921.5
+  x [1] =
+2017.71
+  z [1] =
+98943.9
+  x [1] =
+1900.57
+  z [1] =
+98877.9
 pathType = 00000000
