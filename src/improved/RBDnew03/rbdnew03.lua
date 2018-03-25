@@ -253,6 +253,7 @@ function Update()
 		M.Tug = GetHandle("tug");
 		RemovePilot(M.Tug);
 		M.ControlTower = GetHandle("control");
+		SetMaxScrap(2,10000);
 		SetPerceivedTeam(M.Player, 2); -- Make sure player isn't detected right away.
 		for i = 1, 3 do 
 			M.Radar[i] = { RadarHandle = GetHandle("radar"..i), RadarWarn = false, RadarTrigger = false }

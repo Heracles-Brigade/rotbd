@@ -178,6 +178,7 @@ function Update()
 		SetIndependence(M.Mammoth, 0);
 		M.MammothDecoy = GetHandle("badmammoth");
 		SetIndependence(M.MammothDecoy, 0);
+		SetMaxScrap(2,10000);
 		SetMaxScrap(1, 45);
 		SetScrap(1, 40);
 		RemovePilot(M.Mammoth);
