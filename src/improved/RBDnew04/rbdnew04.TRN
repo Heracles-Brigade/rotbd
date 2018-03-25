@@ -1,29 +1,30 @@
+[Size]
+MinX=0
+MinZ=97280
+Width=5120
+Depth=5120
+Height=0
 [NormalView]
-Time=900
-FogStart=60
-FogEnd=120
-FogBreak=30
-VisibilityRange=120
+Time=800
+FogStart=175
+FogEnd=250
+FogBreak=60
+VisibilityRange=250
 Intensity=40
 Ambient=0
 FlatRange=250
 ShadowLuma=0
 FogDirection=1
 TerrainShadowLuma=20
-CarAmbient=20
-
+CarAmbient=10
 [Atlases]
 MaterialName	= ma_detail_atlas
-
-
 [World]
-MusicTrack=4
-
+MusicTrack=6
 [Sky]
 SunTexture=sun.0
-SkyHeight = 110
+SkyHeight = 300
 SkyTexture= mars.map
-
 BackdropTexture =
 BackdropDistance= 400
 BackdropWidth   = 800
@@ -33,15 +34,12 @@ BackdropHeight  = 100
 Count    = 8
 Type     = 1
 TileSize = 1000
-
 Texture0 = acloud2.map
 Size0    = 500
 Height0  = 100
-
 Texture1 = acloud2.map
 Size1    = 500
 Height1  = 90
-
 Texture2 = acloud2.map
 Size2    = 500
 Height2  = 80
@@ -51,13 +49,6 @@ Palette=MARS.ACT
 Luma=MARS.LUM
 Translucency=MARS.TBL
 Alpha=MARS.ALB
-
-[Size]
-MinX=0
-MinZ=98560
-Width=5120
-Depth=3840
-Height=0
 
 [TextureType0] // Sandy
 FlatColor= 108
@@ -73,17 +64,14 @@ SolidC0        = ma00sC0.map
 SolidC1        = ma00sC1.map
 SolidC2        = ma00sC2.map
 SolidC3        = ma00sC3.map
-
 CapTo1_A0      = ma01cA0.map
 CapTo1_A1      = ma01cA1.map
 CapTo1_A2      = ma01cA2.map
 CapTo1_A3      = ma01cA3.map
-
 DiagonalTo1_A0 = ma01dA0.map
 DiagonalTo1_A1 = ma01dA1.map
 DiagonalTo1_A2 = ma01dA2.map
 DiagonalTo1_A3 = ma01dA3.map
-
 CapTo4_A0      = ma04cA0.map
 CapTo4_A1      = ma04cA1.map
 CapTo4_A2      = ma04cA2.map
@@ -92,7 +80,6 @@ CapTo4_B0      = ma04cB0.map
 CapTo4_B1      = ma04cB1.map
 CapTo4_B2      = ma04cB2.map
 CapTo4_B3      = ma04cB3.map
-
 DiagonalTo4_A0 = ma04dA0.map
 DiagonalTo4_A1 = ma04dA1.map
 DiagonalTo4_A2 = ma04dA2.map
@@ -116,18 +103,14 @@ SolidD0        = ma11sC0.map
 SolidD1        = ma11sC1.map
 SolidD2        = ma11sC2.map
 SolidD3        = ma11sC3.map
-
-
 CapTo3_A0      = ma13cA0.map
 CapTo3_A1      = ma13cA1.map
 CapTo3_A2      = ma13cA2.map
 CapTo3_A3      = ma13cA3.map
-
 DiagonalTo3_A0 = ma13dA0.map
 DiagonalTo3_A1 = ma13dA1.map
 DiagonalTo3_A2 = ma13dA2.map
 DiagonalTo3_A3 = ma13dA3.map
-
 [TextureType2] // Geyser
 FlatColor= 192
 SolidA0        = ma22sA0.map
@@ -156,6 +139,3 @@ SolidC0        = ma44sC0.map
 SolidC1        = ma44sC1.map
 SolidC2        = ma44sC2.map
 SolidC3        = ma44sC3.map
-
-
-

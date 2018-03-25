@@ -230,7 +230,7 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
     }
     self.tug = GetHandle(tugL);
     self.recy = GetRecyclerHandle();
-    self.waveInterval = 160;
+    self.waveInterval = 140;
   end,
   start = function(self)
     --Spawn attack @ nsdf_attack
@@ -284,12 +284,13 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
       --Wave timer
       self.waveTimer[f] = self.waveTimer[f] - dtime;
       if(self.waveTimer[f] <= 0) then
+        self.waveInterval = self.waveInterval + self.waveInterval*0.05;
         self.waveTimer[f] = self.waveInterval;
         --local possibleWaves = {{" 2 ","1 1"},{" 2 ","6 6"}};
         local wave = chooseA(
           {item = {" 2 ", "1 1"}, chance = 10}, -- tank, two fighters
           {item = {" 2 ", "3 5"}, chance = 9}, -- tank, one rkct tank and one light tank
-          {item = {" 2 ", "6 6"}, chance = 5} -- tank and two bombers
+          {item = {" 2 ", " 6 "}, chance = 4} -- tank and two bombers
         );
         --local wave = possibleWaves[math.random(1,2)];
         local lead;
@@ -325,7 +326,7 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
         tug_sequencer:queue2("Dropoff",("%s_base"):format(f));
 
         --Create escort
-        for i,v in pairs(mission.spawnInFormation2({"1 1"},s,self.vehicles[f],2,15)) do
+        for i,v in pairs(mission.spawnInFormation2({"2 2"},s,self.vehicles[f],2,15)) do
           local def_seq = mission.TaskManager:sequencer(v);
           def_seq:queue2("Defend2",tug);
           --If tug dies, attack the players base
@@ -499,7 +500,8 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
       self.spawnedEnemyTugs,
       self.waveTimer,
       self.distressCountdown,
-      self.audio_played;
+      self.audio_played,
+      self.waveInterval;
   end,
   load = function(self,...)
     --Vars we need to load
@@ -508,7 +510,8 @@ local getRelics = mission.Objective:define("reteriveRelics"):createTasks(
     self.spawnedEnemyTugs,
     self.waveTimer,
     self.distressCountdown,
-    self.audio_played = ...;
+    self.audio_played,
+    self.waveInterval = ...;
   end,
   fail = function(self,kind)
     FailMission(GetTime() + 5,des[kind]);

@@ -17,7 +17,7 @@
 **Difficulty setting:**
   - [ ] Very Easy
   - [ ] Easy
-  - [X] Normal
+  - [ ] Normal
   - [ ] Hard
   - [ ] Very Hard
 
