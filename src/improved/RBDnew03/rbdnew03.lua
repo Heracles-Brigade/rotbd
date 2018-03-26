@@ -5,7 +5,8 @@
 	 - Vemahk
 	 - Janne
 --]]
-local aud = {}
+local cmisnlib = require("cmisnlib");
+local choose = cmisnlib.choose;
 
 local audio = {
 	intro = "rbdnew0301.wav",
@@ -71,8 +72,24 @@ Supply = nil,
 Wrecker = nil,
 Armory = false,
 Radar = { },
+scrapFields = { },
 Aud1 = 0
 }
+
+local function scrapFieldsFiller(p)
+    local scrapFieldObjs = ObjectsInRange(35,p);
+    local scrapFieldScrap = { };
+    for obj in scrapFieldObjs do
+        if GetClassLabel(obj) == "scrap" then
+            table.insert(scrapFieldScrap,obj);
+        end
+    end
+    M.scrapFields[p] = scrapFieldScrap;
+end
+
+function Start()
+	scrapFieldsFiller("scrpfld1");
+end
 
 function Save()
     return 
@@ -86,6 +103,16 @@ function Load(...)
     end
 end
 
+local function scrapRespawner()
+	for path,field in pairs(M.scrapFields) do
+		for i,scrap in ipairs(field) do
+			if not IsValid(scrap) then
+				local newScrap = BuildObject(choose("npscr1", "npscr2", "npscr3"),0,GetPositionNear(GetPosition(path),1,35));
+				field[i] = newScrap;
+			end
+		end
+	end
+end
 
 local function UpdateObjectives() --This entire function controls objective bubble and makes sure that objectives can flow in a linear order.
 	ClearObjectives();
@@ -213,6 +240,7 @@ end
 function Update()
 	
 	M.Player = GetPlayerHandle();
+	scrapRespawner();
 	
 	if not M.StartDone then
 		
@@ -223,6 +251,7 @@ function Update()
 		M.Tug = GetHandle("tug");
 		RemovePilot(M.Tug);
 		M.ControlTower = GetHandle("control");
+		SetMaxScrap(2,10000);
 		SetPerceivedTeam(M.Player, 2); -- Make sure player isn't detected right away.
 		for i = 1, 3 do 
 			M.Radar[i] = { RadarHandle = GetHandle("radar"..i), RadarWarn = false, RadarTrigger = false }
