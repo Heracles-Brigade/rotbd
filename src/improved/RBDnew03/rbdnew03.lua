@@ -8,8 +8,6 @@
 local cmisnlib = require("cmisnlib");
 local choose = cmisnlib.choose;
 
-local aud = {}
-
 local audio = {
 	intro = "rbdnew0301.wav",
 	commwarn = "rbdnew0301W.wav",
@@ -74,12 +72,23 @@ Supply = nil,
 Wrecker = nil,
 Armory = false,
 Radar = { },
-scrapFields = { };
+scrapFields = { },
 Aud1 = 0
 }
 
-Start()
-	scrapFieldsFiller(scrpfld1);
+local function scrapFieldsFiller(p)
+    local scrapFieldObjs = ObjectsInRange(35,p);
+    local scrapFieldScrap = { };
+    for obj in scrapFieldObjs do
+        if GetClassLabel(obj) == "scrap" then
+            table.insert(scrapFieldScrap,obj);
+        end
+    end
+    M.scrapFields[p] = scrapFieldScrap;
+end
+
+function Start()
+	scrapFieldsFiller("scrpfld1");
 end
 
 function Save()
@@ -92,18 +101,6 @@ function Load(...)
 		M
 		= ...
     end
-end
-
-local function scrapFieldsFiller(p)
-	local scrapFieldObjs = {};
-	local scrapFieldScrap = {};
-	self.scrapFieldObjs = ObjectsInRange(35,p)
-	for i,v in pairs(self.scrapFieldObjs) do
-		if GetClassLabel(v) = "scrap"
-			table.insert(scrapFieldScrap,v);
-		end
-	end
-	M.scrapFields[p] = scrapFieldScrap;
 end
 
 local function scrapRespawner()
@@ -243,6 +240,7 @@ end
 function Update()
 	
 	M.Player = GetPlayerHandle();
+	scrapRespawner();
 	
 	if not M.StartDone then
 		
