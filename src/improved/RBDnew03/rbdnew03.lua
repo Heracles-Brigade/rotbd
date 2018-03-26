@@ -375,7 +375,7 @@ function Update()
 	if not M.MissionOver then
 	
 		-- Win Conditions:
-		if M.MammothInfoed and GetObjectiveName(M.ObjectiveNav) == "Extraction Point" and GetDistance(M.Player, M.ObjectiveNav) < 25.0 then
+		if M.MammothInfoed and GetObjectiveName(M.ObjectiveNav) == "Extraction Point" and GetDistance(M.Player, M.ObjectiveNav) < 50.0 then
 			Aud1 = AudioMessage(audio.win);
 			SucceedMission(GetTime()+5.0, "rbdnew03wn.des");
 			M.MissionOver = true;
