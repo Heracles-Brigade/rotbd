@@ -1,7 +1,19 @@
 -- Battlezone: Rise of the Black Dogs Redux, Mission 3 "The Mammoth Project" recoded by Vemahk and Seqan based off GBD's 1:1 script
 
-local missionlib = require("cmisnlib");
-local areAllDead = missionlib.areAllDead;
+local csmisnlib = require("cmisnlib");
+local areAllDead = csmisnlib.areAllDead;
+local choose = cmisnlib.choose;
+
+local function scrapFieldsFiller(p)
+    local scrapFieldObjs = ObjectsInRange(35,p);
+    local scrapFieldScrap = { };
+    for obj in scrapFieldObjs do
+        if GetClassLabel(obj) == "scrap" then
+            table.insert(scrapFieldScrap,obj);
+        end
+    end
+    M.scrapFields[p] = scrapFieldScrap;
+end
 
 local audio = {
 intro = "rbdnew0401.wav",
@@ -49,12 +61,19 @@ MammothDecoy = nil,
 DecoyAmbush = { },
 RecoverySquad = { },
 Baker = nil,
+scrapFields = {},
 
 -- Ints
 Aud1 = 0,
 DecoyTime = 0,
 FlashTime = 0
 }
+
+function Start()
+	for i = 1,5 do
+		scrapFieldsFiller("scrpfld"..i);
+	end
+end
 
 function Save()
 	return 
@@ -66,6 +85,17 @@ function Load(...)
 		M
 		= ...
     end
+end
+
+local function scrapRespawner()
+	for path,field in pairs(M.scrapFields) do
+		for i,scrap in ipairs(field) do
+			if not IsValid(scrap) then
+				local newScrap = BuildObject(choose("npscr1", "npscr2", "npscr3"),0,GetPositionNear(GetPosition(path),1,35));
+				field[i] = newScrap;
+			end
+		end
+	end
 end
 
 local function UpdateObjectives() -- Handle Objectives.
@@ -129,17 +159,18 @@ end
 
 local function SpawnBaker()
 	M.Baker = BuildObject("bvhaul", 3, "bakerspawn");
-	Defend2(BuildObject("bvfigh", 3, "bakerspawn"), M.Baker, 1);
-	Defend2(BuildObject("bvfigh", 3, "bakerspawn"), M.Baker, 1);
-	Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
-	Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
-	Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
-	Defend2(BuildObject("bvtank", 3, "bakerspawn"), M.Baker, 1);
+	Defend2(BuildObject("bvfigh", 3, GetPositionNear(GetPostiion("bakerspawn"))), M.Baker, 1);
+	Defend2(BuildObject("bvfigh", 3, GetPositionNear(GetPostiion("bakerspawn"))), M.Baker, 1);
+	Defend2(BuildObject("bvtank", 3, GetPositionNear(GetPostiion("bakerspawn"))), M.Baker, 1);
+	Defend2(BuildObject("bvtank", 3, GetPositionNear(GetPostiion("bakerspawn"))), M.Baker, 1);
+	Defend2(BuildObject("bvtank", 3, GetPositionNear(GetPostiion("bakerspawn"))), M.Baker, 1);
+	Defend2(BuildObject("bvtank", 3, GetPositionNear(GetPostiion("bakerspawn"))), M.Baker, 1);
 end
 
 function Update()
 
 	M.Player = GetPlayerHandle();
+	scrapRespawner();
 	
 	if not M.StartDone then
 		Ally(1,3)
@@ -147,6 +178,7 @@ function Update()
 		SetIndependence(M.Mammoth, 0);
 		M.MammothDecoy = GetHandle("badmammoth");
 		SetIndependence(M.MammothDecoy, 0);
+		SetMaxScrap(2,10000);
 		SetMaxScrap(1, 45);
 		SetScrap(1, 40);
 		RemovePilot(M.Mammoth);
