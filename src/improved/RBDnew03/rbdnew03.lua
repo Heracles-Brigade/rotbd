@@ -388,6 +388,7 @@ function Update()
         M.Aud1 = AudioMessage(audio.flee);
         StartCockpitTimer(120, 30, 10);
 		SetObjectiveOff(M.Mammoth);
+		BuildObject("bvapc", 3, GetPositionNear(GetPosition(GetHandle("nav5"))));
         SpawnNav(5);
         M.MammothInfoed = true;
         UpdateObjectives();
