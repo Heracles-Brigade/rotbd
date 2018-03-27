@@ -9,18 +9,6 @@ local TaskSequencer;
 local TaskManager;
 
 
-function FindTarget(handle,alt,sequencer)
-    local ne = GetNearestEnemy(handle);
-    if(IsValid(ne)) then
-        sequencer:queue2("Attack",GetNearestEnemy(handle));
-        sequencer:queue3("FindTarget",alt);
-    elseif(GetDistance(handle,alt) > 50) then
-        sequencer:queue2("Goto",alt);
-        sequencer:queue3("FindTarget",alt);
-    else
-        sequencer:queue(AiCommand["Hunt"]);
-    end
-end
 
 local function isBzr() 
     return string.gmatch(GameVersion, "%d+")() == "2";
