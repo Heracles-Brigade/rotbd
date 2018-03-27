@@ -1,2 +1,6 @@
 text eol=crlf
 *.bzn binary
+*.lgt binary
+*.hg2 binary
+*.mat binary
+*.hgt binary

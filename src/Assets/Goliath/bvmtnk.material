@@ -1,0 +1,27 @@
+import * from "BZBase.material"
+
+material bvmtnk00 : BZBase
+{
+	set_texture_alias DiffuseMap bvmtnk00_D.dds
+	set_texture_alias NormalMap bvmtnk00_N.dds
+	set_texture_alias SpecularMap bvmtnk00_S.dds
+	set_texture_alias EmissiveMap bvmtnk00_E.dds
+	
+	set $diffuse "1 1 1"
+	set $ambient "1 1 1"
+	set $specular ".7 .7 .7"
+	set $shininess "127"
+}
+
+material bvmtnk01 : BZBaseCockpit
+{
+	set_texture_alias DiffuseMap avapc_cockpit_D.dds
+	set_texture_alias NormalMap avapc_cockpit_N.dds
+	set_texture_alias SpecularMap avapc_cockpit_S.dds
+	set_texture_alias EmissiveMap avapc_cockpit_E.dds
+	
+	set $diffuse "1 1 1"
+	set $ambient "1 1 1"
+	set $specular ".7 .7 .7"
+	set $shininess "127"
+}

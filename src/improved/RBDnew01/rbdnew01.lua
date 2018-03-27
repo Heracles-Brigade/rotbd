@@ -2,13 +2,15 @@
 
 local _ = require("bz_logging");
 
-print("LOAD!",GetMissionFilename());
+local misc = require("misc");
 
 local mission = require('cmisnlib');
 local globals = {};
 local tracker = mission.UnitTracker:new();
 
 local areAllDead = mission.areAllDead;
+
+
 
 local audio = {
     intro = "rbd0101.wav",
@@ -31,9 +33,20 @@ function RemoveConvoy(...)
     end
 end
 
+local function spawnNextNav()
+    local current = globals.currentNav;
+    local nav = BuildObject("apcamr", 1, GetPathPoints("nav_path")[current]);
+    SetObjectiveName(nav, ("Navpoint %d"):format(current));
+    SetObjectiveOn(nav);
+    SetMaxHealth(nav, 0);
+    table.insert(globals.navs, nav);
+    globals.currentNav = globals.currentNav + 1;
+    return nav;
+end
+
 local function enemiesInRange(dist,place)
     local enemies_nearby = false;
-    for v in ObjectsInRange(300,globals.nav[4]) do
+    for v in ObjectsInRange(dist,place) do
         if(IsCraft(v) and GetTeamNum(v) == 2) then
             enemies_nearby = true;
         end
@@ -230,6 +243,9 @@ local destorySoviet = mission.Objective:define("destroy_soviet"):init({
     start = function()
         createWave("svfigh",{"spawn_e1","spawn_e2"},"east_path");
         createWave("svtank",{"spawn_e3"},"east_path");
+        local nav = spawnNextNav();
+        SetObjectiveOff(nav);
+        SetObjectiveName(nav, "CCA Base");
         AudioMessage(audio.attack);
     end,
     update = function(self,dtime)
@@ -418,7 +434,7 @@ local checkCommand = mission.Objective:define("checkCommand"):init({
     next = 'destorySolar'
 }):setListeners({
     start = function(self)
-        SetObjectiveOn(globals.nav[1]);
+        self.nav = spawnNextNav();
         AddObjective(self.otf,"white");
         self.command = GetHandle("sbhqcp0_i76building");
         print(self.otf,self.command);
@@ -430,12 +446,16 @@ local checkCommand = mission.Objective:define("checkCommand"):init({
             self:fail();
         end
     end,
+    save = function(self)
+        return self.nav;
+    end,
     load = function(self,...)
         self.command = GetHandle("sbhqcp0_i76building");
+        self.nav = ...;
     end,
     success = function(self)
         AudioMessage(audio.inspect);
-        SetObjectiveOff(globals.nav[1]);
+        SetObjectiveOff(self.nav);
         UpdateObjective(self.otf,"green");
         mission.Objective:Start(self.next);
     end,
@@ -456,7 +476,8 @@ local destroySolar = mission.Objective:define("destorySolar"):init({
     power5_8init = false
 }):setListeners({
     start = function(self)
-        SetObjectiveOn(globals.nav[2]);
+        self.nav = spawnNextNav();
+        SetObjectiveName(self.nav, "Solar Array 1");
         AddObjective(self.otf1,"white");
         self.handles = {};
         for i,v in pairs(self.target_l1) do
@@ -470,8 +491,10 @@ local destroySolar = mission.Objective:define("destorySolar"):init({
 			AudioMessage(audio.power1);
         end
         if(not (self.power1_4 or self.power5_8init)) then
-            SetObjectiveOff(globals.nav[2]);
-            SetObjectiveOn(globals.nav[3]);
+            SetObjectiveOff(self.nav);
+            self.nav = spawnNextNav();
+            SetObjectiveName(self.nav, "Solar Array 2");
+            SetObjectiveOn(self.nav);
             AddObjective(self.otf2,"white");
             self.handles = {};
             for i,v in pairs(self.target_l2) do
@@ -482,17 +505,17 @@ local destroySolar = mission.Objective:define("destorySolar"):init({
             if(self.t1 <= 0) then
                 self:success();
             elseif(self.t1 == 3) then
-                SetObjectiveOff(globals.nav[3]);
+                SetObjectiveOff(self.nav);
                 UpdateObjective(self.otf2,"green");
             end
             self.t1 = self.t1 - dtime;
         end
     end,
     save = function(self)
-        return self.handles,self.power1_4,self.power5_8init,self.t1;
+        return self.handles,self.power1_4,self.power5_8init,self.t1, self.nav;
     end,
     load = function(self,...)
-        self.handles,self.power1_4,self.power5_8init,self.t1 = ...;
+        self.handles,self.power1_4,self.power5_8init,self.t1, self.nav = ...;
     end,
     success = function(self)
         AudioMessage(audio.power2);
@@ -509,8 +532,9 @@ local destroyComm = mission.Objective:define("destroyComm"):init({
     gotRelic = false
 }):setListeners({
     start = function(self)
-        --SetObjectiveOn(globals.nav[4]);
+        self.nav = spawnNextNav();
         SetObjectiveOn(globals.comm);
+        SetObjectiveName(self.nav, "Research Facility");
         AddObjective(self.otf,"white");
         AddObjective(self.otf2,"white");
         self.camOn = CameraReady();
@@ -523,16 +547,14 @@ local destroyComm = mission.Objective:define("destroyComm"):init({
         Follow(apc,tug);
         local tugTasks = mission.TaskManager:sequencer(tug);
         tugTasks:queue2("Pickup",globals.relic);
-        tugTasks:queue2("Goto","spawn_svfigh1");
+        tugTasks:queue2("Goto","leave_path");
         tugTasks:queue2("RemoveConvoy",apc,globals.relic);
         Pickup(tug,globals.relic);
         print("Pickup",tug,globals.relic);
         Goto(BuildObject("avtank",2,"spawn_tank1"),globals.comm);
         Goto(BuildObject("avtank",2,"spawn_tank2"),globals.comm);
         Goto(BuildObject("avtank",2,"spawn_tank3"),globals.comm);
-        for i,v in pairs(spawnAtPath("bvtank1",1,"extra_tanks")) do
-            Follow(v,GetPlayerHandle(),0);
-        end
+
     end,
     update = function(self)
         if(self.camOn) then
@@ -573,7 +595,7 @@ local patrolControl = mission.Objective:define("destoryNSDF"):init({
             };
             -- Send the reinforcements to Nav 4.
             for i,v in pairs(reinforcements) do
-                Goto(v, globals.nav[4]);
+                Goto(v, GetPosition(globals.navs[4]));
             end
             print("Spawning reinforcements");
             self.spawned = true;
@@ -593,31 +615,43 @@ local intermediate = mission.Objective:define("intermediate"):init({
     enemiesAtStart = false
 }):setListeners({
     init = function(self)
-        self.nav = GetHandle("nav4");
+        self.nav = globals.navs[4];--spawnNextNav();-- GetHandle("nav4");
     end,
     start = function(self)
         ClearObjectives();
+        
+        for i=1, 3 do
+            RemoveObject(globals.navs[i])
+        end
+
+        local t = GetTransform(globals.navs[4]);
+        local nav = BuildObject("apcamr", 1, t);
+        SetTransform(nav, t);
+        RemoveObject(globals.navs[4]);
+        SetMaxHealth(nav, 0);
+        globals.navs[4] = nav;
+        self.nav = nav;
         --Only show if area is not cleared
-        if(enemiesInRange(270,globals.nav[4])) then
+        if(enemiesInRange(270,self.nav)) then
             self.enemiesAtStart = true;
             AddObjective("bdmisn311.otf","white");
-        else
-            AddObjective("bdmisn311b.otf","yellow");
+--      else --Removed due to redundancy
+--          AddObjective("bdmisn311b.otf","yellow");
         end
     end,
     update = function(self,dtime)
         --Check for enemies nearby?
         self.timer = self.timer - dtime;
         --Check for enemies @ nav4
-        if((not self.recyspawned) and  (self.timer <= 0 or (not enemiesInRange(270,globals.nav[4]))) ) then
+        if((not self.recyspawned) and  (self.timer <= 0 or (not enemiesInRange(270,self.nav))) ) then
             self.recyspawned = true;
             if(self.enemiesAtStart) then
                 UpdateObjective("bdmisn311.otf","green");
             end
             AudioMessage(audio.recycler);
             local recy = BuildObject("bvrecy22",1,"recy_spawn");
-            local e1 = BuildObject("bvtank1",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
-            local e2 = BuildObject("bvtank1",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
+            local e1 = BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
+            local e2 = BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
             Defend2(e1,recy,0);
             Defend2(e2,recy,0);
             --Make recycler follow path
@@ -632,10 +666,10 @@ local intermediate = mission.Objective:define("intermediate"):init({
         end
     end,
     save = function(self)
-        return self.timer, self.recy, self.recyspawned;
+        return self.timer, self.recy, self.recyspawned, self.nav;
     end,
     load = function(self,...)
-        self.timer, self.recy, self.recyspawned = ...;
+        self.timer, self.recy, self.recyspawned, self.nav = ...;
     end,
     success = function(self)
         globals.keepGTsAtFullHealth = true;
@@ -665,12 +699,9 @@ local intermediate = mission.Objective:define("intermediate"):init({
 
 function Start()
     print("Start");
-    globals.nav = {
-        GetHandle("nav1"),
-        GetHandle("nav2"),
-        GetHandle("nav3"),
-        GetHandle("nav4"),
+    globals.navs = {
     };
+    globals.currentNav = 1;
     globals.cafe = GetHandle("sbcafe1_i76building");
     globals.comm = GetHandle("sbcomm1_commtower");
     globals.relic = GetHandle("obdata3_artifact");
@@ -679,12 +710,10 @@ function Start()
         GetHandle("svfigh4_wingman"),
         GetHandle("svfigh5_wingman")
     };
-        
-    for i,v in pairs(globals.nav) do
-        SetObjectiveName(GetHandle("nav" .. i),"Navpoint " .. i);
-        SetMaxHealth(v,0);
+    for i,v in pairs(spawnAtPath("bvtank",1,"extra_tanks")) do
+        --Follow(v,GetPlayerHandle(),0);
     end
- 
+
     local instance = cinematic:start();
     local instance2 = patrolControl:start();
 end

@@ -1,3 +1,4 @@
 [Builder]
 buildName = "Shaw's Dogs"
-buildTeam = 0
+buildTeam = 1
+buildItem1 = "bvmtnk"
