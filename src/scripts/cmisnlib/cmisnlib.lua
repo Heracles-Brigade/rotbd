@@ -9,6 +9,19 @@ local TaskSequencer;
 local TaskManager;
 
 
+function FindTarget(handle,alt,sequencer)
+    local ne = GetNearestEnemy(handle);
+    if(IsValid(ne)) then
+        sequencer:queue2("Attack",GetNearestEnemy(handle));
+        sequencer:queue3("FindTarget",alt);
+    elseif(GetDistance(handle,alt) > 50) then
+        sequencer:queue2("Goto",alt);
+        sequencer:queue3("FindTarget",alt);
+    else
+        sequencer:queue(AiCommand["Hunt"]);
+    end
+end
+
 local function isBzr() 
     return string.gmatch(GameVersion, "%d+")() == "2";
 end
@@ -20,7 +33,6 @@ local function fixTugs()
         end
     end
 end
-
 
 local function choose(...)
     local t = {...};
@@ -221,7 +233,7 @@ TaskSequencer = {
             table.insert(self.tasks,1,{type=1,args=table.pack(...)});
         end,
         push2 = function(self,fname,...)
-            table.insert(self.tasks,1,{type=2,fname=fname,table.pack(...)});
+            table.insert(self.tasks,1,{type=2,fname=fname,args=table.pack(...)});
         end,
         push3 = function(self,fname,...)
             table.insert(self.tasks,1,{type=3,fname=fname,args={...}});
