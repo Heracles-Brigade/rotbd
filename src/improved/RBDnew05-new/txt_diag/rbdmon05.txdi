@@ -2,7 +2,7 @@ PARENT diag.voices
 START
 NTRG: To Venus then [250] We know what you went there looking for [50] and we know what you found [100]
 What we dont know is what information you made off with [50] or why [100] Perhaps you can tell us[200];
-CBRA:	I dont know [100] I never found out [100] 
+CBRA: I dont know [100] I never found out [100] 
 Maybe you should ask Baker he was the one in charge of studying the damn thing[200];
 NTRG: Baker has been [50] cooperative but even he hasnt been able to shed any light on precisely what your 
 commanding officer hoped to gain from all this [210] Taken alone we might say
