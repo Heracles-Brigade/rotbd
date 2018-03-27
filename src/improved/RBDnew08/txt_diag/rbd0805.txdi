@@ -1,4 +1,4 @@
 PARENT diag.voices
 START
-GRIG: Data retrieved [25] I am outta here [150];
-SHAW: Nice work [50] Lieutenant. NSDF forces are coming for you - meet Grigg at the rendezvous point before they can catch up.
+GRIG: Data retrieved![50] I am outta here!;
+SHAW: Nice work, Lieutenant.[50] The traitors are coming for you [10] meet Grigg at the rendezvous point before they can catch up;
