@@ -518,7 +518,15 @@ function Start()
   local n1 = GetHandle("nav1");
   local n2 = GetHandle("nav2");
   SetObjectiveName(n1, "Black Dog Outpost");
-  SetObjectiveName(n2, "Launchpad build site");
+  SetObjectiveName(n2, "Dropship build site");
+
+  -- Move player into the air
+  local player = GetPlayerHandle();
+  local p = GetPosition(player);
+  local h = GetTerrainHeightAndNormal(p);
+  p.y = h + 400;
+  SetPosition(player, p);
+
 end
 
 function Update(dtime)
