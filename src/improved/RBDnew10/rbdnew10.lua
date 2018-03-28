@@ -204,22 +204,22 @@ local build_launchpad = mission.Objective:define("build_launchpad"):createTasks(
     self.waves = {
       [("%d"):format(0)] = {
         --{frequency,wave_count,variance,wave_type}
-        {1/120,8,0.5,heavy_waves},
-        {1/60,11,0.1,light_waves}
+        {1/120,8,0.5,heavy_waves, "bdog_base"},
+        {1/60,11,0.1,light_waves, "bdog_base"}
       },
       [("%d"):format(16*60)] = {
-        {1/60,15,0.1,heavy_waves},
-        {1/60,3,0.1,light_waves}
+        {1/60,15,0.1,heavy_waves, "bdog_base"},
+        {1/60,3,0.1,light_waves, "bdog_base"}
       },
       [("%d"):format(15*60)] = {
-        {1/100,10,0.2,heavy_waves},
-        {1/80,10,0.2,heavy_waves}
+        {1/100,10,0.2,heavy_waves, "bdog_base"},
+        {1/80,10,0.2,heavy_waves, "bdog_base"}
       }
     }
   end,
   task_start = function(self,name)
     if(name == "order_to_build") then
-      bzRoutine.routineManager:startRoutine("waveSpawner",{"cca","nsdf"},{"east","west","cca","nsdf"},1/70,8,0.05,light_waves);
+      bzRoutine.routineManager:startRoutine("waveSpawner",{cca = units["cca"],nsdf = units["nsdf"]},{"east","west","cca","nsdf"},1/70,8,0.05,light_waves, "bdog_base");
     elseif(name == "build_lpad") then
       AddObjective("rbd1002.otf");
       local btime = misc.odfFile("ablpadx"):getFloat("GameObjectClass","buildTime");
@@ -286,7 +286,7 @@ local build_launchpad = mission.Objective:define("build_launchpad"):createTasks(
       for i, v in pairs(self.waves) do
         if(self.wave_timer > tonumber(i)) then
           for i2, wave_args in ipairs(v) do
-            local r_id, r = bzRoutine.routineManager:startRoutine("waveSpawner",{"cca","nsdf"},{"east","west","cca","nsdf"},unpack(wave_args));
+            local r_id, r = bzRoutine.routineManager:startRoutine("waveSpawner",{cca = units["cca"],nsdf = units["nsdf"]},{"east","west","cca","nsdf"},unpack(wave_args));
             table.insert(self.wave_controllers,r_id);
             self:call("_hook_controller",r_id);
           end
@@ -417,7 +417,7 @@ local defend_and_escort = mission.Objective:define("defend_and_escort"):createTa
   end,
   task_start = function(self,name)
     if(name == "build_transports") then
-      self.fury_id = bzRoutine.routineManager:startRoutine("waveSpawner",{"fury"},{"fury"},1/30,5,0.05,fury_waves);
+      self.fury_id = bzRoutine.routineManager:startRoutine("waveSpawner",{fury = units["fury"]},{"fury"},1/30,5,0.05,fury_waves, "bdog_base");
       bzRoutine.routineManager:getRoutine(self.fury_id):onWaveSpawn():subscribe(function(...)
         self:call("_fury_spawn",...);
       end);

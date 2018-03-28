@@ -15,6 +15,8 @@ local StartListener = misc.StartListener;
 local ObjectListener = misc.ObjectListener;
 local BzInit = misc.BzInit;
 
+local isIn = OOP.isIn;
+local joinTables = OOP.joinTables;
 
 local choose = mission.choose;
 local chooseA = mission.chooseA;
@@ -33,7 +35,7 @@ function FindTarget(handle,alt,sequencer)
   end
 end
 
-local function spawnWave(wave_table,faction,location)
+local function spawnWave(wave_table,faction,location, units, alt)
   print("Spawn Wave",wave_table,faction,location,units[faction]);
   local units, lead = mission.spawnInFormation2(wave_table,("%s_wave"):format(location),units[faction],2);
   for i, v in pairs(units) do
@@ -43,7 +45,7 @@ local function spawnWave(wave_table,faction,location)
     else
       s:queue2("Follow",lead);
     end
-    s:queue3("FindTarget","bdog_base");
+    s:queue3("FindTarget",alt);
   end
   return units;
 end
@@ -75,7 +77,9 @@ local WaveSpawner = Decorate(
           self.c_variance, 
           self.wave_types,
           self.factions,
-          self.locations;
+          self.locations,
+          self.units,
+          self.atl;
       end,
       load = function(...)
         self.wave_frequency, 
@@ -85,7 +89,9 @@ local WaveSpawner = Decorate(
           self.c_variance, 
           self.wave_types,
           self.factions,
-          self.locations = ...;
+          self.locations,
+          self.units,
+          self.alt = ...;
       end,
       onWaveSpawn = function()
         return self.wave_subject;
@@ -96,12 +102,20 @@ local WaveSpawner = Decorate(
           self.wave_frequency, 
           self.waves_left, 
           self.variance, 
-          self.wave_types = ...;
+          self.wave_types,
+          self.alt = ...;
 
+        self.units = self.factions;
+        self.factions = {};
+        for i, v in pairs(self.units) do
+          table.insert(self.factions, i);
+        end
         local f = self.wave_frequency*self.variance;
         self.c_variance =  f + 2*f*math.random();
       end,
       onDestroy = function()
+        print("onDestroy");
+        self.wave_subject:onCompleted();
       end,
       update = function(dtime)
         self.timer = self.timer + dtime;
@@ -120,7 +134,7 @@ local WaveSpawner = Decorate(
           end
           local location = choose(unpack(locations));
           local w_type = chooseA(unpack(self.wave_types));
-          self.wave_subject:onNext(spawnWave(w_type,fac,location));
+          self.wave_subject:onNext(spawnWave(w_type,fac,location, self.units, self.alt));
         end
       end
     }

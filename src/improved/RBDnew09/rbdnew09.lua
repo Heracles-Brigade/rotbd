@@ -27,10 +27,24 @@ local audio = {
 
 
 local fail_conditions = {
-  apc = "rbd09l01.des"
+  apc = "rbd09l01.des",
+  tug = "rbd09l02.des",
+  
 }
 
 local WaveSpawner = require("wavec").WaveSpawner;
+
+
+bzRoutine.routineManager:registerClass(WaveSpawner);
+
+local vanguard_fac = {"hvngrd"}
+local nsdf_fac = {"avfigh","avtank","avrckt","avltnk","avapc"}
+
+local nsdf_extra = {
+  {item = {"2 1", "4 1"}, chance = 7}, --LIGHT
+  {item = {"2 3 2", "4 1 1"}, chance = 7}, --ASSAULT
+  {item = {" 1 ", "1 5 5"}, chance = 4}, --APC
+};
 
 function AddToPatrolTask(handle,p_id,sequencer)
   --Look for enemies
@@ -74,7 +88,7 @@ local sideObjectives = mission.Objective:define("sideObjectives"):createTasks(
         end
       end
     end
-    if(not self:hasTaskStarted("destroy_comm") and IsAlive(self.commtower)) then
+    if(not (self:hasTaskStarted("destroy_comm") or self:isTaskDone("destroy_comm") ) and IsAlive(self.commtower)) then
       if(mission.areAnyDead(self.units)) then
         self:startTask("destroy_comm");
       end
@@ -136,10 +150,10 @@ local sideObjectives = mission.Objective:define("sideObjectives"):createTasks(
 
 
 local captureRelic = mission.Objective:define("captureRelic"):createTasks(
-  "findRelic", "secureSite", "captureRecycler"
+  "findRelic", "secureSite", "captureRecycler", "baker_enter"
 ):setListeners({
   init = function(self)
-    self.apc = GetHandle("apc");
+    self.tug = GetHandle("tug");
     self.recy = GetHandle("recycler");
     self.check_interval = 50;
     self.cframe = 0;
@@ -157,6 +171,9 @@ local captureRelic = mission.Objective:define("captureRelic"):createTasks(
   end,
   task_start = function(self,name)
     if(name == "captureRecycler") then
+      self.apc = BuildObject("bvapc09", 1, "apc_path");
+      Goto(self.apc, "apc_path", 0);
+      -- Spawn APC
       ClearObjectives();
     end
     if(self.otfs[name] ~= nil) then
@@ -195,9 +212,6 @@ local captureRelic = mission.Objective:define("captureRelic"):createTasks(
   end,
   update = function(self,dtime)
     local ph = GetPlayerHandle();
-    if(not IsAlive(self.apc)) then
-      self:fail("apc");
-    end
     if(self:isTaskActive("findRelic")) then
       if(GetDistance(ph,"relic_site") < 400) then
         self:taskSucceed("findRelic");
@@ -233,14 +247,20 @@ local captureRelic = mission.Objective:define("captureRelic"):createTasks(
       if(IsWithin(self.apc,self.recy,40)) then
         Stop(self.apc,0);
         self:taskSucceed("captureRecycler");
+      elseif(not IsAlive(self.apc)) then
+        self:task_fail("captureRecycler");
+      end
+    else
+      if(not IsAlive(self.tug)) then
+        self:fail("tug");
       end
     end
   end,
   save = function(self)
-    return self.patrol_id, self.patrol_units;
+    return self.patrol_id, self.patrol_units, self.apc;
   end,
   load = function(self,...)
-    self.patrol_id, self.patrol_units = ...;
+    self.patrol_id, self.patrol_units, self.apc = ...;
   end,
   success = function(self)
     mission.Objective:Start("defendSite",self.patrol_id,self.patrol_units);
@@ -248,56 +268,85 @@ local captureRelic = mission.Objective:define("captureRelic"):createTasks(
 });
 
 local defendSite = mission.Objective:define("defendSite"):createTasks(
-  "spawn_waves", "kill_waves"
+  "spawn_waves", "kill_waves", "vanguard_attack"
 ):setListeners({
   start = function(self,patrol_id,patrol_units)
-    self.patrol_id = patrol_id;
     bzRoutine.routineManager:killRoutine(patrol_id);
     local sideObjectives = mission.Objective:getObjective("sideObjectives"):getInstance();
     self.extraUnits = sideObjectives:call("_hasBeenDetected");
     self.units_to_kill = patrol_units;
-    self.default_waves = {
-      [("%d"):format(3*60)] = {"2 2 4","1 4 1"},
-      [("%d"):format(3*60 + 60)] = {"2 3","1 1"},
-      [("%d"):format( self.extraUnits and (3*60 + 60*7) or 4*60 )] = {"5 5 5", "5 5 5"},
-      [("%d"):format( (self.extraUnits and (3*60 + 60*7) or 4*60) + 60 )] = {"5 5 5", "5 5 5"}
+
+
+    self.vanguard_waves = {
+      [("%d"):format( self.extraUnits and (60 + 60*5) or 2*60 )] = {"5 5", "5 5"},
+      -- This wave retreats
+      [("%d"):format( self.extraUnits and (60 + 60*6) or 4*60 )] = {"5 5", "5 5", "5 5", "5 5"}
     };
-    self.extra_waves = {
-      [("%d"):format(3*60 + 60*2+15)] = {"4 1 1"},
-      [("%d"):format(3*60 + 60*3)] = {"2 4 4","4 1 1"},
-      [("%d"):format(3*60 + 60*3+30)] = {"2 2 4 4","3 1 1 1"},
-      [("%d"):format(3*60 + 60*5)] = {"2 2 2 4","3 4 1 1"}
-    };
-    for i, v in pairs(self.units_to_kill) do
-      local s = mission.TaskManager:sequencer(v);
-      s:clear();
-      Stop(v,0);
-      --Looks for target, if not found goto relic site
-      s:queue3("FindTarget","relic_site");
-    end
+
+
     AddObjective("rbd0903.otf");
     self.wave_timer = 0;
     self:startTask("spawn_waves");
-    
+  end,
+  task_start = function(self, name)
+    if(name == "spawn_waves") then
+      
+      for i, v in pairs(self.units_to_kill) do
+        local s = mission.TaskManager:sequencer(v);
+        s:clear();
+        Stop(v,0);
+        --Looks for target, if not found goto relic site
+        s:queue3("FindTarget","relic_site");
+      end
+      if(self.extraUnits) then
+        print("Creating routine")
+        local id, r = bzRoutine.routineManager:startRoutine("waveSpawner",{nsdf=nsdf_fac},{"nsdf"},1/70,3,0.05,nsdf_extra, "relic_site");
+        self.waveController = id;
+        self:call("_hookController",self.waveController);
+      else
+        self:taskSucceed("spawn_waves");
+      end
+    end
+  end,
+  _hookController = function(self, id)
+    print("Hooking controller", id);
+    local p = bzRoutine.routineManager:getRoutine(id);
+    if(p) then
+      self.waveSub = p:onWaveSpawn():subscribe(function(handles)
+        for i, v in pairs(handles) do
+          table.insert(self.units_to_kill, v);
+        end
+      end, nil, function()
+        self:taskSucceed("spawn_waves");
+      end);
+    end
   end,
   task_success = function(self,name)
     if(name == "spawn_waves") then
+      print("Waves spawned");
       self:startTask("kill_waves");
     elseif("kill_waves") then
+      print("Waves killed");
       UpdateObjective("rbd0903.otf","green");
-      self:success();
+      self:startTask("vanguard_attack");
+      --self:success();
     end
   end,
   update = function(self,dtime)
+    local done = false;
+    local count;
+    --[[
     if(self:isTaskActive("spawn_waves")) then
       self.wave_timer = self.wave_timer + dtime;
+      count = 0;
       done = true;
-      for i, v in pairs(self.default_waves) do
+      for i, v in pairs(self.vanguard_waves) do
+        count = count + 1;
         done = false;
         local d = tonumber(i);
         if(self.wave_timer >= d) then
-          local wave, lead = mission.spawnInFormation2(v,"attack",{"avfigh","avtank","avrckt","avltnk","hvsav"},2);
-          Goto(lead,"attack");
+          local wave, lead = mission.spawnInFormation2(v,"vanguard_attack",{"avfigh","avtank","avrckt","avltnk","hvngrd"},2);
+          Goto(lead,"vanguard_attack");
           for i2, v2 in pairs(wave) do
             local s = mission.TaskManager:sequencer(v2);
             if(v2~=lead) then
@@ -309,29 +358,12 @@ local defendSite = mission.Objective:define("defendSite"):createTasks(
           self.default_waves[i] = nil;
         end
       end
-      if(self.extraUnits) then
-        for i, v in pairs(self.extra_waves) do
-          done = false;
-          local d = tonumber(i);
-          if(self.wave_timer >= d) then
-            local wave, lead = mission.spawnInFormation2(v,"attack",{"avfigh","avtank","avrckt","avltnk","hvsav"},2);
-            Goto(lead,"attack");
-            for i2, v2 in pairs(wave) do
-              local s = mission.TaskManager:sequencer(v2);
-              if(v2~=lead) then
-                Follow(v2,lead);
-              end
-              s:queue3("FindTarget","relic_site");
-              table.insert(self.units_to_kill,v2);
-            end
-            self.extra_waves[i] = nil;
-          end
-        end
-      end
+
       if(done) then
         self:taskSucceed("spawn_waves");
       end
     end
+    --]]
     if(self:isTaskActive("kill_waves")) then
       if(mission.areAllDead(self.units_to_kill, 2)) then
         self:taskSucceed("kill_waves");
@@ -343,14 +375,14 @@ local defendSite = mission.Objective:define("defendSite"):createTasks(
     SucceedMission(GetTime() + 15,"rbd09wn.des");
   end,
   save = function(self)
-    return self.default_waves, self.extra_waves, self.extraUnits, self.wave_timer, self.patrol_id;
+    return self.vanguard_waves, self.extraUnits, self.wave_timer, self.waveController, self.units_to_kill;
   end,
   load = function(self,...)
-    self.default_waves, self.extra_waves, self.extraUnits, self.wave_timer, self.patrol_id = ...;
+    self.vanguard_waves, self.extraUnits, self.wave_timer, self.waveController, self.units_to_kill = ...;
+    self:call("_hookController", self.waveController)
   end
 });
 
---]]
 
 local function setUpPatrols()
 
@@ -428,8 +460,8 @@ function Start()
     i = i + 1;
   until not IsValid(h)
 
-  local player_units, apc = mission.spawnInFormation2({" 1 ", "2 2 2", "4  2  4"},"player_units",{"bvapc09","bvtank","bvraz","bvltnk"},1,7);
-  SetLabel(apc,"apc");
+  local player_units, tug = mission.spawnInFormation2({" 1 ", "2 2 2", "4  2  4"},"player_units",{"bvhaul","bvtank","bvraz","bvltnk"},1,7);
+  SetLabel(tug,"tug");
   captureRelic:start(p_id,patrol_units);
   sideObjectives:start(patrol_units);
   core:onStart();
