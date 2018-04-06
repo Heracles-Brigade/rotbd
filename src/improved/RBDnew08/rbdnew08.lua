@@ -220,13 +220,18 @@ destroyComms = mission.Objective:define("misison"):createTasks(
     s:queue2("Goto","grigg_in");
     s:queue2("Dropoff",pp[#pp]);
     self.grigg_spawned = true;
-    self.grigg_next = 55 + math.random(10);
+    
+    local griggAudioSequence = mission.AudioSequence();
+    griggAudioSequence:queueAudio(self.grigg_audio[1], 55 + math.random(10));
+    griggAudioSequence:queueAudio(self.grigg_audio[2], 20 + math.random(20));
+    griggAudioSequence:queueAudio(self.grigg_audio[3], 20 + math.random(20));
+
+    self.grigg_id = mission.AudioManager:PlayAndCall(griggAudioSequence, self, nil, "_nextGriggAudio");
+
+
   end,
-  _nextGriggAudio = function(self)
-    self.curr_grigg = self.curr_grigg + 1;
-    AudioMessage(self.grigg_audio[self.curr_grigg]);
-    self.grigg_next = (self.curr_grigg < #self.grigg_audio) and 20 + math.random(20) or math.huge;
-    print(("Grigg audio playing #%d"):format(self.curr_grigg), self.grigg_next);
+  _nextGriggAudio = function(self, clip)
+    print(("Grigg audio playing #%d"):format(clip));
   end,
   task_start = function(self,name)
     if(name == "destroyComms") then
@@ -258,15 +263,13 @@ destroyComms = mission.Objective:define("misison"):createTasks(
     end
   end,
   start = function(self)
-    self.curr_grigg = 0;
-    self.grigg_next = 0;
     self.grigg_spawned = false;
     SetObjectiveOn(self.comms[1]);
     for i, v in ipairs(self.comms) do
       SetObjectiveName(v,("Power %d"):format(i));
     end
     self:startTask("destroyComms");
-    self.timer = 20;--60*8;
+    self.timer = 60*8;
     self.nextAudio = 0;
     StartCockpitTimer(self.timer,self.timer*0.5,self.timer*0.1);
   end,
@@ -300,11 +303,6 @@ destroyComms = mission.Objective:define("misison"):createTasks(
 
     if(self.grigg_spawned and not IsAlive(self.grigg)) then
       self:fail("grigg");
-    elseif(self.grigg_spawned) then
-      self.grigg_next = self.grigg_next - dtime;
-      if(self.grigg_next <= 0) then
-        self:call("_nextGriggAudio");
-      end
     end
   end,
   success = function(self)
@@ -335,11 +333,14 @@ destroyComms = mission.Objective:define("misison"):createTasks(
       FailMission(GetTime()+5.0,"rbd08l02.des");
     end
   end,
+  finish = function(self)
+    mission.AudioManager:Stop(self.grigg_id);
+  end,
   save = function(self)
-    return self.timer, self.wait_1, self.grigg, self.timerOut, self.grigg_spawned, self.curr_grigg, self.grigg_next, self.nextAudio;
+    return self.timer, self.wait_1, self.grigg, self.timerOut, self.grigg_spawned, self.grigg_audio, self.nextAudio, self.grigg_id;
   end,
   load = function(self,...)
-    self.timer, self.wait_1, self.grigg, self.timerOut, self.grigg_spawned, self.curr_grigg, self.grigg_next, self.nextAudio = ...;
+    self.timer, self.wait_1, self.grigg, self.timerOut, self.grigg_spawned, self.grigg_audio, self.nextAudio, self.grigg_id  = ...;
     if(not self.timerOut) then
       StartCockpitTimer(self.timer,self.timer*0.5,self.timer*0.1);
     end
