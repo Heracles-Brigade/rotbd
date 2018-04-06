@@ -1,3 +1,8 @@
+local rx = require("rx");
+
+local Observable = rx.Observable;
+local Subject = rx.Subject;
+
 local Objective;
 local Listener;
 local ObjectiveInstance;
@@ -7,6 +12,7 @@ local UnitTrackerManager;
 local MissionManager;
 local TaskSequencer;
 local TaskManager;
+local AudioManager;
 
 
 
@@ -455,6 +461,9 @@ ObjectiveInstance = {
         parentCall = function(self,event,...) 
             return self.parentRef:dispatchEvent(event,self,...)
         end,
+        getName = function(self)
+            return self.parentName;
+        end,
         call = function(self,...)
             return unpack(self:parentCall(...)[1] or {});
         end,
@@ -823,10 +832,159 @@ ObjectiveManager = {
     end
 }
 
+
+-- Clip
+
+local AudioSequence = {
+    create = function(cls)
+        local self = setmetatable({
+            queue = {}
+        }, cls.mt);
+        return self;
+    end,
+    queueAudio = function(self, file, time)
+        table.insert(self.queue, {file = file, time = time});
+    end
+}
+
+AudioSequence.mt = {
+    __index = AudioSequence,
+    __call = AudioSequence.create
+};
+setmetatable(AudioSequence, {__call = AudioSequence.mt.__call});
+
+
+local AudioManager = {
+    audioSequences = {},
+    nextId = 1,
+    playId = 1,
+    taskCallbacks = {},
+    Play = function(self, sequence)
+        local audioFiles = sequence.queue;
+        local id = self.nextId;
+        self.audioSequences[id] = {
+            queue = audioFiles,
+            timer = 0,
+            nextAudio = 1,
+            observers = {},
+            nextObserver = 1
+        };
+        self.nextId = self.nextId + 1;
+        return id;
+    end,
+    -- Play the audio then call an objective specific function
+    PlayAndCall = function(self, sequence, objective, cb_done, cb_each)  
+        local objectiveName = objective:getName();
+        local playId = self:Play(sequence);
+        self.taskCallbacks[playId] = {objectiveName = objectiveName, cb_done = cb_done, cb_each = cb_each};
+        self:_createCallback(playId);
+        return playId;
+    end,
+    _createCallback = function(self, id)
+        local taskCb = self.taskCallbacks[id];
+        local objective = Objective:getObjective(taskCb.objectiveName):getInstance();
+        if(objective ~= nil) then
+            self:onNextClip(id):subscribe(
+                function(...)
+                    if(taskCb.cb_each) then
+                        objective:call(taskCb.cb_each, ...);
+                    end
+                end, nil, 
+                function(...)
+                    if(taskCb.cb_done) then
+                        objective:call(taskCb.cb_done, ...);
+                    end
+                end
+            );
+        end
+    end,
+    onNextClip = function(self, id)
+        return self:_createObservable(id);
+    end,
+    _createObservable = function(self, seqId)
+        return Observable.create(function(observer)
+            local idx = self.audioSequences[seqId].nextObserver;
+            self.audioSequences[seqId].observers[idx] = observer;
+            self.audioSequences[seqId].nextObserver = self.audioSequences[seqId].nextObserver + 1;
+            return function()
+                self.audioSequences[seqId].observers[idx] = nil;
+            end
+        end);
+    end,
+    Update = function(self, dtime)
+        local sequence = self.audioSequences[self.playId];
+        if(sequence ~= nil) then
+            local currentMessage = sequence.currentMessage;
+            if(currentMessage == nil) then
+                sequence.timer = sequence.timer + dtime;
+                local nextClip = sequence.queue[sequence.nextAudio];
+                if(nextClip ~= nil) then
+                    if(nextClip.time <= sequence.timer) then
+                        print("AudioMessage", nextClip.file);
+                        sequence.currentMessage = AudioMessage(nextClip.file);
+                        sequence.timer = 0;
+                    end
+                else
+                    for i, observer in pairs(sequence.observers) do
+                        observer:onCompleted(self.playId);
+                    end
+                    self.audioSequences[self.playId] = nil;
+                end
+            elseif(IsAudioMessageDone(currentMessage)) then
+                for i, observer in pairs(sequence.observers) do
+                    observer:onNext(sequence.nextAudio, currentMessage);
+                end
+                sequence.currentMessage = nil;
+                sequence.nextAudio = sequence.nextAudio + 1;
+            end
+        elseif(self.playId+1 < self.nextId) then
+            self.playId = self.playId + 1;
+        end
+    end,
+    Save = function(self)
+        local audioSequences = {};
+        for i, v in pairs(self.audioSequences) do
+            audioSequences[i] = {
+                queue = v.queue,
+                timer = v.timer,
+                nextAudio = v.nextAudio,
+                currentMessage = v.currentMessage,
+            };
+        end
+        return {
+            audioSequences = audioSequences,
+            nextId = self.nextId,
+            playId = self.playId,
+            taskCallbacks = self.taskCallbacks
+        };
+    end,
+    Load = function(self, data)
+        for i, v in pairs(data.audioSequences) do
+            self.audioSequences[i] = {
+                queue = v.queue,
+                timer = v.timer,
+                nextAudio = v.nextAudio,
+                observers = {},
+                nextObserver = 1,
+                currentMessage = v.currentMessage
+            };
+        end
+        self.nextAudio = data.nextAudio;
+        self.nextId = data.nextId;
+        self.taskCallbacks = data.taskCallbacks;
+        for i, v in pairs(self.taskCallbacks) do
+            self:_createCallback(i);
+        end
+    end
+};
+
+
+
 MissionManager = {
     Update = function(self,...)
         TaskManager:Update(...);
         ObjectiveManager:Update(...);
+        AudioManager:Update(...);
     end,
     AddObject = function(self,...)
         UnitTrackerManager:AddObject(...);
@@ -841,13 +999,15 @@ MissionManager = {
         ObjectiveManager:DeleteObject(...);
     end,
     Save = function(self)
-        return {ObjectiveManager:Save(), TaskManager:Save()};
+        return {ObjectiveManager:Save(), TaskManager:Save(), AudioManager:Save()};
     end,
     Load = function(self,data)
         ObjectiveManager:Load(data[1]);
         TaskManager:Load(data[2]);
+        AudioManager:Load(data[3]);
     end
 }
+
 
 
 
@@ -872,6 +1032,8 @@ return {
     countDead = countDead,
     TaskManager = TaskManager,
     createWave = createWave,
+    AudioManager = AudioManager,
+    AudioSequence = AudioSequence,
     fixTugs = fixTugs,
     isBzr = isBzr,
     choose = choose,
