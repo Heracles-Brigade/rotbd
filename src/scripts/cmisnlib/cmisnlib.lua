@@ -1,6 +1,5 @@
 local rx = require("rx");
 
-local Observable = rx.Observable;
 local Subject = rx.Subject;
 
 local Objective;
@@ -859,6 +858,7 @@ local AudioManager = {
     nextId = 1,
     playId = 1,
     taskCallbacks = {},
+    subscriptions = {},
     Play = function(self, sequence)
         local audioFiles = sequence.queue;
         local id = self.nextId;
@@ -866,8 +866,7 @@ local AudioManager = {
             queue = audioFiles,
             timer = 0,
             nextAudio = 1,
-            observers = {},
-            nextObserver = 1
+            subject = Subject.create()
         };
         self.nextId = self.nextId + 1;
         return id;
@@ -880,11 +879,26 @@ local AudioManager = {
         self:_createCallback(playId);
         return playId;
     end,
+    Stop = function(self, id)
+        local sequence = self.audioSequences[id];
+        local sub = self.subscriptions[id];
+        if(sub) then
+            sub:unsubscribe();
+        end
+        if(sequence) then
+            if(sequence.currentMessage ~= nil) then
+                StopAudioMessage(sequence.currentMessage);
+            end
+            sequence.subject:onCompleted(self.playId, sequence.nextAudio-1, sequence.currentMessage);
+        end
+        self.subscriptions[id] = nil;
+        self.audioSequences[id] = nil;
+    end,
     _createCallback = function(self, id)
         local taskCb = self.taskCallbacks[id];
         local objective = Objective:getObjective(taskCb.objectiveName):getInstance();
         if(objective ~= nil) then
-            self:onNextClip(id):subscribe(
+            self.subscriptions[id] = self:onNextClip(id):subscribe(
                 function(...)
                     if(taskCb.cb_each) then
                         objective:call(taskCb.cb_each, ...);
@@ -899,17 +913,7 @@ local AudioManager = {
         end
     end,
     onNextClip = function(self, id)
-        return self:_createObservable(id);
-    end,
-    _createObservable = function(self, seqId)
-        return Observable.create(function(observer)
-            local idx = self.audioSequences[seqId].nextObserver;
-            self.audioSequences[seqId].observers[idx] = observer;
-            self.audioSequences[seqId].nextObserver = self.audioSequences[seqId].nextObserver + 1;
-            return function()
-                self.audioSequences[seqId].observers[idx] = nil;
-            end
-        end);
+        return self.audioSequences[id].subject;
     end,
     Update = function(self, dtime)
         local sequence = self.audioSequences[self.playId];
@@ -920,20 +924,15 @@ local AudioManager = {
                 local nextClip = sequence.queue[sequence.nextAudio];
                 if(nextClip ~= nil) then
                     if(nextClip.time <= sequence.timer) then
-                        print("AudioMessage", nextClip.file);
                         sequence.currentMessage = AudioMessage(nextClip.file);
                         sequence.timer = 0;
                     end
                 else
-                    for i, observer in pairs(sequence.observers) do
-                        observer:onCompleted(self.playId);
-                    end
+                    sequence.subject:onCompleted(self.playId, sequence.nextAudio-1, currentMessage);
                     self.audioSequences[self.playId] = nil;
                 end
             elseif(IsAudioMessageDone(currentMessage)) then
-                for i, observer in pairs(sequence.observers) do
-                    observer:onNext(sequence.nextAudio, currentMessage);
-                end
+                sequence.subject:onNext(sequence.nextAudio, currentMessage);
                 sequence.currentMessage = nil;
                 sequence.nextAudio = sequence.nextAudio + 1;
             end
@@ -948,7 +947,7 @@ local AudioManager = {
                 queue = v.queue,
                 timer = v.timer,
                 nextAudio = v.nextAudio,
-                currentMessage = v.currentMessage,
+                currentMessage = v.currentMessage
             };
         end
         return {
@@ -964,9 +963,8 @@ local AudioManager = {
                 queue = v.queue,
                 timer = v.timer,
                 nextAudio = v.nextAudio,
-                observers = {},
-                nextObserver = 1,
-                currentMessage = v.currentMessage
+                currentMessage = v.currentMessage,
+                subject = Subject.create()
             };
         end
         self.nextAudio = data.nextAudio;
