@@ -171,10 +171,10 @@ local escortRecycler = mission.Objective:define("escortRecycler"):createTasks(
     end
   end,
   save = function(self)
-    return self.wave1_wait,self.attackers;
+    return self.wave_wait,self.attackers;
   end,
   load = function(self,...)
-    self.wave1_wait,self.attackers = ...;
+    self.wave_wait,self.attackers = ...;
   end
 })
 
