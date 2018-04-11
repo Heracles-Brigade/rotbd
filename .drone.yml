@@ -10,8 +10,7 @@ pipeline:
       event:
         - push
         - tag
-      branch:
-        - master
+
     commands:
       - mkdir /tmp/files
       - mkdir /tmp/lua
@@ -26,38 +25,61 @@ pipeline:
       - find -type f -name '*.bzn' -exec python3 /bztools/bznDown.py {} {} \;
       - zip -j -r /rotbd/output/bundle1.5.zip /tmp/files
 
+
+  upload:
+    image: appleboy/drone-scp
+    host: faavne.no
+    username: root
+    secrets: [ssh_key]
+    key_path: /ssh/id_rsa
+    target:
+      - /tmp/
+    source:
+      - /rotbd/output/bundle.zip
+      - /rotbd/output/bundle1.5.zip
+    strip_components: 2
+
+    volumes:
+      - /root/.ssh/id_rsa:/ssh/id_rsa
+
   snapshot-branch:
     group: deploy
-    image: docker.faavne.no/bzone/bztools:latest
+    image: appleboy/drone-ssh
+    host: faavne.no
+    username: root
+    key_path: /ssh/id_rsa
+    secrets: [ssh_key]
     when:
       event:
         - push
-      branch:
-        - master
         
-    commands:
-      - mkdir -p /drone/deploy/${DRONE_BRANCH} || true
-      - FILE_COUNT=$(ls /drone/deploy/${DRONE_BRANCH} | wc -l) || true
-      - mv /drone/deploy/${DRONE_BRANCH}/rotbd_latest.zip /drone/deploy/${DRONE_BRANCH}/rotbd_"$FILE_COUNT".zip || true
-      - cp /rotbd/output/bundle.zip /drone/deploy/${DRONE_BRANCH}/rotbd_latest.zip || true
-      - mv /drone/deploy/${DRONE_BRANCH}/rotbd1.5c_latest.zip /drone/deploy/${DRONE_BRANCH}/rotbd1.5c_"$FILE_COUNT".zip || true
-      - cp /rotbd/output/bundle1.5.zip /drone/deploy/${DRONE_BRANCH}/rotbd1.5c_latest.zip || true
+    script:
+      - mkdir -p /mnt/nginx-fs/files/private/rotbd/builds/branches/${DRONE_BRANCH} || true
+      - FILE_COUNT=$(ls /mnt/nginx-fs/files/private/rotbd/builds/branches/${DRONE_BRANCH} | wc -l) || true
+      - mv /mnt/nginx-fs/files/private/rotbd/builds/branches/${DRONE_BRANCH}/rotbd_latest.zip /mnt/nginx-fs/files/private/rotbd/builds/branches/${DRONE_BRANCH}/rotbd_"$FILE_COUNT".zip || true
+      - cp /tmp/bundle.zip /mnt/nginx-fs/files/private/rotbd/builds/branches/${DRONE_BRANCH}/rotbd_latest.zip || true
+      - mv /mnt/nginx-fs/files/private/rotbd/builds/branches/${DRONE_BRANCH}/rotbd1.5c_latest.zip /mnt/nginx-fs/files/private/rotbd/builds/branches/${DRONE_BRANCH}/rotbd1.5c_"$FILE_COUNT".zip || true
+      - cp /tmp/bundle1.5.zip /mnt/nginx-fs/files/private/rotbd/builds/branches/${DRONE_BRANCH}/rotbd1.5c_latest.zip || true
+
+
     volumes:
-      - /mnt/nginx-fs/files/private/rotbd/builds/branches:/drone/deploy
+      - /root/.ssh/id_rsa:/ssh/id_rsa
 
   release:
     group: deploy
-    image: docker.faavne.no/bzone/bztools:latest
+    image: appleboy/drone-ssh
+    host: faavne.no
+    username: root
+    key_path: /ssh/id_rsa
+    secrets: [ssh_key]
     when:
       event:
         - tag
-    commands:
-      - cp -f /rotbd/output/bundle.zip /drone/deploy/rotbd_${DRONE_TAG}.zip
-      - cp -f /rotbd/output/bundle1.5.zip /drone/deploy/rotbd1.5c_${DRONE_TAG}.zip
-      - ln -f /drone/deploy/rotbd_${DRONE_TAG}.zip /drone/deploy/rotbd_latest.zip
-      - ln -f /drone/deploy/rotbd1.5c_${DRONE_TAG}.zip /drone/deploy/rotbd1.5c_latest.zip
-    volumes:
-      - /mnt/nginx-fs/files/private/rotbd/builds/releases:/drone/deploy
+    script:
+      - cp -f /tmp/bundle.zip /mnt/nginx-fs/files/private/rotbd/builds/branches/rotbd_${DRONE_TAG}.zip
+      - cp -f /tmp/bundle1.5.zip /mnt/nginx-fs/files/private/rotbd/builds/branches/rotbd1.5c_${DRONE_TAG}.zip
+      - ln -f /mnt/nginx-fs/files/private/rotbd/builds/branches/rotbd_${DRONE_TAG}.zip /mnt/nginx-fs/files/private/rotbd/builds/branches/rotbd_latest.zip
+      - ln -f /mnt/nginx-fs/files/private/rotbd/builds/branches/rotbd1.5c_${DRONE_TAG}.zip /mnt/nginx-fs/files/private/rotbd/builds/branches/rotbd1.5c_latest.zip
 
   notification-success:
     image: docker.faavne.no/bzone/bztools:latest
