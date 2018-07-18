@@ -81,6 +81,10 @@ pipeline:
       - ln -f /mnt/nginx-fs/files/private/rotbd/builds/branches/rotbd_${DRONE_TAG}.zip /mnt/nginx-fs/files/private/rotbd/builds/branches/rotbd_latest.zip
       - ln -f /mnt/nginx-fs/files/private/rotbd/builds/branches/rotbd1.5c_${DRONE_TAG}.zip /mnt/nginx-fs/files/private/rotbd/builds/branches/rotbd1.5c_latest.zip
 
+    volumes:
+      - /root/.ssh/id_rsa:/ssh/id_rsa
+
+
   notification-success:
     image: docker.faavne.no/bzone/bztools:latest
     secrets: [ webhook ]
