@@ -1,7 +1,7 @@
 -- Battlezone: Rise of the Black Dogs Redux, Mission 3 "The Mammoth Project" recoded by Vemahk and Seqan based off GBD's 1:1 script
 
-local csmisnlib = require("cmisnlib");
-local areAllDead = csmisnlib.areAllDead;
+local cmisnlib = require("cmisnlib");
+local areAllDead = cmisnlib.areAllDead;
 local choose = cmisnlib.choose;
 
 local function scrapFieldsFiller(p)
