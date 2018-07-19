@@ -76,10 +76,10 @@ pipeline:
       event:
         - tag
     script:
-      - cp -f /tmp/bundle.zip /mnt/nginx-fs/files/private/rotbd/builds/branches/rotbd_${DRONE_TAG}.zip
-      - cp -f /tmp/bundle1.5.zip /mnt/nginx-fs/files/private/rotbd/builds/branches/rotbd1.5c_${DRONE_TAG}.zip
-      - ln -f /mnt/nginx-fs/files/private/rotbd/builds/branches/rotbd_${DRONE_TAG}.zip /mnt/nginx-fs/files/private/rotbd/builds/branches/rotbd_latest.zip
-      - ln -f /mnt/nginx-fs/files/private/rotbd/builds/branches/rotbd1.5c_${DRONE_TAG}.zip /mnt/nginx-fs/files/private/rotbd/builds/branches/rotbd1.5c_latest.zip
+      - cp -f /tmp/bundle.zip /mnt/nginx-fs/files/private/rotbd/builds/releases/rotbd_${DRONE_TAG}.zip
+      - cp -f /tmp/bundle1.5.zip /mnt/nginx-fs/files/private/rotbd/builds/releases/rotbd1.5c_${DRONE_TAG}.zip
+      - ln -f /mnt/nginx-fs/files/private/rotbd/builds/releases/rotbd_${DRONE_TAG}.zip /mnt/nginx-fs/files/private/rotbd/builds/releases/rotbd_latest.zip
+      - ln -f /mnt/nginx-fs/files/private/rotbd/builds/releases/rotbd1.5c_${DRONE_TAG}.zip /mnt/nginx-fs/files/private/rotbd/builds/releases/rotbd1.5c_latest.zip
 
     volumes:
       - /root/.ssh/id_rsa:/ssh/id_rsa
