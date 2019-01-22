@@ -269,12 +269,18 @@ local ProducerAi = Decorate(
       self.currentJob = nil;
       self.buildState = 0;
       self.wait = 10;
+      self.updateWait = 10;
       self.last_command = self.handle:getCurrentCommand();
       self._check_next = {};
     end,
     methods = {
       update = function(dtime)
         self.wait = self.wait - 1;
+        self.updateWait = self.updateWait - 1;
+        if self.updateWait > 0 then
+          return
+        end
+        self.updateWait = 20;
         local nc = self.handle:getCurrentCommand();
         if(nc ~= self.last_command) then
           if((not isIn(AiCommand[nc],{"DROPOFF","NONE","BUILD"})) and self.buildState ~= 0) then
@@ -320,7 +326,7 @@ local ProducerAi = Decorate(
       end,
       _requestJob = function()
         local job = class:requestJob(self.handle);
-        self.wait = 120;
+        self.wait = 60;
         if(job) then
           self.wait = 0;
           self.currentJob = job;
