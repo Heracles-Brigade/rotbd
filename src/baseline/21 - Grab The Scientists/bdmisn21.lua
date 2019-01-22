@@ -1,7 +1,3 @@
---Contributors:
-    --Jarle Trollebø(Mario)
-    --General BlackDragon
-
 
 local _ = require("bz_logging");
 local mission = require 'cmisnlib';

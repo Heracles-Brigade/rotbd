@@ -1,10 +1,7 @@
 --Objectives from the original rbdnew05, put it here to not clutter rbdnew15 too much
 
 --Combination of The Last Stand and Evacuate Venus
---Contributors:
-    --Jarle Trollebø(Mario)
-    --General BlackDragon
-    --Deus Ex Ceteri
+
 
 local miss26setup;
 local mission = require('cmisnlib');

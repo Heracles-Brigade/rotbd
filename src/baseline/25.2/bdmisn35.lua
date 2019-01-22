@@ -1,7 +1,4 @@
 --Combination of The Last Stand and Evacuate Venus
---Contributors:
-    --Jarle Trollebø(Mario)
-    --General BlackDragon
 
 --[[
     mission.Objective:define("name"):init({

@@ -1,7 +1,4 @@
 --Combination of Grab The Scientists and Preparations
---Contributors:
-    --Jarle Trollebø(Mario)
-    --General BlackDragon
 
 local _ = require("bz_logging");
 

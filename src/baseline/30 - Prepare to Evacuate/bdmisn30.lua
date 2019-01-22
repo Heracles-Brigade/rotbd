@@ -1,8 +1,5 @@
 -- Battlezone: Rise of the Black Dogs, Black Dog Mission 30
 
---Contributors:
-    --Jarle Trollebø(Mario)
-    --General BlackDragon
 
 
 
