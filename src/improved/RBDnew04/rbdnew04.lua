@@ -4,70 +4,72 @@ local cmisnlib = require("cmisnlib");
 local areAllDead = cmisnlib.areAllDead;
 local choose = cmisnlib.choose;
 
-local function scrapFieldsFiller(p)
-    local scrapFieldObjs = ObjectsInRange(35,p);
-    local scrapFieldScrap = { };
-    for obj in scrapFieldObjs do
-        if GetClassLabel(obj) == "scrap" then
-            table.insert(scrapFieldScrap,obj);
-        end
-    end
-    M.scrapFields[p] = scrapFieldScrap;
-end
+
 
 local audio = {
-intro = "rbdnew0401.wav",
-itsatrap = "rbdnew0402.wav",
-freedom = "rbdnew0403.wav",
-planschange = "rbdnew0404.wav",
-gtfo = "rbdnew0405.wav",
-bypass = "rbdnew04a1.wav",
-wasatrap = "rbdnew04a2.wav",
-wantitback = "rbdnew0406.wav",
-homefree = "rbdnew0407.wav"
+	intro = "rbdnew0401.wav",
+	itsatrap = "rbdnew0402.wav",
+	freedom = "rbdnew0403.wav",
+	planschange = "rbdnew0404.wav",
+	gtfo = "rbdnew0405.wav",
+	bypass = "rbdnew04a1.wav",
+	wasatrap = "rbdnew04a2.wav",
+	wantitback = "rbdnew0406.wav",
+	homefree = "rbdnew0407.wav"
 }
 
 local objs = {
-recon = "rbdnew0401.otf",
-escape = "rbdnew0402.otf",
-findit = "rbdnew0403.otf",
-extraction = "rbdnew0404.otf",
-mine = "rbdnew0406.otf"
+	recon = "rbdnew0401.otf",
+	escape = "rbdnew0402.otf",
+	findit = "rbdnew0403.otf",
+	extraction = "rbdnew0404.otf",
+	mine = "rbdnew0406.otf"
 }
 
 local M = {
--- Bools
-UpdateObjectives = false,
+	-- Bools
+	UpdateObjectives = false,
 
-StartDone = false, -- Some things don't work in the actual "Start" function.
-Nav1Reached = false, -- Are we at nav1 yet? 
-DecoyTriggered = false, -- It's a Trap!
-TrapEscaped = false, -- Whew, close one!
-PlansChange = false, -- Shaw is a dick
-MammothStolen = false, -- Steal the Mammoth!
-MammothDead = false, -- You can't kill something that's extinct.
-WantItBack = false, -- They're coming for you
-RecoveryBeaten = false, -- You ditched the recall effort
-DropZoneReached = false, -- Are we there yet?
-MissionOver = false, -- Yay!
+	StartDone = false, -- Some things don't work in the actual "Start" function.
+	Nav1Reached = false, -- Are we at nav1 yet? 
+	DecoyTriggered = false, -- It's a Trap!
+	TrapEscaped = false, -- Whew, close one!
+	PlansChange = false, -- Shaw is a dick
+	MammothStolen = false, -- Steal the Mammoth!
+	MammothDead = false, -- You can't kill something that's extinct.
+	WantItBack = false, -- They're coming for you
+	RecoveryBeaten = false, -- You ditched the recall effort
+	DropZoneReached = false, -- Are we there yet?
+	MissionOver = false, -- Yay!
 
--- Handles
-Player = nil,
-NavCoords = { },
-Nav = { },
-ObjectiveNav = nil,
-Mammoth = nil,
-MammothDecoy = nil,
-DecoyAmbush = { },
-RecoverySquad = { },
-Baker = nil,
-scrapFields = {},
+	-- Handles
+	Player = nil,
+	NavCoords = { },
+	Nav = { },
+	ObjectiveNav = nil,
+	Mammoth = nil,
+	MammothDecoy = nil,
+	DecoyAmbush = { },
+	RecoverySquad = { },
+	Baker = nil,
+	scrapFields = {},
 
--- Ints
-Aud1 = 0,
-DecoyTime = 0,
-FlashTime = 0
+	-- Ints
+	Aud1 = 0,
+	DecoyTime = 0,
+	FlashTime = 0
 }
+
+local function scrapFieldsFiller(p)
+	local scrapFieldObjs = ObjectsInRange(35,p);
+	local scrapFieldScrap = { };
+	for obj in scrapFieldObjs do
+			if GetClassLabel(obj) == "scrap" then
+					table.insert(scrapFieldScrap,obj);
+			end
+	end
+	M.scrapFields[p] = scrapFieldScrap;
+end
 
 function Start()
 	for i = 1,5 do
@@ -159,12 +161,12 @@ end
 
 local function SpawnBaker()
 	M.Baker = BuildObject("bvhaul", 3, "bakerspawn");
-	Defend2(BuildObject("bvfigh", 3, GetPositionNear(GetPostiion("bakerspawn"))), M.Baker, 1);
-	Defend2(BuildObject("bvfigh", 3, GetPositionNear(GetPostiion("bakerspawn"))), M.Baker, 1);
-	Defend2(BuildObject("bvtank", 3, GetPositionNear(GetPostiion("bakerspawn"))), M.Baker, 1);
-	Defend2(BuildObject("bvtank", 3, GetPositionNear(GetPostiion("bakerspawn"))), M.Baker, 1);
-	Defend2(BuildObject("bvtank", 3, GetPositionNear(GetPostiion("bakerspawn"))), M.Baker, 1);
-	Defend2(BuildObject("bvtank", 3, GetPositionNear(GetPostiion("bakerspawn"))), M.Baker, 1);
+	Defend2(BuildObject("bvfigh", 3, GetPositionNear(GetPosition("bakerspawn"))), M.Baker, 1);
+	Defend2(BuildObject("bvfigh", 3, GetPositionNear(GetPosition("bakerspawn"))), M.Baker, 1);
+	Defend2(BuildObject("bvtank", 3, GetPositionNear(GetPosition("bakerspawn"))), M.Baker, 1);
+	Defend2(BuildObject("bvtank", 3, GetPositionNear(GetPosition("bakerspawn"))), M.Baker, 1);
+	Defend2(BuildObject("bvtank", 3, GetPositionNear(GetPosition("bakerspawn"))), M.Baker, 1);
+	Defend2(BuildObject("bvtank", 3, GetPositionNear(GetPosition("bakerspawn"))), M.Baker, 1);
 end
 
 function Update()
