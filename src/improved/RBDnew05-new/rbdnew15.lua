@@ -20,14 +20,6 @@ local mission = require('cmisnlib');
 SetAIControl(2,false);
 SetAIControl(3,false);
 
---[[
-TODO:
-  * split CCA in two forces
-    - the first one arrives and attacks the player's forces
-    - the second one arrives as the DW is landing and is set to just be near the relics
-    
-
-]]
 
 local audio = {
   intro = "rbd0501.wav",
@@ -273,8 +265,22 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
     self.nuke_wait_t2 = 2;
     self.nuke_state = 0;
     self.t = 0;
-    self:startTask("destroy_relic");
-    AudioMessage(audio.inspect);
+    --self:startTask("destroy_relic");
+
+    --First CCA attack
+    local units, lead = mission.spawnInFormation2({"   1   ","1   2 2", "3   3  "},"relic_light",{"svtank","svltnk","svfigh"},2,15);
+    for i, v in pairs(units) do
+      if(v ~= lead) then
+        Defend2(v,lead);
+      end
+      local s = mission.TaskManager:sequencer(v);
+      s:queue2("Goto","cca_relic_attack");
+      s:queue2("Defend2", self.relic);
+      s:queue2("Defend");
+    end
+
+
+    self.msg_inspect =  AudioMessage(audio.inspect);
   end,
   task_start = function(self,name)
     if(self.otfs[name]) then
@@ -309,16 +315,6 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
       self.attack_timer = nil;
     elseif(name == "destroy_relic") then
       SetTeamNum(self.relic, 2);
-      local units, lead = mission.spawnInFormation2({"   1   ","1   2 2", "3   3  "},"relic_light",{"svtank","svltnk","svfigh"},2,15);
-      for i, v in pairs(units) do
-        if(v ~= lead) then
-          Defend2(v,lead);
-        end
-        local s = mission.TaskManager:sequencer(v);
-        s:queue2("Goto","cca_relic_attack");
-        s:queue2("Defend2", self.relic);
-        s:queue2("Defend");
-      end
     end
   end,
   _setDayWrecker = function(self,job,handle)
@@ -350,6 +346,9 @@ local defendRelic = mission.Objective:define("defendRelic"):createTasks(
     mission.Objective:Start("rtbAssumeControl");
   end,
   update = function(self,dtime)
+    if( (not self:hasTaskStarted("destroy_relic")) and IsAudioMessageDone(self.msg_inspect) ) then
+      self:startTask("destroy_relic");
+    end
     if(self:isTaskActive("cca_attack_base")) then
       if(self.attack_timer == nil) then
         if(#self.attack_timers <= 0) then

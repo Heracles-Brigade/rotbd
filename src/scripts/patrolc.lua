@@ -121,7 +121,6 @@ local PatrolController = Decorate(
             local n = GetNearestEnemy(i);
             local c = GetCurrentCommand(i)
             if(self.forcedAlert) then
-              print(n, IsAlive(n))
               if(c ~= AiCommand["ATTACK"] and IsAlive(n) and IsWithin(i,n,125)) then
                 Attack(i, n);
                 v.busy = true;

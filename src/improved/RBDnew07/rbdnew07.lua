@@ -147,7 +147,7 @@ local escortRecycler = mission.Objective:define("escortRecycler"):createTasks(
     end
   end,
   update = function(self,dtime)
-    for i=1, 3 do
+    for i=1, #self.wave_wait do
       local t = ("attack_wait%d"):format(i);
       if(self:isTaskActive(t)) then
         self.wave_wait[i] = self.wave_wait[i] - dtime;

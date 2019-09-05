@@ -182,6 +182,8 @@ local captureRelic = mission.Objective:define("captureRelic"):createTasks(
       for obj in ObjectsInRange(Length(pp[2]-pp[1]),pp[1]) do
         if((GetClassLabel(obj) == "turret" or IsBuilding(obj)) and GetTeamNum(obj) == 2) then
           SetTeamNum(obj,1);
+          Stop(obj);
+          Defend(obj);
         end
       end
       self:startTask("captureRecycler");
@@ -259,8 +261,8 @@ local defendSite = mission.Objective:define("defendSite"):createTasks(
     self.default_waves = {
       [("%d"):format(3*60)] = {"2 2 4","1 4 1"},
       [("%d"):format(3*60 + 60)] = {"2 3","1 1"},
-      [("%d"):format( self.extraUnits and (3*60 + 60*7) or 4*60 )] = {"5 5 5", "5 5 5"},
-      [("%d"):format( (self.extraUnits and (3*60 + 60*7) or 4*60) + 60 )] = {"5 5 5", "5 5 5"}
+      [("%d"):format( self.extraUnits and (3*60 + 60*7) or 4*60 )] = {"5", "5"},
+      [("%d"):format( (self.extraUnits and (3*60 + 60*7) or 4*60) + 60 )] = {"5 5", "5 5"}
     };
     self.extra_waves = {
       [("%d"):format(3*60 + 60*2+15)] = {"4 1 1"},
@@ -296,8 +298,8 @@ local defendSite = mission.Objective:define("defendSite"):createTasks(
         done = false;
         local d = tonumber(i);
         if(self.wave_timer >= d) then
-          local wave, lead = mission.spawnInFormation2(v,"attack",{"avfigh","avtank","avrckt","avltnk","hvsav"},2);
-          Goto(lead,"attack");
+          local wave, lead = mission.spawnInFormation2(v,"nsdf_attack",{"avfigh","avtank","avrckt","avltnk","hvngrd"},2);
+          Goto(lead,"nsdf_attack");
           for i2, v2 in pairs(wave) do
             local s = mission.TaskManager:sequencer(v2);
             if(v2~=lead) then
@@ -314,8 +316,8 @@ local defendSite = mission.Objective:define("defendSite"):createTasks(
           done = false;
           local d = tonumber(i);
           if(self.wave_timer >= d) then
-            local wave, lead = mission.spawnInFormation2(v,"attack",{"avfigh","avtank","avrckt","avltnk","hvsav"},2);
-            Goto(lead,"attack");
+            local wave, lead = mission.spawnInFormation2(v,"nsdf_attack",{"avfigh","avtank","avrckt","avltnk","hvngrd"},2);
+            Goto(lead,"nsdf_attack");
             for i2, v2 in pairs(wave) do
               local s = mission.TaskManager:sequencer(v2);
               if(v2~=lead) then

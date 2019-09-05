@@ -39,7 +39,7 @@ local fail_des = {
 local units = {
   nsdf = {"avfigh","avtank","avrckt","avhraz","avapc","avwalk", "avltnk"},
   cca = {"svfigh","svtank","svrckt","svhraz","svapc","svwalk", "svltnk"},
-  fury = {"hvsat","hvsav"}
+  fury = {"hvsat","hvngrd"}
 };
 
 
@@ -69,65 +69,6 @@ local WaveSpawner = require("wavec").WaveSpawner;
 
 
 bzRoutine.routineManager:registerClass(WaveSpawner);
-
-local tugStackSpawner = Decorate(
-  Routine({
-    name = "tugStackSpawner",
-    delay = 0
-  }),
-  Class("tugStackSpawner",{
-    constructor = function()
-      self.current_size = 0;
-      self.completeSubject = rx.Subject.create();
-      self.alive = true;
-    end,
-    methods = {
-      isAlive = function()
-        return self.alive;
-      --  return self.current_size >= self.stack_size;
-      end,
-      save = function()
-        return self.odf, self.location, self.team, self.current_size, self.stack_size, self.c_handle;
-      end,
-      load = function(...)
-        self.odf, self.location, self.team, self.current_size, self.stack_size, self.c_handle = ...;
-      end,
-      update = function(dtime)
-        if(not (IsValid(self.c_handle)) or HasCargo(self.c_handle) ) then
-          if(self.current_size < self.stack_size) then
-            self.current_size = self.current_size + 1;
-            self.c_target = self.c_handle;
-            if(not IsValid(self.c_target)) then
-              self.c_target = BuildObject(self.odf,self.team,self.location);
-            end
-            RemovePilot(self.c_target);
-            SetPosition(self.c_target,location);
-            self.c_handle = BuildObject(self.odf,self.team,self.location);
-            Deploy(self.c_handle);
-          else
-            SetPosition(self.c_handle,self.location);
-            self.completeSubject:onNext(self.c_handle);
-            self.alive = false;
-          end
-        end
-      end,
-      onSpawned = function()
-        return self.completeSubject;
-      end,
-      onInit = function(odf,team,location,stack_size)
-        self.odf = odf;
-        self.stack_size = stack_size;
-        self.location = location;
-        self.team = team;
-      end,
-      onDestroy = function()
-
-      end
-    }
-  })
-);
-
-bzRoutine.routineManager:registerClass(tugStackSpawner);
 
 
 --[[
