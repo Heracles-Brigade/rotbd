@@ -36,11 +36,6 @@ local fail_des = {
 };
 
 
-local units = {
-  nsdf = {"avfigh","avtank","avrckt","avhraz","avapc","avwalk", "avltnk"},
-  cca = {"svfigh","svtank","svrckt","svhraz","svapc","svwalk", "svltnk"},
-  fury = {"hvsat","hvngrd"}
-};
 
 
 local fury_waves = {
@@ -244,7 +239,7 @@ local build_launchpad = mission.Objective:define("build_launchpad"):createTasks(
         local s = mission.TaskManager:sequencer(f);
         s:queue2("Goto","factory_path");
         s:queue(AiCommand["GO_TO_GEYSER"]);
-        ProducerAi:queueJobs(ProductionJob:createMultiple(3,"svmtnk30",1));
+        ProducerAi:queueJobs(ProductionJob:createMultiple(3,"bvmtnk30",1));
         self:taskSucceed("factory_spawn");
       end
     elseif(self:hasTasksSucceeded("factory_spawn") and not IsAlive(GetFactoryHandle())) then

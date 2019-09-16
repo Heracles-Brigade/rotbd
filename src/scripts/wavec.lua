@@ -18,6 +18,13 @@ local BzInit = misc.BzInit;
 
 local choose = mission.choose;
 local chooseA = mission.chooseA;
+local isIn = OOP.isIn
+
+local units = {
+  nsdf = {"avfigh","avtank","avrckt","avhraz","avapc","avwalk", "avltnk"},
+  cca = {"svfigh","svtank","svrckt","svhraz","svapc","svwalk", "svltnk"},
+  fury = {"hvsat","hvngrd"}
+};
 
 
 function FindTarget(handle,alt,sequencer)
