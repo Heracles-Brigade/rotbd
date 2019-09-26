@@ -345,10 +345,10 @@ local defendSite = mission.Objective:define("defendSite"):createTasks(
     SucceedMission(GetTime() + 15,"rbd09wn.des");
   end,
   save = function(self)
-    return self.default_waves, self.extra_waves, self.extraUnits, self.wave_timer, self.patrol_id;
+    return self.default_waves, self.extra_waves, self.extraUnits, self.wave_timer, self.patrol_id, self.units_to_kill;
   end,
   load = function(self,...)
-    self.default_waves, self.extra_waves, self.extraUnits, self.wave_timer, self.patrol_id = ...;
+    self.default_waves, self.extra_waves, self.extraUnits, self.wave_timer, self.patrol_id, self.units_to_kill = ...;
   end
 });
 
