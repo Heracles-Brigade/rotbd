@@ -288,7 +288,7 @@ local ProducerAi = Decorate(
           end
         end
         self.last_command = nc;
-        if(self.handle:isDeployed()) then
+        --if(self.handle:isDeployed()) then
           if(self.buildState == 3 and self.handle:isBusy()) then
             self.buildState = 1;
           elseif(self.buildState == 1 and (not self.handle:isBusy())) then
@@ -299,6 +299,10 @@ local ProducerAi = Decorate(
                 local nl = self.handle:getDistance(handle);
                 if(nl < dist) then
                   cmatch = handle;
+                  dist = nl;
+                  if (GetOwner(handle) == self.handle:getHandle()) then
+                    break
+                  end
                 end
               end
             end
@@ -306,7 +310,7 @@ local ProducerAi = Decorate(
             self.currentJob:finish(cmatch);
             self:_clearJob();
           end
-        end
+        --end
         if(self.wait <= 0) then
           if((not self.handle:canBuild()) and self.currentJob) then
             self:_clearJob();
