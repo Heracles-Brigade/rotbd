@@ -893,6 +893,7 @@ local AudioManager = {
         end
         self.subscriptions[id] = nil;
         self.audioSequences[id] = nil;
+        self.taskCallbacks[id] = nil;
     end,
     _createCallback = function(self, id)
         local taskCb = self.taskCallbacks[id];
@@ -930,6 +931,7 @@ local AudioManager = {
                 else
                     sequence.subject:onCompleted(self.playId, sequence.nextAudio-1, currentMessage);
                     self.audioSequences[self.playId] = nil;
+                    self.taskCallbacks[self.playId] = nil;
                 end
             elseif(IsAudioMessageDone(currentMessage)) then
                 sequence.subject:onNext(sequence.nextAudio, currentMessage);
@@ -969,6 +971,7 @@ local AudioManager = {
         end
         self.nextAudio = data.nextAudio;
         self.nextId = data.nextId;
+        self.playId = data.playId;
         self.taskCallbacks = data.taskCallbacks;
         for i, v in pairs(self.taskCallbacks) do
             self:_createCallback(i);
