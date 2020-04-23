@@ -25,27 +25,40 @@ pipeline:
       - find -type f -name '*.bzn' -exec python3 /bztools/bznDown.py {} {} \;
       - zip -j -r /rotbd/output/bundle1.5.zip /tmp/files
 
-  upload:
+  upload-branch:
     image: docker.dock1.spaceway.network/bzone/bztools:latest
     pull: true
     when:
       event:
         - push
-        - tag
     commands:
       - mkdir -p /builds/branches/${DRONE_BRANCH} || true
       - FILE_COUNT=$(ls /builds/branches/${DRONE_BRANCH} | wc -l) || true
       - mv /builds/branches/${DRONE_BRANCH}/rotbd_latest.zip /builds/branches/${DRONE_BRANCH}/rotbd_"$FILE_COUNT".zip || true
       - cp /rotbd/output/bundle.zip /builds/branches/${DRONE_BRANCH}/rotbd_latest.zip || true
       - mv /builds/branches/${DRONE_BRANCH}/rotbd1.5c_latest.zip /builds/branches/${DRONE_BRANCH}/rotbd1.5c_"$FILE_COUNT".zip || true
-      - cp /rotbd/output.5.zip /builds/branches/${DRONE_BRANCH}/rotbd1.5c_latest.zip || true
-      - cp -f /tmp/bundle.zip /builds/releases/rotbd_${DRONE_TAG}.zip
-      - cp -f /tmp/bundle1.5.zip /builds/releases/rotbd1.5c_${DRONE_TAG}.zip
-      - ln -f /builds/releases/rotbd_${DRONE_TAG}.zip /builds/releases/rotbd_latest.zip
-      - ln -f /builds/releases/rotbd1.5c_${DRONE_TAG}.zip /builds/releases/rotbd1.5c_latest.zip
+      - cp /rotbd/output/bundle1.5.zip /builds/branches/${DRONE_BRANCH}/rotbd1.5c_latest.zip || true
+
     volumes:
       - /srv/data/caddy/media/public/rotbd/builds:/builds
 
+  upload-release:
+    image: docker.dock1.spaceway.network/bzone/bztools:latest
+    pull: true
+    when:
+      event:
+        - tag
+
+    commands:
+      - cp -f /rotbd/output/bundle.zip /builds/releases/rotbd_${DRONE_TAG}.zip
+      - cp -f /rotbd/output/bundle1.5.zip /builds/releases/rotbd1.5c_${DRONE_TAG}.zip
+      - ln -f /builds/releases/rotbd_${DRONE_TAG}.zip /builds/releases/rotbd_latest.zip
+      - ln -f /builds/releases/rotbd1.5c_${DRONE_TAG}.zip /builds/releases/rotbd1.5c_latest.zip
+
+    volumes:
+      - /srv/data/caddy/media/public/rotbd/builds:/builds
+
+      
 
   notification-success:
     image: docker.dock1.spaceway.network/bzone/bztools:latest
