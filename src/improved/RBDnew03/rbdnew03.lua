@@ -231,10 +231,19 @@ local function keepOutside(h1,h2) -- This is the shield function for the Mammoth
   end
 end
 
-function CreateObject(h)  -- check if daywrecker was spawned by the armory assuming player will have 0-1 scrap after building it
-  if(not M.Wrecker and GetScrap(1) <= 1 and GetClassLabel(h) == "daywrecker") then
-    M.Wrecker = h
-  end
+
+function AddObject(h) -- check if daywrecker was spawned by the armory assuming player will have 0-1 scrap after building it
+	local armory = GetArmoryHandle();
+	
+	if IsValid(armory) then
+		if((not M.Wrecker) and GetClassLabel(h) == "daywrecker" and GetOwner(h) == armory) then
+			M.Wrecker = h
+		end
+	end
+end
+
+function CreateObject(h)  
+
 end
 
 function Update()
