@@ -18,7 +18,7 @@
     mission.Objective:Start
 ]]
 
-local _ = require("bz_logging");
+;
 
 local miss25setup;
 local miss26setup;

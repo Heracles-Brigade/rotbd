@@ -1,7 +1,4 @@
 --Combination of Grab The Scientists and Preparations
-
-local _ = require("bz_logging");
-
 local mission = require('cmisnlib');
 local globals = {};
 local tracker = mission.UnitTracker:new();

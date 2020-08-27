@@ -5,6 +5,9 @@
 	 - Vemahk
 	 - Janne
 --]]
+
+local minit = require("minit")
+
 local cmisnlib = require("cmisnlib");
 local choose = cmisnlib.choose;
 
@@ -472,3 +475,6 @@ function Update()
 		end
 	end
 end
+
+
+minit.init()

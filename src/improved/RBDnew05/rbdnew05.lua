@@ -1,7 +1,7 @@
 --Combination of The Last Stand and Evacuate Venus
 
+local minit = require("minit")
 
-local _ = require("bz_logging");
 
 local miss25setup;
 local miss26setup;
@@ -530,3 +530,5 @@ function Load(misison_date,g)
     mission:Load(misison_date);
     globals = g;
 end
+
+minit.init()

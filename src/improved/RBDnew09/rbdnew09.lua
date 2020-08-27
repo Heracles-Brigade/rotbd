@@ -1,3 +1,6 @@
+local minit = require("minit")
+
+
 local core = require("bz_core");
 local OOP = require("oop");
 local bzRoutine = require("bz_routine");
@@ -12,10 +15,9 @@ local bzObjects = require("bz_objects");
 -- Allows us to re-order objectives
 local _ = require("bz_objt");
 
-local _ = require("objectCrate");
 
 local pwers = {};
-local _ = require("bz_logging");
+
 
 local audio = {
   intro = "rbd0901.wav",
@@ -465,3 +467,5 @@ function Load(missison_date,cdata)
   core:load(unpack(cdata));
   mission:Load(missison_date);
 end
+
+minit.init()

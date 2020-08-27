@@ -1,5 +1,3 @@
-
-local _ = require("bz_logging");
 local mission = require 'cmisnlib';
 
 local globals = {}

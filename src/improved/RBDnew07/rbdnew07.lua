@@ -1,6 +1,6 @@
 --Rev_2
 
-local _ = require("bz_logging");
+local minit = require("minit")
 
 local mission = require('cmisnlib');
 local globals = {};
@@ -558,3 +558,6 @@ function Load(misison_date,g,t)
   tracker:load(t);
   mission.fixTugs();
 end
+
+
+minit.init()

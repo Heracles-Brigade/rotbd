@@ -3,7 +3,6 @@ local bzUtils = require("bz_core");
 local net = require("bz_net");
 local bzRoutine = require("bz_routine");
 local misc = require("misc");
-local debug = require("bz_logging");
 --routine for spectating
 local _ = require("spectate_r");
 

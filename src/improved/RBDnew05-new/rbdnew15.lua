@@ -1,9 +1,10 @@
 --Combination of The Last Stand and Evacuate Venus
 
+local minit = require("minit")
+
 
 local pwers = {};
 
-local _ = require("bz_logging");
 local orig15setup = require("orig15p");
 local core = require("bz_core");
 local OOP = require("oop");
@@ -568,3 +569,5 @@ function Load(missison_date,cdata)
   core:load(unpack(cdata));
   mission:Load(missison_date);
 end
+
+minit.init()

@@ -2,7 +2,7 @@
 
 
 
-local _ = require("bz_logging");
+;
 
 local M = {
 -- Bools

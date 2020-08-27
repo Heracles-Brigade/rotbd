@@ -1,7 +1,7 @@
 -- Battlezone: Rise of the Black Dogs, Black Dog Mission 28 written by General BlackDragon.
 
 
-local _ = require("bz_logging");
+;
 
 
 local M = {

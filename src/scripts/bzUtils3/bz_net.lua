@@ -2,7 +2,6 @@ local bzCore = require("bz_core");
 local misc = require("misc");
 local OOP = require("oop");
 local Rx = require("rx");
-local LogFile = require("bz_logging").LogFile;
 
 local Class = OOP.Class;
 local Decorate = OOP.Decorate;
@@ -187,13 +186,7 @@ local NetworkManager = Decorate(BzModule("NetworkManagerModule"),
         allInGame = {},
         l = nil
       };
-      self.log_file = LogFile("lua_sockets");
-      self:onNetworkReady():subscribe(function(player)
-        self.log_file:print("Network ready:",player.id,player.name,player.team);
-      end);
-      self:getHosts():subscribe(function(player)
-        self.log_file:print("New host:", player.id,player.name,player.team);
-      end);
+
     end,
     methods = {
       update = function(...)
@@ -258,7 +251,6 @@ local NetworkManager = Decorate(BzModule("NetworkManagerModule"),
           local args = {...};
           if(a == 0) then
             local name = table.remove(args,1);
-            self.log_file:print(("Received request for socket on %s from %d, interface_id: %d, data: "):format(name,id,interface_id),unpack(args));
             local csock = self:_createSocket(id,interface_id);
             if(self.socketSubjects[name]) then
               self.socketSubjects[name]:onNext(csock,unpack(args));
@@ -288,7 +280,6 @@ local NetworkManager = Decorate(BzModule("NetworkManagerModule"),
         end
       end,
       _createSocket = function(to,interface_id)
-        self.log_file:print(("Creating socket to %d with interface_id: %d"):format(to,interface_id));
         local i = SockInterface(to,interface_id);
         local player = self:getLocalPlayer();
         local socket = Socket(i,player.id);
@@ -338,13 +329,11 @@ local NetworkManager = Decorate(BzModule("NetworkManagerModule"),
         return c;
       end,
       createSocket = function(name,to,...)
-        self.log_file:print(("Requesting socket on channel %s to %d, data: "):format(name,to),...);
         local socket,sinterface = self:_createSocket(to,self:nextId());
         sinterface:send(0,name,...);
         return socket;
       end,
       getSockets = function(name)
-        self.log_file:print(("Listening for sockets on channel %s"):format(name));
         if(not self.socketSubjects[name]) then
           self.socketSubjects[name] = Rx.Subject.create();
         end
@@ -439,18 +428,3 @@ return {
   netManager = netManager
 };
 
---[[
-
-local Connection = Class("Net.Connection",{
-  constructor = function()
-
-  end,
-  methods = {
-    send = function()
-
-    end
-  }
-})
-
-
-]]

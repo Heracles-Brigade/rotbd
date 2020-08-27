@@ -1,6 +1,7 @@
 --Combination of Grab The Scientists and Preparations
 
-local _ = require("bz_logging");
+local minit = require("minit")
+
 
 local misc = require("misc");
 
@@ -740,3 +741,6 @@ function Load(misison_date,g,tdata)
     globals = g;
     tracker = mission.UnitTracker:Load(tdata);
 end
+
+
+minit.init()

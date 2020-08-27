@@ -1,5 +1,7 @@
 
-local _ = require("bz_logging");
+local minit = require("minit")
+
+
 local OOP = require("oop");
 local misc = require("misc");
 local bzRoutine = require("bz_routine");
@@ -494,3 +496,4 @@ function Load(missison_date,cdata)
   mission:Load(missison_date);
 end
 
+minit.init()

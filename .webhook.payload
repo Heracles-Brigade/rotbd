@@ -1,12 +1,12 @@
 {
   "avatar_url": "https://media.dock1.spaceway.network/rotbd/rotbd_dog.png",
   "embeds": [{
-    "title": "Rise of the Black Dogs",
-    "description": "@here RotBD {tag} is now released, please download and test it\n[Release Notes]({repolink}/releases/tag/{tag})",
+    "title": "Rise of the Black Dogs {tag}",
+    "description": "<@458108706299576325> RotBD {tag} is now released, please download and test it\n[Release Notes]({repolink}/releases/tag/{tag})",
     "color": 65280,
     "fields": [{
       "name": "Download",
-      "value": "[Battlezone 1.5](https://media.dock1.spaceway.network/rotbd/builds/releases/rotbd1.5c_{tag}.zip)\n[Battlezone Redux](https://media.dock1.spaceway.network/rotbd/builds/releases/rotbd_{tag}.zip)"
+      "value": "Note: For the mod to work properly you will have to extract the mod to addon/rotbd\n[Battlezone Redux](https://media.dock1.spaceway.network/rotbd/builds/releases/rotbd_{tag}.zip)"
     },{
       "name":"Build info",
       "value": "[Build log]({buildlink})\nstatus: {status}\nevent:  {event}\nrepo:  [{repo}]({repolink})"

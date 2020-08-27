@@ -1,5 +1,6 @@
 
-local _ = require("bz_logging");
+local minit = require("minit")
+
 
 local OOP = require("oop");
 local mission = require("cmisnlib");
@@ -478,3 +479,5 @@ function Load(missison_date,cdata)
   core:load(unpack(cdata));
   mission:Load(missison_date);
 end
+
+minit.init()
