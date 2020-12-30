@@ -16,7 +16,7 @@ local KeepAliveSystem = rbdcomp.KeepAliveSystem
 
 return {core = core, serviceManager = serviceManager, init = function()
   msetup.fullSetup(core)
-  ldebug(serviceManager)
+  --ldebug(serviceManager)
 
   local EcsModule = serviceManager:getServiceSync("bzutils.ecs")
   EcsModule:addSystem(SpawnOnKillSystem:processingSystem())
