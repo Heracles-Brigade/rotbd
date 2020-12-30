@@ -1,81 +1,82 @@
 workspace:
-  base: /rotbd
-  path: /${DRONE_REPO_SLUG}/
+  path: /rotbd
 
-pipeline:
-  pre-process:
-    image: docker.dock1.spaceway.network/bzone/bztools:latest
-    pull: true
-    when:
-      event:
-        - push
-        - tag
+kind: pipeline
+name: default
 
-    commands:
-      - mkdir /tmp/files
-      - mkdir /tmp/lua
-      - find /rotbd -type f \( -name "*.lua" -o -name "*.squish" \) -exec cp {} /tmp/lua \;
-      - python3 /bztools/luaSquish.py /tmp/lua -r
-      - find /rotbd -not -ipath '*/\.*' -not -name '*.lua' -not -name '*.bin' -type f -exec cp {} /tmp/files \;
-      - find /tmp/lua -name '*.lua' -type f -exec mv {} /tmp/files \;
-      - python3 /bztools/textToSpeech.py /tmp/files
-      - python3 /bztools/crlf_fixer.py /tmp/files
-      - mkdir -p /rotbd/output
-      - zip -j -r /rotbd/output/bundle.zip /tmp/files
-      - find -type f -name '*.bzn' -exec python3 /bztools/bznDown.py {} {} \;
-      - zip -j -r /rotbd/output/bundle1.5.zip /tmp/files
+steps:
+- name: pre-process
+  image: thejanne/bztools:latest
+  when:
+    branch:
+    - master
+    event:
+    - tag
+  commands:
+    - mkdir /tmp/files
+    - mkdir /tmp/lua
+    - find /rotbd -type f \( -name "*.lua" -o -name "*.squish" \) -exec cp {} /tmp/lua \;
+    - python3 /bztools/luaSquish.py /tmp/lua -r
+    - find /rotbd -not -ipath '*/\.*' -not -name '*.lua' -not -name '*.bin' -type f -exec cp {} /tmp/files \;
+    - find /tmp/lua -name '*.lua' -type f -exec mv {} /tmp/files \;
+    - python3 /bztools/textToSpeech.py /tmp/files
+    - python3 /bztools/crlf_fixer.py /tmp/files
+    - mkdir -p /rotbd/build
+    - zip -j -r /rotbd/build/rotbd_${DRONE_TAG}.zip /tmp/files
+    - find -type f -name '*.bzn' -exec python3 /bztools/bznDown.py {} {} \;
+    - zip -j -r /rotbd/build/rotbd_1.5c_${DRONE_TAG}.zip /tmp/files
+    - cp /rotbd/build/rotbd_1.5c_latest.zip /rotbd/build/rotbd_1.5c_${DRONE_TAG}.zip
+    - cp /rotbd/build/rotbd_latest.zip /rotbd/build/rotbd_${DRONE_TAG}.zip
 
-  upload-branch:
-    image: docker.dock1.spaceway.network/bzone/bztools:latest
-    pull: true
-    when:
-      event:
-        - push
-    commands:
-      - mkdir -p /builds/branches/${DRONE_BRANCH} || true
-      - FILE_COUNT=$(ls /builds/branches/${DRONE_BRANCH} | wc -l) || true
-      - mv /builds/branches/${DRONE_BRANCH}/rotbd_latest.zip /builds/branches/${DRONE_BRANCH}/rotbd_"$FILE_COUNT".zip || true
-      - cp /rotbd/output/bundle.zip /builds/branches/${DRONE_BRANCH}/rotbd_latest.zip || true
-      - mv /builds/branches/${DRONE_BRANCH}/rotbd1.5c_latest.zip /builds/branches/${DRONE_BRANCH}/rotbd1.5c_"$FILE_COUNT".zip || true
-      - cp /rotbd/output/bundle1.5.zip /builds/branches/${DRONE_BRANCH}/rotbd1.5c_latest.zip || true
+- name: upload
+  image: plugins/s3
+  when:
+    branch:
+    - master
+    event:
+    - tag
+  settings:
+    bucket: buildstorage
+    access_key:
+      from_secret: storage_access_key
+    secret_key:
+      from_secret: storage_secret_key
+    source: /rotbd/build/*.zip
+    target: /battlezone/
+    acl: public-read
+    endpoint: https://s3.nl-ams.scw.cloud
+    region: nl-ams
 
-    volumes:
-      - /srv/data/caddy/media/public/rotbd/builds:/builds
-
-  upload-release:
-    image: docker.dock1.spaceway.network/bzone/bztools:latest
-    pull: true
-    when:
-      event:
-        - tag
-
-    commands:
-      - cp -f /rotbd/output/bundle.zip /builds/releases/rotbd_${DRONE_TAG}.zip
-      - cp -f /rotbd/output/bundle1.5.zip /builds/releases/rotbd1.5c_${DRONE_TAG}.zip
-      - ln -f /builds/releases/rotbd_${DRONE_TAG}.zip /builds/releases/rotbd_latest.zip
-      - ln -f /builds/releases/rotbd1.5c_${DRONE_TAG}.zip /builds/releases/rotbd1.5c_latest.zip
-
-    volumes:
-      - /srv/data/caddy/media/public/rotbd/builds:/builds
-
-      
-
-  notification-success:
-    image: docker.dock1.spaceway.network/bzone/bztools:latest
-    secrets: [ webhook ]
-    when:
-      event: [ tag ]
-      status: [ success ]
+- name: notification-success
+  image: thejanne/bztools:latest
+  when:
+    branch:
+    - master
+    event:
+    - tag
+    status:
+    - success
+    environment:
+      WEBHOOK:
+        from_secret: webhook
     commands:
       - python3 /bztools/webhook.py /rotbd/.webhook.payload $${WEBHOOK} -kv "status=SUCCESS" "tag=${DRONE_TAG}" "buildlink=${DRONE_BUILD_LINK}" "repolink=${DRONE_REPO_LINK}" "repo=${DRONE_REPO_NAME}" "event=${DRONE_BUILD_EVENT}"
   
-  notification-fail:
-    image: docker.dock1.spaceway.network/bzone/bztools:latest
-    secrets: [ webhook ]
-    when:
-      event: [ tag ]
-      status: [ fail ]
+- name: notification-fail
+  image: thejanne/bztools:latest
+  when:
+    branch:
+    - master
+    event:
+    - tag
+    status:
+    - failure
+    environment:
+      WEBHOOK:
+        from_secret: webhook
     commands: 
-      - python3 /bztools/webhook.py /rotbd/.webhook.fail $${WEBHOOK} -kv "status=FAIL" "tag=${DRONE_TAG}" "buildlink=${DRONE_BUILD_LINK}" "repolink=${DRONE_REPO_LINK}" "repo=${DRONE_REPO_NAME}" "event=${DRONE_BUILD_EVENT}"
+      - python3 /bztools/webhook.py /rotbd/.webhook.fail $${WEBHOOK} -kv "status=FAIL" "tag=${DRONE_TAG}" "buildlink=https://cloud.drone.io/Heracles-Brigade/rotbd/${DRONE_BUILD_NUMBER}" "repolink=${DRONE_REPO_LINK}" "repo=${DRONE_REPO_NAME}" "event=${DRONE_BUILD_EVENT}"
     
+
+
 

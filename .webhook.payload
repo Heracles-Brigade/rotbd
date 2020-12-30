@@ -6,7 +6,7 @@
     "color": 65280,
     "fields": [{
       "name": "Download",
-      "value": "Note: For the mod to work properly you will have to extract the mod to addon/rotbd\n[Battlezone Redux](https://media.dock1.spaceway.network/rotbd/builds/releases/rotbd_{tag}.zip)"
+      "value": "Note: For the mod to work properly you will have to extract the mod to addon/rotbd\n[Battlezone Redux](https://buildstorage.s3.nl-ams.scw.cloud/battlezone/rotbd/build/rotbd_{tag}.zip)"
     },{
       "name":"Build info",
       "value": "[Build log]({buildlink})\nstatus: {status}\nevent:  {event}\nrepo:  [{repo}]({repolink})"
