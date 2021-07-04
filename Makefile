@@ -1,5 +1,7 @@
 build-win:
-	cmd "/C for /R .\src %F in (*) do copy /Y %F .\dist"
+	if not exist "dist" mkdir "dist"
+	del ".\dist\*" /Q
+	cmd "/C for /R .\src %F in (*) do copy /Y %F ".\dist\""
 
 build-linux:
 	rm -r ./dist/*
