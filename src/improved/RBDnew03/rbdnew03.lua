@@ -532,3 +532,5 @@ function Update()
 		-- end
 	end
 end
+
+minit.init()
