@@ -48,6 +48,14 @@ end
     - Some furies attack when the player has secured the site
 ]]
 
+-- Added by Herp McDerperson 06/30/21
+function ChangeTeamAndReplace(origHandle, odfName, newTeam)
+    local origXfrm = GetTransform(origHandle);
+    RemoveObject(origHandle);
+	newHandle = BuildObject(odfName, newTeam, origXfrm);
+    return newHandle
+end
+
 local sideObjectives = mission.Objective:define("sideObjectives"):createTasks(
   "destroy_comm", "capture_supply"
 ):setListeners({
@@ -182,10 +190,11 @@ local captureRelic = mission.Objective:define("captureRelic"):createTasks(
       AudioMessage(audio.clear);
       local pp = GetPathPoints("relic_site");
       for obj in ObjectsInRange(Length(pp[2]-pp[1]),pp[1]) do
-        if((GetClassLabel(obj) == "turret" or IsBuilding(obj)) and GetTeamNum(obj) == 2) then
+	if IsBuilding(obj) and GetTeamNum(obj) == 2 then
           SetTeamNum(obj,1);
-          Stop(obj);
-          Defend(obj);
+        elseif GetClassLabel(obj) == "turret" and GetTeamNum(obj) == 2 then
+          local odf = GetOdf(obj);
+          ChangeTeamAndReplace(obj, odf, 1);
         end
       end
       self:startTask("captureRecycler");
@@ -260,17 +269,25 @@ local defendSite = mission.Objective:define("defendSite"):createTasks(
     local sideObjectives = mission.Objective:getObjective("sideObjectives"):getInstance();
     self.extraUnits = sideObjectives:call("_hasBeenDetected");
     self.units_to_kill = patrol_units;
+	local baseDelay = 3*60;
+	local defaultVanguardDelay = 7*60;
+	local extraUnitsVanguardDelay = 4*60;
+	local defaultWave2Delay = 2*60;
+	local defaultWave4Delay = 3*60;
+	local extraUnitsWave4Delay = defaultWave4Delay;
     self.default_waves = {
-      [("%d"):format(3*60)] = {"2 2 4","1 4 1"},
-      [("%d"):format(3*60 + 60)] = {"2 3","1 1"},
-      [("%d"):format( self.extraUnits and (3*60 + 60*7) or 4*60 )] = {"5", "5"},
-      [("%d"):format( (self.extraUnits and (3*60 + 60*7) or 4*60) + 60 )] = {"5 5", "5 5"}
+	  [("%d"):format(baseDelay)] = {"2 2 4","1 4 1"}, -- 3*60 = 180 (3m)
+      [("%d"):format(baseDelay + defaultWave2Delay)] = {"2 3","1 1"}, -- 3*60 + 2*60 = 300 (5m)
+      [("%d"):format( self.extraUnits and (baseDelay + defaultVanguardDelay)
+		or (baseDelay + extraUnitsVanguardDelay) )] = {"5", "5"}, -- (3*60 + 7*60) OR (3*60 + 4*60) -> 600 OR 420 -> 10m or 7m
+	  [("%d"):format( self.extraUnits and (baseDelay + defaultVanguardDelay + defaultWave4Delay)
+		or (baseDelay + extraUnitsVanguardDelay + extraUnitsWave4Delay) )] = {"5 5", "5 5"} -- (3*60 + 7*60 + 3*60) OR (3*60 + 4*60 + 3*60) -> 13m OR 10m
     };
     self.extra_waves = {
-      [("%d"):format(3*60 + 60*2+15)] = {"4 1 1"},
-      [("%d"):format(3*60 + 60*3)] = {"2 4 4","4 1 1"},
-      [("%d"):format(3*60 + 60*3+30)] = {"2 2 4 4","3 1 1 1"},
-      [("%d"):format(3*60 + 60*5)] = {"2 2 2 4","3 4 1 1"}
+      [("%d"):format(7*60 + 60*2+15)] = {"4 1 1"}, -- 420 + 135 = 555 (9m 15s)
+      [("%d"):format(7*60 + 60*3)] = {"2 4 4","4 1 1"}, -- 420 + 180 = 360 (10m)
+      [("%d"):format(7*60 + 60*3+30)] = {"2 2 4 4","3 1 1 1"}, -- 420 + 210 = 390 (10m 30s)
+      [("%d"):format(7*60 + 60*5)] = {"2 2 2 4","3 4 1 1"} -- 420 + 300 = 480 (12m)
     };
     for i, v in pairs(self.units_to_kill) do
       local s = mission.TaskManager:sequencer(v);
