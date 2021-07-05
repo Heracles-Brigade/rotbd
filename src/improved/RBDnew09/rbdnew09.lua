@@ -190,18 +190,12 @@ local captureRelic = mission.Objective:define("captureRelic"):createTasks(
       AudioMessage(audio.clear);
       local pp = GetPathPoints("relic_site");
       for obj in ObjectsInRange(Length(pp[2]-pp[1]),pp[1]) do
-		-- Added to replace commented code by Herp McDerperson on 06/30/21
-	    if IsBuilding(obj) and GetTeamNum(obj) == 2 then
+	if IsBuilding(obj) and GetTeamNum(obj) == 2 then
           SetTeamNum(obj,1);
         elseif GetClassLabel(obj) == "turret" and GetTeamNum(obj) == 2 then
           local odf = GetOdf(obj);
           ChangeTeamAndReplace(obj, odf, 1);
         end
-        -- if((GetClassLabel(obj) == "turret" or IsBuilding(obj)) and GetTeamNum(obj) == 2) then
-          -- SetTeamNum(obj,1);
-          -- Stop(obj);
-          -- Defend(obj);
-        -- end
       end
       self:startTask("captureRecycler");
     elseif(name == "captureRecycler") then
@@ -275,7 +269,6 @@ local defendSite = mission.Objective:define("defendSite"):createTasks(
     local sideObjectives = mission.Objective:getObjective("sideObjectives"):getInstance();
     self.extraUnits = sideObjectives:call("_hasBeenDetected");
     self.units_to_kill = patrol_units;
-	-- Added to replace commanted code by Herp McDerperson 06/30/21
 	local baseDelay = 3*60;
 	local defaultVanguardDelay = 7*60;
 	local extraUnitsVanguardDelay = 4*60;
@@ -296,18 +289,6 @@ local defendSite = mission.Objective:define("defendSite"):createTasks(
       [("%d"):format(7*60 + 60*3+30)] = {"2 2 4 4","3 1 1 1"}, -- 420 + 210 = 390 (10m 30s)
       [("%d"):format(7*60 + 60*5)] = {"2 2 2 4","3 4 1 1"} -- 420 + 300 = 480 (12m)
     };
-    -- self.default_waves = {
-      -- [("%d"):format(3*60)] = {"2 2 4","1 4 1"},
-      -- [("%d"):format(3*60 + 60)] = {"2 3","1 1"},
-      -- [("%d"):format( self.extraUnits and (3*60 + 60*7) or 4*60 )] = {"5", "5"},
-      -- [("%d"):format( (self.extraUnits and (3*60 + 60*7) or 4*60) + 60 )] = {"5 5", "5 5"}
-    -- };
-    -- self.extra_waves = {
-      -- [("%d"):format(3*60 + 60*2+15)] = {"4 1 1"},
-      -- [("%d"):format(3*60 + 60*3)] = {"2 4 4","4 1 1"},
-      -- [("%d"):format(3*60 + 60*3+30)] = {"2 2 4 4","3 1 1 1"},
-      -- [("%d"):format(3*60 + 60*5)] = {"2 2 2 4","3 4 1 1"}
-    -- };
     for i, v in pairs(self.units_to_kill) do
       local s = mission.TaskManager:sequencer(v);
       s:clear();
