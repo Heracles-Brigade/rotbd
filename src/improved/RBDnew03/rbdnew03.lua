@@ -1,5 +1,6 @@
 --[[
 	Contributors:
+	 - Herp McDerperson
 	 - Seqan
 	 - GBD
 	 - Vemahk
@@ -235,18 +236,10 @@ local function keepOutside(h1,h2) -- This is the shield function for the Mammoth
 end
 
 
-function AddObject(h) -- check if daywrecker was spawned by the armory assuming player will have 0-1 scrap after building it
-	local armory = GetArmoryHandle();
-	
-	if IsValid(armory) then
-		if((not M.Wrecker) and GetClassLabel(h) == "daywrecker" and GetOwner(h) == armory) then
-			M.Wrecker = h
-		end
-	end
-end
-
-function CreateObject(h)  
-
+function CreateObject(h)
+  if(not M.Wrecker and GetClassLabel(h) == "daywrecker") then
+    M.Wrecker = h
+  end
 end
 
 function Update()
@@ -348,7 +341,7 @@ function Update()
 	end
 	
 	if M.TugAquired and GetDistance(M.Player, M.Mammoth) < 225.0 and not M.ShieldDetected then
-		BuildObject("bvslf", 1, "NukeSpawn", 1);
+		M.playerSLF = BuildObject("bvslf", 1, "NukeSpawn", 1);
 		M.Armory = true;
 		SetMaxScrap(1, 20);
 		SetScrap(1, 20);
@@ -357,8 +350,61 @@ function Update()
 		SpawnNav(4);
 		UpdateObjectives();
 	end
-		
-	
+
+	if IsValid(M.playerSLF) then
+		M.armoryCommand = GetCurrentCommand(M.playerSLF);
+		print(M.armoryCommand);
+		if M.armoryCommand == 21 and not M.pollArmoryWho then -- 21
+			M.pollArmoryWho = true;
+		end
+	end
+	if M.pollArmoryWho == true then
+		temp = GetCurrentWho(M.playerSLF);
+		if IsValid(temp) then
+			M.armoryTarget = temp;
+			print(M.armoryTarget);
+			M.pollArmoryWho = false;
+		end
+	end
+	if IsValid(M.Wrecker) then
+		if not M.impactPending and not M.wreckerTargetMissed then
+			print(M.armoryTarget == M.ControlTower)
+			if M.armoryTarget == M.ControlTower then
+				M.impactPending = true;
+				UpdateObjectives(); --yellow
+			else
+				if not M.wreckerTargetMissed == true then
+					M.Aud1 = AudioMessage(audio.lose4);
+					FailMission(GetTime() + 5.0, "rbdnew03l5.des");
+					M.MissionOver = true;
+					M.wreckerTargetMissed = true;
+					UpdateObjectives(); --red
+				end
+			end
+		end
+	end
+	if M.impactPending and not IsValid(M.Wrecker) then
+		-- we should expect a dead shield control tower right about now
+		if not IsValid(M.ControlTower) and not M.ControlDead then
+			M.ControlDead = true;
+			M.impactPending = false;
+			UpdateObjectives(); -- green
+			M.Aud1 = AudioMessage(audio.dayw);
+			SetObjectiveOff(M.ObjectiveNav);
+			SetObjectiveOn(M.Mammoth);
+			SetObjectiveName(M.Mammoth, "Mammoth");
+			SpawnArmy();
+		-- else
+			-- if not M.wreckerTargetMissed == true then
+				-- M.Aud1 = AudioMessage(audio.lose4);
+				-- FailMission(GetTime() + 5.0, "rbdnew03l5.des");
+				-- M.MissionOver = true;
+				-- M.wreckerTargetMissed = true;
+				-- UpdateObjectives(); --red
+			-- end
+		end
+	end
+
 	if not M.ControlDead and M.OpeningCinDone then
 		keepOutside(M.Player, M.Mammoth);
 		if GetTime() >= M.LastShieldTime then
@@ -453,28 +499,36 @@ function Update()
 			M.MissionOver = true;
 			UpdateObjectives();
 		end
+			
+		-- -- the DW detonated and the target is still intact!
+		-- if M.impactPending and not IsValid(M.Wrecker) and not M.ControlDead then
+			-- --M.impactPending = false;
+			-- M.wreckWatchdogStarted = false;
+			-- M.wreckerTargetMissed = true;
+			-- M.Aud1 = AudioMessage(audio.lose4);
+			-- FailMission(GetTime() + 5.0, "rbdnew03l5.des");
+			-- M.MissionOver = true;
+			-- UpdateObjectives();
+		-- end
+			
+		-- if M.Wrecker and not IsValid(M.Wrecker) and not M.ControlDead and M.WreckTime1 == 0 then
+			-- M.WreckTime1 = GetTime() + 1.0;
+		-- end
+		-- if M.WreckTime1 ~= 0 and GetTime() >=M.WreckTime1 and not M.ControlDead then
+			-- M.Aud1 = AudioMessage(audio.lose4);
+			-- FailMission(GetTime() + 5.0, "rbdnew03l5.des");
+			-- M.MissionOver = true;
+			-- UpdateObjective(objectives.Control, "RED");
+		-- end
 
-		if M.Wrecker and not IsValid(M.Wrecker) and not M.ControlDead and M.WreckTime1 == 0 then
-			M.WreckTime1 = GetTime() + 1.0;
-		end
-		if M.WreckTime1 ~= 0 and GetTime() >=M.WreckTime1 and not M.ControlDead then
-			M.Aud1 = AudioMessage(audio.lose4);
-			FailMission(GetTime() + 5.0, "rbdnew03l5.des");
-			M.MissionOver = true;
-			UpdateObjective(objectives.Control, "RED");
-		end
-
-		if not M.Wrecker and M.Armory and GetScrap(1) < 20 and not M.ControlDead and M.WreckTime2 == 0 then
-			M.WreckTime2 = GetTime() + 1.5;
-		end
-		if M.WreckTime2 ~= 0 and GetTime() > M.WreckTime2 and not M.ControlDead and not M.Wrecker then
-			Aud1 = AudioMessage(audio.lose5);
-			FailMission(GetTime() + 5.0, "rbdnew03l5.des");
-			M.MissionOver = true;
-			UpdateObjective(objectives.Control, "RED");
-		end
+		-- if not M.Wrecker and M.Armory and GetScrap(1) < 20 and not M.ControlDead and M.WreckTime2 == 0 then
+			-- M.WreckTime2 = GetTime() + 1.5;
+		-- end
+		-- if M.WreckTime2 ~= 0 and GetTime() > M.WreckTime2 and not M.ControlDead and not M.Wrecker then
+			-- Aud1 = AudioMessage(audio.lose5);
+			-- FailMission(GetTime() + 5.0, "rbdnew03l5.des");
+			-- M.MissionOver = true;
+			-- UpdateObjective(objectives.Control, "RED");
+		-- end
 	end
 end
-
-
-minit.init()
