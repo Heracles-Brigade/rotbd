@@ -2,7 +2,7 @@ local bzindex = require("bzindex")
 local bzutils = require("bzutils")
 
 local msetup = require("msetup")
-local setup = bzutils.defaultSetup(true, nil, "rotbd")
+local setup = bzutils.defaultSetup(false, nil, "rotbd")
 local serpent = require("serpent")
 local core = setup.core
 local serviceManager = setup.serviceManager
@@ -16,7 +16,7 @@ local KeepAliveSystem = rbdcomp.KeepAliveSystem
 
 return {core = core, serviceManager = serviceManager, init = function()
   msetup.fullSetup(core)
-  --ldebug(serviceManager)
+  -- ldebug(serviceManager)
 
   local EcsModule = serviceManager:getServiceSync("bzutils.ecs")
   EcsModule:addSystem(SpawnOnKillSystem:processingSystem())
