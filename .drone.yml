@@ -60,7 +60,7 @@ steps:
       WEBHOOK:
         from_secret: webhook
     commands:
-      - python3 /bztools/webhook.py /rotbd/.webhook.payload $${WEBHOOK} -kv "status=SUCCESS" "tag=${DRONE_TAG}" "buildlink=https://cloud.drone.io/Heracles-Brigade/rotbd/${DRONE_BUILD_NUMBER}" "repolink=${DRONE_REPO_LINK}" "repo=${DRONE_REPO_NAME}" "event=${DRONE_BUILD_EVENT}"
+      - python3 /bztools/webhook.py /rotbd/.webhook.payload $WEBHOOK -kv "status=SUCCESS" "tag=${DRONE_TAG}" "buildlink=https://cloud.drone.io/Heracles-Brigade/rotbd/${DRONE_BUILD_NUMBER}" "repolink=${DRONE_REPO_LINK}" "repo=${DRONE_REPO_NAME}" "event=${DRONE_BUILD_EVENT}"
   
 - name: notification-fail
   image: thejanne/bztools:latest
@@ -75,7 +75,7 @@ steps:
       WEBHOOK:
         from_secret: webhook
     commands: 
-      - python3 /bztools/webhook.py /rotbd/.webhook.fail $${WEBHOOK} -kv "status=FAIL" "tag=${DRONE_TAG}" "buildlink=https://cloud.drone.io/Heracles-Brigade/rotbd/${DRONE_BUILD_NUMBER}" "repolink=${DRONE_REPO_LINK}" "repo=${DRONE_REPO_NAME}" "event=${DRONE_BUILD_EVENT}"
+      - python3 /bztools/webhook.py /rotbd/.webhook.fail $WEBHOOK -kv "status=FAIL" "tag=${DRONE_TAG}" "buildlink=https://cloud.drone.io/Heracles-Brigade/rotbd/${DRONE_BUILD_NUMBER}" "repolink=${DRONE_REPO_LINK}" "repo=${DRONE_REPO_NAME}" "event=${DRONE_BUILD_EVENT}"
     
 
 
