@@ -1,0 +1,3 @@
+[submodule "deps/BZ98R-Advanced-Lua-API"]
+	path = deps/BZ98R-Advanced-Lua-API
+	url = https://github.com/Nielk1/BZ98R-Advanced-Lua-API
