@@ -1,5 +1,10 @@
 --Combination of Grab The Scientists and Preparations
 
+local api = require("_api");
+local hook = require("_hook");
+local funcarray = require("_funcarray");
+local statemachine = require("_statemachine");
+
 local minit = require("minit")
 
 
@@ -35,6 +40,7 @@ function RemoveConvoy(...)
 end
 
 local function spawnNextNav()
+	-- todo can globrals.currentNav be null
     local current = globals.currentNav;
     local nav = BuildObject("apcamr", 1, GetPathPoints("nav_path")[current]);
     SetObjectiveName(nav, ("Navpoint %d"):format(current));
@@ -400,83 +406,63 @@ local function checkDead(handles)
     return true;
 end
 
-local cinematic = mission.Objective:define("cinematic"):init({
-    camOn = false,
-    camTime = 20,
-    next = 'checkCommand'
-}):setListeners({
-    start = function(self)
-        self.camOn = CameraReady();
-        AudioMessage(audio.intro); 
-    end,
-    update = function(self,dtime)
-        if(self.camOn) then
-            CameraPath("opening_cin", 2000, 1000, globals.cafe)
-            if(self.camTime <= 0 or CameraCancelled()) then
-                self.camOn = CameraFinish();
-                self:success();
-            end
-            self.camTime = self.camTime - dtime;
-        end
-    end,
-    save = function(self)
-        return self.camOn,self.camTime;
-    end,
-    load = function(self,...)
-        self.camOn,self.camTime = ...;
-    end,
-    success = function(self)
-        mission.Objective:Start(self.next);
+funcarray.Create("cinematic", function(self)
+    self.camOn = CameraReady();
+    AudioMessage(audio.intro); 
+    self.target_time = _funcarray.game_time + 20; -- todo find a way to standardize this
+    self:next();
+end,
+function(self)
+    if (self:SecondsHavePassed(20) or CameraPath("opening_cin", 2000, 1000, globals.cafe) or CameraCancelled()) then
+        self:SecondsHavePassed(); -- clear timer if we got here without it being cleared
+        CameraFinish();
+        self:next();
     end
-});
+end,
+function(self)
+    --mission.Objective:Start('checkCommand');
+    globals.checkCommand = statemachine.Start("checkCommand", "start", {
+        otf = 'bdmisn211.otf'
+    });
+    self:next(); -- done
+end);
 
-local checkCommand = mission.Objective:define("checkCommand"):init({
-    otf = 'bdmisn211.otf',
-    next = 'destorySolar'
-}):setListeners({
-    start = function(self)
+statemachine.Create("checkCommand", {
+    ["start"] = function(self)
         self.nav = spawnNextNav();
         AddObjective(self.otf,"white");
         self.command = GetHandle("sbhqcp0_i76building");
         print(self.otf,self.command);
+        self:switch("check");
     end,
-    update = function(self)
+    ["check"] = function(self)
         if(GetDistance(GetPlayerHandle(), self.command) < 50.0) then
             self:success();
         elseif(not IsAlive(self.command)) then
             self:fail();
         end
     end,
-    save = function(self)
-        return self.nav;
-    end,
-    load = function(self,...)
-        self.command = GetHandle("sbhqcp0_i76building");
-        self.nav = ...;
-    end,
-    success = function(self)
+    ["success"] = function(self)
         AudioMessage(audio.inspect);
         SetObjectiveOff(self.nav);
         UpdateObjective(self.otf,"green");
-        mission.Objective:Start(self.next);
+        mission.Objective:Start('destorySolar', {
+            otf1 = 'bdmisn212.otf',
+            otf2 = 'bdmisn213.otf',
+            target_l1 = {"sbspow1_powerplant","sbspow2_powerplant","sbspow3_powerplant","sbspow4_powerplant"},
+            target_l2 = {"sbspow7_powerplant","sbspow8_powerplant","sbspow5_powerplant","sbspow6_powerplant"},
+        });
+        self:switch("end");
     end,
-    fail = function(self)
+    ["fail"] = function(self)
         UpdateObjective(self.otf,"red");
         FailMission(GetTime() + 5,"bdmisn21ls.des");
+        self:switch("end");
     end
-});
+})
 
-local destroySolar = mission.Objective:define("destorySolar"):init({
-    otf1 = 'bdmisn212.otf',
-    otf2 = 'bdmisn213.otf',
-    next = 'destroyComm',
-    target_l1 = {"sbspow1_powerplant","sbspow2_powerplant","sbspow3_powerplant","sbspow4_powerplant"},
-    target_l2 = {"sbspow7_powerplant","sbspow8_powerplant","sbspow5_powerplant","sbspow6_powerplant"},
-    power1_4 = true,
-    t1=3,
-    power5_8init = false
-}):setListeners({
-    start = function(self)
+statemachine.Create("destorySolar", {
+    ["start"] = function(self)
         self.nav = spawnNextNav();
         SetObjectiveName(self.nav, "Solar Array 1");
         AddObjective(self.otf1,"white");
@@ -484,55 +470,50 @@ local destroySolar = mission.Objective:define("destorySolar"):init({
         for i,v in pairs(self.target_l1) do
             self.handles[i] = GetHandle(v)
         end
+        self:switch("check");
     end,
-    update = function(self,dtime)
-        if(self.power1_4 and checkDead(self.handles)) then
-            self.power1_4 = false;
+    ["check"] = function(self)
+        if(checkDead(self.handles)) then
+            self.power1_4_runlatch = true;
             UpdateObjective(self.otf1,"green");
 			AudioMessage(audio.power1);
+            self:switch("check2");
         end
-        if(not (self.power1_4 or self.power5_8init)) then
+    end,
+    ["check2"] = function(self)
+        SetObjectiveOff(self.nav);
+        self.nav = spawnNextNav();
+        SetObjectiveName(self.nav, "Solar Array 2");
+        SetObjectiveOn(self.nav);
+        AddObjective(self.otf2,"white");
+        self.handles = {};
+        for i,v in pairs(self.target_l2) do
+            self.handles[i] = GetHandle(v);
+        end
+        self:switch("check3");
+    end,
+    ["check3"] = function(self)
+        if(checkDead(self.handles)) then
             SetObjectiveOff(self.nav);
-            self.nav = spawnNextNav();
-            SetObjectiveName(self.nav, "Solar Array 2");
-            SetObjectiveOn(self.nav);
-            AddObjective(self.otf2,"white");
-            self.handles = {};
-            for i,v in pairs(self.target_l2) do
-                self.handles[i] = GetHandle(v);
-            end
-            self.power5_8init = true;
-        elseif(checkDead(self.handles)) then
-            if(self.t1 <= 0) then
-                self:success();
-            elseif(self.t1 == 3) then
-                SetObjectiveOff(self.nav);
-                UpdateObjective(self.otf2,"green");
-            end
-            self.t1 = self.t1 - dtime;
+            UpdateObjective(self.otf2,"green");
+            self:switch("check4");
         end
     end,
-    save = function(self)
-        return self.handles,self.power1_4,self.power5_8init,self.t1, self.nav;
-    end,
-    load = function(self,...)
-        self.handles,self.power1_4,self.power5_8init,self.t1, self.nav = ...;
-    end,
-    success = function(self)
+    ["check4"] = statemachine.SleepSeconds(3, "success"),
+    ["success"] = function(self)
         AudioMessage(audio.power2);
-        mission.Objective:Start(self.next);
+        globals.destroyComm = statemachine.Start("destroyComm", "start", {
+            otf = 'bdmisn214.otf',
+            otf2 = 'bdmisn215.otf',
+            camOn = false,
+            gotRelic = false
+        });
+        self:switch("end");
     end
 });
 
-
-
-local destroyComm = mission.Objective:define("destroyComm"):init({
-    otf = 'bdmisn214.otf',
-    otf2 = 'bdmisn215.otf',
-    camOn = false,
-    gotRelic = false
-}):setListeners({
-    start = function(self)
+statemachine.Create("destroyComm", {
+    ["start"] = function(self)
         self.nav = spawnNextNav();
         SetObjectiveOn(globals.comm);
         SetObjectiveName(self.nav, "Research Facility");
@@ -556,149 +537,129 @@ local destroyComm = mission.Objective:define("destroyComm"):init({
         Goto(BuildObject("avtank",2,"spawn_tank2"),globals.comm);
         Goto(BuildObject("avtank",2,"spawn_tank3"),globals.comm);
 
+        self:switch("camera");
     end,
-    update = function(self)
+    ["camera"] = function(self)
         if(self.camOn) then
             if (CameraPath("convoy_cin",2000,2000, globals.cafe) or CameraCancelled()) then
                 self.camOn = not CameraFinish();
             end
+        else
+            self:switch("sentinal");
         end
+    end,
+    ["sentinal"] = function(self)
         if(not IsAlive(globals.comm)) then
-            self:success();
-        end
-    end,
-    save = function(self)
-        return self.camOn;
-    end,
-    load = function(self,...)
-        self.camOn = ...;
-    end,
-    success = function(self)
-        UpdateObjective(self.otf,"green");
-        UpdateObjective(self.otf2,"green");
-        --SucceedMission(GetTime()+5,"bdmisn21wn.des");
-        --Start 22 - Preparations
-        mission.Objective:Start("intermediate");
-    end
-});
 
-local patrolControl = mission.Objective:define("destoryNSDF"):init({
-    spawned = false
-}):setListeners({
-    update = function(self)
-        if( not self.spawned and checkDead(globals.patrolUnits) ) then
-            local reinforcements = {
-                BuildObject("svfigh", 2, "spawn_svfigh1"),
-                BuildObject("svfigh", 2, "spawn_svfigh2"),
-                BuildObject("svrckt", 2, "spawn_svrckt1"),
-                BuildObject("svrckt", 2, "spawn_svrckt2"),
-                BuildObject("svhraz", 2, "spawn_svhraz")
-            };
-            -- Send the reinforcements to Nav 4.
-            for i,v in pairs(reinforcements) do
-                Goto(v, GetPosition(globals.navs[4]));
-            end
-            print("Spawning reinforcements");
-            self.spawned = true;
-        end
-    end,
-    save = function(self)
-        return self.spawned;
-    end,
-    load = function(self,...)
-        self.spawned = ...;
-    end
-});
+            UpdateObjective(self.otf,"green");
+            UpdateObjective(self.otf2,"green");
+            --SucceedMission(GetTime()+5,"bdmisn21wn.des");
+            --Start 22 - Preparations
+            --mission.Objective:Start("intermediate");
+            globals.intermediate = funcarray.Start("intermediate", { enemiesAtStart = false });
 
-local intermediate = mission.Objective:define("intermediate"):init({
-    timer = 90,
-    recyspawned = false,
-    enemiesAtStart = false
-}):setListeners({
-    init = function(self)
-        self.nav = globals.navs[4];--spawnNextNav();-- GetHandle("nav4");
-    end,
-    start = function(self)
-        ClearObjectives();
+            self:switch("end");
+        end
+    end});
+
+funcarray.Create("destoryNSDF", function(state)
+    if( checkDead(globals.patrolUnits) ) then
+        local reinforcements = {
+            BuildObject("svfigh", 2, "spawn_svfigh1"),
+            BuildObject("svfigh", 2, "spawn_svfigh2"),
+            BuildObject("svrckt", 2, "spawn_svrckt1"),
+            BuildObject("svrckt", 2, "spawn_svrckt2"),
+            BuildObject("svhraz", 2, "spawn_svhraz")
+        };
+        -- Send the reinforcements to Nav 4.
+        for i,v in pairs(reinforcements) do
+            Goto(v, GetPosition(globals.navs[4]));
+        end
+        print("Spawning reinforcements");
+        state:next(); -- move to the next state, which doesn't exist
+    end
+end);
+
+funcarray.Create("intermediate", function(self)
+    self.nav = globals.navs[4];
+    state:next();
+end,
+function (self)
+    ClearObjectives();
         
-        for i=1, 3 do
-            RemoveObject(globals.navs[i])
-        end
+    for i=1, 3 do
+        RemoveObject(globals.navs[i])
+    end
 
-        local t = GetTransform(globals.navs[4]);
-        local nav = BuildObject("apcamr", 1, t);
-        SetTransform(nav, t);
-        RemoveObject(globals.navs[4]);
-        SetMaxHealth(nav, 0);
-        globals.navs[4] = nav;
-        self.nav = nav;
-        --Only show if area is not cleared
-        if(enemiesInRange(270,self.nav)) then
-            self.enemiesAtStart = true;
-            AddObjective("bdmisn311.otf","white");
+    local t = GetTransform(globals.navs[4]);
+    local nav = BuildObject("apcamr", 1, t);
+    SetTransform(nav, t);
+    RemoveObject(globals.navs[4]);
+    SetMaxHealth(nav, 0);
+    globals.navs[4] = nav;
+    self.nav = nav;
+    --Only show if area is not cleared
+    if(enemiesInRange(270,self.nav)) then
+        self.enemiesAtStart = true;
+        AddObjective("bdmisn311.otf","white");
 --      else --Removed due to redundancy
 --          AddObjective("bdmisn311b.otf","yellow");
-        end
-    end,
-    update = function(self,dtime)
-        --Check for enemies nearby?
-        self.timer = self.timer - dtime;
-        --Check for enemies @ nav4
-        if((not self.recyspawned) and  (self.timer <= 0 or (not enemiesInRange(270,self.nav))) ) then
-            self.recyspawned = true;
-            if(self.enemiesAtStart) then
-                UpdateObjective("bdmisn311.otf","green");
-            end
-            AudioMessage(audio.recycler);
-            local recy = BuildObject("bvrecy22",1,"recy_spawn");
-            local e1 = BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
-            local e2 = BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
-            Defend2(e1,recy,0);
-            Defend2(e2,recy,0);
-            --Make recycler follow path
-            Goto(recy,self.nav,0);
-            self.recy = recy;
-            
-            SetObjectiveOn(recy);
-            --self:success();
-        end
-        if(self.recy and IsWithin(self.recy,self.nav,200)) then
-            self:success();
-        end
-    end,
-    save = function(self)
-        return self.timer, self.recy, self.recyspawned, self.nav;
-    end,
-    load = function(self,...)
-        self.timer, self.recy, self.recyspawned, self.nav = ...;
-    end,
-    success = function(self)
-        globals.keepGTsAtFullHealth = true;
-        --Spawn in recycler
-        --Recycler escort
-
-        AddScrap(1,20);
-        AddPilot(1,10);
-        SetScrap(2,0);
-        SetPilot(2,0);
-        SetObjectiveOn(self.nav);
-        --initial wave
-        BuildObject("svrecy",2,"spawn_svrecy");
-		BuildObject("svmuf",2,"spawn_svmuf");
-        globals.sb_turr_1 = BuildObject("sbtowe",2,"spawn_sbtowe1");
-        globals.sb_turr_2 = BuildObject("sbtowe",2,"spawn_sbtowe2");
-		--Not really creating a wave, but spawns sbspow
-		createWave("sbspow",{"spawn_sbspow1","spawn_sbspow2"});
-        --Start wave after a delay?
-        createWave("svfigh",{"spawn_n1","spawn_n2","spawn_n3"},"north_path");
-		createWave("svtank",{"spawn_n4","spawn_n5"},"north_path"); 
-        local instance = deployRecy:start();
-        local instance2 = loseRecy:start();
-        --local instance3 = TooFarFromRecy:start();
     end
-});
+    state:next();
+end,
+funcarray.SleepSeconds(90, function(self) return not enemiesInRange(270,self.nav) end),
+function (self)
+    if(self.enemiesAtStart) then
+        UpdateObjective("bdmisn311.otf","green");
+    end
+    AudioMessage(audio.recycler);
+    local recy = BuildObject("bvrecy22",1,"recy_spawn");
+    local e1 = BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
+    local e2 = BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
+    Defend2(e1,recy,0);
+    Defend2(e2,recy,0);
+    --Make recycler follow path
+    Goto(recy,self.nav,0);
+    self.recy = recy;
+    
+    SetObjectiveOn(recy);
+    --self:success();
+    self:next();
+end,
+function (self)
+    if(self.recy and IsWithin(self.recy,self.nav,200)) then
+        self:next();
+    end
+end,
+function (self) -- success state
+    globals.keepGTsAtFullHealth = true;
+    --Spawn in recycler
+    --Recycler escort
 
-function Start()
+    AddScrap(1,20);
+    AddPilot(1,10);
+    SetScrap(2,0);
+    SetPilot(2,0);
+    SetObjectiveOn(self.nav);
+    --initial wave
+    BuildObject("svrecy",2,"spawn_svrecy");
+    BuildObject("svmuf",2,"spawn_svmuf");
+    --AudioMessage(audio.attack);
+    globals.sb_turr_1 = BuildObject("sbtowe",2,"spawn_sbtowe1");
+    globals.sb_turr_2 = BuildObject("sbtowe",2,"spawn_sbtowe2");
+    --Not really creating a wave, but spawns sbspow
+    createWave("sbspow",{"spawn_sbspow1","spawn_sbspow2"});
+    --Start wave after a delay?
+    createWave("svfigh",{"spawn_n1","spawn_n2","spawn_n3"},"north_path");
+    createWave("svtank",{"spawn_n4","spawn_n5"},"north_path"); 
+    local instance = deployRecy:start();
+    local instance2 = loseRecy:start();
+    --local instance3 = TooFarFromRecy:start();
+
+    self:next(); -- finish
+end);
+
+hook.Add("Start", "Mission:Start", function ()
     print("Start");
     globals.navs = {
     };
@@ -712,35 +673,43 @@ function Start()
         GetHandle("svfigh5_wingman")
     };
 
-    local instance = cinematic:start();
-    local instance2 = patrolControl:start();
-end
+    globals.cinematic = funcarray.Start("cinematic");
+    globals.patrolControl = funcarray.Start("destoryNSDF");
+end);
 
-function Update(dtime)
+hook.Add("Update", "Mission:Update", function (dtime, ttime)
     mission:Update(dtime);
-end
+    globals.patrolControl:run();
+    if (globals.intermediate) then
+        globals.intermediate:run();
+    end
+    if (globals.destroyComm) then
+        globals.destroyComm:run();
+    end
+end);
 
-function CreateObject(handle)
-    mission:CreateObject(handle);
-end
+hook.Add("CreateObject", "Mission:CreateObject", function (object)
+    mission:CreateObject(object:GetHandle());
+end);
 
-function AddObject(handle)
-    mission:AddObject(handle);
-end
+hook.Add("AddObject", "Mission:AddObject", function (object)
+    mission:AddObject(object:GetHandle());
+end);
 
-function DeleteObject(handle)
-    mission:DeleteObject(handle);
-end
+hook.Add("DeleteObject", "Mission:DeleteObject", function (object)
+    mission:DeleteObject(object:GetHandle());
+end);
 
-function Save()
+hook.AddSaveLoad("Mission",
+function()
     return mission:Save(), globals, tracker:save();
-end
-
-function Load(misison_date,g,tdata)
+end,
+function(misison_date,g,tdata)
     mission:Load(misison_date);
     globals = g;
+			-- ensure globals exist properly							  
     tracker = mission.UnitTracker:Load(tdata);
-end
+end);
 
 
 minit.init()
