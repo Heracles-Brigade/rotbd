@@ -9,7 +9,7 @@ missionSave [1] =
 true
 TerrainName = rbdnew01
 size [1] =
-65
+64
 [GameObject]
 PrjID [1] =
 bvtank
@@ -8000,135 +8000,6 @@ independence [1] =
 1
 curPilot [1] =
 bspilo
-perceivedTeam [1] =
-1
-[GameObject]
-PrjID [1] =
-apcamr
-seqno [1] =
-73
-pos [1] =
-  x [1] =
-932.212
-  y [1] =
-12.4017
-  z [1] =
-101543
-team [1] =
-1
-label = apcamr2_camerapod
-isUser [1] =
-0
-obj_addr = 0000003F
-transform [1] =
-  right_x [1] =
-0.900117
-  right_y [1] =
-0
-  right_z [1] =
-0.435647
-  up_x [1] =
-0
-  up_y [1] =
-1
-  up_z [1] =
-0
-  front_x [1] =
--0.435647
-  front_y [1] =
-0
-  front_z [1] =
-0.900117
-  posit_x [1] =
-932.212
-  posit_y [1] =
-12.4017
-  posit_z [1] =
-101543
-illumination [1] =
-1
-pos [1] =
-  x [1] =
-932.151
-  y [1] =
-14.2595
-  z [1] =
-101543
-euler =
- mass [1] =
-0
- mass_inv [1] =
-1e+030
- v_mag [1] =
-0.00338556
- v_mag_inv [1] =
-295.372
- I [1] =
-1
- k_i [1] =
-0
- v [1] =
-  x [1] =
-0
-  y [1] =
-0.00338556
-  z [1] =
-0
- omega [1] =
-  x [1] =
-0
-  y [1] =
-0.199999
-  z [1] =
-0
- Accel [1] =
-  x [1] =
-0
-  y [1] =
--0.0525929
-  z [1] =
-0
-seqNo [1] =
-73
-name = Navpoint 1
-isCritical [1] =
-false
-isObjective [1] =
-true
-isSelected [1] =
-false
-isVisible [1] =
-ffffffff
-seen [1] =
-4
-healthRatio [1] =
-1
-curHealth [1] =
-750
-maxHealth [1] =
-0
-ammoRatio [1] =
-0
-curAmmo [1] =
-0
-maxAmmo [1] =
-0
-priority [1] =
-0
-what = 00000000
-who [1] =
-0
-where = 00000000
-param [1] =
-
-aiProcess [1] =
-false
-isCargo [1] =
-false
-independence [1] =
-1
-curPilot [1] =
-
 perceivedTeam [1] =
 1
 [GameObject]
