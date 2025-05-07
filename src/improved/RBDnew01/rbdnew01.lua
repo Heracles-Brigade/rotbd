@@ -10,11 +10,22 @@ debugprint = print;
 require("_requirefix").addmod("rotbd");
 
 require("_table_show");
-require("_gameobject");
 local api = require("_api");
+local gameobject = require("_gameobject");
 local hook = require("_hook");
 local statemachine = require("_statemachine");
 local stateset = require("_stateset");
+local tracker = require("_tracker");
+
+-- constrain tracker so it does less works
+tracker.setFilterTeam(1); -- track team 1 objects
+tracker.setFilterClass("scavenger"); -- track scavengers
+tracker.setFilterClass("factory"); -- track factories
+tracker.setFilterClass("commtower"); -- track comm towers
+tracker.setFilterOdf("bvtank"); -- track bvtanks
+tracker.setFilterOdf("bvhraz"); -- track bvhraz
+tracker.setFilterClass("turrettank"); -- track turrettanks
+
 
 local minit = require("minit")
 
@@ -23,7 +34,6 @@ local misc = require("misc");
 
 local mission = require('cmisnlib');
 local globals = {};
-local tracker = mission.UnitTracker:new();
 
 local areAllDead = mission.areAllDead;
 
@@ -40,38 +50,16 @@ local audio = {
     win = "rbd0108.wav"
 }
 
-
 SetAIControl(2,false);
-
-function RemoveConvoy(...)
-    local h = {...};
-    for i,v in pairs(h) do
-        RemoveObject(v);
-    end
-end
 
 local function enemiesInRange(dist,place)
     local enemies_nearby = false;
-    for v in ObjectsInRange(dist,place) do
+    for v in ObjectsInRange(dist,gameobject.isgameobject(place) and place:GetHandle() or place) do
         if(IsCraft(v) and GetTeamNum(v) == 2) then
             enemies_nearby = true;
         end
     end
     return enemies_nearby;
-end
-
-local function spawnAtPath(odf,team,path)
-    local handles = {};
-    local current = GetPosition(path);
-    local prev = nil;
-    local c = 0;
-    while current ~= prev do
-        c = c + 1;
-        table.insert(handles,BuildObject(odf,team,current));
-        prev = current;
-        current = GetPosition(path,c);
-    end
-    return handles;
 end
 
 local function createWave(odf, path_list, follow)
@@ -88,36 +76,39 @@ local function createWave(odf, path_list, follow)
 end
 
 -- Define all objectives
+
 -- @todo does this work properly if the tug gets sniped? Oh, it's not snipable
 statemachine.Create("tug_relic_convoy",
     function (state)
-        if GetCurrentCommand(state.tug) == AiCommand["NONE"] then
+        if state.tug:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
-        Pickup(state.tug, state.relic);
+        state.tug:Pickup(state.relic);
         state:next();
     end,
     function (state)
-        if GetCurrentCommand(state.tug) == AiCommand["NONE"] then
+        if state.tug:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
-        Goto(state.tug, "leave_path");
+        state.tug:Goto("leave_path");
         state:next();
     end,
     function (state)
-        if GetCurrentCommand(state.tug) == AiCommand["NONE"] then
+        if state.tug:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
-        RemoveObject(state.apc);
-        RemoveObject(state.relic);
+        state.apc:RemoveObject();
+        state.relic:RemoveObject();
         state:next();
     end);
+
+local tug_relic_convoy = statemachine.Start("tug_relic_convoy");
 
 statemachine.Create("delayed_spawn",
     statemachine.SleepSeconds(120),
@@ -127,9 +118,9 @@ statemachine.Create("delayed_spawn",
         state:next();
     end);
 
-local function checkDead(handles)
-    for i,v in pairs(handles) do
-        if(IsAlive(v)) then
+local function checkDead(objects)
+    for i,v in ipairs(objects) do
+        if(v:IsAlive()) then
             return false;
         end
     end
@@ -144,7 +135,7 @@ statemachine.Create("main_objectives", {
         state:next();
     end },
     { "opening_cin", function (state)
-        if state:SecondsHavePassed(20) or CameraPath("opening_cin", 2000, 1000, globals.cafe) or CameraCancelled() then
+        if state:SecondsHavePassed(20) or CameraPath("opening_cin", 2000, 1000, globals.cafe:GetHandle()) or CameraCancelled() then
             state:SecondsHavePassed(); -- clear timer if we got here without it being cleared
             CameraFinish();
             state:next();
@@ -183,7 +174,7 @@ statemachine.Create("main_objectives", {
         AddObjective('bdmisn212.otf',"white");
         state.handles = {};
         for i,v in pairs(state.target_l1) do
-            state.handles[i] = GetHandle(v)
+            state.handles[i] = gameobject.GetGameObject(v)
         end
         state:next();
     end },
@@ -203,7 +194,7 @@ statemachine.Create("main_objectives", {
         AddObjective('bdmisn213.otf',"white");
         state.handles = {};
         for i,v in pairs(state.target_l2) do
-            state.handles[i] = GetHandle(v);
+            state.handles[i] = gameobject.GetGameObject(v);
         end
         state:next();
     end },
@@ -225,18 +216,18 @@ statemachine.Create("main_objectives", {
         globals.nav_research:SetObjectiveName("Research Facility");
         globals.nav_research:SetObjectiveOn();
 
-        SetObjectiveOn(globals.comm);
+        globals.comm:SetObjectiveOn();
         
         AddObjective('bdmisn214.otf',"white");
         AddObjective('bdmisn215.otf',"white");
         CameraReady();
-        local apc = BuildObject("avapc",2,"spawn_apc");
-        local tug = BuildObject("avhaul",2,"spawn_tug");
-        SetMaxHealth(tug, 0); -- This is invincible.
-        SetMaxHealth(apc, 0); -- This is invincible.
-        SetPilotClass(tug, ""); -- This is invincible.
-        SetPilotClass(apc, ""); -- This is invincible.
-        Follow(apc,tug);
+        local apc = gameobject.BuildGameObject("avapc",2,"spawn_apc");
+        local tug = gameobject.BuildGameObject("avhaul",2,"spawn_tug");
+        tug:SetMaxHealth(0); -- This is invincible.
+        apc:SetMaxHealth(0); -- This is invincible.
+        tug:SetPilotClass(""); -- This is invincible.
+        apc:SetPilotClass(""); -- This is invincible.
+        apc:Follow(tug);
 
         -- attach values to the StateMachineIter so it can use them
         tug_relic_convoy.tug = tug;
@@ -246,20 +237,20 @@ statemachine.Create("main_objectives", {
 
         --Pickup(tug,globals.relic); -- this seems redundant
 
-        Goto(BuildObject("avtank",2,"spawn_tank1"),globals.comm);
-        Goto(BuildObject("avtank",2,"spawn_tank2"),globals.comm);
-        Goto(BuildObject("avtank",2,"spawn_tank3"),globals.comm);
+        gameobject.BuildObject("avtank",2,"spawn_tank1"):Goto(globals.comm);
+        gameobject.BuildObject("avtank",2,"spawn_tank2"):Goto(globals.comm);
+        gameobject.BuildObject("avtank",2,"spawn_tank3"):Goto(globals.comm);
 
         state:next();
     end },
     { "convoy_cin", function (state)
-        if CameraPath("convoy_cin",2000,2000, globals.cafe) or CameraCancelled() then
+        if CameraPath("convoy_cin",2000,2000, globals.cafe:GetHandle()) or CameraCancelled() then
             CameraFinish();
             state:next();
         end
     end },
     { "destroy_obj", function (state)
-        if not IsAlive(globals.comm) then
+        if not globals.comm:IsAlive() then
 
             UpdateObjective('bdmisn214.otf',"green");
             UpdateObjective('bdmisn215.otf',"green");
@@ -292,20 +283,20 @@ statemachine.Create("main_objectives", {
         end
         state:next();
     end,
-    statemachine.SleepSeconds(90, nil, function (state) return not enemiesInRange(270,state.nav) end),
+    statemachine.SleepSeconds(90, nil, function (state) return not enemiesInRange(270,globals.nav_research) end),
     function (state)
         if state.research_enemies_still_exist then
             UpdateObjective("bdmisn311.otf","green");
             -- if we use the alternate text we have to turn it green here
         end
         AudioMessage(audio.recycler);
-        local recy = BuildObject("bvrecy22",1,"recy_spawn");
-        local e1 = BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
-        local e2 = BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
-        Defend2(e1,recy,0);
-        Defend2(e2,recy,0);
+        local recy = gameobject.BuildGameObject("bvrecy22",1,"recy_spawn");
+        local e1 = gameobject.BuildGameObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
+        local e2 = gameobject.BuildGameObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
+        e1:Defend2(recy,0);
+        e2:Defend2(recy,0);
         --Make recycler follow path
-        Goto(recy,state.nav,0);
+        recy:Goto(state.nav,0);
         state.recy = recy;
         
         SetObjectiveOn(recy);
@@ -313,7 +304,7 @@ statemachine.Create("main_objectives", {
         state:next();
     end,
     function (state)
-        if(state.recy and IsWithin(state.recy,state.nav,200)) then
+        if(state.recy and state.recy:IsWithin(state.nav,200)) then
             state:next();
         end
     end,
@@ -330,8 +321,8 @@ statemachine.Create("main_objectives", {
         BuildObject("svrecy",2,"spawn_svrecy");
         BuildObject("svmuf",2,"spawn_svmuf");
         --AudioMessage(audio.attack);
-        globals.sb_turr_1 = BuildObject("sbtowe",2,"spawn_sbtowe1");
-        globals.sb_turr_2 = BuildObject("sbtowe",2,"spawn_sbtowe2");
+        globals.sb_turr_1 = gameobject:BuildGameObject("sbtowe",2,"spawn_sbtowe1");
+        globals.sb_turr_2 = gameobject:BuildGameObject("sbtowe",2,"spawn_sbtowe2");
         --Not really creating a wave, but spawns sbspow
         createWave("sbspow",{"spawn_sbspow1","spawn_sbspow2"});
         --Start wave after a delay?
@@ -370,7 +361,7 @@ statemachine.Create("main_objectives", {
     end },
     function (state)
         --Check if player has 2 scavengers
-        if(tracker:gotOfClass("scavenger",2)) then
+        if tracker.countByClassName("scavenger", 1) >= 2 then
             state:next();
         end
     end,
@@ -398,7 +389,7 @@ statemachine.Create("main_objectives", {
         state:next();
     end },
     function (state)
-        if tracker:gotOfClass("factory",1) then
+        if tracker.countByClassName("factory", 1) >= 1 then
             state:next();
         end
     end,
@@ -413,7 +404,7 @@ statemachine.Create("main_objectives", {
         state:next();
     end },
     function (state)
-        if(tracker:gotOfClass("commtower",1)) then
+        if tracker.countByClassName("commtower", 1) >= 1 then
             state:nextz();
         end
     end,
@@ -425,14 +416,13 @@ statemachine.Create("main_objectives", {
     -- SKIPPED STATES?
     { "make_offensive", function (state)
         AddObjective('bdmisn2205.otf',"white");
-        state.tracker = mission.UnitTracker:new();
         createWave("svtank",{"spawn_w1"},"west_path"); 
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path");
         state:next()
     end },
     function (state)
         --Check if got 3 more tanks + 1 bomber, since mission start
-        if(state.tracker:gotOfOdf("bvtank",3) and state.tracker:gotOfOdf("bvhraz",1)) then
+        if tracker.countByOdf("bvtank", 1) >= 3 and tracker.countByOdf("bvhraz", 1) >= 1 then
             state:next();
         end
     end,
@@ -448,7 +438,7 @@ statemachine.Create("main_objectives", {
         state:next();
     end },
     function (state)
-        if(tracker:gotOfClass("turrettank",3)) then
+        if tracker.countByClassName("turrettank", 1) >= 3 then
             state:next();
         end
     end,
@@ -469,7 +459,7 @@ statemachine.Create("main_objectives", {
     end },
     statemachine.SleepSeconds(45),
     function (state) -- this one might have been broken before
-        if not (IsAlive(globals.sb_turr_1) or IsAlive(globals.sb_turr_2)) then
+        if not (globals.sb_turr_1:IsAlive() or globals.sb_turr_2:IsAlive()) then
             state:next();
         end
     end,
@@ -531,7 +521,6 @@ statemachine.Create("main_objectives", {
     end
 });
 
-local tug_relic_convoy = statemachine.Start("tug_relic_convoy");
 stateset.Create("mission")
     :Add("main_objectives", statemachine.Start("main_objectives"))
 
@@ -577,13 +566,13 @@ stateset.Create("mission")
     :Add("tug_relic_convoy", tug_relic_convoy);
 
 hook.Add("Start", "Mission:Start", function ()
-    globals.cafe = GetHandle("sbcafe1_i76building");
-    globals.comm = GetHandle("sbcomm1_commtower");
-    globals.relic = GetHandle("obdata3_artifact");
-    SetMaxHealth(globals.relic,0);
+    globals.cafe = gameobject.GetGameObject("sbcafe1_i76building");
+    globals.comm = gameobject.GetGameObject("sbcomm1_commtower");
+    globals.relic = gameobject.GetGameObject("obdata3_artifact");
+    globals.relic:SetMaxHealth(0);
     globals.patrolUnits = {
-        GetHandle("svfigh4_wingman"),
-        GetHandle("svfigh5_wingman")
+        gameobject.GetGameObject("svfigh4_wingman"),
+        gameobject.GetGameObject("svfigh5_wingman")
     };
 
     globals.mission_states = stateset.Start("mission"):on("main_objectives");
@@ -608,13 +597,12 @@ end);
 
 hook.AddSaveLoad("Mission",
 function()
-    return mission:Save(), globals, tracker:save();
+    return mission:Save(), globals;
 end,
 function(misison_date,g,tdata)
     mission:Load(misison_date);
     globals = g;
 			-- ensure globals exist properly							  
-    tracker = mission.UnitTracker:Load(tdata);
 end);
 
 
