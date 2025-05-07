@@ -18,7 +18,7 @@ local stateset = require("_stateset");
 local tracker = require("_tracker");
 local navmanager = require("_navmanager");
 
--- constrain tracker so it does less works
+-- constrain tracker so it does less work
 tracker.setFilterTeam(1); -- track team 1 objects
 tracker.setFilterClass("scavenger"); -- track scavengers
 tracker.setFilterClass("factory"); -- track factories
@@ -594,7 +594,7 @@ end);
 
 hook.AddSaveLoad("Mission",
 function()
-    return miscglobals;
+    return mission_data;
 end,
 function(g)
     mission_data = g;
