@@ -32,10 +32,18 @@ local minit = require("minit")
 
 local misc = require("misc");
 
-local mission = require('cmisnlib');
 local globals = {};
 
-local areAllDead = mission.areAllDead;
+--Returns true of all of the handles given are dead
+--areAnyAlive = not areAllDead
+local function areAllDead(handles, team)
+    for i,v in pairs(handles) do
+        if(IsAlive(v) and (team==nil or team == GetTeamNum(v))) then
+            return false;
+        end
+    end
+    return true;
+end
 
 local navmanager = require("_navmanager");
 
@@ -579,30 +587,24 @@ hook.Add("Start", "Mission:Start", function ()
 end);
 
 hook.Add("Update", "Mission:Update", function (dtime, ttime)
-    mission:Update(dtime);
     globals.mission_states:run();
 end);
 
 hook.Add("CreateObject", "Mission:CreateObject", function (object)
-    mission:CreateObject(object:GetHandle());
 end);
 
 hook.Add("AddObject", "Mission:AddObject", function (object)
-    mission:AddObject(object:GetHandle());
 end);
 
 hook.Add("DeleteObject", "Mission:DeleteObject", function (object)
-    mission:DeleteObject(object:GetHandle());
 end);
 
 hook.AddSaveLoad("Mission",
 function()
-    return mission:Save(), globals;
+    return miscglobals;
 end,
-function(misison_date,g,tdata)
-    mission:Load(misison_date);
+function(g)
     globals = g;
-			-- ensure globals exist properly							  
 end);
 
 
