@@ -16,6 +16,7 @@ local hook = require("_hook");
 local statemachine = require("_statemachine");
 local stateset = require("_stateset");
 local tracker = require("_tracker");
+local navmanager = require("_navmanager");
 
 -- constrain tracker so it does less works
 tracker.setFilterTeam(1); -- track team 1 objects
@@ -26,13 +27,7 @@ tracker.setFilterOdf("bvtank"); -- track bvtanks
 tracker.setFilterOdf("bvhraz"); -- track bvhraz
 tracker.setFilterClass("turrettank"); -- track turrettanks
 
-
-local minit = require("minit")
-
-
-local misc = require("misc");
-
-local globals = {};
+local mission_data = {};
 
 --Returns true of all of the handles given are dead
 --areAnyAlive = not areAllDead
@@ -44,8 +39,6 @@ local function areAllDead(handles, team)
     end
     return true;
 end
-
-local navmanager = require("_navmanager");
 
 local audio = {
     intro = "rbd0101.wav",
@@ -116,7 +109,7 @@ statemachine.Create("tug_relic_convoy",
         state:next();
     end);
 
-local tug_relic_convoy = statemachine.Start("tug_relic_convoy");
+mission_data.tug_relic_convoy = statemachine.Start("tug_relic_convoy");
 
 statemachine.Create("delayed_spawn",
     statemachine.SleepSeconds(120),
@@ -143,7 +136,7 @@ statemachine.Create("main_objectives", {
         state:next();
     end },
     { "opening_cin", function (state)
-        if state:SecondsHavePassed(20) or CameraPath("opening_cin", 2000, 1000, globals.cafe:GetHandle()) or CameraCancelled() then
+        if state:SecondsHavePassed(20) or CameraPath("opening_cin", 2000, 1000, mission_data.cafe:GetHandle()) or CameraCancelled() then
             state:SecondsHavePassed(); -- clear timer if we got here without it being cleared
             CameraFinish();
             state:next();
@@ -219,12 +212,12 @@ statemachine.Create("main_objectives", {
         state:next();
     end },
     { "destroy_comm_start", function (state)
-        globals.nav_research = navmanager.BuildImportantNav(nil, 1, "nav_path", 3);
-        globals.nav_research:SetMaxHealth(0);
-        globals.nav_research:SetObjectiveName("Research Facility");
-        globals.nav_research:SetObjectiveOn();
+        mission_data.nav_research = navmanager.BuildImportantNav(nil, 1, "nav_path", 3);
+        mission_data.nav_research:SetMaxHealth(0);
+        mission_data.nav_research:SetObjectiveName("Research Facility");
+        mission_data.nav_research:SetObjectiveOn();
 
-        globals.comm:SetObjectiveOn();
+        mission_data.comm:SetObjectiveOn();
         
         AddObjective('bdmisn214.otf',"white");
         AddObjective('bdmisn215.otf',"white");
@@ -238,27 +231,27 @@ statemachine.Create("main_objectives", {
         apc:Follow(tug);
 
         -- attach values to the StateMachineIter so it can use them
-        tug_relic_convoy.tug = tug;
-        tug_relic_convoy.apc = apc;
-        tug_relic_convoy.relic = globals.relic;
-        globals.mission_states:on("tug_relic_convoy");
+        mission_data.tug_relic_convoy.tug = tug;
+        mission_data.tug_relic_convoy.apc = apc;
+        mission_data.tug_relic_convoy.relic = mission_data.relic;
+        mission_data.mission_states:on("tug_relic_convoy");
 
         --Pickup(tug,globals.relic); -- this seems redundant
 
-        gameobject.BuildObject("avtank",2,"spawn_tank1"):Goto(globals.comm);
-        gameobject.BuildObject("avtank",2,"spawn_tank2"):Goto(globals.comm);
-        gameobject.BuildObject("avtank",2,"spawn_tank3"):Goto(globals.comm);
+        gameobject.BuildObject("avtank",2,"spawn_tank1"):Goto(mission_data.comm);
+        gameobject.BuildObject("avtank",2,"spawn_tank2"):Goto(mission_data.comm);
+        gameobject.BuildObject("avtank",2,"spawn_tank3"):Goto(mission_data.comm);
 
         state:next();
     end },
     { "convoy_cin", function (state)
-        if CameraPath("convoy_cin",2000,2000, globals.cafe:GetHandle()) or CameraCancelled() then
+        if CameraPath("convoy_cin",2000,2000, mission_data.cafe:GetHandle()) or CameraCancelled() then
             CameraFinish();
             state:next();
         end
     end },
     { "destroy_obj", function (state)
-        if not globals.comm:IsAlive() then
+        if not mission_data.comm:IsAlive() then
 
             UpdateObjective('bdmisn214.otf',"green");
             UpdateObjective('bdmisn215.otf',"green");
@@ -283,7 +276,7 @@ statemachine.Create("main_objectives", {
         -- @todo make sure the state.nav_research detection works, since we are doing some wacky stuff in the back end
 
         --Only show if area is not cleared
-        if(enemiesInRange(270,globals.nav_research)) then
+        if(enemiesInRange(270,mission_data.nav_research)) then
             state.research_enemies_still_exist = true;
             AddObjective("bdmisn311.otf","white");
     --      else --Removed due to redundancy
@@ -291,7 +284,7 @@ statemachine.Create("main_objectives", {
         end
         state:next();
     end,
-    statemachine.SleepSeconds(90, nil, function (state) return not enemiesInRange(270,globals.nav_research) end),
+    statemachine.SleepSeconds(90, nil, function (state) return not enemiesInRange(270,mission_data.nav_research) end),
     function (state)
         if state.research_enemies_still_exist then
             UpdateObjective("bdmisn311.otf","green");
@@ -329,8 +322,8 @@ statemachine.Create("main_objectives", {
         BuildObject("svrecy",2,"spawn_svrecy");
         BuildObject("svmuf",2,"spawn_svmuf");
         --AudioMessage(audio.attack);
-        globals.sb_turr_1 = gameobject:BuildGameObject("sbtowe",2,"spawn_sbtowe1");
-        globals.sb_turr_2 = gameobject:BuildGameObject("sbtowe",2,"spawn_sbtowe2");
+        mission_data.sb_turr_1 = gameobject:BuildGameObject("sbtowe",2,"spawn_sbtowe1");
+        mission_data.sb_turr_2 = gameobject:BuildGameObject("sbtowe",2,"spawn_sbtowe2");
         --Not really creating a wave, but spawns sbspow
         createWave("sbspow",{"spawn_sbspow1","spawn_sbspow2"});
         --Start wave after a delay?
@@ -340,7 +333,7 @@ statemachine.Create("main_objectives", {
         --local instance = deployRecy:start();
         
         --local instance2 = loseRecy:start();
-        globals.mission_states:on("lose_recy");
+        mission_data.mission_states:on("lose_recy");
         state:next();
         
         --local instance3 = TooFarFromRecy:start();
@@ -360,7 +353,7 @@ statemachine.Create("main_objectives", {
         ClearObjectives();
         
         state:next();
-        globals.mission_states:on("delayed_spawn");
+        mission_data.mission_states:on("delayed_spawn");
     end,
     { "make_scavs", function (state)
         SetObjectiveOff(GetHandle("nav4"));
@@ -467,7 +460,7 @@ statemachine.Create("main_objectives", {
     end },
     statemachine.SleepSeconds(45),
     function (state) -- this one might have been broken before
-        if not (globals.sb_turr_1:IsAlive() or globals.sb_turr_2:IsAlive()) then
+        if not (mission_data.sb_turr_1:IsAlive() or mission_data.sb_turr_2:IsAlive()) then
             state:next();
         end
     end,
@@ -533,7 +526,7 @@ stateset.Create("mission")
     :Add("main_objectives", statemachine.Start("main_objectives"))
 
     :Add("destoryNSDF", function (state)
-        if( checkDead(globals.patrolUnits) ) then
+        if( checkDead(mission_data.patrolUnits) ) then
             local reinforcements = {
                 BuildObject("svfigh", 2, "spawn_svfigh1"),
                 BuildObject("svfigh", 2, "spawn_svfigh2"),
@@ -543,7 +536,7 @@ stateset.Create("mission")
             };
             -- Send the reinforcements to Nav 4.
             for i,v in pairs(reinforcements) do
-                Goto(v, GetPosition(globals.nav_research));
+                Goto(v, GetPosition(mission_data.nav_research));
             end
             print("Spawning reinforcements");
             state:off("destoryNSDF");
@@ -571,23 +564,23 @@ stateset.Create("mission")
 
     :Add("delayed_spawn", statemachine.Start("delayed_spawn"))
     
-    :Add("tug_relic_convoy", tug_relic_convoy);
+    :Add("tug_relic_convoy", mission_data.tug_relic_convoy);
 
 hook.Add("Start", "Mission:Start", function ()
-    globals.cafe = gameobject.GetGameObject("sbcafe1_i76building");
-    globals.comm = gameobject.GetGameObject("sbcomm1_commtower");
-    globals.relic = gameobject.GetGameObject("obdata3_artifact");
-    globals.relic:SetMaxHealth(0);
-    globals.patrolUnits = {
+    mission_data.cafe = gameobject.GetGameObject("sbcafe1_i76building");
+    mission_data.comm = gameobject.GetGameObject("sbcomm1_commtower");
+    mission_data.relic = gameobject.GetGameObject("obdata3_artifact");
+    mission_data.relic:SetMaxHealth(0);
+    mission_data.patrolUnits = {
         gameobject.GetGameObject("svfigh4_wingman"),
         gameobject.GetGameObject("svfigh5_wingman")
     };
 
-    globals.mission_states = stateset.Start("mission"):on("main_objectives");
+    mission_data.mission_states = stateset.Start("mission"):on("main_objectives");
 end);
 
 hook.Add("Update", "Mission:Update", function (dtime, ttime)
-    globals.mission_states:run();
+    mission_data.mission_states:run();
 end);
 
 hook.Add("CreateObject", "Mission:CreateObject", function (object)
@@ -604,8 +597,5 @@ function()
     return miscglobals;
 end,
 function(g)
-    globals = g;
+    mission_data = g;
 end);
-
-
-minit.init()
