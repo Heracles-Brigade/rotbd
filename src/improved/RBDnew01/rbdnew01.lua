@@ -18,6 +18,9 @@ local stateset = require("_stateset");
 local tracker = require("_tracker");
 local navmanager = require("_navmanager");
 
+-- Fill navlist gaps with important navs
+navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToGap);
+
 -- constrain tracker so it does less work
 tracker.setFilterTeam(1); -- track team 1 objects
 tracker.setFilterClass("scavenger"); -- track scavengers
@@ -271,9 +274,9 @@ statemachine.Create("main_objectives", {
         state.nav_solar1:RemoveObject();
         state.nav_solar2:RemoveObject();
 
-        -- if everything works, this GameObject should have magically been moved to point to the new GameObject
-        navmanager.MoveImportantNavsUp(1);
-        -- @todo make sure the state.nav_research detection works, since we are doing some wacky stuff in the back end
+        -- @todo We might want to re-order the navs here, but we might not, need to talk thorugh it
+        -- @todo If we do, moving the nav is hard unless we have SetTeamSlot access.
+        -- @todo Consider remaking the nav here to ensure it's at the top?
 
         --Only show if area is not cleared
         if(enemiesInRange(270,mission_data.nav_research)) then
@@ -452,6 +455,7 @@ statemachine.Create("main_objectives", {
     { "destroy_soviet", function (state)
         createWave("svfigh",{"spawn_e1","spawn_e2"},"east_path");
         createWave("svtank",{"spawn_e3"},"east_path");
+        -- we never care about this nav again so we don't bother tracking it
         local nav = navmanager.BuildImportantNav(nil, 1, "nav_path", 4);
         nav:SetMaxHealth(0);
         nav:SetObjectiveName("CCA Base");
@@ -522,8 +526,9 @@ statemachine.Create("main_objectives", {
     end
 });
 
+mission_data.main_objectives = statemachine.Start("main_objectives");
 stateset.Create("mission")
-    :Add("main_objectives", statemachine.Start("main_objectives"))
+    :Add("main_objectives", mission_data.main_objectives)
 
     :Add("destoryNSDF", function (state)
         if( checkDead(mission_data.patrolUnits) ) then
@@ -583,6 +588,21 @@ hook.Add("Update", "Mission:Update", function (dtime, ttime)
     mission_data.mission_states:run();
 end);
 
+hook.Add("NavManager:NavSwap", "Mission:NavManager_NavSwap", function (old, new)
+    if mission_data.main_objectives.nav1 == old then
+        mission_data.main_objectives.nav1 = new;
+    end
+    if mission_data.main_objectives.nav_solar1 == old then
+        mission_data.main_objectives.nav_solar1 = new;
+    end
+    if mission_data.main_objectives.nav_solar2 == old then
+        mission_data.main_objectives.nav_solar2 = new;
+    end
+    if mission_data.nav_research == old then
+        mission_data.nav_research = new;
+    end
+end);
+
 --hook.Add("CreateObject", "Mission:CreateObject", function (object) end);
 
 --hook.Add("AddObject", "Mission:AddObject", function (object) end);
@@ -596,3 +616,5 @@ end,
 function(g)
     mission_data = g;
 end);
+
+print(table.show(TeamSlot));
