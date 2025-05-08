@@ -238,9 +238,9 @@ statemachine.Create("main_objectives", {
 
         --Pickup(tug,globals.relic); -- this seems redundant
 
-        gameobject.BuildObject("avtank",2,"spawn_tank1"):Goto(mission_data.comm);
-        gameobject.BuildObject("avtank",2,"spawn_tank2"):Goto(mission_data.comm);
-        gameobject.BuildObject("avtank",2,"spawn_tank3"):Goto(mission_data.comm);
+        gameobject.BuildGameObject("avtank",2,"spawn_tank1"):Goto(mission_data.comm);
+        gameobject.BuildGameObject("avtank",2,"spawn_tank2"):Goto(mission_data.comm);
+        gameobject.BuildGameObject("avtank",2,"spawn_tank3"):Goto(mission_data.comm);
 
         state:next();
     end },
@@ -583,14 +583,11 @@ hook.Add("Update", "Mission:Update", function (dtime, ttime)
     mission_data.mission_states:run();
 end);
 
-hook.Add("CreateObject", "Mission:CreateObject", function (object)
-end);
+--hook.Add("CreateObject", "Mission:CreateObject", function (object) end);
 
-hook.Add("AddObject", "Mission:AddObject", function (object)
-end);
+--hook.Add("AddObject", "Mission:AddObject", function (object) end);
 
-hook.Add("DeleteObject", "Mission:DeleteObject", function (object)
-end);
+--hook.Add("DeleteObject", "Mission:DeleteObject", function (object) end);
 
 hook.AddSaveLoad("Mission",
 function()
