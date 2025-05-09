@@ -17,11 +17,12 @@ local statemachine = require("_statemachine");
 local stateset = require("_stateset");
 local tracker = require("_tracker");
 local navmanager = require("_navmanager");
+local objective = require("_objective");
 
 -- Fill navlist gaps with important navs
 navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToGap);
 
--- constrain tracker so it does less work
+-- constrain tracker so it does less work, otherwise when it's required it watches everything
 tracker.setFilterTeam(1); -- track team 1 objects
 tracker.setFilterClass("scavenger"); -- track scavengers
 tracker.setFilterClass("factory"); -- track factories
@@ -150,7 +151,7 @@ statemachine.Create("main_objectives", {
         state.nav1:SetMaxHealth(0);
         state.nav1:SetObjectiveName("Navpoint 1");
         state.nav1:SetObjectiveOn();
-        AddObjective('bdmisn211.otf', "white");
+        objective.AddObjective('bdmisn211.otf', "white");
         state.command = GetHandle("sbhqcp0_i76building");
         state:next();
     end },
@@ -158,10 +159,10 @@ statemachine.Create("main_objectives", {
         if GetDistance(GetPlayerHandle(), state.command) < 50.0 then
             AudioMessage(audio.inspect);
             SetObjectiveOff(state.nav1);
-            UpdateObjective('bdmisn211.otf',"green");
+            objective.UpdateObjective('bdmisn211.otf',"green");
             state:next();
         --elseif(not IsAlive(state.command)) then
-        --    UpdateObjective('bdmisn211.otf',"red");
+        --    objective.UpdateObjective('bdmisn211.otf',"red");
         --    FailMission(GetTime() + 5,"bdmisn21ls.des");
         --    state:switch("end");
         end
@@ -175,7 +176,7 @@ statemachine.Create("main_objectives", {
         state.nav_solar1:SetMaxHealth(0);
         state.nav_solar1:SetObjectiveName("Solar Array 1");
         state.nav_solar1:SetObjectiveOn();
-        AddObjective('bdmisn212.otf',"white");
+        objective.AddObjective('bdmisn212.otf',"white");
         state.handles = {};
         for i,v in pairs(state.target_l1) do
             state.handles[i] = gameobject.GetGameObject(v)
@@ -184,7 +185,7 @@ statemachine.Create("main_objectives", {
     end },
    { "destory_solar1_pass", function (state)
         if(checkDead(state.handles)) then
-            UpdateObjective('bdmisn212.otf',"green");
+            objective.UpdateObjective('bdmisn212.otf',"green");
 			AudioMessage(audio.power1);
             state:next();
         end
@@ -195,7 +196,7 @@ statemachine.Create("main_objectives", {
         state.nav_solar2:SetMaxHealth(0);
         state.nav_solar2:SetObjectiveName("Solar Array 2");
         state.nav_solar2:SetObjectiveOn();
-        AddObjective('bdmisn213.otf',"white");
+        objective.AddObjective('bdmisn213.otf',"white");
         state.handles = {};
         for i,v in pairs(state.target_l2) do
             state.handles[i] = gameobject.GetGameObject(v);
@@ -205,7 +206,7 @@ statemachine.Create("main_objectives", {
     { "destory_solar2_pass", function (state)
         if(checkDead(state.handles)) then
             state.nav_solar2:SetObjectiveOff();
-            UpdateObjective('bdmisn213.otf',"green");
+            objective.UpdateObjective('bdmisn213.otf',"green");
             state:next();
         end
     end },
@@ -222,11 +223,13 @@ statemachine.Create("main_objectives", {
 
         mission_data.comm:SetObjectiveOn();
         
-        AddObjective('bdmisn214.otf',"white");
-        AddObjective('bdmisn215.otf',"white");
+        objective.AddObjective('bdmisn214.otf',"white");
+        objective.AddObjective('bdmisn215.otf',"white");
         CameraReady();
         local apc = gameobject.BuildGameObject("avapc",2,"spawn_apc");
+        if not apc then error("Failed to create APC."); end
         local tug = gameobject.BuildGameObject("avhaul",2,"spawn_tug");
+        if not tug then error("Failed to create Tug."); end
         tug:SetMaxHealth(0); -- This is invincible.
         apc:SetMaxHealth(0); -- This is invincible.
         tug:SetPilotClass(""); -- This is invincible.
@@ -256,8 +259,8 @@ statemachine.Create("main_objectives", {
     { "destroy_obj", function (state)
         if not mission_data.comm:IsAlive() then
 
-            UpdateObjective('bdmisn214.otf',"green");
-            UpdateObjective('bdmisn215.otf',"green");
+            objective.UpdateObjective('bdmisn214.otf',"green");
+            objective.UpdateObjective('bdmisn215.otf',"green");
             --SucceedMission(GetTime()+5,"bdmisn21wn.des");
             --Start 22 - Preparations
             --mission.Objective:Start("intermediate");
@@ -268,7 +271,7 @@ statemachine.Create("main_objectives", {
         end
     end },
     function (state)
-        ClearObjectives();
+        objective.ClearObjectives();
             
         state.nav1:RemoveObject();
         state.nav_solar1:RemoveObject();
@@ -281,22 +284,25 @@ statemachine.Create("main_objectives", {
         --Only show if area is not cleared
         if(enemiesInRange(270,mission_data.nav_research)) then
             state.research_enemies_still_exist = true;
-            AddObjective("bdmisn311.otf","white");
+            objective.AddObjective("bdmisn311.otf","white");
     --      else --Removed due to redundancy
-    --          AddObjective("bdmisn311b.otf","yellow"); -- this alternate text says the recycler is coming without warning about extra stuff
+    --          objective.AddObjective("bdmisn311b.otf","yellow"); -- this alternate text says the recycler is coming without warning about extra stuff
         end
         state:next();
     end,
     statemachine.SleepSeconds(90, nil, function (state) return not enemiesInRange(270,mission_data.nav_research) end),
     function (state)
         if state.research_enemies_still_exist then
-            UpdateObjective("bdmisn311.otf","green");
+            objective.UpdateObjective("bdmisn311.otf","green");
             -- if we use the alternate text we have to turn it green here
         end
         AudioMessage(audio.recycler);
         local recy = gameobject.BuildGameObject("bvrecy22",1,"recy_spawn");
+        if not recy then error("Failed to create recycler."); end
         local e1 = gameobject.BuildGameObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
+        if not e1 then error("Failed to create escort tank 1."); end
         local e2 = gameobject.BuildGameObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
+        if not e2 then error("Failed to create escort tank 2."); end
         e1:Defend2(recy,0);
         e2:Defend2(recy,0);
         --Make recycler follow path
@@ -343,24 +349,24 @@ statemachine.Create("main_objectives", {
         --global.mission_states:on("toofarfrom_recy");
     end,
     { "deploy_recycler", function (state)
-        AddObjective('bdmisn2201.otf',"white");
+        objective.AddObjective('bdmisn2201.otf',"white");
         state:next();
     end },
     function (state)
-        if(IsDeployed(GetRecyclerHandle(1))) then
+        if gameobject.GetRecyclerGameObject(1):IsDeployed() then
             state:next();
         end
     end,
     function (state)
-        UpdateObjective('bdmisn2201.otf',"green");
-        ClearObjectives();
+        objective.UpdateObjective('bdmisn2201.otf',"green");
+        objective.ClearObjectives();
         
         state:next();
         mission_data.mission_states:on("delayed_spawn");
     end,
     { "make_scavs", function (state)
-        SetObjectiveOff(GetHandle("nav4"));
-        AddObjective('bdmisn2202.otf',"white");
+        objective.SetObjectiveOff(GetHandle("nav4"));
+        objective.AddObjective('bdmisn2202.otf',"white");
         state:next();
     end },
     function (state)
@@ -370,11 +376,11 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        UpdateObjective('bdmisn2202.otf',"green");
+        objective.UpdateObjective('bdmisn2202.otf',"green");
         state:next();
     end,
     { "get_scrap", function (state)
-        AddObjective('bdmisn2203.otf',"white");
+        objective.AddObjective('bdmisn2203.otf',"white");
         createWave("svtank",{"spawn_w1"},"west_path"); 
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path");
         state:next();
@@ -385,11 +391,11 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        ClearObjectives();
+        objective.ClearObjectives();
         state:next();
     end,
     { "make_factory", function (state)
-        AddObjective('bdmisn2204.otf',"white");
+        objective.AddObjective('bdmisn2204.otf',"white");
         state:next();
     end },
     function (state)
@@ -398,11 +404,11 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        UpdateObjective('bdmisn2204.otf',"green");
+        objective.UpdateObjective('bdmisn2204.otf',"green");
         state:next();
     end,
     { "make_comm", function (state)
-        AddObjective('bdmisn2209.otf',"white");
+        objective.AddObjective('bdmisn2209.otf',"white");
         createWave("svtank",{"spawn_w1"},"west_path"); 
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path");
         state:next();
@@ -413,13 +419,13 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        UpdateObjective('bdmisn2209.otf',"green");
+        objective.UpdateObjective('bdmisn2209.otf',"green");
         state:switch("destroy_soviet");
     end,
     
     -- SKIPPED STATES?
     { "make_offensive", function (state)
-        AddObjective('bdmisn2205.otf',"white");
+        objective.AddObjective('bdmisn2205.otf',"white");
         createWave("svtank",{"spawn_w1"},"west_path"); 
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path");
         state:next()
@@ -431,11 +437,11 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        UpdateObjective('bdmisn2205.otf',"green");
+        objective.UpdateObjective('bdmisn2205.otf',"green");
         state:next();
     end,
     { "make_defensive", function (state)
-        AddObjective('bdmisn2206.otf',"white");
+        objective.AddObjective('bdmisn2206.otf',"white");
         createWave("svtank",{"spawn_w1"},"west_path"); 
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path"); -- Original Script did nothing with these 2. Possibly sent to guard Scavs instead? -GBD
         createWave("svscav",{"spawn_w2","spawn_w3"});
@@ -447,7 +453,7 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        UpdateObjective('bdmisn2206.otf',"green");
+        objective.UpdateObjective('bdmisn2206.otf',"green");
         state:next();
     end,
     -- /SKIPPED STATES?
@@ -457,6 +463,7 @@ statemachine.Create("main_objectives", {
         createWave("svtank",{"spawn_e3"},"east_path");
         -- we never care about this nav again so we don't bother tracking it
         local nav = navmanager.BuildImportantNav(nil, 1, "nav_path", 4);
+        if not nav then error("Failed to create nav for CCA base attack."); end
         nav:SetMaxHealth(0);
         nav:SetObjectiveName("CCA Base");
         AudioMessage(audio.attack);
@@ -477,7 +484,7 @@ statemachine.Create("main_objectives", {
     end,
     { "nsdf_attack", function (state)
         AudioMessage(audio.nsdf);
-        AddObjective('bdmisn2208.otf',"white");
+        objective.AddObjective('bdmisn2208.otf',"white");
         local a,b,camTarget = createWave("avwalk",{"spawn_avwalk1","spawn_avwalk2","spawn_avwalk3"},"nsdf_path");
         local c,e,g = createWave("avtank",{"spawn_avtank1","spawn_avtank2","spawn_avtank3"},"nsdf_path");
         local d,h,i = createWave("avtank",{"spawn_w1","spawn_w2","spawn_w3"},"west_path");
@@ -488,8 +495,8 @@ statemachine.Create("main_objectives", {
         for i,v in pairs(state.targets) do
             SetObjectiveOn(v);
         end
-        if not IsAlive(GetRecyclerHandle(2)) then
-            UpdateObjective('bdmisn2208.otf',"green"); -- this is odd, this code isn't running anymore right?
+        if not gameobject.GetRecyclerGameObject(2):IsAlive() then
+            objective.UpdateObjective('bdmisn2208.otf',"green"); -- this is odd, this code isn't running anymore right?
         end
         state:next();
     end },
@@ -501,21 +508,21 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        SetObjectiveOn(GetRecyclerHandle(2));
-        UpdateObjective('bdmisn2208.otf',"green");
+        gameobject.GetRecyclerGameObject(2):SetObjectiveOn();
+        objective.UpdateObjective('bdmisn2208.otf',"green");
         state:next();
     end,
     function (state)
         if areAllDead(state.targets, 2) then
             state.recycler_target = true;
-            SetObjectiveOn(GetRecyclerHandle(2));
-            UpdateObjective(state.otf,"green");
+            gameobject.GetRecyclerGameObject(2):SetObjectiveOn();
+            objective.UpdateObjective(state.otf,"green");
             state:next();
         end
     end,
     function (state)
-        if not IsAlive(GetRecyclerHandle(2)) then
-            UpdateObjective("bdmisn2207.otf","green");
+        if not gameobject.GetRecyclerGameObject(2):IsAlive() then
+            objective.UpdateObjective("bdmisn2207.otf","green");
             state:next();
         end
     end,
@@ -533,15 +540,16 @@ stateset.Create("mission")
     :Add("destoryNSDF", function (state)
         if( checkDead(mission_data.patrolUnits) ) then
             local reinforcements = {
-                BuildObject("svfigh", 2, "spawn_svfigh1"),
-                BuildObject("svfigh", 2, "spawn_svfigh2"),
-                BuildObject("svrckt", 2, "spawn_svrckt1"),
-                BuildObject("svrckt", 2, "spawn_svrckt2"),
-                BuildObject("svhraz", 2, "spawn_svhraz")
+                gameobject.BuildGameObject("svfigh", 2, "spawn_svfigh1"),
+                gameobject.BuildGameObject("svfigh", 2, "spawn_svfigh2"),
+                gameobject.BuildGameObject("svrckt", 2, "spawn_svrckt1"),
+                gameobject.BuildGameObject("svrckt", 2, "spawn_svrckt2"),
+                gameobject.BuildGameObject("svhraz", 2, "spawn_svhraz")
             };
             -- Send the reinforcements to Nav 4.
+            local nav4Pos = mission_data.nav_research:GetPosition();
             for i,v in pairs(reinforcements) do
-                Goto(v, GetPosition(mission_data.nav_research));
+                v:Goto(nav4Pos);
             end
             print("Spawning reinforcements");
             state:off("destoryNSDF");
@@ -551,7 +559,7 @@ stateset.Create("mission")
     -- this state never runs?
     :Add("toofarfrom_recy", function (state)
         if(IsAlive(GetPlayerHandle())) then
-            if IsAlive(GetRecyclerHandle(1)) and GetDistance(GetPlayerHandle(), GetRecyclerHandle(1)) > 700.0 then
+            if gameobject.GetRecyclerGameObject(1):IsAlive() and gameobject.GetPlayerGameObject():GetDistaince(gameobject.GetRecyclerGameObject(1)) > 700.0 then
                 print(state.alive);
                 FailMission(GetTime() + 5, "bdmisn22l1.des");
                 state:off("toofarfrom_recy");
@@ -561,7 +569,7 @@ stateset.Create("mission")
     
     -- Lose conditions by GBD. No idea if i did this right, mission doesn't update otfs, or goto a next thing, it runs throughout the mission. (distance check until ordered to attack CCA base, and recy loss throughout entire mission.)
     :Add("lose_recy", function (state)
-        if(not IsAlive(GetRecyclerHandle(1))) then
+        if not gameobject.GetRecyclerGameObject(1):IsAlive() then
             FailMission(GetTime() + 5, "bdmisn22l2.des");
             state:off("lose_recy");
         end
