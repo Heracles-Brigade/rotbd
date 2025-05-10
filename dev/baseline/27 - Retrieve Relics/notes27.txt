@@ -1,0 +1,5 @@
+1: More patrols around.
+2: AI Attack your base more, must manage base defences as well as capture relic.
+3: AI Production unit builds stuffs.
+4: AI Tug tries to take relic.
+5: AI force spawns to attack your tug when you pickup relic

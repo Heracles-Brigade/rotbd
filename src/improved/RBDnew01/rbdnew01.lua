@@ -4,6 +4,7 @@ require("_printfix");
 
 print("\27[34m----START MISSION----\27[0m");
 
+---@diagnostic disable-next-line: lowercase-global
 debugprint = print;
 --traceprint = print;
 
@@ -625,5 +626,3 @@ end,
 function(g)
     mission_data = g;
 end);
-
-print(table.show(TeamSlot));

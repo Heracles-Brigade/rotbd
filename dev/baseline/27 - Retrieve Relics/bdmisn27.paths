@@ -1,0 +1,6 @@
+#update path list
+spawn_figh1: spawn a fighter when east relic has been taken
+spawn_bomber1: spawn a bomber when east relic has been taken
+
+772E: spawn fighter
+6964: spawn lighttank
