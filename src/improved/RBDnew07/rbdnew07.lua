@@ -29,12 +29,12 @@ for i=1, math.random(100,1000) do
 end
 
 --1.5 polyfill
-Formation = Formation or function(me,him,priority)
-  if(priority == nil) then
-    priority = 1;
-  end
-  SetCommand(me,AiCommand["FORMATION"],priority,him);
-end
+--Formation = Formation or function(me,him,priority)
+--  if(priority == nil) then
+--    priority = 1;
+--  end
+--  SetCommand(me,AiCommand["FORMATION"],priority,him);
+--end
 
 
 function TugPickup(handle,target,priority,sequencer)

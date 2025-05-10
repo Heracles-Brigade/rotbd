@@ -37,7 +37,7 @@ local mission_data = {};
 --areAnyAlive = not areAllDead
 local function areAllDead(handles, team)
     for i,v in pairs(handles) do
-        if(IsAlive(v) and (team==nil or team == GetTeamNum(v))) then
+        if v:IsAlive() and (team==nil or team == v:GetTeamNum(v)) then
             return false;
         end
     end
@@ -59,8 +59,8 @@ SetAIControl(2,false);
 
 local function enemiesInRange(dist,place)
     local enemies_nearby = false;
-    for v in ObjectsInRange(dist,gameobject.isgameobject(place) and place:GetHandle() or place) do
-        if(IsCraft(v) and GetTeamNum(v) == 2) then
+    for v in gameobject.ObjectsInRange(dist,gameobject.isgameobject(place) and place:GetHandle() or place) do
+        if(v:IsCraft() and v:GetTeamNum() == 2) then
             enemies_nearby = true;
         end
     end
@@ -71,9 +71,9 @@ local function createWave(odf, path_list, follow)
     local ret = {};
     print("Spawning:" .. odf);
     for i,v in pairs(path_list) do
-        local h = BuildObject(odf, 2, v);
-        if(follow) then
-            Goto(h, follow);
+        local h = gameobject.BuildGameObject(odf, 2, v);
+        if h and follow then
+            h:Goto(follow);
         end
         table.insert(ret,h);
     end
@@ -152,13 +152,13 @@ statemachine.Create("main_objectives", {
         state.nav1:SetObjectiveName("Navpoint 1");
         state.nav1:SetObjectiveOn();
         objective.AddObjective('bdmisn211.otf', "white");
-        state.command = GetHandle("sbhqcp0_i76building");
+        state.command = gameobject.GetGameObject("sbhqcp0_i76building");
         state:next();
     end },
     { "check_command_passfail", function (state)
-        if GetDistance(GetPlayerHandle(), state.command) < 50.0 then
+        if gameobject.GetPlayerGameObject():GetDistance(state.command) < 50.0 then
             AudioMessage(audio.inspect);
-            SetObjectiveOff(state.nav1);
+            state.nav1:SetObjectiveOff();
             objective.UpdateObjective('bdmisn211.otf',"green");
             state:next();
         --elseif(not IsAlive(state.command)) then
@@ -299,17 +299,17 @@ statemachine.Create("main_objectives", {
         AudioMessage(audio.recycler);
         local recy = gameobject.BuildGameObject("bvrecy22",1,"recy_spawn");
         if not recy then error("Failed to create recycler."); end
-        local e1 = gameobject.BuildGameObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
+        local e1 = gameobject.BuildGameObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn") or SetVector(),20,100));
         if not e1 then error("Failed to create escort tank 1."); end
-        local e2 = gameobject.BuildGameObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn"),20,100));
+        local e2 = gameobject.BuildGameObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn") or SetVector(),20,100));
         if not e2 then error("Failed to create escort tank 2."); end
-        e1:Defend2(recy,0);
-        e2:Defend2(recy,0);
+        e1:Defend2(recy, 0);
+        e2:Defend2(recy, 0);
         --Make recycler follow path
-        recy:Goto(state.nav,0);
+        recy:Goto(state.nav, 0);
         state.recy = recy;
         
-        SetObjectiveOn(recy);
+        recy:SetObjectiveOn();
         --state:success();
         state:next();
     end,
@@ -326,13 +326,13 @@ statemachine.Create("main_objectives", {
         AddPilot(1,10);
         SetScrap(2,0);
         SetPilot(2,0);
-        SetObjectiveOn(state.nav);
+        state.nav:SetObjectiveOn();
         --initial wave
-        BuildObject("svrecy",2,"spawn_svrecy");
-        BuildObject("svmuf",2,"spawn_svmuf");
+        gameobject.BuildGameObject("svrecy",2,"spawn_svrecy");
+        gameobject.BuildGameObject("svmuf",2,"spawn_svmuf");
         --AudioMessage(audio.attack);
-        mission_data.sb_turr_1 = gameobject:BuildGameObject("sbtowe",2,"spawn_sbtowe1");
-        mission_data.sb_turr_2 = gameobject:BuildGameObject("sbtowe",2,"spawn_sbtowe2");
+        mission_data.sb_turr_1 = gameobject.BuildGameObject("sbtowe",2,"spawn_sbtowe1");
+        mission_data.sb_turr_2 = gameobject.BuildGameObject("sbtowe",2,"spawn_sbtowe2");
         --Not really creating a wave, but spawns sbspow
         createWave("sbspow",{"spawn_sbspow1","spawn_sbspow2"});
         --Start wave after a delay?
@@ -365,7 +365,7 @@ statemachine.Create("main_objectives", {
         mission_data.mission_states:on("delayed_spawn");
     end,
     { "make_scavs", function (state)
-        objective.SetObjectiveOff(GetHandle("nav4"));
+        gameobject.GetGameObject("nav4"):SetObjectiveOff();
         objective.AddObjective('bdmisn2202.otf',"white");
         state:next();
     end },
@@ -477,7 +477,7 @@ statemachine.Create("main_objectives", {
     end,
     function (state)
         --UpdateObjective('bdmisn2207.otf',"green");
-        SetObjectiveOff(GetRecyclerHandle(2));
+        gameobject.GetRecyclerGameObject(2):SetObjectiveOff();
 
         --mission.Objective:Start('nsdf_attack');
         state:next();
@@ -493,7 +493,7 @@ statemachine.Create("main_objectives", {
         CameraReady();
         state.targets = {a,b,c,d,e,f,g,h,i,camTarget,j};
         for i,v in pairs(state.targets) do
-            SetObjectiveOn(v);
+            v:SetObjectiveOn();
         end
         if not gameobject.GetRecyclerGameObject(2):IsAlive() then
             objective.UpdateObjective('bdmisn2208.otf',"green"); -- this is odd, this code isn't running anymore right?
@@ -501,7 +501,7 @@ statemachine.Create("main_objectives", {
         state:next();
     end },
     function (state)
-        if (state:SecondsHavePassed(10) or CameraPath("camera_nsdf",1000,1500,state.camTarget) or CameraCancelled()) then
+        if (state:SecondsHavePassed(10) or CameraPath("camera_nsdf",1000,1500,state.camTarget:GetHandle()) or CameraCancelled()) then
             state:SecondsHavePassed(); -- clear timer if we got here without it being cleared
             CameraFinish();
             state:next();
@@ -548,6 +548,7 @@ stateset.Create("mission")
             };
             -- Send the reinforcements to Nav 4.
             local nav4Pos = mission_data.nav_research:GetPosition();
+            if not nav4Pos then error("Failed to get position of nav4."); end
             for i,v in pairs(reinforcements) do
                 v:Goto(nav4Pos);
             end
@@ -558,8 +559,8 @@ stateset.Create("mission")
 
     -- this state never runs?
     :Add("toofarfrom_recy", function (state)
-        if(IsAlive(GetPlayerHandle())) then
-            if gameobject.GetRecyclerGameObject(1):IsAlive() and gameobject.GetPlayerGameObject():GetDistaince(gameobject.GetRecyclerGameObject(1)) > 700.0 then
+        if(gameobject.GetPlayerGameObject():IsAlive()) then
+            if gameobject.GetRecyclerGameObject(1):IsAlive() and gameobject.GetPlayerGameObject():GetDistance(gameobject.GetRecyclerGameObject(1) or SetVector()) > 700.0 then
                 print(state.alive);
                 FailMission(GetTime() + 5, "bdmisn22l1.des");
                 state:off("toofarfrom_recy");
