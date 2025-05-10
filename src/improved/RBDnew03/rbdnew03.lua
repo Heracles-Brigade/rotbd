@@ -7,10 +7,55 @@
 	 - Janne
 --]]
 
-local minit = require("minit")
+require("_printfix");
 
-local cmisnlib = require("cmisnlib");
-local choose = cmisnlib.choose;
+print("\27[34m----START MISSION----\27[0m");
+
+---@diagnostic disable-next-line: lowercase-global
+debugprint = print;
+--traceprint = print;
+
+require("_requirefix").addmod("rotbd");
+
+require("_table_show");
+local api = require("_api");
+local gameobject = require("_gameobject");
+local hook = require("_hook");
+local statemachine = require("_statemachine");
+local stateset = require("_stateset");
+--local tracker = require("_tracker");
+local navmanager = require("_navmanager");
+local objective = require("_objective");
+local utility = require("_utility");
+
+-- Fill navlist gaps with important navs
+navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToGap);
+
+-- constrain tracker so it does less work, otherwise when it's required it watches everything
+--tracker.setFilterTeam(1); -- track team 1 objects
+--tracker.setFilterClass("scavenger"); -- track scavengers
+--tracker.setFilterClass("factory"); -- track factories
+--tracker.setFilterClass("commtower"); -- track comm towers
+--tracker.setFilterOdf("bvtank"); -- track bvtanks
+--tracker.setFilterOdf("bvhraz"); -- track bvhraz
+--tracker.setFilterClass("turrettank"); -- track turrettanks
+
+
+
+
+
+
+
+
+
+
+
+
+local function choose(...)
+    local t = {...};
+    local rn = math.random(#t);
+    return t[rn];
+end
 
 local audio = {
 	intro = "rbdnew0301.wav",
@@ -80,85 +125,80 @@ scrapFields = { },
 Aud1 = 0
 }
 
+-- memorize scrap around a scrap field
 local function scrapFieldsFiller(p)
-    local scrapFieldObjs = ObjectsInRange(35,p);
-    local scrapFieldScrap = { };
-    for obj in scrapFieldObjs do
-        if GetClassLabel(obj) == "scrap" then
-            table.insert(scrapFieldScrap,obj);
+    local scrapFieldScrap = {};
+    for obj in gameobject.ObjectsInRange(35, p) do
+        if obj:GetClassLabel() == "scrap" then
+            table.insert(scrapFieldScrap, obj);
         end
     end
     M.scrapFields[p] = scrapFieldScrap;
 end
 
-function Start()
-	scrapFieldsFiller("scrpfld1");
-end
-
-function Save()
-    return 
-		M
-end
-
-function Load(...)	
-    if select('#', ...) > 0 then
-		M
-		= ...
-    end
-end
-
+-- if scrap is gone, respawn it (is this instant? seems like a bad idea)
 local function scrapRespawner()
-	for path,field in pairs(M.scrapFields) do
-		for i,scrap in ipairs(field) do
-			if not IsValid(scrap) then
-				local newScrap = BuildObject(choose("npscr1", "npscr2", "npscr3"),0,GetPositionNear(GetPosition(path),1,35));
-				field[i] = newScrap;
+	for path, field in pairs(M.scrapFields) do
+		for i, scrap in ipairs(field) do
+			if not scrap or not scrap:IsValid() then
+				field[i] = gameobject.BuildGameObject(choose("npscr1", "npscr2", "npscr3"), 0, GetPositionNear(GetPosition(path) or SetVector(), 1, 35));
 			end
 		end
 	end
 end
 
+hook.Add("Start", "Mission:Start", function ()
+	scrapFieldsFiller("scrpfld1");
+end);
+
+hook.AddSaveLoad("Mission",
+function()
+    return M;
+end,
+function(g)
+    M = g;
+end);
+
+
 local function UpdateObjectives() --This entire function controls objective bubble and makes sure that objectives can flow in a linear order.
-	ClearObjectives();
+	objective.ClearObjectives();
 	
 	if not M.IsDetected then
-		AddObjective(objectives.Detection, "WHITE");
-	else
-		if not M.MammothReached then
-			AddObjective(objectives.Detection, "RED");
-		end
+		objective.AddObjective(objectives.Detection, "WHITE");
+	elseif not M.MammothReached then
+		objective.AddObjective(objectives.Detection, "RED");
 	end
 	
 	if not M.HangarInfoed then
 		-- NEW: If hanger dies before acquiring intel, just fail mission. Should be impossible unless we have cheating players. Joke's on them! They failed the mission! HA!
-		if not IsAlive(M.Hangar) then
-			AddObjective(objectives.Hanger, "RED");
+		if not M.Hangar:IsAlive() then
+			objective.AddObjective(objectives.Hanger, "RED");
 		else
-			AddObjective(objectives.Hanger, "WHITE");
+			objective.AddObjective(objectives.Hanger, "WHITE");
 		end
 	else
 		if not M.TugAquired then
-			AddObjective(objectives.Tug, "WHITE");
+			objective.AddObjective(objectives.Tug, "WHITE");
 		else
-			AddObjective(objectives.Tug, "GREEN");
+			objective.AddObjective(objectives.Tug, "GREEN");
 			if not M.ShieldDetected then
-				AddObjective(objectives.Mammoth1, "WHITE");
+				objective.AddObjective(objectives.Mammoth1, "WHITE");
 			else
 				if not M.ControlDead then -- Destroy Control Tower.
-					AddObjective(objectives.Control, "WHITE");
+					objective.AddObjective(objectives.Control, "WHITE");
 				else
-					AddObjective(objectives.Control, "GREEN");
+					objective.AddObjective(objectives.Control, "GREEN");
 					if not M.MammothReached then -- Goto Mammoth.
-						AddObjective(objectives.Mammoth2, "WHITE");
+						objective.AddObjective(objectives.Mammoth2, "WHITE");
 					else
 						if not M.MammothInfoed then -- Stream Mammoth data.
-							AddObjective(objectives.TranStart, "WHITE");
+							objective.AddObjective(objectives.TranStart, "WHITE");
 						else
-							AddObjective(objectives.TranFin, "GREEN");
+							objective.AddObjective(objectives.TranFin, "GREEN");
 							if not M.SafetyReached then -- At safe distance yet?
-								AddObjective(objectives.Extract, "WHITE");
+								objective.AddObjective(objectives.Extract, "WHITE");
 							else
-								AddObjective(objectives.Extract, "GREEN");
+								objective.AddObjective(objectives.Extract, "GREEN");
 							end
 						end															
 					end						
@@ -169,23 +209,25 @@ local function UpdateObjectives() --This entire function controls objective bubb
 end
 
 local function SpawnNav(num) -- Spawns the Nth Nav point.
-	local nav = BuildObject("apcamr", 1, M.NavCoord[num]); -- Make the nav from the harvested coordinates.
-	SetObjectiveName(nav, "Nav "..num); -- Set its name
+	local nav = navmanager.BuildImportantNav("apcamr", 1, M.NavCoord[num]); -- Make the nav from the harvested coordinates.
+	if not nav then error("Nav "..num.." failed to spawn!"); end -- If the nav fails to spawn, throw an error.
+	nav:SetObjectiveName("Nav "..num); -- Set its name
 	if num == 5 then
-		SetObjectiveName(nav, "Extraction Point"); -- If it's the 5th nav, change its name. This is the name it checks for for the Win Condition; if you change this, change the win condition script as well.
+		nav:SetObjectiveName("Extraction Point"); -- If it's the 5th nav, change its name. This is the name it checks for for the Win Condition; if you change this, change the win condition script as well.
 	end
-	SetMaxHealth(nav, 0); -- Can't go boom-boom. I accidentally destroyed Nav 3 with the DW before this.
+	nav:SetMaxHealth(0); -- Can't go boom-boom. I accidentally destroyed Nav 3 with the DW before this.
 	
 	-- Switches the active objective from the old nav to the new nav.
-	SetObjectiveOff(M.ObjectiveNav);
-	SetObjectiveOn(nav);
+	M.ObjectiveNav:SetObjectiveOff();
+	nav:SetObjectiveOn();
 	M.ObjectiveNav = nav; -- Sets the new nav to the ObjectiveNav so that the next time this function is called, it can switch off of it.
 end
 
 local function SpawnFromTo(odf, fp, fpp, tp)
-	local obj = BuildObject(odf, 2, fp, fpp)
-	Goto(obj, tp, 0);
-	SetLabel(obj, fp.."_"..M.NextDefender);
+	local obj = gameobject.BuildGameObject(odf, 2, fp, fpp)
+	if not obj then error("Failed to spawn "..odf.." from "..tostring(fp).." to "..tostring(tp)); end -- If the object fails to spawn, throw an error.
+	obj:Goto(tp, 0);
+	SetLabel(obj:GetHandle(), fp.."_"..M.NextDefender);
 	M.Defenders[M.NextDefender] = obj;
 	M.NextDefender = M.NextDefender + 1;
 end
@@ -217,65 +259,66 @@ local function SpawnArmy()
 end
 
 local function keepOutside(h1,h2) -- This is the shield function for the Mammoth. Thank you, Janne
-  local p = GetPosition(h2);
-  local r = 40;
-  local pp = GetPosition(h1);
-  local dv = Normalize(pp-p);
-  local vel2 = GetVelocity(h2);
-  local d = Length(pp-p);
-  local vel = GetVelocity(h1);
-  local dprod = DotProduct(vel,-dv);
-  local nvel = vel + dprod*dv*(1+GetTimeStep());
-  if(d < r) then
-    local newp = (p + dv*r);
-    local h = GetTerrainHeightAndNormal(newp);
-    newp.y = math.max(h,newp.y);
-    SetPosition(h1,newp);
-    SetVelocity(h1,nvel);
-  end
+	local p = h2:GetPosition();
+	local r = 40;
+	local pp = h1:GetPosition();
+	local dv = Normalize(pp-p);
+	local vel2 = h2:GetVelocity();
+	local d = Length(pp-p);
+	local vel = h1:GetVelocity();
+	local dprod = DotProduct(vel,-dv);
+	local nvel = vel + dprod*dv*(1+GetTimeStep());
+	if(d < r) then
+		local newp = (p + dv*r);
+		local h = GetTerrainHeightAndNormal(newp);
+		newp.y = math.max(h,newp.y);
+		h1:SetPosition(newp);
+		h1:SetVelocity(nvel);
+	end
 end
 
 
-function CreateObject(h)
-  if(not M.Wrecker and GetClassLabel(h) == "daywrecker") then
-    M.Wrecker = h
-  end
-end
+hook.Add("CreateObject", "Mission:CreateObject", function (object)
+	if(not M.Wrecker and object:GetClassLabel() == "daywrecker") then
+		M.Wrecker = object
+	end
+end);
 
-function Update()
-	
-	M.Player = GetPlayerHandle();
+hook.Add("Update", "Mission:Update", function (dtime, ttime)
+	M.Player = gameobject.GetPlayerGameObject();
 	scrapRespawner();
 	
 	if not M.StartDone then
 		
-		M.Mammoth = GetHandle("mammoth");
-		SetIndependence(M.Mammoth, 0); -- Mammoth shouldn't respond or do anything in this mission.
-		M.Hangar = GetHandle("hangar");
-		M.Supply = GetHandle("supply");
-		M.Tug = GetHandle("tug");
-		RemovePilot(M.Tug);
-		M.ControlTower = GetHandle("control");
+		M.Mammoth = gameobject.GetGameObject("mammoth");
+		SetIndependence(M.Mammoth:GetHandle(), 0); -- Mammoth shouldn't respond or do anything in this mission.
+		M.Hangar = gameobject.GetGameObject("hangar");
+		M.Supply = gameobject.GetGameObject("supply");
+		M.Tug = gameobject.GetGameObject("tug");
+		M.Tug:RemovePilot();
+		M.ControlTower = gameobject.GetGameObject("control");
 		SetMaxScrap(2,10000);
-		SetPerceivedTeam(M.Player, 2); -- Make sure player isn't detected right away.
+		M.Player:SetPerceivedTeam(2); -- Make sure player isn't detected right away.
 		for i = 1, 3 do 
-			M.Radar[i] = { RadarHandle = GetHandle("radar"..i), RadarWarn = false, RadarTrigger = false }
+			M.Radar[i] = { RadarHandle = gameobject.GetGameObject("radar"..i), RadarWarn = false, RadarTrigger = false }
 		end
 		
 		for i = 1, 5 do
-			local navtmp = GetHandle("nav"..i); -- Harvests the current nav's coordinates then deletes it. The saved coordinates are used later to respawn the nav when it is needed.
-			M.NavCoord[i] = GetPosition(navtmp);
-			RemoveObject(navtmp);
+			local navtmp = gameobject.GetGameObject("nav"..i); -- Harvests the current nav's coordinates then deletes it. The saved coordinates are used later to respawn the nav when it is needed.
+			if navtmp then
+				M.NavCoord[i] = navtmp:GetPosition();
+				navtmp:RemoveObject();
+			end
 		end
 		
 		for i =1, 6 do
-			Patrol(GetHandle("patrol1_" .. i), "patrol_1", 1);
+			gameobject.GetGameObject("patrol1_" .. i):Patrol("patrol_1", 1);
 		end
 		for i =1, 10 do
-			Patrol(GetHandle("patrol2_" .. i), "patrol_2", 1);
+			gameobject.GetGameObject("patrol2_" .. i):Patrol("patrol_2", 1);
 		end
 		for i =1, 9 do
-			Patrol(GetHandle("patrol3_" .. i), "patrol_3", 1)
+			gameobject.GetGameObject("patrol3_" .. i):Patrol("patrol_3", 1)
 		end
 		
 		
@@ -286,13 +329,13 @@ function Update()
 		M.Aud1 = AudioMessage(audio.intro);
 	end
 	
-	if not M.IsDetected and GetPerceivedTeam(M.Player) == 1 then
+	if not M.IsDetected and M.Player:GetPerceivedTeam() == 1 then
 		M.IsDetected = true;
 		UpdateObjectives();
 	end
 	
 	--Opening Cinematic. Show off Deus Ex's wondrous creation!
-	if not M.OpeningCinDone and CameraPath("camera_path", 1000, 2000, M.Mammoth) or CameraCancelled() then
+	if not M.OpeningCinDone and CameraPath("camera_path", 1000, 2000, M.Mammoth:GetHandle()) or CameraCancelled() then
 		CameraFinish();
 		SpawnNav(1);
 		M.OpeningCinDone = true;
@@ -301,15 +344,15 @@ function Update()
 	
 	--Radar tower detection script
 	for i = 1, 3 do
-		if IsAlive(M.Radar[i].RadarHandle) then
-			if not M.Radar[i].RadarWarn and GetDistance(M.Player, M.Radar[i].RadarHandle) < 100.0 then
+		if M.Radar[i].RadarHandle:IsAlive() then
+			if not M.Radar[i].RadarWarn and M.Player:GetDistance(M.Radar[i].RadarHandle) < 100.0 then
 				M.Aud1 = AudioMessage(audio.commwarn);
 				M.RadarTime = GetTime();
 				M.Radar[i].RadarWarn = true;
 				StartCockpitTimer(30, 15, 5);
 			else
 				if M.Radar[i].RadarWarn then
-					if GetDistance(M.Player, M.Radar[i].RadarHandle) > 100.0 then
+					if M.Player:GetDistance(M.Radar[i].RadarHandle) > 100.0 then
 						Aud1 = AudioMessage(audio.commclear);
 						M.RadarTime = 0;
 						M.Radar[i].RadarWarn = false;
@@ -326,7 +369,8 @@ function Update()
 		end
 	end
 	
-	if not M.HangarInfoed and IsAlive(M.Hangar) and GetDistance(M.Player, M.Hangar) < 50.0 then
+
+	if not M.HangarInfoed and M.Hangar:IsAlive() and M.Player:GetDistance(M.Hangar) < 50.0 then
 		M.Aud1 = AudioMessage(audio.inspect);
 		SpawnNav(2);
 		M.HangarInfoed = true;
@@ -340,8 +384,8 @@ function Update()
 		SpawnNav(3)
 	end
 	
-	if M.TugAquired and GetDistance(M.Player, M.Mammoth) < 225.0 and not M.ShieldDetected then
-		M.playerSLF = BuildObject("bvslf", 1, "NukeSpawn", 1);
+	if M.TugAquired and M.Player:GetDistance(M.Mammoth) < 225.0 and not M.ShieldDetected then
+		M.playerSLF = gameobject.BuildGameObject("bvslf", 1, "NukeSpawn", 1);
 		M.Armory = true;
 		SetMaxScrap(1, 20);
 		SetScrap(1, 20);
@@ -351,22 +395,22 @@ function Update()
 		UpdateObjectives();
 	end
 
-	if IsValid(M.playerSLF) then
-		M.armoryCommand = GetCurrentCommand(M.playerSLF);
+	if M.playerSLF:IsValid() then
+		M.armoryCommand = GetCurrentCommand(M.playerSLF:GetHandle());
 		print(M.armoryCommand);
 		if M.armoryCommand == 21 and not M.pollArmoryWho then -- 21
 			M.pollArmoryWho = true;
 		end
 	end
 	if M.pollArmoryWho == true then
-		temp = GetCurrentWho(M.playerSLF);
-		if IsValid(temp) then
+		local temp = gameobject.FromHandle(GetCurrentWho(M.playerSLF:GetHandle()));
+		if temp:IsValid() then
 			M.armoryTarget = temp;
 			print(M.armoryTarget);
 			M.pollArmoryWho = false;
 		end
 	end
-	if IsValid(M.Wrecker) then
+	if M.Wrecker:IsValid() then
 		if not M.impactPending and not M.wreckerTargetMissed then
 			print(M.armoryTarget == M.ControlTower)
 			if M.armoryTarget == M.ControlTower then
@@ -383,16 +427,16 @@ function Update()
 			end
 		end
 	end
-	if M.impactPending and not IsValid(M.Wrecker) then
+	if M.impactPending and not M.Wrecker:IsValid() then
 		-- we should expect a dead shield control tower right about now
-		if not IsValid(M.ControlTower) and not M.ControlDead then
+		if not M.ControlTower:IsValid() and not M.ControlDead then
 			M.ControlDead = true;
 			M.impactPending = false;
 			UpdateObjectives(); -- green
 			M.Aud1 = AudioMessage(audio.dayw);
-			SetObjectiveOff(M.ObjectiveNav);
-			SetObjectiveOn(M.Mammoth);
-			SetObjectiveName(M.Mammoth, "Mammoth");
+			M.ObjectiveNav:SetObjectiveOff();
+			M.Mammoth:SetObjectiveOn();
+			M.Mammoth:SetObjectiveName("Mammoth");
 			SpawnArmy();
 		-- else
 			-- if not M.wreckerTargetMissed == true then
@@ -409,21 +453,21 @@ function Update()
 		keepOutside(M.Player, M.Mammoth);
 		if GetTime() >= M.LastShieldTime then
 			M.LastShieldTime = GetTime() + 3.5;
-			MakeExplosion("sdome", M.Mammoth);
+			MakeExplosion("sdome", M.Mammoth:GetHandle());
 		end
 	end
 	
-	if not M.ControlDead and M.TugAquired and not IsAlive(M.ControlTower) then
+	if not M.ControlDead and M.TugAquired and not M.ControlTower:IsAlive() then
 		M.Aud1 = AudioMessage(audio.dayw);
-		SetObjectiveOff(M.ObjectiveNav);
-		SetObjectiveOn(M.Mammoth);
-		SetObjectiveName(M.Mammoth, "Mammoth");
+		M.ObjectiveNav:SetObjectiveOff();
+		M.Mammoth:SetObjectiveOn();
+		M.Mammoth:SetObjectiveName("Mammoth");
 		M.ControlDead = true;
 		SpawnArmy();
 		UpdateObjectives();
 	end
 	
-	if M.ControlDead and not M.MammothReached and GetDistance(M.Player, M.Mammoth) < 35 then
+	if M.ControlDead and not M.MammothReached and M.Player:GetDistance(M.Mammoth) < 35 then
 		M.MammothTime = GetTime() + 10.0; -- Wait 10 seconds to gather info.
 		M.MammothReached = true;
 		UpdateObjectives();
@@ -435,7 +479,7 @@ function Update()
 		end
 	end
 	
-	if GetTime() < M.MammothTime and M.MammothReached and GetDistance(M.Player, M.Mammoth) > 35 then
+	if GetTime() < M.MammothTime and M.MammothReached and M.Player:GetDistance(M.Mammoth) > 35 then
 		M.MammothTime = 0;
 		M.MammothReached = false;
 		UpdateObjectives();
@@ -445,16 +489,16 @@ function Update()
     if M.MammothReached and not M.MammothInfoed and GetTime() > M.MammothTime then
         M.Aud1 = AudioMessage(audio.flee);
         StartCockpitTimer(120, 30, 10);
-		SetObjectiveOff(M.Mammoth);
+		M.Mammoth:SetObjectiveOff();
 --		BuildObject("bvapc", 3, GetPositionNear(GetPosition(GetHandle("nav5"))));
         SpawnNav(5);
         M.MammothInfoed = true;
         UpdateObjectives();
-        SetPerceivedTeam(M.Player, 1);
+        M.Player:SetPerceivedTeam(1);
         for i=1, 18 do
             local tmp = M.Defenders[i];
-            if GetOdf(tmp) ~= "svwalk" then
-                Attack(tmp, M.Player);
+            if tmp:GetOdf() ~= "svwalk" then
+                tmp:Attack(M.Player);
             end
         end
     end
@@ -463,7 +507,7 @@ function Update()
 	if not M.MissionOver then
 	
 		-- Win Conditions:
-		if M.MammothInfoed and GetObjectiveName(M.ObjectiveNav) == "Extraction Point" and GetDistance(M.Player, M.ObjectiveNav) < 50.0 then
+		if M.MammothInfoed and M.ObjectiveNav:GetObjectiveName() == "Extraction Point" and M.Player:GetDistance(M.ObjectiveNav) < 50.0 then
 			Aud1 = AudioMessage(audio.win);
 			SucceedMission(GetTime()+5.0, "rbdnew03wn.des");
 			M.MissionOver = true;
@@ -473,13 +517,13 @@ function Update()
 		
 		-- Lose Conditions:
 		
-		if not M.HangarInfoed and not IsAlive(M.Hangar) then
+		if not M.HangarInfoed and not M.Hangar:IsAlive() then
 			FailMission(GetTime()+5.0, "rbdnew03l3.des");
 			M.MissionOver = true;
 			UpdateObjectives();
 		end
 
-		if  not IsAlive(M.Mammoth) then 
+		if not M.Mammoth:IsAlive() then 
 			M.Aud1 = AudioMessage(audio.lose1);
 			FailMission(GetTime()+5.0, "rbdnew03l1.des");
 			M.MissionOver = true;
@@ -531,6 +575,4 @@ function Update()
 			-- UpdateObjective(objectives.Control, "RED");
 		-- end
 	end
-end
-
-minit.init()
+end);

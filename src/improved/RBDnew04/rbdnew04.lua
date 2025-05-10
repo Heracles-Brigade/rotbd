@@ -1,10 +1,59 @@
 -- Battlezone: Rise of the Black Dogs Redux, Mission 3 "The Mammoth Project" recoded by Vemahk and Seqan based off GBD's 1:1 script
 
-local minit = require("minit")
 
-local cmisnlib = require("cmisnlib");
-local areAllDead = cmisnlib.areAllDead;
-local choose = cmisnlib.choose;
+
+require("_printfix");
+
+print("\27[34m----START MISSION----\27[0m");
+
+---@diagnostic disable-next-line: lowercase-global
+debugprint = print;
+--traceprint = print;
+
+require("_requirefix").addmod("rotbd");
+
+require("_table_show");
+local api = require("_api");
+local gameobject = require("_gameobject");
+local hook = require("_hook");
+local statemachine = require("_statemachine");
+local stateset = require("_stateset");
+--local tracker = require("_tracker");
+local navmanager = require("_navmanager");
+local objective = require("_objective");
+local utility = require("_utility");
+
+-- Fill navlist gaps with important navs
+navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToGap);
+
+-- constrain tracker so it does less work, otherwise when it's required it watches everything
+--tracker.setFilterTeam(1); -- track team 1 objects
+--tracker.setFilterClass("scavenger"); -- track scavengers
+--tracker.setFilterClass("factory"); -- track factories
+--tracker.setFilterClass("commtower"); -- track comm towers
+--tracker.setFilterOdf("bvtank"); -- track bvtanks
+--tracker.setFilterOdf("bvhraz"); -- track bvhraz
+--tracker.setFilterClass("turrettank"); -- track turrettanks
+
+
+
+
+--Returns true of all of the handles given are dead
+--areAnyAlive = not areAllDead
+local function areAllDead(handles, team)
+    for i,v in pairs(handles) do
+        if v:IsAlive() and (team==nil or team == v:GetTeamNum(v)) then
+            return false;
+        end
+    end
+    return true;
+end
+
+local function choose(...)
+    local t = {...};
+    local rn = math.random(#t);
+    return t[rn];
+end
 
 
 
@@ -63,44 +112,41 @@ local M = {
 }
 
 local function scrapFieldsFiller(p)
-	local scrapFieldObjs = ObjectsInRange(35,p);
-	local scrapFieldScrap = { };
-	for obj in scrapFieldObjs do
-			if GetClassLabel(obj) == "scrap" then
-					table.insert(scrapFieldScrap,obj);
-			end
-	end
-	M.scrapFields[p] = scrapFieldScrap;
-end
-
-function Start()
-	for i = 1,5 do
-		scrapFieldsFiller("scrpfld"..i);
-	end
-end
-
-function Save()
-	return 
-		M
-end
-
-function Load(...)	
-    if select('#', ...) > 0 then
-		M
-		= ...
+    local scrapFieldScrap = {};
+    for obj in gameobject.ObjectsInRange(35, p) do
+        if obj:GetClassLabel() == "scrap" then
+            table.insert(scrapFieldScrap, obj);
+        end
     end
+    M.scrapFields[p] = scrapFieldScrap;
 end
 
+-- if scrap is gone, respawn it (is this instant? seems like a bad idea)
 local function scrapRespawner()
-	for path,field in pairs(M.scrapFields) do
-		for i,scrap in ipairs(field) do
-			if not IsValid(scrap) then
-				local newScrap = BuildObject(choose("npscr1", "npscr2", "npscr3"),0,GetPositionNear(GetPosition(path),1,35));
-				field[i] = newScrap;
+	for path, field in pairs(M.scrapFields) do
+		for i, scrap in ipairs(field) do
+			if not scrap or not scrap:IsValid() then
+				field[i] = gameobject.BuildGameObject(choose("npscr1", "npscr2", "npscr3"), 0, GetPositionNear(GetPosition(path) or SetVector(), 1, 35));
 			end
 		end
 	end
 end
+
+hook.Add("Start", "Mission:Start", function ()
+	for i = 1,5 do
+		scrapFieldsFiller("scrpfld"..i);
+	end
+end);
+
+
+hook.AddSaveLoad("Mission",
+function()
+    return M;
+end,
+function(g)
+    M = g;
+end);
+
 
 local function UpdateObjectives() -- Handle Objectives.
 	ClearObjectives();
