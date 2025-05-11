@@ -19,6 +19,8 @@ local stateset = require("_stateset");
 local tracker = require("_tracker");
 local navmanager = require("_navmanager");
 local objective = require("_objective");
+local utility = require("_utility");
+local bit = require("_bit")
 
 -- Fill navlist gaps with important navs
 navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToGap);
@@ -500,6 +502,7 @@ statemachine.Create("main_objectives", {
         nav:SetObjectiveName("CCA Base");
         AudioMessage(audio.attack);
         state:next();
+        -- @todo seems objective text is missing here, though maybe the audio handles it?
     end },
     statemachine.SleepSeconds(45),
     function (state) -- this one might have been broken before
@@ -515,6 +518,7 @@ statemachine.Create("main_objectives", {
         state:next();
     end,
     { "nsdf_attack", function (state)
+        -- @todo the cutscene shows walkers acting like pingpong balls and tanks acting like paddles, might need an adjustment to spawn location
         AudioMessage(audio.nsdf);
         objective.AddObjective('bdmisn2208.otf',"white");
         local a,b,camTarget = createWave("avwalk",{"spawn_avwalk1","spawn_avwalk2","spawn_avwalk3"},"nsdf_path");
@@ -681,7 +685,6 @@ hook.Add("GameKey", "Mission:GameKey:Cheat_BZSKIP", function (key)
     end
 end);
 
-
 statemachine.Create("Cheat_BZRAVE",
     function (state, key) if key == "Ctrl+Shift+B" then state:next(); end end,
     function (state, key) if key == "Ctrl+Shift+Z" then state:next(); else state:switch(1); end end,
@@ -689,7 +692,7 @@ statemachine.Create("Cheat_BZRAVE",
     function (state, key) if key == "Ctrl+Shift+A" then state:next(); else state:switch(1); end end,
     function (state, key) if key == "Ctrl+Shift+V" then state:next(); else state:switch(1); end end,
     function (state, key) if key == "Ctrl+Shift+E" then
-        ColorFade(1.0, 5.0, 128, 0, 255);
+        --ColorFade(1.0, 5.0, 128, 0, 255);
         StartSound("grave00.wav");
 
         local player = gameobject.GetPlayerGameObject();
@@ -701,9 +704,48 @@ statemachine.Create("Cheat_BZRAVE",
             player:GiveWeapon("gtechno", 4)
         end
 
+        -- if this works properly the hookName and Cheat_BZRAVE_effect should be in a closure that the hook function has access to
+        local hookName = "Mission:Update:Cheat_BZRAVE_effect_" .. tostring(GetTime());
+        local Cheat_BZRAVE_effect = statemachine.Start("Cheat_BZRAVE_effect");
+        hook.Add("Update", hookName, function (dtime, ttime)
+            local success, retval = Cheat_BZRAVE_effect:run();
+            if not success or retval then
+                hook.Remove("Update", hookName);
+            end
+        end);
+
         state:switch(1);
         return true;
     else state:switch(1); end end
+);
+--- @class Cheat_BZRAVE_effect_state : StateMachineIter
+--- @field rave_index number
+statemachine.Create("Cheat_BZRAVE_effect",
+    function (state)
+        --- @cast state Cheat_BZRAVE_effect_state
+        state.rave_index = 1;
+        state:next();
+        state:SecondsHavePassed(); -- make sure it's reset before we start a lap based usage
+    end,
+    { "color", function (state)
+        --- @cast state Cheat_BZRAVE_effect_state
+        if state:SecondsHavePassed(0.4, true) or state.rave_index == 1 then
+            local rgba = utility.RAVE_COLOR[state.rave_index];
+            local r = bit.rshift(rgba, 24) -- Extract the red component
+            local g = bit.band(bit.rshift(rgba, 16), 0xFF) -- Extract the green component
+            local b = bit.band(bit.rshift(rgba, 8), 0xFF)  -- Extract the blue component
+
+            ColorFade(1.0, 5.0, r, g, b);
+
+            -- run through the rave color list once, which is as long as the music
+            state.rave_index = state.rave_index + 1;
+            if state.rave_index > #utility.RAVE_COLOR then
+                state:SecondsHavePassed(); -- probably not needed but just in case
+                state:switch(nil);
+                return true;
+            end
+        end
+    end }
 );
 local Cheat_BZRAVE = statemachine.Start("Cheat_BZRAVE");
 hook.Add("GameKey", "Mission:GameKey:Cheat_BZRAVE", function (key)
