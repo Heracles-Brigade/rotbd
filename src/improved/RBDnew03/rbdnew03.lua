@@ -11,7 +11,7 @@ require("_printfix");
 
 print("\27[34m----START MISSION----\27[0m");
 
----@diagnostic disable-next-line: lowercase-global
+--- @diagnostic disable-next-line: lowercase-global
 debugprint = print;
 --traceprint = print;
 
@@ -291,7 +291,7 @@ hook.Add("Update", "Mission:Update", function (dtime, ttime)
 	if not M.StartDone then
 		
 		M.Mammoth = gameobject.GetGameObject("mammoth");
-		SetIndependence(M.Mammoth:GetHandle(), 0); -- Mammoth shouldn't respond or do anything in this mission.
+		M.Mammoth:SetIndependence(0); -- Mammoth shouldn't respond or do anything in this mission.
 		M.Hangar = gameobject.GetGameObject("hangar");
 		M.Supply = gameobject.GetGameObject("supply");
 		M.Tug = gameobject.GetGameObject("tug");
@@ -396,14 +396,14 @@ hook.Add("Update", "Mission:Update", function (dtime, ttime)
 	end
 
 	if M.playerSLF:IsValid() then
-		M.armoryCommand = GetCurrentCommand(M.playerSLF:GetHandle());
+		M.armoryCommand = M.playerSLF:GetCurrentCommand();
 		print(M.armoryCommand);
 		if M.armoryCommand == 21 and not M.pollArmoryWho then -- 21
 			M.pollArmoryWho = true;
 		end
 	end
 	if M.pollArmoryWho == true then
-		local temp = gameobject.FromHandle(GetCurrentWho(M.playerSLF:GetHandle()));
+		local temp = M.playerSLF:GetCurrentWho();
 		if temp:IsValid() then
 			M.armoryTarget = temp;
 			print(M.armoryTarget);

@@ -6,7 +6,7 @@ require("_printfix");
 
 print("\27[34m----START MISSION----\27[0m");
 
----@diagnostic disable-next-line: lowercase-global
+--- @diagnostic disable-next-line: lowercase-global
 debugprint = print;
 --traceprint = print;
 

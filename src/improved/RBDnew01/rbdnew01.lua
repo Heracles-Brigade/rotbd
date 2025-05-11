@@ -4,7 +4,7 @@ require("_printfix");
 
 print("\27[34m----START MISSION----\27[0m");
 
----@diagnostic disable-next-line: lowercase-global
+--- @diagnostic disable-next-line: lowercase-global
 debugprint = print;
 --traceprint = print;
 
@@ -86,35 +86,40 @@ end
 -- @todo does this work properly if the tug gets sniped? Oh, it's not snipable
 statemachine.Create("tug_relic_convoy",
     function (state)
+        --- @diagnostic disable-next-line: undefined-field
         if state.tug:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
+        --- @diagnostic disable-next-line: undefined-field
         state.tug:Pickup(state.relic);
         state:next();
     end,
     function (state)
+        --- @diagnostic disable-next-line: undefined-field
         if state.tug:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
+        --- @diagnostic disable-next-line: undefined-field
         state.tug:Goto("leave_path");
         state:next();
     end,
     function (state)
+        --- @diagnostic disable-next-line: undefined-field
         if state.tug:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
+        --- @diagnostic disable-next-line: undefined-field
         state.apc:RemoveObject();
+        --- @diagnostic disable-next-line: undefined-field
         state.relic:RemoveObject();
         state:next();
     end);
-
-mission_data.tug_relic_convoy = statemachine.Start("tug_relic_convoy");
 
 statemachine.Create("delayed_spawn",
     statemachine.SleepSeconds(120),
@@ -148,17 +153,21 @@ statemachine.Create("main_objectives", {
         end
     end },
     { "check_command_obj", function (state)
+        --- @diagnostic disable-next-line: inject-field
         state.nav1 = navmanager.BuildImportantNav(nil, 1, "nav_path", 0);
         state.nav1:SetMaxHealth(0);
         state.nav1:SetObjectiveName("Navpoint 1");
         state.nav1:SetObjectiveOn();
         objective.AddObjective('bdmisn211.otf', "white");
+        --- @diagnostic disable-next-line: inject-field
         state.command = gameobject.GetGameObject("sbhqcp0_i76building");
         state:next();
     end },
     { "check_command_passfail", function (state)
+        --- @diagnostic disable-next-line: undefined-field
         if gameobject.GetPlayerGameObject():GetDistance(state.command) < 50.0 then
             AudioMessage(audio.inspect);
+            --- @diagnostic disable-next-line: undefined-field
             state.nav1:SetObjectiveOff();
             objective.UpdateObjective('bdmisn211.otf',"green");
             state:next();
@@ -170,14 +179,18 @@ statemachine.Create("main_objectives", {
     end },
     { "destory_solar1_obj", function (state)
         -- move this to configuration
+        --- @diagnostic disable-next-line: inject-field
         state.target_l1 = {"sbspow1_powerplant","sbspow2_powerplant","sbspow3_powerplant","sbspow4_powerplant"};
+        --- @diagnostic disable-next-line: inject-field
         state.target_l2 = {"sbspow7_powerplant","sbspow8_powerplant","sbspow5_powerplant","sbspow6_powerplant"};
 
+        --- @diagnostic disable-next-line: inject-field
         state.nav_solar1 = navmanager.BuildImportantNav(nil, 1, "nav_path", 1);
         state.nav_solar1:SetMaxHealth(0);
         state.nav_solar1:SetObjectiveName("Solar Array 1");
         state.nav_solar1:SetObjectiveOn();
         objective.AddObjective('bdmisn212.otf',"white");
+        --- @diagnostic disable-next-line: inject-field
         state.handles = {};
         for i,v in pairs(state.target_l1) do
             state.handles[i] = gameobject.GetGameObject(v)
@@ -185,6 +198,7 @@ statemachine.Create("main_objectives", {
         state:next();
     end },
    { "destory_solar1_pass", function (state)
+        --- @diagnostic disable-next-line: undefined-field
         if(checkDead(state.handles)) then
             objective.UpdateObjective('bdmisn212.otf',"green");
 			AudioMessage(audio.power1);
@@ -192,20 +206,26 @@ statemachine.Create("main_objectives", {
         end
     end },
     { "destory_solar2_obj", function (state)
+        --- @diagnostic disable-next-line: undefined-field
         state.nav_solar1:SetObjectiveOff();
+        --- @diagnostic disable-next-line: inject-field
         state.nav_solar2 = navmanager.BuildImportantNav(nil, 1, "nav_path", 2);
         state.nav_solar2:SetMaxHealth(0);
         state.nav_solar2:SetObjectiveName("Solar Array 2");
         state.nav_solar2:SetObjectiveOn();
         objective.AddObjective('bdmisn213.otf',"white");
+        --- @diagnostic disable-next-line: inject-field
         state.handles = {};
+        --- @diagnostic disable-next-line: undefined-field
         for i,v in pairs(state.target_l2) do
             state.handles[i] = gameobject.GetGameObject(v);
         end
         state:next();
     end },
     { "destory_solar2_pass", function (state)
+        --- @diagnostic disable-next-line: undefined-field
         if(checkDead(state.handles)) then
+        --- @diagnostic disable-next-line: undefined-field
             state.nav_solar2:SetObjectiveOff();
             objective.UpdateObjective('bdmisn213.otf',"green");
             state:next();
@@ -238,9 +258,13 @@ statemachine.Create("main_objectives", {
         apc:Follow(tug);
 
         -- attach values to the StateMachineIter so it can use them
-        mission_data.tug_relic_convoy.tug = tug;
-        mission_data.tug_relic_convoy.apc = apc;
-        mission_data.tug_relic_convoy.relic = mission_data.relic;
+        if not mission_data.mission_states.StateMachines.tug_relic_convoy then
+            -- this table will be converted into a StateMachineIter when it first runs
+            mission_data.mission_states.StateMachines.tug_relic_convoy = {};
+        end
+        mission_data.mission_states.StateMachines.tug_relic_convoy.tug = tug;
+        mission_data.mission_states.StateMachines.tug_relic_convoy.apc = apc;
+        mission_data.mission_states.StateMachines.tug_relic_convoy.relic = mission_data.relic;
         mission_data.mission_states:on("tug_relic_convoy");
 
         --Pickup(tug,globals.relic); -- this seems redundant
@@ -274,8 +298,11 @@ statemachine.Create("main_objectives", {
     function (state)
         objective.ClearObjectives();
             
+        --- @diagnostic disable-next-line: undefined-field
         state.nav1:RemoveObject();
+        --- @diagnostic disable-next-line: undefined-field
         state.nav_solar1:RemoveObject();
+        --- @diagnostic disable-next-line: undefined-field
         state.nav_solar2:RemoveObject();
 
         -- @todo We might want to re-order the navs here, but we might not, need to talk thorugh it
@@ -284,6 +311,7 @@ statemachine.Create("main_objectives", {
 
         --Only show if area is not cleared
         if(enemiesInRange(270,mission_data.nav_research)) then
+            --- @diagnostic disable-next-line: inject-field
             state.research_enemies_still_exist = true;
             objective.AddObjective("bdmisn311.otf","white");
     --      else --Removed due to redundancy
@@ -293,6 +321,7 @@ statemachine.Create("main_objectives", {
     end,
     statemachine.SleepSeconds(90, nil, function (state) return not enemiesInRange(270,mission_data.nav_research) end),
     function (state)
+        --- @diagnostic disable-next-line: undefined-field
         if state.research_enemies_still_exist then
             objective.UpdateObjective("bdmisn311.otf","green");
             -- if we use the alternate text we have to turn it green here
@@ -307,7 +336,8 @@ statemachine.Create("main_objectives", {
         e1:Defend2(recy, 0);
         e2:Defend2(recy, 0);
         --Make recycler follow path
-        recy:Goto(state.nav, 0);
+        recy:Goto(mission_data.nav_research, 0);
+        --- @diagnostic disable-next-line: inject-field
         state.recy = recy;
         
         recy:SetObjectiveOn();
@@ -315,7 +345,8 @@ statemachine.Create("main_objectives", {
         state:next();
     end,
     function (state)
-        if(state.recy and state.recy:IsWithin(state.nav,200)) then
+        --- @diagnostic disable-next-line: undefined-field
+        if state.recy and state.recy:IsWithin(mission_data.nav_research,200) then
             state:next();
         end
     end,
@@ -327,7 +358,7 @@ statemachine.Create("main_objectives", {
         AddPilot(1,10);
         SetScrap(2,0);
         SetPilot(2,0);
-        state.nav:SetObjectiveOn();
+        mission_data.nav_research:SetObjectiveOn();
         --initial wave
         gameobject.BuildGameObject("svrecy",2,"spawn_svrecy");
         gameobject.BuildGameObject("svmuf",2,"spawn_svmuf");
@@ -366,7 +397,7 @@ statemachine.Create("main_objectives", {
         mission_data.mission_states:on("delayed_spawn");
     end,
     { "make_scavs", function (state)
-        gameobject.GetGameObject("nav4"):SetObjectiveOff();
+        mission_data.nav_research:SetObjectiveOff();
         objective.AddObjective('bdmisn2202.otf',"white");
         state:next();
     end },
@@ -416,7 +447,7 @@ statemachine.Create("main_objectives", {
     end },
     function (state)
         if tracker.countByClassName("commtower", 1) >= 1 then
-            state:nextz();
+            state:next();
         end
     end,
     function (state)
@@ -490,8 +521,10 @@ statemachine.Create("main_objectives", {
         local c,e,g = createWave("avtank",{"spawn_avtank1","spawn_avtank2","spawn_avtank3"},"nsdf_path");
         local d,h,i = createWave("avtank",{"spawn_w1","spawn_w2","spawn_w3"},"west_path");
         local f,j = createWave("svtank",{"spawn_n4","spawn_n5"},"north_path");
+        --- @diagnostic disable-next-line: inject-field
         state.camTarget = camTarget;
         CameraReady();
+        --- @diagnostic disable-next-line: inject-field
         state.targets = {a,b,c,d,e,f,g,h,i,camTarget,j};
         for i,v in pairs(state.targets) do
             v:SetObjectiveOn();
@@ -502,7 +535,8 @@ statemachine.Create("main_objectives", {
         state:next();
     end },
     function (state)
-        if (state:SecondsHavePassed(10) or CameraPath("camera_nsdf",1000,1500,state.camTarget:GetHandle()) or CameraCancelled()) then
+        --- @diagnostic disable-next-line: undefined-field
+        if (state:SecondsHavePassed(10) or CameraPath("camera_nsdf", 1000, 1500, state.camTarget:GetHandle()) or CameraCancelled()) then
             state:SecondsHavePassed(); -- clear timer if we got here without it being cleared
             CameraFinish();
             state:next();
@@ -514,10 +548,10 @@ statemachine.Create("main_objectives", {
         state:next();
     end,
     function (state)
+        --- @diagnostic disable-next-line: undefined-field
         if areAllDead(state.targets, 2) then
-            state.recycler_target = true;
             gameobject.GetRecyclerGameObject(2):SetObjectiveOn();
-            objective.UpdateObjective(state.otf,"green");
+            objective.UpdateObjective('bdmisn2208.otf',"green");
             state:next();
         end
     end,
@@ -534,9 +568,8 @@ statemachine.Create("main_objectives", {
     end
 });
 
-mission_data.main_objectives = statemachine.Start("main_objectives");
 stateset.Create("mission")
-    :Add("main_objectives", mission_data.main_objectives)
+    :Add("main_objectives", stateset.WrapStateMachine("main_objectives"))
 
     :Add("destoryNSDF", function (state)
         if( checkDead(mission_data.patrolUnits) ) then
@@ -559,15 +592,15 @@ stateset.Create("mission")
     end)
 
     -- this state never runs?
-    :Add("toofarfrom_recy", function (state)
-        if(gameobject.GetPlayerGameObject():IsAlive()) then
-            if gameobject.GetRecyclerGameObject(1):IsAlive() and gameobject.GetPlayerGameObject():GetDistance(gameobject.GetRecyclerGameObject(1) or SetVector()) > 700.0 then
-                print(state.alive);
-                FailMission(GetTime() + 5, "bdmisn22l1.des");
-                state:off("toofarfrom_recy");
-            end
-        end
-    end)
+    --:Add("toofarfrom_recy", function (state)
+    --    if(gameobject.GetPlayerGameObject():IsAlive()) then
+    --        if gameobject.GetRecyclerGameObject(1):IsAlive() and gameobject.GetPlayerGameObject():GetDistance(gameobject.GetRecyclerGameObject(1) or SetVector()) > 700.0 then
+    --            print(state.alive);
+    --            FailMission(GetTime() + 5, "bdmisn22l1.des");
+    --            state:off("toofarfrom_recy");
+    --        end
+    --    end
+    --end)
     
     -- Lose conditions by GBD. No idea if i did this right, mission doesn't update otfs, or goto a next thing, it runs throughout the mission. (distance check until ordered to attack CCA base, and recy loss throughout entire mission.)
     :Add("lose_recy", function (state)
@@ -577,9 +610,9 @@ stateset.Create("mission")
         end
 	end)
 
-    :Add("delayed_spawn", statemachine.Start("delayed_spawn"))
+    :Add("delayed_spawn", stateset.WrapStateMachine("delayed_spawn"))
     
-    :Add("tug_relic_convoy", mission_data.tug_relic_convoy);
+    :Add("tug_relic_convoy", stateset.WrapStateMachine("tug_relic_convoy"));
 
 hook.Add("Start", "Mission:Start", function ()
     mission_data.cafe = gameobject.GetGameObject("sbcafe1_i76building");
@@ -599,14 +632,14 @@ hook.Add("Update", "Mission:Update", function (dtime, ttime)
 end);
 
 hook.Add("NavManager:NavSwap", "Mission:NavManager_NavSwap", function (old, new)
-    if mission_data.main_objectives.nav1 == old then
-        mission_data.main_objectives.nav1 = new;
+    if mission_data.mission_states.StateMachines.main_objectives.nav1 == old then
+        mission_data.mission_states.StateMachines.main_objectives.nav1 = new;
     end
-    if mission_data.main_objectives.nav_solar1 == old then
-        mission_data.main_objectives.nav_solar1 = new;
+    if mission_data.mission_states.StateMachines.main_objectives.nav_solar1 == old then
+        mission_data.mission_states.StateMachines.main_objectives.nav_solar1 = new;
     end
-    if mission_data.main_objectives.nav_solar2 == old then
-        mission_data.main_objectives.nav_solar2 = new;
+    if mission_data.mission_states.StateMachines.main_objectives.nav_solar2 == old then
+        mission_data.mission_states.StateMachines.main_objectives.nav_solar2 = new;
     end
     if mission_data.nav_research == old then
         mission_data.nav_research = new;
@@ -618,6 +651,68 @@ end);
 --hook.Add("AddObject", "Mission:AddObject", function (object) end);
 
 --hook.Add("DeleteObject", "Mission:DeleteObject", function (object) end);
+
+statemachine.Create("Cheat_BZSKIP",
+    function (state, key) if key == "Ctrl+Shift+B" then state:next(); end end,
+    function (state, key) if key == "Ctrl+Shift+Z" then state:next(); else state:switch(1); end end,
+    function (state, key) if key == "Ctrl+Shift+S" then state:next(); else state:switch(1); end end,
+    function (state, key) if key == "Ctrl+Shift+K" then state:next(); else state:switch(1); end end,
+    function (state, key) if key == "Ctrl+Shift+I" then state:next(); else state:switch(1); end end,
+    function (state, key) if key == "Ctrl+Shift+P" then
+        ColorFade(1.0, 5.0, 0, 0, 255);
+        StartSound("apcann.wav");
+
+        local machine_state = mission_data.mission_states.StateMachines.main_objectives;
+        --- @cast machine_state StateMachineIter
+        machine_state:SecondsHavePassed(); -- clear timer in case we were in one
+        --CameraFinish(); -- clearing a camera when there is none will crash
+        machine_state:next(); -- move to the next state
+
+        state:switch(1);
+        return true;
+    else state:switch(1); end end
+);
+local Cheat_BZSKIP = statemachine.Start("Cheat_BZSKIP");
+hook.Add("GameKey", "Mission:GameKey:Cheat_BZSKIP", function (key)
+    local success, result = Cheat_BZSKIP:run(key);
+    if result then
+        debugprint("BZSKIP stopping more hooks");
+        return hook.AbortResult();
+    end
+end);
+
+
+statemachine.Create("Cheat_BZRAVE",
+    function (state, key) if key == "Ctrl+Shift+B" then state:next(); end end,
+    function (state, key) if key == "Ctrl+Shift+Z" then state:next(); else state:switch(1); end end,
+    function (state, key) if key == "Ctrl+Shift+R" then state:next(); else state:switch(1); end end,
+    function (state, key) if key == "Ctrl+Shift+A" then state:next(); else state:switch(1); end end,
+    function (state, key) if key == "Ctrl+Shift+V" then state:next(); else state:switch(1); end end,
+    function (state, key) if key == "Ctrl+Shift+E" then
+        ColorFade(1.0, 5.0, 128, 0, 255);
+        StartSound("grave00.wav");
+
+        local player = gameobject.GetPlayerGameObject();
+        if player and player:IsCraft() then
+            player:GiveWeapon("gtechno", 0)
+            player:GiveWeapon("gtechno", 1)
+            player:GiveWeapon("gtechno", 2)
+            player:GiveWeapon("gtechno", 3)
+            player:GiveWeapon("gtechno", 4)
+        end
+
+        state:switch(1);
+        return true;
+    else state:switch(1); end end
+);
+local Cheat_BZRAVE = statemachine.Start("Cheat_BZRAVE");
+hook.Add("GameKey", "Mission:GameKey:Cheat_BZRAVE", function (key)
+    local success, result = Cheat_BZRAVE:run(key);
+    if result then
+        debugprint("BZRAVE stopping more hooks");
+        return hook.AbortResult();
+    end
+end);
 
 hook.AddSaveLoad("Mission",
 function()
