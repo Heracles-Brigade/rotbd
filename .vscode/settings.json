@@ -1,0 +1,12 @@
+{
+    "files.exclude": {
+        "dev/": true,
+        "dist/": true,
+        "src/scripts/": true,
+        "src/mp/": true,
+        "src/baseline/": true,
+        "src/Assets/": true,
+        "deps/**/temp/": true
+    },
+    "Lua.runtime.version": "Lua 5.1"
+}
