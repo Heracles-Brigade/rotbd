@@ -369,7 +369,7 @@ statemachine.Create("main_objectives", {
 	{ "armory_build_detect", function (state)
 		if mission_data.playerSLF:IsValid() then
 			mission_data.armoryCommand = mission_data.playerSLF:GetCurrentCommand();
-			print(mission_data.armoryCommand);
+			--print(mission_data.armoryCommand);
 			--if mission_data.armoryCommand == AiCommand.BUILD and not mission_data.pollArmoryWho then
 			--	mission_data.pollArmoryWho = true;
 			--end
@@ -382,7 +382,7 @@ statemachine.Create("main_objectives", {
 		local temp = mission_data.playerSLF:GetCurrentWho();
 		if temp and temp:IsValid() then
 			mission_data.armoryTarget = temp;
-			print(mission_data.armoryTarget);
+			--print(mission_data.armoryTarget);
 			mission_data.pollArmoryWho = false;
 			state:next();
 		end
@@ -395,7 +395,7 @@ statemachine.Create("main_objectives", {
 				if mission_data.armoryTarget == mission_data.ControlTower then
 					mission_data.impactPending = true;
 					state:next();
-					objective.AddObjective(objectives.Control, "GREEN");
+					objective.UpdateObjective(objectives.Control, utility.ColorLabels.Yellow);
 					--UpdateObjectives(); --yellow
 					-- there is no yellow objective, old comment?
 				else
@@ -404,7 +404,7 @@ statemachine.Create("main_objectives", {
 					FailMission(GetTime() + 5.0, "rbdnew03l5.des");
 					mission_data.MissionOver = true;
 					mission_data.wreckerTargetMissed = true;
-					objective.AddObjective(objectives.Control, "RED");
+					objective.UpdateObjective(objectives.Control, "RED");
 					--UpdateObjectives(); --red
 					-- there is no objective for this, old comment?
 					state:switch(nil);
@@ -425,6 +425,8 @@ statemachine.Create("main_objectives", {
 				mission_data.mission_states:off("mammoth_shield");
 				mission_data.impactPending = false;
 				
+				objective.UpdateObjective(objectives.Control, "GREEN");
+
 				--UpdateObjectives(); -- green
 				mission_data.Aud1 = AudioMessage(audio.dayw);
 				mission_data.ObjectiveNav:SetObjectiveOff();
@@ -502,7 +504,7 @@ statemachine.Create("main_objectives", {
 		state:next();
 	end },
 	{ "run_away", function (state)
-		if mission_data.ObjectiveNav:GetObjectiveName() == "Extraction Point" and mission_data.Player:GetDistance(mission_data.ObjectiveNav) < 50.0 then
+		if mission_data.ObjectiveNav:GetObjectiveName() == "Extraction Point" and mission_data.Player and mission_data.Player:GetDistance(mission_data.ObjectiveNav) < 50.0 then
 			Aud1 = AudioMessage(audio.win);
 			SucceedMission(GetTime()+5.0, "rbdnew03wn.des"); -- mission complete
 			mission_data.MissionOver = true;
@@ -606,19 +608,16 @@ stateset.Create("mission")
 		end
 	end);
 
-
 hook.Add("Start", "Mission:Start", function ()
     mission_data.mission_states = stateset.Start("mission")
 		:on("scrap_field_filler_1")
 		:on("main_objectives");
 end);
 
-
 hook.Add("Update", "Mission:Update", function (dtime, ttime)
 	mission_data.Player = gameobject.GetPlayerGameObject();
 	mission_data.mission_states:run();
 end);
-
 
 hook.AddSaveLoad("Mission",
 function()
@@ -627,3 +626,5 @@ end,
 function(g)
     mission_data = g;
 end);
+
+print("\27[34m----END MISSION----\27[0m");
