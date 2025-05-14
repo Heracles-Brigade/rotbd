@@ -77,7 +77,7 @@ local objs = {
 	mine = "rbdnew0406.otf"
 }
 
-local M = {
+local mission_data = {
 	-- Bools
 	UpdateObjectives = false,
 
@@ -111,253 +111,305 @@ local M = {
 	FlashTime = 0
 }
 
-local function scrapFieldsFiller(p)
-    local scrapFieldScrap = {};
-    for obj in gameobject.ObjectsInRange(35, p) do
-        if obj:GetClassLabel() == "scrap" then
-            table.insert(scrapFieldScrap, obj);
-        end
-    end
-    M.scrapFields[p] = scrapFieldScrap;
-end
-
--- if scrap is gone, respawn it (is this instant? seems like a bad idea)
-local function scrapRespawner()
-	for path, field in pairs(M.scrapFields) do
-		for i, scrap in ipairs(field) do
-			if not scrap or not scrap:IsValid() then
-				field[i] = gameobject.BuildGameObject(choose("npscr1", "npscr2", "npscr3"), 0, GetPositionNear(GetPosition(path) or SetVector(), 1, 35));
-			end
-		end
-	end
-end
-
-hook.Add("Start", "Mission:Start", function ()
-	for i = 1,5 do
-		scrapFieldsFiller("scrpfld"..i);
-	end
-end);
-
-
-hook.AddSaveLoad("Mission",
-function()
-    return M;
-end,
-function(g)
-    M = g;
-end);
-
-
-local function UpdateObjectives() -- Handle Objectives.
-	ClearObjectives();
-	
-	if not M.MammothDead then
-		-- If you haven't stolen anything yet, you're a good boy.
-		if not M.MammothStolen then
-			-- First order, investigate the Mammoth.
-			if not M.DecoyTriggered then
-				AddObjective(objs.recon, "WHITE");
-			else
-				-- but bad news!
-				if not M.TrapEscaped then
-					AddObjective(objs.escape, "WHITE");
-				else -- Go find me a Mammoth.
-					AddObjective(objs.escape, "GREEN");
-					AddObjective(objs.findit, "WHITE");
-				end
-			end		
-		else -- Get to the drop zone.
-			if not M.DropZoneReached then
-				AddObjective(objs.findit, "GREEN");
-				AddObjective(objs.extraction, "WHITE");
-				if M.WantItBack then
-					if not M.RecoveryBeaten then
-						AddObjective(objs.mine, "WHITE");
-					else
-						AddObjective(objs.mine, "GREEN");
-					end
-				end
-			else
-					AddObjective(objs.extraction, "GREEN");
-			end
-		end
-	else -- ITS DEAD! NOOOOO! NEW Fail objective. -GBD
-		AddObjective("rbdnew0405.otf", "RED");
-	end
-end
-
 local function SpawnNav(num)
-	local nav = BuildObject("apcamr", 1, M.NavCoords[num]);
-	M.Nav[num] = nav;
-	SetLabel(nav, "nav"..num);
+	local nav = navmanager.BuildImportantNav("apcamr", 1, mission_data.NavCoords[num]);
+	mission_data.Nav[num] = nav;
+
+	if nav == nil then
+		error("Nav "..num.." is nil!");
+	end
+
+	nav:SetLabel("nav"..num);
 	
 	if num == 3 then
-		SetName(nav, "Extraction Point");
+		nav:SetName("Extraction Point");
 	else
-		SetName(nav, "Nav "..num);
+		nav:SetName("Nav "..num);
 	end
 	
-	SetMaxHealth(nav, 0); -- Can't go boom-boom.
+	nav:SetMaxHealth(0); -- Can't go boom-boom.
 	
 	-- Switches the active objective from the old nav to the new nav.
-	if M.ObjectiveNav then
-		SetObjectiveOff(M.ObjectiveNav);
+	if mission_data.ObjectiveNav then
+		mission_data.ObjectiveNav:SetObjectiveOff();
 	end
-	SetObjectiveOn(nav);
-	M.ObjectiveNav = nav; -- Sets the new nav to the ObjectiveNav so that the next time this function is called, it can switch off of it.
+	nav:SetObjectiveOn();
+	mission_data.ObjectiveNav = nav; -- Sets the new nav to the ObjectiveNav so that the next time this function is called, it can switch off of it.
 end
 
 local function SpawnBaker()
-	M.Baker = BuildObject("bvhaul", 3, "bakerspawn");
-	Defend2(BuildObject("bvfigh", 3, GetPositionNear(GetPosition("bakerspawn"))), M.Baker, 1);
-	Defend2(BuildObject("bvfigh", 3, GetPositionNear(GetPosition("bakerspawn"))), M.Baker, 1);
-	Defend2(BuildObject("bvtank", 3, GetPositionNear(GetPosition("bakerspawn"))), M.Baker, 1);
-	Defend2(BuildObject("bvtank", 3, GetPositionNear(GetPosition("bakerspawn"))), M.Baker, 1);
-	Defend2(BuildObject("bvtank", 3, GetPositionNear(GetPosition("bakerspawn"))), M.Baker, 1);
-	Defend2(BuildObject("bvtank", 3, GetPositionNear(GetPosition("bakerspawn"))), M.Baker, 1);
+	mission_data.Baker = gameobject.BuildGameObject("bvhaul", 3, "bakerspawn");
+	local bakerspawn = GetPosition("bakerspawn");
+	if bakerspawn == nil then
+		error("Baker spawn is nil!");
+	end
+	gameobject.BuildGameObject("bvfigh", 3, GetPositionNear(bakerspawn)):Defend2(mission_data.Baker, 1);
+	gameobject.BuildGameObject("bvfigh", 3, GetPositionNear(bakerspawn)):Defend2(mission_data.Baker, 1);
+	gameobject.BuildGameObject("bvtank", 3, GetPositionNear(bakerspawn)):Defend2(mission_data.Baker, 1);
+	gameobject.BuildGameObject("bvtank", 3, GetPositionNear(bakerspawn)):Defend2(mission_data.Baker, 1);
+	gameobject.BuildGameObject("bvtank", 3, GetPositionNear(bakerspawn)):Defend2(mission_data.Baker, 1);
+	gameobject.BuildGameObject("bvtank", 3, GetPositionNear(bakerspawn)):Defend2(mission_data.Baker, 1);
 end
 
-function Update()
 
-	M.Player = GetPlayerHandle();
-	scrapRespawner();
-	
-	if not M.StartDone then
+
+
+
+--- @class scrap_field_filler_state_04 : StateMachineIter
+--- @field path string Path to the scrap field.
+--- @field scrap_objects GameObject[] Table of scrap objects in the field.
+--- @field scrap_options string[] Table of scrap odf options to choose from.
+
+statemachine.Create("scrap_field_filler", {
+	{ "start", function (state)
+		--- @cast state scrap_field_filler_state_04
+		state.scrap_objects = {};
+		for obj in gameobject.ObjectsInRange(35, state.path) do
+			if obj:GetClassLabel() == "scrap" then
+				table.insert(state.scrap_objects, obj);
+			end
+		end
+		if #state.scrap_objects == 0 then
+			print("Scrap field "..state.path.." is empty! Disabling respawner.");
+			state:switch(nil);
+			return statemachine.AbortResult();
+		end
+
+		if state.scrap_options == nil then
+			state.scrap_options = {"npscr1", "npscr2", "npscr3"};
+		end
+
+		state:next();
+	end },
+	{ "respawner", function (state)
+		--- @cast state scrap_field_filler_state_04
+		local pos = GetPosition(state.path); -- could consider saving the position, but using the path would let us handle modified mission loads
+		if pos then
+			for i, scrap in ipairs(state.scrap_objects) do -- consider making this a slow-loop that checks 1 per turn
+				if not scrap or not scrap:IsValid() then
+					state.scrap_objects[i] = gameobject.BuildGameObject(choose(table.unpack(state.scrap_options)), 0, GetPositionNear(pos, 1, 35));
+				end
+			end
+		end
+	end }
+});
+
+
+stateset.Create("mission")
+	:Add("main_objectives", stateset.WrapStateMachine("main_objectives"))
+	:Add("scrap_field_filler_1", stateset.WrapStateMachine("scrap_field_filler", nil, { path = "scrpfld11" }))
+	:Add("scrap_field_filler_2", stateset.WrapStateMachine("scrap_field_filler", nil, { path = "scrpfld12" }))
+	:Add("scrap_field_filler_3", stateset.WrapStateMachine("scrap_field_filler", nil, { path = "scrpfld13" }))
+	:Add("scrap_field_filler_4", stateset.WrapStateMachine("scrap_field_filler", nil, { path = "scrpfld14" }))
+	:Add("scrap_field_filler_5", stateset.WrapStateMachine("scrap_field_filler", nil, { path = "scrpfld15" }))
+	:Add("mammoth_destroyed", function (state)
+		-- Lose Conditions
+		if not mission_data.Mammoth:IsValid() then -- YA BLEW UP THE MAMMOTH YA GOOF
+			FailMission(GetTime()+5.0, "rbdnew04l1.des");
+			mission_data.MammothDead = true;
+			mission_data.MissionOver = true;
+
+			-- ITS DEAD! NOOOOO! NEW Fail objective. -GBD
+			objective.ClearObjectives();
+			objective.AddObjective("rbdnew0405.otf", "RED");
+		end
+	end)
+	:Add("extra_find_decoy_after_real", function (state)
+		-- DecoyTriggered (Player enters real Mammoth)
+		if mission_data.Player:IsWithin(mission_data.MammothDecoy, 100.0) --[[and mission_data.Player == mission_data.Mammoth--]] then
+			mission_data.Aud1 = AudioMessage(audio.wasatrap);
+			mission_data.DecoyTriggered = true;
+			print("\27[34m----FAKE MAMMOTH----\27[0m");
+			state:off("extra_find_decoy_after_real");
+		end
+	end);
+
+hook.Add("Start", "Mission:Start", function ()
+    mission_data.mission_states = stateset.Start("mission")
+		:on("scrap_field_filler_1")
+		:on("scrap_field_filler_2")
+		:on("scrap_field_filler_3")
+		:on("scrap_field_filler_4")
+		:on("scrap_field_filler_5")
+		:on("main_objectives")
+		:on("mammoth_destroyed");
+end);
+
+statemachine.Create("main_objectives", {
+	{ "start", function (state)
 		Ally(1,3)
-		M.Mammoth = GetHandle("mammoth");
-		SetIndependence(M.Mammoth, 0);
-		M.MammothDecoy = GetHandle("badmammoth");
-		SetIndependence(M.MammothDecoy, 0);
+		mission_data.Mammoth = gameobject.GetGameObject("mammoth");
+		mission_data.Mammoth:SetIndependence(0);
+		mission_data.MammothDecoy = gameobject.GetGameObject("badmammoth");
+		mission_data.MammothDecoy:SetIndependence(0);
 		SetMaxScrap(2,10000);
 		SetMaxScrap(1, 45);
 		SetScrap(1, 40);
-		RemovePilot(M.Mammoth);
-		SetPerceivedTeam(M.Mammoth, 1);
+		mission_data.Mammoth:RemovePilot();
+		mission_data.Mammoth:SetPerceivedTeam(1);
 		
 		for i = 1,3 do
-			local tmpnav = GetHandle("nav" .. i);
-			M.NavCoords[i] = GetPosition(tmpnav);
-			RemoveObject(tmpnav);
+			local tmpnav = gameobject.GetGameObject("nav" .. i);
+			mission_data.NavCoords[i] = tmpnav:GetPosition();
+			tmpnav:RemoveObject();
 		end
 		
-		M.StartDone = true;
+		mission_data.StartDone = true;
 		
-		M.Aud1 = AudioMessage(audio.intro);
-		UpdateObjectives();
+		mission_data.Aud1 = AudioMessage(audio.intro);
+		--UpdateObjectives();
+		objective.AddObjective(objs.recon, "WHITE");
 		SpawnNav(1);
-	end
-	
-	if not M.DecoyTriggered and IsWithin(M.Player, M.MammothDecoy, 250.0) and M.Player ~= M.Mammoth then
-		if M.DecoyTime == 0 then
-			-- Spawn Armada
-			M.DecoyAmbush = {
-			BuildObject("svhraz", 2, "spawn_svhraz1"),
-			BuildObject("svhraz", 2, "spawn_svhraz2"),
-			BuildObject("svfigh", 2, "spawn_svfigh1"),
-			BuildObject("svfigh", 2, "spawn_svfigh2"),
-			BuildObject("svrckt", 2, "spawn_svrckt1"),
-			BuildObject("svrckt", 2, "spawn_svrckt2"),
-			BuildObject("svtank", 2, "spawn_svtank1"),
-			BuildObject("svtank", 2, "spawn_svtank2"),
-			BuildObject("svtank", 2, "spawn_svtank3"),
-			BuildObject("svtank", 2, "spawn_svtank4")
-			}
-			for i = 1,#M.DecoyAmbush do
-				Attack(M.DecoyAmbush[i], M.Player);
-			end
-            M.DecoyTime = GetTime() + 4.0;
-            M.Aud1 = AudioMessage(audio.itsatrap);
-			UpdateObjectives();
-        end
-		if GetTime() > M.DecoyTime then
-		--	Blow up da mammoth
-			MakeExplosion("xbmbxpl", M.MammothDecoy);
-			Damage(M.MammothDecoy, 90000);
-		
-		--	Blind Player
-			M.FlashTime = GetTime() + 3.0;
+		state:next();
+	end },
+	{ "MammothMonitor", function (state)
+		if mission_data.Player:IsWithin(mission_data.MammothDecoy, 250.0) then
+			state:next();
+		elseif mission_data.Player == mission_data.Mammoth then
+			state:switch("MammothStolen");
+			-- also enable special event for finding fake mammoth 2nd
+			mission_data.mission_states:on("extra_find_decoy_after_real");
 		end
-		if GetTime() < M.FlashTime then
-			ColorFade(100.0, 1.0, 255, 255, 255);
-			MakeExplosion("xbmbblnd", M.Player);
-			M.DecoyTriggered = true;
-		end
-	end
-	
-	if M.TrapEscaped and not M.PlansChange and not IsWithin(M.Player, M.Nav[1], 750.0) and M.Player ~= M.Mammoth then
-		M.Aud1 = AudioMessage(audio.planschange);
-		M.PlansChange = true;
-	end
-	
-	if not M.DecoyTriggered and IsWithin(M.Player, M.MammothDecoy, 100.0) and M.Player == M.Mammoth then
-		M.Aud1 = AudioMessage(audio.wasatrap);
-		M.DecoyTriggered = true;
-	end
-	
-	if M.DecoyTriggered and not M.TrapEscaped and areAllDead(M.DecoyAmbush, 2) and M.Player ~= M.Mammoth then
-		M.Aud1 = AudioMessage(audio.freedom);
-		M.TrapEscaped = true;
-		SpawnNav(2);
-		UpdateObjectives();
-	end
-	
-	if not M.MammothStolen and M.Player == M.Mammoth then
-		if M.TrapEscaped then
-			M.Aud1 = AudioMessage(audio.gtfo);
-			SpawnNav(3);
-			SpawnBaker();
-			SetPerceivedTeam(M.Player, 1)
-			M.MammothStolen = true;
-			UpdateObjectives();
-		else
-			M.Aud1 = AudioMessage(audio.bypass);
-			SpawnNav(3);
-			SpawnBaker();
-			SetPerceivedTeam(M.Player, 1)
-			M.MammothStolen = true;
-			UpdateObjectives();
-		end
-	end
-	
-	if M.MammothStolen and GetLabel(M.ObjectiveNav) == "nav3" and GetDistance(M.Player, M.ObjectiveNav) < 1450 and not M.WantItBack then
-		M.RecoverySquad = {
-		BuildObject("svfigh", 2, "final_spawn3"),
-		BuildObject("svfigh", 2, "final_spawn4"),
-		BuildObject("svfigh", 2, "final_spawn6"),
-		BuildObject("svfigh", 2, "final_spawn7"),
-		BuildObject("svrckt", 2, "final_spawn1"),
-		BuildObject("svrckt", 2, "final_spawn2")
+	end },
+	{ "DecoyTriggered", function (state)
+		-- Spawn Armada
+		mission_data.DecoyAmbush = {
+			gameobject.BuildGameObject("svhraz", 2, "spawn_svhraz1"),
+			gameobject.BuildGameObject("svhraz", 2, "spawn_svhraz2"),
+			gameobject.BuildGameObject("svfigh", 2, "spawn_svfigh1"),
+			gameobject.BuildGameObject("svfigh", 2, "spawn_svfigh2"),
+			gameobject.BuildGameObject("svrckt", 2, "spawn_svrckt1"),
+			gameobject.BuildGameObject("svrckt", 2, "spawn_svrckt2"),
+			gameobject.BuildGameObject("svtank", 2, "spawn_svtank1"),
+			gameobject.BuildGameObject("svtank", 2, "spawn_svtank2"),
+			gameobject.BuildGameObject("svtank", 2, "spawn_svtank3"),
+			gameobject.BuildGameObject("svtank", 2, "spawn_svtank4"),
 		}
-		for i = 1,#M.RecoverySquad do
-			Attack(M.RecoverySquad[i], M.Player);
+		for i = 1,#mission_data.DecoyAmbush do
+			mission_data.DecoyAmbush[i]:Attack(mission_data.Player);
 		end
-		M.Aud1 = AudioMessage(audio.wantitback);
-		M.WantItBack = true;
-		UpdateObjectives();
-	end
-	
-	if M.MammothStolen and M.WantItBack and areAllDead(M.RecoverySquad, 2) and M.Player == M.Mammoth then
-		M.RecoveryBeaten = true;
-		UpdateObjectives();
-	end
-	
-	-- Win Conditions:
-	if not M.MissionOver and M.MammothStolen and M.Player == M.Mammoth and IsWithin(M.Player, M.Nav[3], 75.0) and M.RecoveryBeaten then
-		M.Aud1 = AudioMessage(audio.homefree);
-		SucceedMission(GetTime()+5.0, "rbdnew04wn.des");
-		M.MissionOver = true;
-		M.DropZoneReached = true;
-		UpdateObjectives();
-	end
-	
-	-- Lose Conditions
-	if not M.MissionOver and not IsValid(M.Mammoth) then -- YA BLEW UP THE MAMMOTH YA GOOF
-		FailMission(GetTime()+5.0, "rbdnew04l1.des");
-		M.MammothDead = true;
-		M.MissionOver = true;
-		UpdateObjectives();
-	end
-end
+		--mission_data.DecoyTime = GetTime() + 4.0;
+		mission_data.Aud1 = AudioMessage(audio.itsatrap);
+		--UpdateObjectives();
+		objective.RemoveObjective(objs.recon);
+		objective.AddObjective(objs.escape, "WHITE");
+		state:next();
+	end },
+	statemachine.SleepSeconds(4),
+	function (state) 
+		--	Blow up da mammoth
+		MakeExplosion("xbmbxpl", mission_data.MammothDecoy:GetHandle());
+		mission_data.MammothDecoy:Damage(90000);
 
+		--	Blind Player
+		--mission_data.FlashTime = GetTime() + 3.0;
+		state:next();
+	end,
+	statemachine.SleepSeconds(3),
+	function (state)
+		ColorFade(100.0, 1.0, 255, 255, 255);
+		MakeExplosion("xbmbblnd", mission_data.Player:GetHandle());
+		mission_data.DecoyTriggered = true;
+		state:next();
+	end,
+	{ "TrapEscaped", function (state)
+		if areAllDead(mission_data.DecoyAmbush, 2) then
+			mission_data.Aud1 = AudioMessage(audio.freedom);
+			mission_data.TrapEscaped = true;
+			SpawnNav(2);
+			--UpdateObjectives();
+			objective.UpdateObjective(objs.escape, "GREEN");
+			objective.AddObjective(objs.findit, "WHITE");
+			state:next();
+		end
+	end },
+	{ "PlansChange", function (state)
+		if not mission_data.Player:IsWithin(mission_data.Nav[1], 750.0) then
+			mission_data.Aud1 = AudioMessage(audio.planschange);
+			mission_data.PlansChange = true;
+			state:next();
+		end
+	end },
+	function (state)
+		if mission_data.Player == mission_data.Mammoth then
+			state:next();
+		end
+	end,
+	{ "MammothStolen", function (state)
+		if mission_data.TrapEscaped then
+			mission_data.Aud1 = AudioMessage(audio.gtfo);
+			--SpawnNav(3);
+			--SpawnBaker();
+			--mission_data.Player:SetPerceivedTeam(1)
+			--mission_data.MammothStolen = true;
+			--UpdateObjectives();
+		else
+			mission_data.Aud1 = AudioMessage(audio.bypass);
+			--SpawnNav(3);
+			--SpawnBaker();
+			--mission_data.Player:SetPerceivedTeam(1)
+			--mission_data.MammothStolen = true;
+			--UpdateObjectives();
+		end
+		SpawnNav(3);
+		SpawnBaker();
+		mission_data.Player:SetPerceivedTeam(1)
+		mission_data.MammothStolen = true;
+		objective.ClearObjectives();
+		objective.AddObjective(objs.findit, "GREEN");
+		objective.AddObjective(objs.extraction, "WHITE", nil, nil, 10);
+		state:next();
+	end },
+	{ "WantItBack", function (state)
+		if mission_data.ObjectiveNav:GetLabel() == "nav3" and mission_data.Player:GetDistance(mission_data.ObjectiveNav) < 1450 and mission_data.Player == mission_data.Mammoth then
+			mission_data.RecoverySquad = {
+				gameobject.BuildGameObject("svfigh", 2, "final_spawn3"),
+				gameobject.BuildGameObject("svfigh", 2, "final_spawn4"),
+				gameobject.BuildGameObject("svfigh", 2, "final_spawn6"),
+				gameobject.BuildGameObject("svfigh", 2, "final_spawn7"),
+				gameobject.BuildGameObject("svrckt", 2, "final_spawn1"),
+				gameobject.BuildGameObject("svrckt", 2, "final_spawn2")
+			}
+			for i = 1,#mission_data.RecoverySquad do
+				mission_data.RecoverySquad[i]:Attack(mission_data.Player); -- what if the player isn't in the mammoth anymore?
+			end
+			mission_data.Aud1 = AudioMessage(audio.wantitback);
+			mission_data.WantItBack = true;
+			--UpdateObjectives();
+			objective.AddObjective(objs.mine, "WHITE");
+			state:next();
+		end
+	end },
+	{ "RecoveryBeaten", function (state)
+		if areAllDead(mission_data.RecoverySquad, 2) and mission_data.Player == mission_data.Mammoth then
+			mission_data.RecoveryBeaten = true;
+			--UpdateObjectives();
+			objective.UpdateObjective(objs.mine, "GREEN");
+			state:next();
+		end
+	end },
+	{ "End", function (state)
+		if mission_data.Player == mission_data.Mammoth and mission_data.Player:IsWithin(mission_data.Nav[3], 75.0) then
+			mission_data.Aud1 = AudioMessage(audio.homefree);
+			SucceedMission(GetTime()+5.0, "rbdnew04wn.des");
+			mission_data.MissionOver = true;
+			mission_data.DropZoneReached = true;
+			--UpdateObjectives();
+			objective.UpdateObjective(objs.extraction, "GREEN");
+			state:switch(nil);
+		end
+	end }
+});
 
-minit.init()
+hook.Add("Update", "Mission:Update", function (dtime, ttime)
+	mission_data.Player = gameobject.GetPlayerGameObject();
+	mission_data.mission_states:run();
+end);
+
+hook.AddSaveLoad("Mission",
+function()
+    return mission_data;
+end,
+function(g)
+    mission_data = g;
+end);

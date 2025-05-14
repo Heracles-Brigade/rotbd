@@ -216,15 +216,14 @@ local function FailByDetection()
 	objective.UpdateObjective(objectives.Detection, "RED");
 end
 
-
---- @class scrap_field_filler_state : StateMachineIter
+--- @class scrap_field_filler_state_03 : StateMachineIter
 --- @field path string Path to the scrap field.
 --- @field scrap_objects GameObject[] Table of scrap objects in the field.
 --- @field scrap_options string[] Table of scrap odf options to choose from.
 
 statemachine.Create("scrap_field_filler", {
 	{ "start", function (state)
-		--- @cast state scrap_field_filler_state
+		--- @cast state scrap_field_filler_state_03
 		state.scrap_objects = {};
 		for obj in gameobject.ObjectsInRange(35, state.path) do
 			if obj:GetClassLabel() == "scrap" then
@@ -244,7 +243,7 @@ statemachine.Create("scrap_field_filler", {
 		state:next();
 	end },
 	{ "respawner", function (state)
-		--- @cast state scrap_field_filler_state
+		--- @cast state scrap_field_filler_state_03
 		local pos = GetPosition(state.path); -- could consider saving the position, but using the path would let us handle modified mission loads
 		if pos then
 			for i, scrap in ipairs(state.scrap_objects) do -- consider making this a slow-loop that checks 1 per turn
