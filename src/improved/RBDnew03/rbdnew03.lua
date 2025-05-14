@@ -27,6 +27,7 @@ local stateset = require("_stateset");
 local navmanager = require("_navmanager");
 local objective = require("_objective");
 local utility = require("_utility");
+local color = require("_color");
 
 -- Fill navlist gaps with important navs
 navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToGap);
@@ -328,7 +329,7 @@ statemachine.Create("main_objectives", {
 		end
 	end },
 	{ "hanger_info", function (state)
-		if mission_data.Hangar:IsAlive() and mission_data.Player:GetDistance(mission_data.Hangar) < 50.0 then
+		if mission_data.Hangar:IsAlive() and mission_data.Player and mission_data.Player:GetDistance(mission_data.Hangar) < 50.0 then
 			mission_data.Aud1 = AudioMessage(audio.inspect);
 			SpawnNav(2);
 			mission_data.HangarInfoed = true;
@@ -395,7 +396,7 @@ statemachine.Create("main_objectives", {
 				if mission_data.armoryTarget == mission_data.ControlTower then
 					mission_data.impactPending = true;
 					state:next();
-					objective.UpdateObjective(objectives.Control, utility.ColorLabels.Yellow);
+					objective.UpdateObjective(objectives.Control, color.ColorLabel.Yellow);
 					--UpdateObjectives(); --yellow
 					-- there is no yellow objective, old comment?
 				else
@@ -530,11 +531,13 @@ statemachine.Create("detection_check_radar_tower", {
 	{ "start", function (state)
 		--- @cast state detection_check_radar_tower_state
 		state.object = gameobject.GetGameObject(state.label);
+		print(color.AnsiColorEscapeMap.MAGENTA.."Radar \""..state.label.."\" "..tostring(state.object).." found!"..color.AnsiColorEscapeMap.RESET);
 		if not state.object then
 			print("Radar "..state.label.." not found! Disabling detection checker.");
 			state:switch(nil);
 			return statemachine.AbortResult();
 		end
+		state:next();
 	end },
 	{ "check", function (state)
 		--- @cast state detection_check_radar_tower_state
@@ -558,7 +561,8 @@ statemachine.Create("detection_check_radar_tower", {
 			state:switch("check");
 			StopCockpitTimer();
 			HideCockpitTimer();
-		elseif state:SecondsHavePassed(30) then
+		--elseif state:SecondsHavePassed(30) then
+		elseif GetCockpitTimer() == 0 then
 			mission_data.IsDetected = true;
 			--UpdateObjectives();
 			-- this is a failure state
@@ -576,7 +580,7 @@ stateset.Create("mission")
 	:Add("main_objectives", stateset.WrapStateMachine("main_objectives"))
 	:Add("scrap_field_filler_1", stateset.WrapStateMachine("scrap_field_filler", nil, { path = "scrpfld1" }))
 	:Add("detection_check_perceived_team", function(state, name)
-		if mission_data.Player:GetPerceivedTeam() == 1 then
+		if mission_data.Player and mission_data.Player:GetPerceivedTeam() == 1 then
 			mission_data.IsDetected = true;
 			--UpdateObjectives();
 			-- this is a failure state
@@ -628,3 +632,84 @@ function(g)
 end);
 
 print("\27[34m----END MISSION----\27[0m");
+
+print("COLOR TEST Exact ["..
+color.RGBAtoAnsi24Escape(color.ColorValues.BLACK    ).."██"..
+color.RGBAtoAnsi24Escape(color.ColorValues.DKGREY   ).."██"..
+color.RGBAtoAnsi24Escape(color.ColorValues.GREY     ).."██"..
+color.RGBAtoAnsi24Escape(color.ColorValues.WHITE    ).."██"..
+color.RGBAtoAnsi24Escape(color.ColorValues.BLUE     ).."██"..
+color.RGBAtoAnsi24Escape(color.ColorValues.DKBLUE   ).."██"..
+color.RGBAtoAnsi24Escape(color.ColorValues.GREEN    ).."██"..
+color.RGBAtoAnsi24Escape(color.ColorValues.DKGREEN  ).."██"..
+color.RGBAtoAnsi24Escape(color.ColorValues.YELLOW   ).."██"..
+color.RGBAtoAnsi24Escape(color.ColorValues.DKYELLOW ).."██"..
+color.RGBAtoAnsi24Escape(color.ColorValues.RED      ).."██"..
+color.RGBAtoAnsi24Escape(color.ColorValues.DKRED    ).."██"..
+color.RGBAtoAnsi24Escape(color.ColorValues.CYAN     ).."██"..
+color.RGBAtoAnsi24Escape(color.ColorValues.DKCYAN   ).."██"..
+color.RGBAtoAnsi24Escape(color.ColorValues.MAGENTA  ).."██"..
+color.RGBAtoAnsi24Escape(color.ColorValues.DKMAGENTA).."██"..
+color.AnsiColorEscapeMap._.."]");
+
+print("COLOR TEST 256   ["..
+color.RGBAtoAnsi256Escape(color.ColorValues.BLACK    ).."██"..
+color.RGBAtoAnsi256Escape(color.ColorValues.DKGREY   ).."██"..
+color.RGBAtoAnsi256Escape(color.ColorValues.GREY     ).."██"..
+color.RGBAtoAnsi256Escape(color.ColorValues.WHITE    ).."██"..
+color.RGBAtoAnsi256Escape(color.ColorValues.BLUE     ).."██"..
+color.RGBAtoAnsi256Escape(color.ColorValues.DKBLUE   ).."██"..
+color.RGBAtoAnsi256Escape(color.ColorValues.GREEN    ).."██"..
+color.RGBAtoAnsi256Escape(color.ColorValues.DKGREEN  ).."██"..
+color.RGBAtoAnsi256Escape(color.ColorValues.YELLOW   ).."██"..
+color.RGBAtoAnsi256Escape(color.ColorValues.DKYELLOW ).."██"..
+color.RGBAtoAnsi256Escape(color.ColorValues.RED      ).."██"..
+color.RGBAtoAnsi256Escape(color.ColorValues.DKRED    ).."██"..
+color.RGBAtoAnsi256Escape(color.ColorValues.CYAN     ).."██"..
+color.RGBAtoAnsi256Escape(color.ColorValues.DKCYAN   ).."██"..
+color.RGBAtoAnsi256Escape(color.ColorValues.MAGENTA  ).."██"..
+color.RGBAtoAnsi256Escape(color.ColorValues.DKMAGENTA).."██"..
+color.AnsiColorEscapeMap._.."]");
+
+print("COLOR TEST 16p   ["..
+color.AnsiColorEscapeMap.BLACK    .."██"..
+color.AnsiColorEscapeMap.DKGREY   .."██"..
+color.AnsiColorEscapeMap.GREY     .."██"..
+color.AnsiColorEscapeMap.WHITE    .."██"..
+color.AnsiColorEscapeMap.BLUE     .."██"..
+color.AnsiColorEscapeMap.DKBLUE   .."██"..
+color.AnsiColorEscapeMap.GREEN    .."██"..
+color.AnsiColorEscapeMap.DKGREEN  .."██"..
+color.AnsiColorEscapeMap.YELLOW   .."██"..
+color.AnsiColorEscapeMap.DKYELLOW .."██"..
+color.AnsiColorEscapeMap.RED      .."██"..
+color.AnsiColorEscapeMap.DKRED    .."██"..
+color.AnsiColorEscapeMap.CYAN     .."██"..
+color.AnsiColorEscapeMap.DKCYAN   .."██"..
+color.AnsiColorEscapeMap.MAGENTA  .."██"..
+color.AnsiColorEscapeMap.DKMAGENTA.."██"..
+color.AnsiColorEscapeMap._.."]");
+
+local rave_exact = "";
+for i = 1, #color.RAVE_COLOR do
+	rave_exact = rave_exact..color.RGBAtoAnsi24Escape(color.RAVE_COLOR[i]).."█";
+end
+print("COLOR TEST RAVE Exact    ["..rave_exact..color.AnsiColorEscapeMap._.."]");
+
+local rave_256 = "";
+for i = 1, #color.RAVE_COLOR do
+	rave_256 = rave_256..color.RGBAtoAnsi256Escape(color.RAVE_COLOR[i]).."█";
+end
+print("COLOR TEST RAVE 256      ["..rave_256..color.AnsiColorEscapeMap._.."]");
+
+local rave_16Map = "";
+for i = 1, #color.RAVE_COLOR do
+	rave_16Map = rave_16Map..color.RGBAtoAnsi24Escape(color.ColorValues[color.GetClosestColorCode(color.RAVE_COLOR[i])]).."█";
+end
+print("COLOR TEST RAVE 16->Exact["..rave_16Map..color.AnsiColorEscapeMap._.."]");
+
+local rave_16 = "";
+for i = 1, #color.RAVE_COLOR do
+	rave_16 = rave_16..color.AnsiColorEscapeMap[color.GetClosestColorCode(color.RAVE_COLOR[i])].."█";
+end
+print("COLOR TEST RAVE 16p      ["..rave_16..color.AnsiColorEscapeMap._.."]");

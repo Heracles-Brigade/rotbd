@@ -21,6 +21,7 @@ local navmanager = require("_navmanager");
 local objective = require("_objective");
 local utility = require("_utility");
 local bit = require("_bit")
+local color = require("_color");
 
 -- Fill navlist gaps with important navs
 navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToGap);
@@ -160,7 +161,7 @@ statemachine.Create("main_objectives", {
         state.nav1:SetMaxHealth(0);
         state.nav1:SetObjectiveName("Navpoint 1");
         state.nav1:SetObjectiveOn();
-        objective.AddObjective('bdmisn211.otf', "white");
+        objective.AddObjective('bdmisn211.otf', "WHITE");
         --- @diagnostic disable-next-line: inject-field
         state.command = gameobject.GetGameObject("sbhqcp0_i76building");
         state:next();
@@ -171,7 +172,7 @@ statemachine.Create("main_objectives", {
             AudioMessage(audio.inspect);
             --- @diagnostic disable-next-line: undefined-field
             state.nav1:SetObjectiveOff();
-            objective.UpdateObjective('bdmisn211.otf',"green");
+            objective.UpdateObjective('bdmisn211.otf',"GREEN");
             state:next();
         --elseif(not IsAlive(state.command)) then
         --    objective.UpdateObjective('bdmisn211.otf',"red");
@@ -191,7 +192,7 @@ statemachine.Create("main_objectives", {
         state.nav_solar1:SetMaxHealth(0);
         state.nav_solar1:SetObjectiveName("Solar Array 1");
         state.nav_solar1:SetObjectiveOn();
-        objective.AddObjective('bdmisn212.otf',"white");
+        objective.AddObjective('bdmisn212.otf',"WHITE");
         --- @diagnostic disable-next-line: inject-field
         state.handles = {};
         for i,v in pairs(state.target_l1) do
@@ -202,7 +203,7 @@ statemachine.Create("main_objectives", {
    { "destory_solar1_pass", function (state)
         --- @diagnostic disable-next-line: undefined-field
         if(checkDead(state.handles)) then
-            objective.UpdateObjective('bdmisn212.otf',"green");
+            objective.UpdateObjective('bdmisn212.otf',"GREEN");
 			AudioMessage(audio.power1);
             state:next();
         end
@@ -215,7 +216,7 @@ statemachine.Create("main_objectives", {
         state.nav_solar2:SetMaxHealth(0);
         state.nav_solar2:SetObjectiveName("Solar Array 2");
         state.nav_solar2:SetObjectiveOn();
-        objective.AddObjective('bdmisn213.otf',"white");
+        objective.AddObjective('bdmisn213.otf',"WHITE");
         --- @diagnostic disable-next-line: inject-field
         state.handles = {};
         --- @diagnostic disable-next-line: undefined-field
@@ -229,7 +230,7 @@ statemachine.Create("main_objectives", {
         if(checkDead(state.handles)) then
         --- @diagnostic disable-next-line: undefined-field
             state.nav_solar2:SetObjectiveOff();
-            objective.UpdateObjective('bdmisn213.otf',"green");
+            objective.UpdateObjective('bdmisn213.otf',"GREEN");
             state:next();
         end
     end },
@@ -246,8 +247,8 @@ statemachine.Create("main_objectives", {
 
         mission_data.comm:SetObjectiveOn();
         
-        objective.AddObjective('bdmisn214.otf',"white");
-        objective.AddObjective('bdmisn215.otf',"white");
+        objective.AddObjective('bdmisn214.otf',"WHITE");
+        objective.AddObjective('bdmisn215.otf',"WHITE");
         CameraReady();
         local apc = gameobject.BuildGameObject("avapc",2,"spawn_apc");
         if not apc then error("Failed to create APC."); end
@@ -286,8 +287,8 @@ statemachine.Create("main_objectives", {
     { "destroy_obj", function (state)
         if not mission_data.comm:IsAlive() then
 
-            objective.UpdateObjective('bdmisn214.otf',"green");
-            objective.UpdateObjective('bdmisn215.otf',"green");
+            objective.UpdateObjective('bdmisn214.otf',"GREEN");
+            objective.UpdateObjective('bdmisn215.otf',"GREEN");
             --SucceedMission(GetTime()+5,"bdmisn21wn.des");
             --Start 22 - Preparations
             --mission.Objective:Start("intermediate");
@@ -315,7 +316,7 @@ statemachine.Create("main_objectives", {
         if(enemiesInRange(270,mission_data.nav_research)) then
             --- @diagnostic disable-next-line: inject-field
             state.research_enemies_still_exist = true;
-            objective.AddObjective("bdmisn311.otf","white");
+            objective.AddObjective("bdmisn311.otf","WHITE");
     --      else --Removed due to redundancy
     --          objective.AddObjective("bdmisn311b.otf","yellow"); -- this alternate text says the recycler is coming without warning about extra stuff
         end
@@ -325,7 +326,7 @@ statemachine.Create("main_objectives", {
     function (state)
         --- @diagnostic disable-next-line: undefined-field
         if state.research_enemies_still_exist then
-            objective.UpdateObjective("bdmisn311.otf","green");
+            objective.UpdateObjective("bdmisn311.otf","GREEN");
             -- if we use the alternate text we have to turn it green here
         end
         AudioMessage(audio.recycler);
@@ -383,7 +384,7 @@ statemachine.Create("main_objectives", {
         --global.mission_states:on("toofarfrom_recy");
     end,
     { "deploy_recycler", function (state)
-        objective.AddObjective('bdmisn2201.otf',"white");
+        objective.AddObjective('bdmisn2201.otf',"WHITE");
         state:next();
     end },
     function (state)
@@ -392,7 +393,7 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        objective.UpdateObjective('bdmisn2201.otf',"green");
+        objective.UpdateObjective('bdmisn2201.otf',"GREEN");
         objective.ClearObjectives();
         
         state:next();
@@ -400,7 +401,7 @@ statemachine.Create("main_objectives", {
     end,
     { "make_scavs", function (state)
         mission_data.nav_research:SetObjectiveOff();
-        objective.AddObjective('bdmisn2202.otf',"white");
+        objective.AddObjective('bdmisn2202.otf',"WHITE");
         state:next();
     end },
     function (state)
@@ -410,11 +411,11 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        objective.UpdateObjective('bdmisn2202.otf',"green");
+        objective.UpdateObjective('bdmisn2202.otf',"GREEN");
         state:next();
     end,
     { "get_scrap", function (state)
-        objective.AddObjective('bdmisn2203.otf',"white");
+        objective.AddObjective('bdmisn2203.otf',"WHITE");
         createWave("svtank",{"spawn_w1"},"west_path"); 
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path");
         state:next();
@@ -429,7 +430,7 @@ statemachine.Create("main_objectives", {
         state:next();
     end,
     { "make_factory", function (state)
-        objective.AddObjective('bdmisn2204.otf',"white");
+        objective.AddObjective('bdmisn2204.otf',"WHITE");
         state:next();
     end },
     function (state)
@@ -438,11 +439,11 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        objective.UpdateObjective('bdmisn2204.otf',"green");
+        objective.UpdateObjective('bdmisn2204.otf',"GREEN");
         state:next();
     end,
     { "make_comm", function (state)
-        objective.AddObjective('bdmisn2209.otf',"white");
+        objective.AddObjective('bdmisn2209.otf',"WHITE");
         createWave("svtank",{"spawn_w1"},"west_path"); 
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path");
         state:next();
@@ -453,13 +454,13 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        objective.UpdateObjective('bdmisn2209.otf',"green");
+        objective.UpdateObjective('bdmisn2209.otf',"GREEN");
         state:switch("destroy_soviet");
     end,
     
     -- SKIPPED STATES?
     { "make_offensive", function (state)
-        objective.AddObjective('bdmisn2205.otf',"white");
+        objective.AddObjective('bdmisn2205.otf',"WHITE");
         createWave("svtank",{"spawn_w1"},"west_path"); 
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path");
         state:next()
@@ -471,11 +472,11 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        objective.UpdateObjective('bdmisn2205.otf',"green");
+        objective.UpdateObjective('bdmisn2205.otf',"GREEN");
         state:next();
     end,
     { "make_defensive", function (state)
-        objective.AddObjective('bdmisn2206.otf',"white");
+        objective.AddObjective('bdmisn2206.otf',"WHITE");
         createWave("svtank",{"spawn_w1"},"west_path"); 
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path"); -- Original Script did nothing with these 2. Possibly sent to guard Scavs instead? -GBD
         createWave("svscav",{"spawn_w2","spawn_w3"});
@@ -487,7 +488,7 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        objective.UpdateObjective('bdmisn2206.otf',"green");
+        objective.UpdateObjective('bdmisn2206.otf',"GREEN");
         state:next();
     end,
     -- /SKIPPED STATES?
@@ -511,7 +512,7 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        --UpdateObjective('bdmisn2207.otf',"green");
+        --UpdateObjective('bdmisn2207.otf',"GREEN");
         gameobject.GetRecyclerGameObject(2):SetObjectiveOff();
 
         --mission.Objective:Start('nsdf_attack');
@@ -520,7 +521,7 @@ statemachine.Create("main_objectives", {
     { "nsdf_attack", function (state)
         -- @todo the cutscene shows walkers acting like pingpong balls and tanks acting like paddles, might need an adjustment to spawn location
         AudioMessage(audio.nsdf);
-        objective.AddObjective('bdmisn2208.otf',"white");
+        objective.AddObjective('bdmisn2208.otf',"WHITE");
         local a,b,camTarget = createWave("avwalk",{"spawn_avwalk1","spawn_avwalk2","spawn_avwalk3"},"nsdf_path");
         local c,e,g = createWave("avtank",{"spawn_avtank1","spawn_avtank2","spawn_avtank3"},"nsdf_path");
         local d,h,i = createWave("avtank",{"spawn_w1","spawn_w2","spawn_w3"},"west_path");
@@ -534,7 +535,7 @@ statemachine.Create("main_objectives", {
             v:SetObjectiveOn();
         end
         if not gameobject.GetRecyclerGameObject(2):IsAlive() then
-            objective.UpdateObjective('bdmisn2208.otf',"green"); -- this is odd, this code isn't running anymore right?
+            objective.UpdateObjective('bdmisn2208.otf',"GREEN"); -- this is odd, this code isn't running anymore right?
         end
         state:next();
     end },
@@ -548,20 +549,20 @@ statemachine.Create("main_objectives", {
     end,
     function (state)
         gameobject.GetRecyclerGameObject(2):SetObjectiveOn();
-        objective.UpdateObjective('bdmisn2208.otf',"green");
+        objective.UpdateObjective('bdmisn2208.otf',"GREEN");
         state:next();
     end,
     function (state)
         --- @diagnostic disable-next-line: undefined-field
         if areAllDead(state.targets, 2) then
             gameobject.GetRecyclerGameObject(2):SetObjectiveOn();
-            objective.UpdateObjective('bdmisn2208.otf',"green");
+            objective.UpdateObjective('bdmisn2208.otf',"GREEN");
             state:next();
         end
     end,
     function (state)
         if not gameobject.GetRecyclerGameObject(2):IsAlive() then
-            objective.UpdateObjective("bdmisn2207.otf","green");
+            objective.UpdateObjective("bdmisn2207.otf","GREEN");
             state:next();
         end
     end,
@@ -730,7 +731,7 @@ statemachine.Create("Cheat_BZRAVE_effect",
     { "color", function (state)
         --- @cast state Cheat_BZRAVE_effect_state
         if state:SecondsHavePassed(0.4, true) or state.rave_index == 1 then
-            local rgba = utility.RAVE_COLOR[state.rave_index];
+            local rgba = color.RAVE_COLOR[state.rave_index];
             local r = bit.rshift(rgba, 24) -- Extract the red component
             local g = bit.band(bit.rshift(rgba, 16), 0xFF) -- Extract the green component
             local b = bit.band(bit.rshift(rgba, 8), 0xFF)  -- Extract the blue component
@@ -739,7 +740,7 @@ statemachine.Create("Cheat_BZRAVE_effect",
 
             -- run through the rave color list once, which is as long as the music
             state.rave_index = state.rave_index + 1;
-            if state.rave_index > #utility.RAVE_COLOR then
+            if state.rave_index > #color.RAVE_COLOR then
                 state:SecondsHavePassed(); -- probably not needed but just in case
                 state:switch(nil);
                 return true;
