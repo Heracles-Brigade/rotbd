@@ -241,7 +241,7 @@ statemachine.Create("cca_attack_base",
 statemachine.Create("defendRelic.cca_attack_base", {
     function (self)
         --local patrol = bzRoutine.routineManager:getRoutine(mission_data.patrol_id);
-        for i,v in pairs(mission_data.patrol_r:getHandles()) do
+        for i,v in pairs(mission_data.patrol_r:getGameObjects()) do
             --local s = mission.TaskManager:sequencer(v);
             --s:queue2("Goto","front_line");
             --s:queue2("Defend");
