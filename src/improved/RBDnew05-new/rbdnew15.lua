@@ -1,573 +1,1097 @@
 --Combination of The Last Stand and Evacuate Venus
 
-local minit = require("minit")
+
+require("_printfix");
+
+print("\27[34m----START MISSION----\27[0m");
+
+--- @diagnostic disable-next-line: lowercase-global
+debugprint = print;
+--traceprint = print;
+
+require("_requirefix").addmod("rotbd");
+
+require("_table_show");
+local api = require("_api");
+local gameobject = require("_gameobject");
+local hook = require("_hook");
+local statemachine = require("_statemachine");
+local stateset = require("_stateset");
+--local tracker = require("_tracker");
+local navmanager = require("_navmanager");
+local objective = require("_objective");
+local utility = require("_utility");
+local color = require("_color");
+local producer = require("_producer");
+local patrol = require("_patrol");
+
+-- Fill navlist gaps with important navs
+navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToGap);
+
+-- constrain tracker so it does less work, otherwise when it's required it watches everything
+--tracker.setFilterTeam(1); -- track team 1 objects
+--tracker.setFilterClass("scavenger"); -- track scavengers
+--tracker.setFilterClass("factory"); -- track factories
+--tracker.setFilterClass("commtower"); -- track comm towers
+--tracker.setFilterOdf("bvtank"); -- track bvtanks
+--tracker.setFilterOdf("bvhraz"); -- track bvhraz
+--tracker.setFilterClass("turrettank"); -- track turrettanks
 
 
-local pwers = {};
 
-local orig15setup = require("orig15p");
-local core = require("bz_core");
-local OOP = require("oop");
-local buildAi = require("buildAi");
-local bzRoutine = require("bz_routine");
-local bzObjects = require("bz_objects");
 
-local IsIn = OOP.isIn;
-local ProducerAi = buildAi.ProducerAi;
-local ProductionJob = buildAi.ProductionJob;
-local PatrolController = require("patrolc");
-local mission = require('cmisnlib');
+
+
+
+
+
+
+
+--local minit = require("minit")
+
+local mission_data = {};
+mission_data.pwers = {};
+
+--local orig15setup = require("orig15p");
+--local core = require("bz_core");
+--local OOP = require("oop");
+--local buildAi = require("buildAi");
+--local bzRoutine = require("bz_routine");
+--local bzObjects = require("bz_objects");
+
+local IsIn = function(a,inB) 
+    for i,v in pairs(inB) do
+        if(a == v) then
+            return true;
+        end
+    end
+    return false;
+end
+
+
+local function spawnAtPath(odf,team,path)
+    local handles = {};
+    local current = GetPosition(path);
+    local prev = nil;
+    local c = 0;
+    while current and current ~= prev do
+        c = c + 1;
+        table.insert(handles,gameobject.BuildGameObject(odf,team,current));
+        prev = current;
+        current = GetPosition(path,c);
+    end
+    return handles;
+end
+
+
+local function checkAnyDead(handles)
+    for i,v in pairs(handles) do
+        if(not v:IsAlive()) then
+            return true;
+        end
+    end
+    return false;
+end
+
+
+
+
+
+
+
+--- @param formation string[]
+--- @param location Vector
+--- @param dir Vector
+--- @param units string[]
+--- @param team TeamNum
+--- @param seperation integer
+local function spawnInFormation(formation,location,dir,units,team,seperation)
+    if(seperation == nil) then
+        seperation = 10;
+    end
+    local tempH = {};
+    local lead;
+    local directionVec = Normalize(SetVector(dir.x,0,dir.z));
+    local formationAlign = Normalize(SetVector(-dir.z,0,dir.x));
+    for i2, v2 in ipairs(formation) do
+        local length = v2:len();
+        local i3 = 1;
+        for c in v2:gmatch(".") do
+        local n = tonumber(c);
+        if(n) then
+            local x = (i3-(length/2))*seperation;
+            local z = i2*seperation*2;
+            local pos = x*formationAlign + -z*directionVec + location;
+            local h = gameobject.BuildGameObject(units[n],team,pos);
+            if not h then error("Failed to build object " .. units[n] .. " at " .. tostring(pos)) end
+            local t = BuildDirectionalMatrix(h:GetPosition(),directionVec);
+            h:SetTransform(t);
+            if(not lead) then
+                lead = h;
+            end
+            table.insert(tempH,h);
+        end
+        i3 = i3+1;
+        end
+    end
+    return tempH, lead;
+end
+
+--- @param formation string[]
+--- @param location string
+--- @param units string[]
+--- @param team TeamNum
+--- @param seperation integer
+local function spawnInFormation2(formation,location,units,team,seperation)
+    local pos = GetPosition(location,0);
+    if not pos then error("Failed to get position of " .. location) end
+    local pos2 = GetPosition(location,1);
+    if not pos2 then error("Failed to get position of " .. location) end
+    local dir = pos2 - pos;
+    return spawnInFormation(formation,pos,dir,units,team,seperation);
+end
+
+--local ProducerAi = buildAi.ProducerAi;
+--local ProductionJob = buildAi.ProductionJob;
+--local PatrolController = require("patrolc");
+--local mission = require('cmisnlib');
 
 SetAIControl(2,false);
 SetAIControl(3,false);
 
 
 local audio = {
-  intro = "rbd0501.wav",
-  inspect = "rbd0502.wav",
-  destroy_f = "rbd0503.wav",
-  done_d = "rbd0504.wav",
-  back_to_base = "rbd0505.wav"
+    intro = "rbd0501.wav",
+    inspect = "rbd0502.wav",
+    destroy_f = "rbd0503.wav",
+    done_d = "rbd0504.wav",
+    back_to_base = "rbd0505.wav",
+
+    
+    apc_spawn = "rbd0506.wav",
+    pickup_done = "rbd0507.wav",
+    win = "rbd0508.wav"
 }
 
+
+
+
+statemachine.Create("cca_relic_attack",
+    function (state)
+        --- @diagnostic disable-next-line: undefined-field
+        if state.v:GetCurrentCommand() == AiCommand["NONE"] then
+            state:next();
+        end
+    end,
+    function (state)
+        --- @diagnostic disable-next-line: undefined-field
+        state.v:Goto("cca_relic_attack");
+        state:next();
+    end,
+    function (state)
+        --- @diagnostic disable-next-line: undefined-field
+        if state.v:GetCurrentCommand() == AiCommand["NONE"] then
+            state:next();
+        end
+    end,
+    function (state)
+        --- @diagnostic disable-next-line: undefined-field
+        state.v:Defend2(state.relic);
+        state:next();
+    end,
+    function (state)
+        --- @diagnostic disable-next-line: undefined-field
+        if state.v:GetCurrentCommand() == AiCommand["NONE"] then
+            state:next();
+        end
+    end,
+    function (state)
+        --- @diagnostic disable-next-line: undefined-field
+        state.v:Defend();
+        state:next();
+        return statemachine.AbortResult();
+    end);
+
+statemachine.Create("cca_attack_base",
+    function (state)
+        --- @diagnostic disable-next-line: undefined-field
+        if state.v:GetCurrentCommand() == AiCommand["NONE"] then
+            state:next();
+        end
+    end,
+    function (state)
+        --- @diagnostic disable-next-line: undefined-field
+        state.v:Goto("front_line");
+        state:next();
+    end,
+    function (state)
+        --- @diagnostic disable-next-line: undefined-field
+        if state.v:GetCurrentCommand() == AiCommand["NONE"] then
+            state:next();
+        end
+    end,
+    function (state)
+        --- @diagnostic disable-next-line: undefined-field
+        state.v:Defend();
+        state:next();
+        return statemachine.AbortResult();
+    end);
+
+
+statemachine.Create("defendRelic.cca_attack_base", {
+    function (self)
+        --local patrol = bzRoutine.routineManager:getRoutine(mission_data.patrol_id);
+        for i,v in pairs(mission_data.patrol_r:getHandles()) do
+            --local s = mission.TaskManager:sequencer(v);
+            --s:queue2("Goto","front_line");
+            --s:queue2("Defend");
+            
+            local machine = statemachine.Start("cca_attack_base", nil, { v = v });
+            table.insert(mission_data.sub_machines, machine);
+        end
+        --bzRoutine.routineManager:killRoutine(mission_data.patrol_id);
+        mission_data.patrol_r = nil; -- once we add reference tracking there will be no more references
+        mission_data.attack_timers = {30,15};
+        mission_data.attack_waves = {
+            {loc = "base_attack1",formation={"4 4 4","1 1"}},
+            {loc = "base_attack2",formation={"2 2","1 1"}}
+        };
+        mission_data.attack_timer = nil;
+        self:next();
+    end,
+    function (self, dtime)
+        if(mission_data.attack_timer == nil) then
+            if(#mission_data.attack_timers <= 0) then
+                --self:taskSucceed("cca_attack_base");
+                self:switch(nil);
+            else
+                mission_data.attack_timer = table.remove(mission_data.attack_timers,1);
+            end
+        end
+        if(mission_data.attack_timer ~= nil) then
+            mission_data.attack_timer = mission_data.attack_timer - dtime;
+            if(mission_data.attack_timer <= 0) then
+                --spawn an attack wave
+                local wave = table.remove(mission_data.attack_waves,1);
+                for i,v in pairs(spawnInFormation2(wave.formation,wave.loc,{"svfigh","svtank","svrckt","svhraz","svltnk"},2,15)) do
+                    v:Goto(wave.loc);
+                end
+                mission_data.attack_timer = nil;
+            end
+        end
+    end
+});
+
+statemachine.Create("secondWave",
+    statemachine.SleepSeconds(10),
+    function (state)
+        for i = 1, 4 do
+            gameobject.BuildGameObject("svfigh", 2, "patrol_path"):Goto("wave_2");
+        end
+        for i = 1, 2 do
+            gameobject.BuildGameObject("svtank", 2, "patrol_path"):Goto("wave_2");
+        end
+        state:next();
+        return statemachine.AbortResult();
+    end);
+
 --First objective, go to base, get unit and investigate relic site
-local intro = mission.Objective:define("introObjective"):createTasks(
-  "rendezvous","wait_for_units","goto_relic"
-):setListeners({
-  init = function(self)
-    --otfs for each task
-    self.otfs = {
-      rendezvous = "rbd0521.otf",
-      wait_for_units = "rbd0522.otf",
-      goto_relic = "rbd0523.otf"
-    };
-    --next task, for each task
-    --objective succeeded after goto_relic is completed
-    self.next = {
-      rendezvous = "wait_for_units",
-      wait_for_units = "goto_relic"
-    };
-    self.relic = GetHandle("relic_1")
-  end,
-  start = function(self)
-    --Set up patrol paths
-    local patrol_rid, patrol_r = bzRoutine.routineManager:startRoutine("PatrolRoutine", nil, true);
-    --what are our `checkpoint` locations?
-    patrol_r:registerLocations({"l_command","l_center","l_north","l_front"});
-    --l_command connects to l_center via p_command_center path
-    patrol_r:defineRouts("l_command",{
-      p_command_center = "l_center"
-    });
-    --l_center connects to both l_front and l_north via p_center_front and p_center_north
-    patrol_r:defineRouts("l_center",{
-      p_center_front = "l_front",
-      p_center_north = "l_north"
-    });
-    --l_front connects to l_command via either p_front_command or p_front_patrol_command
-    patrol_r:defineRouts("l_front",{
-      p_front_command = "l_command",
-      p_front_patrol_command = "l_command"
-    });
-    --l_north only connects to l_center via p_north_center, slightly redundant, but there in case more paths are added
-    patrol_r:defineRouts("l_north",{
-      p_north_center = "l_center"
-    });
-    --set patrol_id
-    self.patrol_id = patrol_rid;
-    --Start first task, go to base
-    self:startTask("rendezvous");
-    self.endWait = 7;
-    --Let us queue some production jobs for Shaw to do
-    ProducerAi:queueJob(ProductionJob("bvcnst",3));
-    ProducerAi:queueJobs(ProductionJob:createMultiple(2,"bvscav",3));
-    ProducerAi:queueJob(ProductionJob("bvslfz",3));
-    ProducerAi:queueJob(ProductionJob("bvmuf",3));
-    
-    self.relic_camera_id = ProducerAi:queueJobs(ProductionJob("apcamr",3,"relic_site"));
-    self:call("_setUpProdListeners",self.relic_camera_id,"_forCamera");
-    
-    local turretJobs = {};
-    --Tell AI to build turrets
-    for i,v in pairs(GetPathPoints("make_turrets")) do
-      table.insert(turretJobs,ProductionJob("bvturr",3,v,1));
-    end
-    --Tell AI to build patrol units, 3 tanks and 3 fighters
-    local tankJobs = {ProductionJob:createMultiple(3,"bvtank",3)};
-    local scoutJobs = {ProductionJob:createMultiple(3,"bvraz",3)};
-    
-    self.patrolProd = ProducerAi:queueJobs2(tankJobs,scoutJobs);
-    --Set up observer for patrol Production
-    self:call("_setUpProdListeners",self.patrolProd,"_forEachPatrolUnit","_donePatrolUnit");
-    --Tell AI to build some guntowers for defence and a commtower
-    for i,v in pairs(GetPathPoints("make_bblpow")) do
-      ProducerAi:queueJob(ProductionJob("bblpow",3,v),0);
-    end
-    for i,v in pairs(GetPathPoints("make_bbtowe")) do
-      ProducerAi:queueJob(ProductionJob("bbtowe",3,v),1);
-    end
-    ProducerAi:queueJob(ProductionJob("bbcomm",3,"make_bbcomm"));
-    self.turrProd = ProducerAi:queueJobs2(turretJobs);
-    --Set up observer for turrets, when produced _forEachTurret will run
-    self:call("_setUpProdListeners",self.turrProd,"_forEachTurret","_doneTurret");
+statemachine.Create("main_objectives", {
+    { "start", function(self)
+        mission_data.relic = gameobject.GetGameObject("relic_1")
 
-  end,
-  --Helper function for connecting production job to observers
-  _setUpProdListeners = function(self,id,each,done)
-    local bundle = ProducerAi:getBundle(id);
-    if(bundle) then
-      bundle:forEach():subscribe(function(...)
-        self:call(each,...);
-      end);
-      bundle:onFinish():subscribe(function(...)
-        self:call(done,...);
-      end);
-    end
-  end,
-  _forEachProduced1 = function(self,job,handle)
-    --For each unit produced for the player, set the team number to 1
-    SetTeamNum(handle,1);
-  end,
-  delete_object = function(self,handle)
-    local c = GetConstructorHandle(3);
-    if(c ~= nil and not IsAlive(c)) then
-      ProducerAi:queueJob(ProductionJob("bvcnst",3));
-    end
-  end,
-  _doneProducing1 = function(self,bundle,handle)
-    --When all the player's units have been made, succeed wait_for_units
-    self:taskSucceed("wait_for_units");
-  end,
-  _forEachTurret = function(self,job,handle)
-    --Turret was made, tell him to go to the location specified in the job
-    Goto(handle,job:getLocation());
-  end,
-  _forEachPatrolUnit = function(self,job,handle)
-    --For each unit produced in order to patrol the base, add them to the patrol routine
-    local patrol_r = bzRoutine.routineManager:getRoutine(self.patrol_id);
-    patrol_r:addHandle(handle);
-  end,
-  _forCamera = function(self,job,handle)
-    SetObjectiveName(handle,"Relic Site");
-    self.camera_handle = handle;
-    if(self:isTaskActive("goto_relic")) then
-      SetTeamNum(self.camera_handle,1);
-    end
-  end,
-  task_start = function(self,name)
-    if(self.otfs[name]) then
-      AddObjective(self.otfs[name]);
-    end
-    if(name == "wait_for_units") then
-      --Make producer create units
-      --ProductionJob:createMultiple(count,odf,team)
-      --Queue Production Jobs for the player
-      local tankJobs = {ProductionJob:createMultiple(3,"bvtank",3)};
-      local rcktJobs = {ProductionJob:createMultiple(2,"bvrckt",3)};
-      local scoutJobs = {ProductionJob:createMultiple(2,"bvraz",3)}; 
-      self.prodId = ProducerAi:queueJobs2(tankJobs,rcktJobs,scoutJobs);
-      self:call("_setUpProdListeners",self.prodId,"_forEachProduced1","_doneProducing1");
-    elseif(name == "goto_relic") then
-      SetTeamNum(self.camera_handle,1);
-      AudioMessage(audio.intro);
-    end
-  end,
-  task_success = function(self,name)
-    if(self.otfs[name]) then
-      UpdateObjective(self.otfs[name],"green");
-    end
-    if(self.next[name]) then
-      self:startTask(self.next[name]);
-    end
-  end,
-  update = function(self,dtime)
-    if(self:isTaskActive("rendezvous")) then
-      if(IsWithin(GetPlayerHandle(),GetRecyclerHandle(3),100)) then
-        self:taskSucceed("rendezvous");
-      end
-    elseif(self:isTaskActive("goto_relic")) then
-      if(IsInfo(GetOdf(self.relic))) then
-        self:taskSucceed("goto_relic");
-      end
-    elseif(not self:isTaskActive("wait_for_units")) then
-      self.endWait = self.endWait - dtime;
-      if(self.endWait <= 0) then
-        self:success();
-      end
-    end
-  end,
-  success = function(self)
-    ClearObjectives();
-    mission.Objective:Start("defendRelic",self.patrol_id);
-  end,
-  save = function(self)
-    --Save a bunch of stuff
-    return {
-      prodId = self.prodId,
-      turrProd = self.turrProd,
-      endWait = self.endWait,
-      patrol_id = self.patrol_id,
-      patrolProd = self.patrolProd,
-      relic_camera_id = self.relic_camera_id,
-      camera_handle = self.camera_handle
-    };
-  end,
-  load = function(self,data)
-    --Load a bunch of stuff
-    self.prodId = data.prodId;
-    self.turrProd = data.turrProd;
-    self.endWait = data.endWait;
-    self.patrol_id = data.patrol_id;
-    self.patrolProd = data.patrolProd;
-    self.relic_camera_id = data.relic_camera_id;
-    self.camera_handle = data.camera_handle;
-    if(self.turrProd) then
-      self:call("_setUpProdListeners",self.turrProd,"_forEachTurret","_doneTurret");
-    end
-    if(self.patrolProd) then
-      self:call("_setUpProdListeners",self.patrolProd,"_forEachPatrolUnit","_donePatrolUnit");
-    end
-    if(self:isTaskActive("wait_for_units")) then
-      self:call("_setUpProdListeners",self.prodId,"_forEachProduced1","_doneProducing1");
-    end
-    if(self.relic_camera_id) then
-      self:call("_setUpProdListeners",self.relic_camera_id,"_forCamera");
-    end
-  end
-});
+        --Set up patrol paths
+        --local patrol_rid, patrol_r = bzRoutine.routineManager:startRoutine("PatrolRoutine", nil, true);
+        mission_data.patrol_r = patrol.new();
+        --what are our `checkpoint` locations?
+        mission_data.patrol_r:registerLocations({"l_command","l_center","l_north","l_front"});
+        --l_command connects to l_center via p_command_center path
+        mission_data.patrol_r:defineRoutes("l_command",{
+            p_command_center = "l_center"
+        });
+        --l_center connects to both l_front and l_north via p_center_front and p_center_north
+        mission_data.patrol_r:defineRoutes("l_center",{
+            p_center_front = "l_front",
+            p_center_north = "l_north"
+        });
+        --l_front connects to l_command via either p_front_command or p_front_patrol_command
+        mission_data.patrol_r:defineRoutes("l_front",{
+            p_front_command = "l_command",
+            p_front_patrol_command = "l_command"
+        });
+        --l_north only connects to l_center via p_north_center, slightly redundant, but there in case more paths are added
+        mission_data.patrol_r:defineRoutes("l_north",{
+            p_north_center = "l_center"
+        });
+        --set patrol_id
+        mission_data.patrol_id = patrol_rid;
+        --Start first task, go to base
+        --self:startTask("rendezvous");
+        mission_data.endWait = 7;
 
-local defendRelic = mission.Objective:define("defendRelic"):createTasks(
-  "destroy_relic","cca_attack_base","nuke"
-):setListeners({
-  init = function(self)
-    self.next = {
-      destroy_relic = "nuke"
-    };
-    self.otfs = {
-      destroy_relic = "rbd0524.otf",
-      nuke = "rbd0525.otf"
-    };
-    self.failCauses = {
+        --Let us queue some production jobs for Shaw to do
+        --ProducerAi:queueJob(ProductionJob("bvcnst",3));
+        producer.QueueJob("bvcnst", 3);
+        --ProducerAi:queueJobs(ProductionJob:createMultiple(2,"bvscav",3));
+        producer.QueueJob("bvscav",  3);
+        producer.QueueJob("bvscav",  3);
+        --ProducerAi:queueJob(ProductionJob("bvslfz",3));
+        producer.QueueJob("bvslfz", 3);
+        --ProducerAi:queueJob(ProductionJob("bvmuf",3));
+        producer.QueueJob("bvmuf", 3);
+        
+        --mission_data.relic_camera_id = ProducerAi:queueJobs(ProductionJob("apcamr",3,"relic_site"));
+        producer.QueueJob("apcamr", 3, "relic_site", { name = "relic_camera" });
 
-    };
-    self.relic = GetHandle("relic_1");
-  end,
-  _setUpProdListeners = function(self,id,done)
-    local job = ProducerAi:getJob(id);
-    if(job) then
-      job:onFinish():subscribe(function(...)
-        self:call(done,...);
-      end);
-    end
-  end,
-  start = function(self,patrol_id)
-    self.patrol_id = patrol_id;
-    self.wait_while_shooting = 2;
-    self.nuke_wait_t1 = 5;
-    self.nuke_wait_t2 = 2;
-    self.nuke_state = 0;
-    self.t = 0;
-    --self:startTask("destroy_relic");
+        --Tell AI to build patrol units, 3 tanks and 3 fighters
+        --local tankJobs = {ProductionJob:createMultiple(3,"bvtank",3)};
+        producer.QueueJob("bvtank", 3, nil, { name = "patrolProd" });
+        producer.QueueJob("bvtank", 3, nil, { name = "patrolProd" });
+        producer.QueueJob("bvtank", 3, nil, { name = "patrolProd" });
 
-    --First CCA attack
-    local units, lead = mission.spawnInFormation2({"   1   ","1   2 2", "3   3  "},"relic_light",{"svtank","svltnk","svfigh"},2,15);
-    for i, v in pairs(units) do
-      if(v ~= lead) then
-        Defend2(v,lead);
-      end
-      local s = mission.TaskManager:sequencer(v);
-      s:queue2("Goto","cca_relic_attack");
-      s:queue2("Defend2", self.relic);
-      s:queue2("Defend");
-    end
-
-
-    self.msg_inspect =  AudioMessage(audio.inspect);
-  end,
-  task_start = function(self,name)
-    if(self.otfs[name]) then
-      AddObjective(self.otfs[name]);
-    end
-    if(name == "nuke") then
-      self.day_id = ProducerAi:queueJob(ProductionJob("apwrckz",3,self.relic));
-      self:call("_setUpProdListeners",self.day_id,"_setDayWrecker");
-      local units, lead = mission.spawnInFormation2({"   1   ","1 1 2 2", "3 3 3 3"},"cca_relic_attack",{"svtank","svrckt","svfigh"},2,15);
-      for i, v in pairs(units) do
-        if(v ~= lead) then
-          Defend2(v,lead);
+        --local scoutJobs = {ProductionJob:createMultiple(3,"bvraz",3)};
+        producer.QueueJob("bvraz", 3, nil, { name = "patrolProd" });
+        producer.QueueJob("bvraz", 3, nil, { name = "patrolProd" });
+        producer.QueueJob("bvraz", 3, nil, { name = "patrolProd" });
+        
+        --Tell AI to build some guntowers for defence and a commtower
+        --- @todo reorder these so they make more sense
+        for i,v in utility.IteratePath("make_bblpow") do
+        --    ProducerAi:queueJob(ProductionJob("bblpow",3,v),0);
+            producer.QueueJob("bblpow", 3, v);
         end
-        local s = mission.TaskManager:sequencer(v);
-        s:queue2("Goto","cca_relic_attack");
-        s:queue2("Defend2", self.relic);
-        s:queue2("Defend");
-      end
-    elseif(name == "cca_attack_base") then
-      local patrol = bzRoutine.routineManager:getRoutine(self.patrol_id);
-      for i,v in pairs(patrol:getHandles()) do
-        local s = mission.TaskManager:sequencer(v);
-        s:queue2("Goto","front_line");
-        s:queue2("Defend");
-      end
-      bzRoutine.routineManager:killRoutine(self.patrol_id);
-      self.attack_timers = {30,15};
-      self.attack_waves = {
-        {loc = "base_attack1",formation={"4 4 4","1 1"}},
-        {loc = "base_attack2",formation={"2 2","1 1"}}
-      };
-      self.attack_timer = nil;
-    elseif(name == "destroy_relic") then
-      SetTeamNum(self.relic, 2);
-    end
-  end,
-  _setDayWrecker = function(self,job,handle)
-    SetMaxHealth(handle,0);
-    SetObjectiveOn(handle);
-    self.daywrecker = handle;
-  end,
-  task_fail = function(self,name)
-    if(name == "nuke") then
-      UpdateObjective(self.otfs[name],"red");
-    end
-    self:fail();
-  end,
-  task_success = function(self,name)
-    if(name == "destroy_relic") then
-      UpdateObjective("rbd0524.otf","red");
-    elseif(name == "nuke") then
-      ClearObjectives();
-      self:success();
-    end
-    if(self.next[name]) then
-      self:startTask(self.next[name]);
-    end
-  end,
-  fail = function(self,cause)
-    FailMission(GetTime()+5.0,self.failCauses[cause or "NONE"]);
-  end,
-  success = function(self)
-    mission.Objective:Start("rtbAssumeControl");
-  end,
-  update = function(self,dtime)
-    if( (not self:hasTaskStarted("destroy_relic")) and IsAudioMessageDone(self.msg_inspect) ) then
-      self:startTask("destroy_relic");
-    end
-    if(self:isTaskActive("cca_attack_base")) then
-      if(self.attack_timer == nil) then
-        if(#self.attack_timers <= 0) then
-          self:taskSucceed("cca_attack_base");
+        for i,v in utility.IteratePath("make_bbtowe") do
+        --    ProducerAi:queueJob(ProductionJob("bbtowe",3,v),1);
+            producer.QueueJob("bbtowe", 3, v);
+        end
+        --ProducerAi:queueJob(ProductionJob("bbcomm",3,"make_bbcomm"));
+        producer.QueueJob("bbcomm", 3, "make_bbcomm");
+        --local turretJobs = {};
+        --Tell AI to build turrets
+        for i,v in utility.IteratePath("make_turrets") do
+        --    table.insert(turretJobs,ProductionJob("bvturr",3,v,1));
+            producer.QueueJob("bvturr", 3, nil, { name = "_doneTurret", location = v });
+        end
+        --mission_data.turrProd = ProducerAi:queueJobs2(turretJobs);
+        --Set up observer for turrets, when produced _forEachTurret will run
+        --self:call("_setUpProdListeners",mission_data.turrProd,"_forEachTurret","_doneTurret");
+
+        self:next();
+      end },
+    { "rendezvous__start", function(self)
+        objective.AddObjective("rbd0521.otf");
+        self:next();
+    end },
+    { "rendezvous__update", function(self)
+        local rec = gameobject.GetRecyclerGameObject(3);
+        if rec and gameobject.GetPlayerGameObject():IsWithin(rec, 100) then
+            self:next();
+        end
+    end },
+    function(self)
+        objective.UpdateObjective("rbd0521.otf","GREEN");
+    end,
+    { "goto_relic__start", function(self)
+        objective.AddObjective("rbd0523.otf");
+        mission_data.camera_handle:SetTeamNum(1);
+        AudioMessage(audio.intro);
+        mission_data.camera_keep_teamed = true;
+        self:next();
+    end },
+    { "goto_relic__update", function(self)
+        if(IsInfo(mission_data.relic:GetOdf())) then
+            self:next();
+        end
+    end },
+    function(self)
+        objective.UpdateObjective("rbd0523.otf","GREEN");
+    end,
+    { "wait_for_units__start", function(self)
+        objective.AddObjective("rbd0522.otf");
+        --Make producer create units
+        --ProductionJob:createMultiple(count,odf,team)
+        --Queue Production Jobs for the player
+        mission_data.wait_for_units = 0;
+        --local tankJobs = {ProductionJob:createMultiple(3,"bvtank",3)};
+        producer.QueueJob("bvtank", 3, nil, { name = "_forEachProduced1" });
+        producer.QueueJob("bvtank", 3, nil, { name = "_forEachProduced1" });
+        producer.QueueJob("bvtank", 3, nil, { name = "_forEachProduced1" });
+        --local rcktJobs = {ProductionJob:createMultiple(2,"bvrckt",3)};
+        producer.QueueJob("bvrckt", 3, nil, { name = "_forEachProduced1" });
+        producer.QueueJob("bvrckt", 3, nil, { name = "_forEachProduced1" });
+        producer.QueueJob("bvrckt", 3, nil, { name = "_forEachProduced1" });
+        --local scoutJobs = {ProductionJob:createMultiple(2,"bvraz",3)}; 
+        producer.QueueJob("bvraz", 3, nil, { name = "_forEachProduced1" });
+        producer.QueueJob("bvraz", 3, nil, { name = "_forEachProduced1" });
+        producer.QueueJob("bvraz", 3, nil, { name = "_forEachProduced1" });
+        --mission_data.prodId = ProducerAi:queueJobs2(tankJobs,rcktJobs,scoutJobs);
+        --self:call("_setUpProdListeners",mission_data.prodId,"_forEachProduced1","_doneProducing1");
+
+        self:next();
+    end },
+
+    { "wait_for_units__update", function (state) 
+        if mission_data.wait_for_units >= 9 then
+            state:next();
+        end
+    end },
+    statemachine.SleepSeconds(7),
+    function(self)
+        objective.UpdateObjective("rbd0522.otf","GREEN");
+    end,
+    { "success", function(self)
+        objective.ClearObjectives();
+        --mission.Objective:Start("defendRelic",mission_data.patrol_id);
+        --- @todo determine if the team 3 "bvcnst" rebuilder, which isn't even restored yet, should be stopped after this
+        self:next();
+    end },
+    { "defendRelic", function(self)
+        mission_data.failCauses = {};
+        mission_data.relic = gameobject.GetGameObject("relic_1");
+
+        mission_data.patrol_id = patrol_id;
+        mission_data.wait_while_shooting = 2;
+        mission_data.nuke_wait_t1 = 5;
+        mission_data.nuke_wait_t2 = 2;
+        mission_data.nuke_state = 0;
+        mission_data.t = 0;
+        --self:startTask("destroy_relic");
+
+        --First CCA attack
+        local units, lead = spawnInFormation2({"   1   ","1   2 2", "3   3  "},"relic_light",{"svtank","svltnk","svfigh"},2,15);
+        mission_data.sub_machines = {};
+        for i, v in pairs(units) do
+            if(v ~= lead) then
+                v:Defend2(lead);
+            end
+            --local s = mission.TaskManager:sequencer(v);
+            --s:queue2("Goto","cca_relic_attack");
+            --s:queue2("Defend2", mission_data.relic);
+            --s:queue2("Defend");
+
+            local machine = statemachine.Start("cca_relic_attack", nil, { v = v, relic = mission_data.relic });
+            table.insert(mission_data.sub_machines, machine);
+        end
+
+
+        mission_data.msg_inspect =  AudioMessage(audio.inspect);
+
+        self:next();
+    end },
+    function (self)
+        if IsAudioMessageDone(mission_data.msg_inspect) then
+            self:next()
+        end
+    end,
+    { "defendRelic.destroy_relic.start", function(self)
+        objective.AddObjective("rbd0524.otf");
+        mission_data.relic:SetTeamNum(2);
+        self:next();
+    end },
+    { "defendRelic.destroy_relic.update", function(self)
+        if mission_data.relic:GetMaxHealth() - mission_data.relic:GetCurHealth() >= 1000 then
+            mission_data.destroy_audio = AudioMessage(audio.destroy_f);
+            -- @todo start a side-machine for "defendRelic.cca_attack_base"
+            local machine = statemachine.Start("defendRelic.cca_attack_base");
+            table.insert(mission_data.sub_machines, machine);
+            self:next();
+        end
+    end },
+    function(self)
+        if not mission_data.destroy_audio or IsAudioMessageDone(mission_data.destroy_audio) then
+            objective.UpdateObjective("rbd0524.otf","RED");
+            --self:startTask("nuke");
+            self:next();
+        end
+    end,
+    { "defendRelic.nuke.start", function(self)
+        objective.AddObjective("rbd0525.otf");
+        --mission_data.day_id = ProducerAi:queueJob(ProductionJob("apwrckz",3,mission_data.relic));
+        --self:call("_setUpProdListeners",mission_data.day_id,"_setDayWrecker");
+        mission_data.detect_daywrecker = true;
+        local units, lead = mission.spawnInFormation2({"   1   ","1 1 2 2", "3 3 3 3"},"cca_relic_attack",{"svtank","svrckt","svfigh"},2,15);
+        for i, v in pairs(units) do
+            if(v ~= lead) then
+                v:Defend2(lead);
+            end
+            --local s = mission.TaskManager:sequencer(v);
+            --s:queue2("Goto","cca_relic_attack");
+            --s:queue2("Defend2", mission_data.relic);
+            --s:queue2("Defend");
+
+            local machine = statemachine.Start("cca_relic_attack", nil, { v = v, relic = mission_data.relic });
+            table.insert(mission_data.sub_machines, machine);
+        end
+        self:next();
+    end },
+    { "defendRelic.nuke.update", function(self)
+        -- this should be ported partially to a sub-machine
+        if(gameobject.GetPlayerGameObject():IsAlive() and (mission_data.nuke_state < 4) and (GetDistance(GetPlayerHandle(),"relic_site") > 200)) then
+            objective.RemoveObjective(mission_data.nuke_state < 2 and "rbd0530.otf" or "rbd0531.otf");
+            objective.AddObjective("rbd0533.otf","RED");
+            --self:taskFail("nuke");
+            self:switch(nil);
+            FailMission(GetTime()+5.0,nil);
+            mission_data.nuke_state = 4;
+        elseif(mission_data.nuke_state == 0) then
+            mission_data.nuke_wait_t1 = mission_data.nuke_wait_t1 - dtime; -- 5
+            if(mission_data.nuke_wait_t1 <= 0) then
+                objective.AddObjective("rbd0530.otf");
+                mission_data.nuke_state = 1;
+            end
+        elseif(mission_data.nuke_state == 1) then
+            mission_data.nuke_wait_t2 = mission_data.nuke_wait_t2 - dtime; -- 2
+            if(mission_data.nuke_wait_t2 <= 0) then
+                objective.RemoveObjective("rbd0530.otf");
+                objective.AddObjective("rbd0531.otf");
+                mission_data.nuke_state = 3;
+            end
+        elseif(mission_data.nuke_state == 3) then
+            if(Length(mission_data.daywrecker:GetPosition() - mission_data.relic:GetPosition()) < 100) then
+                objective.RemoveObjective(mission_data.nuke_state < 2 and "rbd0530.otf" or "rbd0531.otf");
+                objective.AddObjective("rbd0534.otf","GREEN");
+                AudioMessage(audio.done_d);
+                mission_data.nuke_state = 5;
+            end
+        end
+        if(not mission_data.daywrecker:IsValid() and mission_data.daywrecker) then
+            print(mission_data.relic:IsValid());
+            if(not mission_data.relic:IsValid()) then
+                --self:taskSucceed("nuke");
+                objective.ClearObjectives();
+                --mission.Objective:Start("rtbAssumeControl");
+                self:next();
+            else
+                --self:taskFail("nuke");
+                objective.UpdateObjective("rbd0525.otf","red");
+                FailMission(GetTime()+5.0,mission_data.failCauses[cause or "NONE"]);
+                self:switch(nil);
+            end
+        end
+    end },
+    { "rtbAssumeControl", function(self)
+        objective.AddObjective("rbd0532.otf");
+        --self:startTask("fix_base");
+        mission_data.waitToSuccess = 5;
+        self:next();
+    end },
+    { "rtbAssumeControl.update.fix_base", function(self)
+        if(gameobject.GetPlayerGameObject():GetDistance("bdog_base") < 700) then 
+            --wait a bit, success
+            local hasComm = false;
+            gameobject.GetFactoryGameObject(3):Damage(10000);
+            local oldRecy = gameobject.GetRecyclerGameObject(3);
+            mission_data.recy = bzObjects.copyObject(oldRecy,"bvrecx",false);
+            oldRecy:RemoveObject();
+            for v in gameobject.ObjectsInRange(500,"bdog_base") do
+                if(v:GetClassLabel() == "wingman" and v:GetTeamNum() ~= 1) then
+                    v:Damage(2500);
+                end
+                if(v:IsBuilding()) then
+                    v:Damage(math.random()*1000 + 100);
+                end
+            end
+            --self:taskSucceed("fix_base");
+            self:next();
+        end
+    end },
+    function (self)
+        if gameobject.GetPlayerGameObject():GetDistance("bdog_base") < 200 then
+            self:next();
+        end
+    end,
+    statemachine.SleepSeconds(5),
+    { "rtbAssumeControl.success", function(self)
+        AudioMessage(audio.back_to_base);
+        SetMaxScrap(1,50);
+        SetScrap(1,30);
+        for v in gameobject.ObjectsInRange(500,"bdog_base") do
+            if(v:GetTeamNum() == 3) then
+                v:SetTeamNum(1);
+            end
+        end
+        objective.ClearObjectives();
+        --orig15setup();
+        local machine = statemachine.Start("secondWave");
+        table.insert(mission_data.sub_machines, machine);
+
+        self:next();
+    end },
+    { "destorySovietComm", function(self)
+        mission_data.scomm = gameobject.GetGameObject("sovietcomm");
+        objective.AddObjective("rbdnew3502.otf");
+        mission_data.spawnDef = false;
+        mission_data.scc = false;
+        mission_data.t1 = 30;
+        self:next();
+    end },
+    { "destorySovietComm.update.spawnDef", function(self)
+        if GetWhoShotMe(mission_data.scomm:GetHandle()) ~= nil then
+            mission_data.spawnDef = true;
+            mission_data.ktargets = {
+                gameobject.BuildGameObject("svfigh", 2, "defense_spawn"),
+                gameobject.BuildGameObject("svfigh", 2, "defense_spawn"),
+                gameobject.BuildGameObject("svtank", 2, "defense_spawn"),
+                gameobject.BuildGameObject("svltnk", 2, "defense_spawn")
+            };
+            for i,v in pairs(mission_data.ktargets) do
+                v:Patrol("defense_path");
+            end
+            self:next();
+        end
+    end },
+    { "destorySovietComm.update.scc", function(self)
+        if not mission_data.scomm:IsAlive() then
+            objective.UpdateObjective("rbdnew3502.otf","GREEN");
+            mission_data.scc = true;
+            self:next();
+        end
+    end },
+    { "destorySovietComm.update.scc.finish", function(self)
+        mission_data.t1 = mission_data.t1 - dtime;
+        if( (mission_data.t1 <= 0) or checkDead(mission_data.ktargets or {}) ) then
+            --self:success();
+            --mission.Objective:Start("baseDestroyCin",mission_data.ktargets);
+            self:next();
+        end
+    end },
+    { "baseDestroyCin.initstart", function(self)
+        -- init
+        mission_data.targets = {
+            "turr1",
+            "turr2",
+            "commtower",
+            "recycler"
+        };
+
+        -- start
+        --Spawns attackers in a formation
+        mission_data.cam = false;
+        mission_data.camstage = 0;
+        mission_data.t1 = 7;
+        mission_data.stageTimers = {
+            15,
+            10,
+            5,
+            10
+        };
+        mission_data.minwait = mission_data.t1 + 15 + 10 + 10 + 6 + 10;
+        mission_data.waitleft = mission_data.minwait;
+        mission_data.attackers = spawnInFormation2({
+            "1 2 3 2 3 2 1",
+            "1 3 1 3 1 3 1",
+            "4 4 4 4 4 4 4"
+        },"base_attack1",{"svfigh","svrckt","svltnk","svhraz"},2,20);
+        for i, v in pairs(mission_data.attackers) do
+            v:Goto("base_attack1");
+        end
+        self:next();
+    end },
+    { "baseDestroyCin.update", function(self)
+        for i,v in pairs(mission_data.attackers) do
+            local task = v:GetCurrentCommand() ~= AiCommand["NONE"];
+            --[[if(not task) then
+                for i2,v2 in pairs(mission_data.targets) do
+                    if( i<=(i2*3) and (not task) ) then
+                        local t = gameobject.GetGameObject(v2);
+                        if(IsAlive(t)) then
+                            Attack(v,t);
+                            task = true;
+                        end
+                    end
+                end
+            end--]]
+            if(not task) then
+                v:Goto("bdog_base");
+            end
+        end
+        self:next();
+    end },
+    statemachine.SleepSeconds(7),
+    function (self)
+        mission_data.cam = CameraReady();
+        mission_data.camstage = 1;
+        self:SecondsHavePassed(mission_data.minwait); -- start counting internally
+        return statemachine.FastResult(); -- trigger next state immediately
+    end,
+    function (self)
+        if mission_data.attackers[3]:IsAlive() then
+            CameraObject(mission_data.attackers[3],0,1000,-3000,mission_data.attackers[3]);
         else
-          self.attack_timer = table.remove(self.attack_timers,1);
+            mission_data.camstage = mission_data.camstage + 1;
+            self:next();
         end
-      end
-      if(self.attack_timer ~= nil) then
-        self.attack_timer = self.attack_timer - dtime;
-        if(self.attack_timer <= 0) then
-          --spawn an attack wave
-          local wave = table.remove(self.attack_waves,1);
-          for i,v in pairs(mission.spawnInFormation2(wave.formation,wave.loc,{"svfigh","svtank","svrckt","svhraz","svltnk"},2,15)) do
-            Goto(v,wave.loc);
-          end
-          self.attack_timer = nil;
-        end
-      end
-    end
-    if(self:isTaskActive("destroy_relic")) then
-      if((GetMaxHealth(self.relic) - GetCurHealth(self.relic) >= 1000) and (not self:hasTaskStarted("cca_attack_base"))) then
-        self:startTask("cca_attack_base");
-        self.destroy_audio = AudioMessage(audio.destroy_f);
-      elseif(self:hasTaskStarted("cca_attack_base") and ((not self.destroy_audio) or IsAudioMessageDone(self.destroy_audio))) then
-        self:taskSucceed("destroy_relic");
-      end
-    elseif(self:isTaskActive("nuke")) then
-      if(IsAlive(GetPlayerHandle()) and (self.nuke_state < 4) and (GetDistance(GetPlayerHandle(),"relic_site") > 200)) then
-        RemoveObjective(self.nuke_state < 2 and "rbd0530.otf" or "rbd0531.otf");
-        AddObjective("rbd0533.otf","red");
-        self:taskFail("nuke");
-        self.nuke_state = 4;
-      else
-        if(self.nuke_state == 0) then
-          self.nuke_wait_t1 = self.nuke_wait_t1 - dtime;
-          if(self.nuke_wait_t1 <= 0) then
-            AddObjective("rbd0530.otf");
-            self.nuke_state = 1;
-          end
-        elseif(self.nuke_state == 1) then
-          self.nuke_wait_t2 = self.nuke_wait_t2 - dtime;
-          if(self.nuke_wait_t2 <= 0) then
-            RemoveObjective("rbd0530.otf");
-            AddObjective("rbd0531.otf");
-            self.nuke_state = 3;
-          end
-        elseif(self.nuke_state == 3) then
-          if(Length(GetPosition(self.daywrecker) - GetPosition(self.relic)) < 100) then
-            RemoveObjective(self.nuke_state < 2 and "rbd0530.otf" or "rbd0531.otf");
-            AddObjective("rbd0534.otf","green");
-            AudioMessage(audio.done_d);
-            self.nuke_state = 5;
-          end
-        end
-      end
-      if(not IsValid(self.daywrecker) and self.daywrecker) then
-        print(IsValid(self.relic));
-        if(not IsValid(self.relic)) then
-          self:taskSucceed("nuke");
+    end,
+    function (self)
+        if mission_data.attackers[8]:IsAlive() then
+            CameraObject(mission_data.attackers[8],0,1000,-3000,mission_data.attackers[8]);
         else
-          self:taskFail("nuke");
+            mission_data.camstage = mission_data.camstage + 1;
+            self:next();
         end
-      end
+    end,
+    function (self)
+        if mission_data.attackers[12]:IsAlive() then
+            CameraObject(mission_data.attackers[12],0,1000,-3000,mission_data.attackers[12]);
+        else
+            mission_data.camstage = mission_data.camstage + 1;
+            self:next();
+        end
+    end,
+    function (self)
+        if mission_data.attackers[9]:IsAlive() then
+            CameraPath("25cin_pan1",5000,200,elf.attackers[9]);
+        else
+            mission_data.camstage = mission_data.camstage + 1;
+            self:next();
+        end
+    end,
+    function (self)
+        if self:SecondsHavePassed(mission_data.minwait) then
+            mission_data.cam = not CameraFinish();
+            for v in gameobject.ObjectsInRange(500,"bdog_base") do
+                if(GetPlayerGameObject() ~= v) then
+                    if(v:GetTeamNum() == 1) then
+                        v:Damage(v:GetMaxHealth()/12 * dtime * (math.random()*1.5 + 0.5));
+                    end
+                end
+            end
+            self:next();
+        end
+    end,
+    function (self)
+        --Make sure all units are destroyed
+        for i,v in pairs(mission_data.attackers) do
+            v:RemoveObject();
+        end
+        for v in gameobject.ObjectsInRange(500,GetPosition("nsdf_base")) do
+            if(gameobject.GetPlayerGameObject() ~= v) then 
+                v:Damage(100000);
+            end
+        end
+
+        --miss26setup();
+        --Spawns inital objects
+        AudioMessage(audio.apc_spawn);
+        objective.RemoveObjective("rbdnew3502.otf");
+        spawnAtPath("proxminb",2,"spawn_prox");
+        spawnAtPath("svfigh",2,"26spawn_figh");
+        spawnAtPath("svrckt",2,"26spawn_rock");
+        spawnAtPath("svturr",2,"26spawn_turr");
+        spawnAtPath("svltnk",2,"26spawn_light");
+        local apcs = spawnAtPath("bvapc26",1,"26spawn_apc");
+        for i, v in pairs(apcs) do
+            SetLabel(v,("apc%d"):format(i));
+            v:SetObjectiveName(("Transport %d"):format(i));
+            v:SetObjectiveOn();
+            v:Goto("26apc_meatup",1);
+        end
+        for i, v in pairs(spawnAtPath("bvtank",1,"26spawn_tank")) do
+            v:Goto("26apc_meatup",1);
+        end
+        spawnAtPath("bvhraz",1,"26spawn_bomber")[1]:Goto("26bomber_rev",1);
+        --apcMeetup:start();
+        self:next();
+    end,
+    { "apcMeetup", function(self)
+        -- init
+        mission_data.apcs = {gameobject.GetGameObject("apc1"),gameobject.GetGameObject("apc2")};
+        -- start
+        objective.AddObjective("bdmisn2504.otf","WHITE");
+
+        self:next();
+    end },
+    { "apcMeetup.update", function(self)
+        if(checkAnyDead(mission_data.apcs)) then
+            --self:fail();
+            objective.UpdateObjective("bdmisn2504.otf","RED");
+            FailMission(GetTime()+5.0,"bdmisn26l1.des");
+            self:switch(nil);
+            return;
+        end
+        if(gameobject.GetPlayerGameObject():GetDistance(mission_data.apcs[1]) < 50) then
+            --self:success();
+            objective.UpdateObjective("bdmisn2504.otf","GREEN");
+            mission.Objective:Start("pickupSurvivors");
+            self:next();
+            return;
+        end
+    end },
+    { "pickupSurvivors", function(self)
+        -- init
+        mission_data.apcs = {gameobject.GetGameObject("apc1"),gameobject.GetGameObject("apc2")};
+        mission_data.nav = gameobject.GetGameObject("nav1");
+        -- start
+        objective.AddObjective("rbdnew3503.otf", "WHITE");
+        mission_data.t1 = 30;
+        mission_data.arived = false;
+        local navs = spawnAtPath("apcamr",1,"26spawn_nav");
+        for i, v in pairs(navs) do
+            SetLabel(v,("nav%d"):format(i));
+            v:SetMaxHealth(0);
+            v:SetPosition(v:GetPosition() + SetVector(0,100,0));
+        end
+        navs[1]:SetObjectiveName("NSDF Outpost");
+        navs[2]:SetObjectiveName("Rendezvous Point");
+        for i, v in pairs(mission_data.apcs) do
+            v:Goto("apc_follow_path");
+        end
+        mission_data.nav = navs[1];
+        
+        --mission_data.mission_states:on("pickupSurvivors.apc_watch");
+        self:next();
+
+    end },
+    { "pickupSurvivors.update", function(self)
+        if(checkAnyDead(mission_data.apcs)) then
+            --self:fail(1);
+            FailMission(GetTime()+5.0,"bdmisn26l1.des");
+            self:switch(nil);
+            return;
+        end
+        if(mission_data.apcs[1]:IsWithin(mission_data.nav,200) or 
+        mission_data.apcs[2]:IsWithin(mission_data.nav,200) or 
+            gameobject.GetPlayerGameObject():IsWithin(mission_data.nav,200)) then
+            mission_data.pilots = spawnAtPath("aspilo",1,"spawn_pilots")
+            for i,v in pairs(mission_data.pilots) do
+                v:SetIndependence(0);
+            end
+            self:next();
+        end
+    end },
+    { "pickupSurvivors.update.pilots", function(self)
+        if(checkAnyDead(mission_data.apcs)) then
+            --self:fail(1);
+            FailMission(GetTime()+5.0,"bdmisn26l1.des");
+            self:switch(nil);
+            return;
+        end
+        if(checkAnyDead(mission_data.pilots)) then
+            --self:fail(2);
+            FailMission(GetTime()+5.0,"bdmisn26l2.des");
+            self:switch(nil);
+            return;
+        end
+        if(mission_data.apcs[1]:IsWithin(mission_data.nav,50) or mission_data.apcs[2]:IsWithin(mission_data.nav,50)) then
+            for i,v in ipairs(mission_data.pilots) do
+                local t = mission_data.apcs[math.floor( (i-1)/3 ) + 1];
+                v:Goto(t);
+            end
+            mission_data.arived = true;
+            self:next();
+        end
+    end },
+    { "pickupSurvivors.update.pilots2", function(self)
+        if(checkAnyDead(mission_data.apcs)) then
+            --self:fail(1);
+            FailMission(GetTime()+5.0,"bdmisn26l1.des");
+            self:switch(nil);
+            return;
+        end
+        if(checkAnyDead(mission_data.pilots)) then
+            --self:fail(2);
+            FailMission(GetTime()+5.0,"bdmisn26l2.des");
+            self:switch(nil);
+            return;
+        end
+        for i,v in pairs(mission_data.apcs) do
+            if(v:IsWithin(mission_data.nav,40) ) then
+                v:Dropoff(v:GetPosition());
+            end
+        end
+        mission_data.t1 = mission_data.t1 - dtime;
+        local pleft = 0;
+        for i,v in pairs(mission_data.pilots) do
+            
+            if(v:IsWithin(v:GetCurrentWho(),10) or (v:GetCurrentCommand() == AiCommand["NONE"]) ) then
+                v:RemoveObject();
+                mission_data.pilots[i] = nil;
+            else
+                pleft = pleft + 1;
+            end
+            
+        end
+        if((pleft <= 0)) then---or (mission_data.t1 <= 0)) then
+            --self:success();
+            AudioMessage(audio.pickup_done);
+            for i,v in pairs(mission_data.apcs) do
+                Stop(v,0);
+            end  
+            objective.UpdateObjective("rbdnew3503.otf","GREEN");
+            --mission.Objective:Start("escortAPCs");
+            self:next();
+        end
+    end },
+    { "escortAPCs", function(self)
+        -- init
+        mission_data.nav = gameobject.GetGameObject("nav2");
+        mission_data.apcs = {gameobject.GetGameObject("apc1"),gameobject.GetGameObject("apc2")};
+        -- start
+        objective.ClearObjectives();
+        objective.AddObjective("bdmisn2602.otf","white");
+        objective.AddObjective("bdmisn2603.otf","white");
+
+        self:next();
+    end },
+    function(self)
+        if(checkAnyDead(mission_data.apcs)) then
+            --self:fail();
+            objective.UpdateObjective("bdmisn2603.otf","red");
+            FailMission(GetTime()+5.0,"bdmisn26l1.des");
+            self:switch(nil);
+        end
+        if(mission_data.apcs[1]:IsWithin(mission_data.nav,100) and mission_data.apcs[2]:IsWithin(mission_data.nav,100)) then
+            --self:success();
+            objective.UpdateObjective("bdmisn2602.otf","GREEN");
+            objective.UpdateObjective("bdmisn2603.otf","GREEN");
+            AudioMessage(audio.win);
+            SucceedMission(GetTime()+5.0, "bdmisn26wn.des");
+            self:switch(nil);
+        end
     end
-  end,
-  save = function(self)
-    return {
-      wait1 = self.wait_while_shooting,
-      daywrecker = self.daywrecker,
-      patrol_id = self.patrol_id,
-      attack_waves = self.attack_waves,
-      attack_timer = self.attack_timer,
-      attack_timers = self.attack_timers,
-      day_id = self.day_id,
-      nuke_wait_t1 = 5,
-      nuke_wait_t2 = 2,
-      nuke_state = self.nuke_state,
-      destroy_audio = self.destroy_audio
-    };
-  end,
-  load = function(self,data)
-    self.wait_while_shooting = data.wait1;
-    self.daywrecker = data.daywrecker;
-    self.patrol_id = data.patrol_id;
-    self.attack_waves = data.attack_waves;
-    self.attack_timer = data.attack_timer;
-    self.attack_timers = data.attack_timers;
-    self.day_id = data.day_id;
-    self.nuke_wait_t1 = data.nuke_wait_t1;
-    self.nuke_wait_t2 = data.nuke_wait_t2;
-    self.nuke_state = data.nuke_state;
-    self.destroy_audio = data.destroy_audio;
-    self:call("_setUpProdListeners",self.day_id,"_setDayWrecker");
-  end
 });
 
-local RtbAssumeControl = mission.Objective:define("rtbAssumeControl"):createTasks(
-  "fix_base", "reclaim"
-):setListeners({
-  init = function(self)
-  end,
-  start = function(self)
-    AddObjective("rbd0532.otf");
-    self:startTask("fix_base");
-    self.waitToSuccess = 5;
-  end,
-  success = function(self)
-    AudioMessage(audio.back_to_base);
-    SetMaxScrap(1,50);
-    SetScrap(1,30);
-    for v in ObjectsInRange(500,"bdog_base") do
-      if(GetTeamNum(v) == 3) then
-        SetTeamNum(v,1);
-      end
-    end
-    ClearObjectives();
-    orig15setup();
-  end,
-  update = function(self,dtime)
-    if(self:isTaskActive("reclaim")) then
-      self.waitToSuccess = self.waitToSuccess - dtime;
-      if(self.waitToSuccess <= 0) then
-        self:taskSucceed("reclaim");
-        self:success();
-      end 
-    end
-    if((not self:hasTaskStarted("reclaim")) and GetDistance(GetPlayerHandle(),"bdog_base") < 200) then 
-      self:startTask("reclaim");
-    end
-    if(self:isTaskActive("fix_base") and GetDistance(GetPlayerHandle(),"bdog_base") < 700) then 
-      --wait a bit, success
-      local hasComm = false;
-      Damage(GetFactoryHandle(3),10000);
-      local oldRecy = GetRecyclerHandle(3);
-      self.recy = bzObjects.copyObject(oldRecy,"bvrecx",false);
-      RemoveObject(oldRecy);
-      for v in ObjectsInRange(500,"bdog_base") do
-        if(GetClassLabel(v) == "wingman" and GetTeamNum(v) ~= 1) then
-          Damage(v,2500);
+--- @todo add this to the script
+--delete_object = function(self,handle)
+--    local c = GetConstructorHandle(3);
+--    if(c ~= nil and not IsAlive(c)) then
+--        ProducerAi:queueJob(ProductionJob("bvcnst",3));
+--    end
+--end
+
+stateset.Create("mission")
+    :Add("main_objectives", stateset.WrapStateMachine("main_objectives"))
+    --:Add("pickupSurvivors.apc_watch", function(state, name)
+    --    if(checkAnyDead(mission_data.apcs)) then
+    --        FailMission(GetTime()+5.0,"bdmisn26l1.des");
+    --        state:off(name, true);
+    --    end
+    --end)
+    ;
+
+hook.Add("Producer:BuildComplete", "Mission:ProducerBuildComplete", function (object, producer, job)
+    --- @cast object GameObject
+    --- @cast producer GameObject
+    --- @cast job ProductionQueue
+
+    if job and job.event and job.event.name then
+        if job.event.name == "relic_camera" then
+            -- @todo auto queue remaking this?
+            object:SetObjectiveName("Relic Site");
+            mission_data.camera_handle = object;
+            if mission_data.camera_keep_teamed then
+                object:SetTeamNum(1);
+            end
         end
-        if(IsBuilding(v)) then
-          Damage(v,math.random()*1000 + 100);
+        if job.event.name == "patrolProd" then
+            --self:call("_forEachPatrolUnit",...);
+            --For each unit produced in order to patrol the base, add them to the patrol routine
+            --local mission_data.patrol_r = bzRoutine.routineManager:getRoutine(mission_data.patrol_id);
+            mission_data.patrol_r:addGameObject(object);
         end
-      end
-      self:taskSucceed("fix_base");
+        if job.event.name == "_doneTurret" then
+            object:Goto(job.event.location);
+        end
+        if job.event.name == "_forEachProduced1" then
+            object:SetTeamNum(1);
+            mission_data.wait_for_units = mission_data.wait_for_units + 1;
+        end
     end
-  end,
-  save = function(self)
-    return self.waitToSuccess, self.recy;
-  end,
-  load = function(self,...)
-    self.waitToSuccess, self.recy = ...;
-  end
-});
+end);
 
 
 
-function Start()
-  core:onStart();
-  SetPilot(1,5);
-  SetScrap(1,8);
-  Ally(1,3);
-  SetMaxHealth(GetHandle("abbarr2_barracks"),0);
-  SetMaxHealth(GetHandle("abbarr3_barracks"),0);
-  SetMaxHealth(GetHandle("abcafe3_i76building"),0);
-  SetMaxScrap(3,5000);
-  SetScrap(3,2000);
-  SetMaxPilot(3,5000);
-  SetPilot(3,1000);
-  local h = GetHandle("relic_1");
-  SetMaxHealth(h,900000);
-  SetCurHealth(h,900000); 
-  intro:start();
-  for i = 1, 13 do
-    Patrol(GetHandle("patrol_" .. i), "patrol_path");
-  end
-  --ConstructorAi:addFromPath("make_bblpow",3,"bblpow");
-end
 
-function Update(dtime)
-  core:update(dtime);
-  mission:Update(dtime);
-  for i,v in pairs(pwers) do
-    if GetCurrentCommand(v.h) == AiCommand["GO"] then
-      SetTeamNum(v.h,v.t);
-      pwers[i] = nil;
+hook.Add("Start", "Mission:Start", function ()
+    --core:onStart();
+    SetPilot(1,5);
+    SetScrap(1,8);
+    Ally(1,3);
+    gameobject.GetGameObject("abbarr2_barracks"):SetMaxHealth(0);
+    gameobject.GetGameObject("abbarr3_barracks"):SetMaxHealth(0);
+    gameobject.GetGameObject("abcafe3_i76building"):SetMaxHealth(0);
+    SetMaxScrap(3,5000);
+    SetScrap(3,2000);
+    SetMaxPilot(3,5000);
+    SetPilot(3,1000);
+    local h = gameobject.GetGameObject("relic_1");
+    if not h then error("relic_1 not found") end
+    h:SetMaxHealth(900000);
+    h:SetCurHealth(900000);
+    --intro:start();
+    for i = 1, 13 do
+        gameobject.GetGameObject("patrol_" .. i):Patrol("patrol_path");
     end
-  end
-end
+    --ConstructorAi:addFromPath("make_bblpow",3,"bblpow");
 
-function CreateObject(handle)
-  core:onCreateObject(handle);
-  mission:CreateObject(handle);
-  local l = GetClassLabel(handle);
-  if(IsIn(l,{"ammopack","repairkit","daywrecker","wpnpower","camerapod"})) then
-    table.insert(pwers,{h=handle,t=GetTeamNum(handle)});
-    SetTeamNum(handle,1);
-  end
-end
+      mission_data.mission_states = stateset.Start("mission")
+        :on("main_objectives");
+end);
 
-function AddObject(handle)
-  core:onAddObject(handle);
-  mission:AddObject(handle);
-end
 
-function DeleteObject(handle)
-  core:onDeleteObject(handle);
-  mission:DeleteObject(handle);
-end
+hook.Add("Update", "Mission:Update", function (dtime, ttime)
+    --core:update(dtime);
+    --mission:Update(dtime);
+    for i,v in pairs(mission_data.pwers) do
+        if v.h:GetCurrentCommand() == AiCommand["GO"] then
+            v.h:SetTeamNum(v.t);
+            mission_data.pwers[i] = nil;
+        end
+    end
 
-function Save()
-  return mission:Save(),{core:save()};
-end
+    if mission_data.sub_machines then
+        -- call update on all items and remove them if they return false
+        for i = #mission_data.sub_machines, 1, -1 do
+            local v = mission_data.sub_machines[i];
+            if(v) then
+                local success = v:run(dtime);
+                --- @cast success StateMachineIterWrappedResult
+                if not success or (statemachine.isstatemachineiterwrappedresult(success) and success.Abort) then
+                    table.remove(mission_data.sub_machines,i); -- clean up dead machines from the list
+                end
+            end
+        end
+    end
 
-function Load(missison_date,cdata)
-  core:load(unpack(cdata));
-  mission:Load(missison_date);
-end
+    mission_data.mission_states:run(dtime);
+end);
 
-minit.init()
+
+
+hook.Add("CreateObject", "Mission:CreateObject", function (object)
+    --- @cast object GameObject
+    if mission_data.detect_daywrecker and not mission_data.daywrecker and object:GetOdf() == "apwrckz" then
+        object:SetMaxHealth(0);
+        object:SetObjectiveOn();
+        mission_data.daywrecker = object
+        mission_data.detect_daywrecker = nil;
+    end
+
+    --core:onCreateObject(handle);
+    --mission:CreateObject(handle);
+    local l = object:GetClassLabel();
+    if(IsIn(l,{"ammopack","repairkit","daywrecker","wpnpower","camerapod"})) then
+        table.insert(mission_data.pwers,{h=object,t=object:GetTeamNum()});
+        object:SetTeamNum(1);
+    end
+
+end);
+
+--function AddObject(handle)
+--  core:onAddObject(handle);
+--  mission:AddObject(handle);
+--end
+
+--function DeleteObject(handle)
+--  core:onDeleteObject(handle);
+--  mission:DeleteObject(handle);
+--end
+
+
+hook.AddSaveLoad("Mission",
+function()
+    return mission_data;
+end,
+function(g)
+    mission_data = g;
+end);

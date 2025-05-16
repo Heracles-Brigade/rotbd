@@ -219,7 +219,6 @@ stateset.Create("mission")
 		if mission_data.Player:IsWithin(mission_data.MammothDecoy, 100.0) --[[and mission_data.Player == mission_data.Mammoth--]] then
 			mission_data.Aud1 = AudioMessage(audio.wasatrap);
 			mission_data.DecoyTriggered = true;
-			print("\27[34m----FAKE MAMMOTH----\27[0m");
 			state:off("extra_find_decoy_after_real");
 		end
 	end);
@@ -250,6 +249,9 @@ statemachine.Create("main_objectives", {
 		
 		for i = 1,3 do
 			local tmpnav = gameobject.GetGameObject("nav" .. i);
+			if tmpnav == nil then
+				error("Nav "..i.." is nil!");
+			end
 			mission_data.NavCoords[i] = tmpnav:GetPosition();
 			tmpnav:RemoveObject();
 		end
