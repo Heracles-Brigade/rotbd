@@ -385,27 +385,10 @@ statemachine.Create("main_objectives", {
     { "rendezvous__update", function(self)
         local rec = gameobject.GetRecyclerGameObject(3);
         if rec and gameobject.GetPlayerGameObject():IsWithin(rec, 100) then
+            objective.UpdateObjective("rbd0521.otf","GREEN");
             self:next();
         end
     end },
-    function(self)
-        objective.UpdateObjective("rbd0521.otf","GREEN");
-    end,
-    { "goto_relic__start", function(self)
-        objective.AddObjective("rbd0523.otf");
-        mission_data.camera_handle:SetTeamNum(1);
-        AudioMessage(audio.intro);
-        mission_data.camera_keep_teamed = true;
-        self:next();
-    end },
-    { "goto_relic__update", function(self)
-        if(IsInfo(mission_data.relic:GetOdf())) then
-            self:next();
-        end
-    end },
-    function(self)
-        objective.UpdateObjective("rbd0523.otf","GREEN");
-    end,
     { "wait_for_units__start", function(self)
         objective.AddObjective("rbd0522.otf");
         --Make producer create units
@@ -429,7 +412,6 @@ statemachine.Create("main_objectives", {
 
         self:next();
     end },
-
     { "wait_for_units__update", function (state) 
         if mission_data.wait_for_units >= 9 then
             state:next();
@@ -438,6 +420,7 @@ statemachine.Create("main_objectives", {
     statemachine.SleepSeconds(7),
     function(self)
         objective.UpdateObjective("rbd0522.otf","GREEN");
+        self:next();
     end,
     { "success", function(self)
         objective.ClearObjectives();
@@ -445,6 +428,22 @@ statemachine.Create("main_objectives", {
         --- @todo determine if the team 3 "bvcnst" rebuilder, which isn't even restored yet, should be stopped after this
         self:next();
     end },
+    { "goto_relic__start", function(self)
+        objective.AddObjective("rbd0523.otf");
+        mission_data.camera_handle:SetTeamNum(1);
+        AudioMessage(audio.intro);
+        mission_data.camera_keep_teamed = true;
+        self:next();
+    end },
+    { "goto_relic__update", function(self)
+        if(IsInfo(mission_data.relic:GetOdf())) then
+            self:next();
+        end
+    end },
+    function(self)
+        objective.UpdateObjective("rbd0523.otf","GREEN");
+        self:next();
+    end,
     { "defendRelic", function(self)
         mission_data.failCauses = {};
         mission_data.relic = gameobject.GetGameObject("relic_1");
@@ -969,13 +968,15 @@ stateset.Create("mission")
     --end)
     ;
 
-hook.Add("Producer:BuildComplete", "Mission:ProducerBuildComplete", function (object, producer, job)
+hook.Add("Producer:BuildComplete", "Mission:ProducerBuildComplete", function (object, producer, data)
     --- @cast object GameObject
     --- @cast producer GameObject
-    --- @cast job ProductionQueue
+    --- @cast data any
 
-    if job and job.event and job.event.name then
-        if job.event.name == "relic_camera" then
+    debugprint("Producer:BuildComplete", object:GetOdf(), producer:GetOdf(), data and table.show(data));
+
+    if data and data.name then
+        if data.name == "relic_camera" then
             -- @todo auto queue remaking this?
             object:SetObjectiveName("Relic Site");
             mission_data.camera_handle = object;
@@ -983,16 +984,16 @@ hook.Add("Producer:BuildComplete", "Mission:ProducerBuildComplete", function (ob
                 object:SetTeamNum(1);
             end
         end
-        if job.event.name == "patrolProd" then
+        if data.name == "patrolProd" then
             --self:call("_forEachPatrolUnit",...);
             --For each unit produced in order to patrol the base, add them to the patrol routine
             --local mission_data.patrol_r = bzRoutine.routineManager:getRoutine(mission_data.patrol_id);
             mission_data.patrol_r:addGameObject(object);
         end
-        if job.event.name == "_doneTurret" then
-            object:Goto(job.event.location);
+        if data.name == "_doneTurret" then
+            object:Goto(data.location);
         end
-        if job.event.name == "_forEachProduced1" then
+        if data.name == "_forEachProduced1" then
             object:SetTeamNum(1);
             mission_data.wait_for_units = mission_data.wait_for_units + 1;
         end
