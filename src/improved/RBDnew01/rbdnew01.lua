@@ -86,40 +86,44 @@ end
 
 -- Define all objectives
 
--- @todo does this work properly if the tug gets sniped? Oh, it's not snipable
+--- @class TugRelicConvoy_state : StateMachineIter
+--- @field tug GameObject
+--- @field apc GameObject
+--- @field relic GameObject
+
+-- does this work properly if the tug gets sniped? Oh, it's not snipable
 statemachine.Create("tug_relic_convoy",
     function (state)
-        --- @diagnostic disable-next-line: undefined-field
+        --- @cast state TugRelicConvoy_state
         if state.tug:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
-        --- @diagnostic disable-next-line: undefined-field
+        --- @cast state TugRelicConvoy_state
         state.tug:Pickup(state.relic);
         state:next();
     end,
     function (state)
-        --- @diagnostic disable-next-line: undefined-field
+        --- @cast state TugRelicConvoy_state
         if state.tug:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
-        --- @diagnostic disable-next-line: undefined-field
+        --- @cast state TugRelicConvoy_state
         state.tug:Goto("leave_path");
         state:next();
     end,
     function (state)
-        --- @diagnostic disable-next-line: undefined-field
+        --- @cast state TugRelicConvoy_state
         if state.tug:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
-        --- @diagnostic disable-next-line: undefined-field
+        --- @cast state TugRelicConvoy_state
         state.apc:RemoveObject();
-        --- @diagnostic disable-next-line: undefined-field
         state.relic:RemoveObject();
         state:next();
     end);
@@ -156,21 +160,19 @@ statemachine.Create("main_objectives", {
         end
     end },
     { "check_command_obj", function (state)
-        --- @diagnostic disable-next-line: inject-field
+        --- @cast state RBD01_Mission_state
         state.nav1 = navmanager.BuildImportantNav(nil, 1, "nav_path", 0);
         state.nav1:SetMaxHealth(0);
         state.nav1:SetObjectiveName("Navpoint 1");
         state.nav1:SetObjectiveOn();
         objective.AddObjective('bdmisn211.otf', "WHITE");
-        --- @diagnostic disable-next-line: inject-field
         state.command = gameobject.GetGameObject("sbhqcp0_i76building");
         state:next();
     end },
     { "check_command_passfail", function (state)
-        --- @diagnostic disable-next-line: undefined-field
+        --- @cast state RBD01_Mission_state
         if gameobject.GetPlayerGameObject():GetDistance(state.command) < 50.0 then
             AudioMessage(audio.inspect);
-            --- @diagnostic disable-next-line: undefined-field
             state.nav1:SetObjectiveOff();
             objective.UpdateObjective('bdmisn211.otf',"GREEN");
             state:next();
@@ -181,19 +183,17 @@ statemachine.Create("main_objectives", {
         end
     end },
     { "destory_solar1_obj", function (state)
+        --- @cast state RBD01_Mission_state
+        
         -- move this to configuration
-        --- @diagnostic disable-next-line: inject-field
         state.target_l1 = {"sbspow1_powerplant","sbspow2_powerplant","sbspow3_powerplant","sbspow4_powerplant"};
-        --- @diagnostic disable-next-line: inject-field
         state.target_l2 = {"sbspow7_powerplant","sbspow8_powerplant","sbspow5_powerplant","sbspow6_powerplant"};
 
-        --- @diagnostic disable-next-line: inject-field
         state.nav_solar1 = navmanager.BuildImportantNav(nil, 1, "nav_path", 1);
         state.nav_solar1:SetMaxHealth(0);
         state.nav_solar1:SetObjectiveName("Solar Array 1");
         state.nav_solar1:SetObjectiveOn();
         objective.AddObjective('bdmisn212.otf',"WHITE");
-        --- @diagnostic disable-next-line: inject-field
         state.handles = {};
         for i,v in pairs(state.target_l1) do
             state.handles[i] = gameobject.GetGameObject(v)
@@ -201,7 +201,7 @@ statemachine.Create("main_objectives", {
         state:next();
     end },
    { "destory_solar1_pass", function (state)
-        --- @diagnostic disable-next-line: undefined-field
+        --- @cast state RBD01_Mission_state
         if(checkDead(state.handles)) then
             objective.UpdateObjective('bdmisn212.otf',"GREEN");
 			AudioMessage(audio.power1);
@@ -209,26 +209,22 @@ statemachine.Create("main_objectives", {
         end
     end },
     { "destory_solar2_obj", function (state)
-        --- @diagnostic disable-next-line: undefined-field
+        --- @cast state RBD01_Mission_state
         state.nav_solar1:SetObjectiveOff();
-        --- @diagnostic disable-next-line: inject-field
         state.nav_solar2 = navmanager.BuildImportantNav(nil, 1, "nav_path", 2);
         state.nav_solar2:SetMaxHealth(0);
         state.nav_solar2:SetObjectiveName("Solar Array 2");
         state.nav_solar2:SetObjectiveOn();
         objective.AddObjective('bdmisn213.otf',"WHITE");
-        --- @diagnostic disable-next-line: inject-field
         state.handles = {};
-        --- @diagnostic disable-next-line: undefined-field
         for i,v in pairs(state.target_l2) do
             state.handles[i] = gameobject.GetGameObject(v);
         end
         state:next();
     end },
     { "destory_solar2_pass", function (state)
-        --- @diagnostic disable-next-line: undefined-field
+        --- @cast state RBD01_Mission_state
         if(checkDead(state.handles)) then
-        --- @diagnostic disable-next-line: undefined-field
             state.nav_solar2:SetObjectiveOff();
             objective.UpdateObjective('bdmisn213.otf',"GREEN");
             state:next();
@@ -299,13 +295,11 @@ statemachine.Create("main_objectives", {
         end
     end },
     function (state)
+        --- @cast state RBD01_Mission_state
         objective.ClearObjectives();
             
-        --- @diagnostic disable-next-line: undefined-field
         state.nav1:RemoveObject();
-        --- @diagnostic disable-next-line: undefined-field
         state.nav_solar1:RemoveObject();
-        --- @diagnostic disable-next-line: undefined-field
         state.nav_solar2:RemoveObject();
 
         -- @todo We might want to re-order the navs here, but we might not, need to talk thorugh it
@@ -314,7 +308,6 @@ statemachine.Create("main_objectives", {
 
         --Only show if area is not cleared
         if(enemiesInRange(270,mission_data.nav_research)) then
-            --- @diagnostic disable-next-line: inject-field
             state.research_enemies_still_exist = true;
             objective.AddObjective("bdmisn311.otf","WHITE");
     --      else --Removed due to redundancy
@@ -324,7 +317,7 @@ statemachine.Create("main_objectives", {
     end,
     statemachine.SleepSeconds(90, nil, function (state) return not enemiesInRange(270,mission_data.nav_research) end),
     function (state)
-        --- @diagnostic disable-next-line: undefined-field
+        --- @cast state RBD01_Mission_state
         if state.research_enemies_still_exist then
             objective.UpdateObjective("bdmisn311.otf","GREEN");
             -- if we use the alternate text we have to turn it green here
@@ -340,7 +333,6 @@ statemachine.Create("main_objectives", {
         e2:Defend2(recy, 0);
         --Make recycler follow path
         recy:Goto(mission_data.nav_research, 0);
-        --- @diagnostic disable-next-line: inject-field
         state.recy = recy;
         
         recy:SetObjectiveOn();
@@ -348,7 +340,7 @@ statemachine.Create("main_objectives", {
         state:next();
     end,
     function (state)
-        --- @diagnostic disable-next-line: undefined-field
+        --- @cast state RBD01_Mission_state
         if state.recy and state.recy:IsWithin(mission_data.nav_research,200) then
             state:next();
         end
@@ -519,6 +511,7 @@ statemachine.Create("main_objectives", {
         state:next();
     end,
     { "nsdf_attack", function (state)
+        --- @cast state RBD01_Mission_state
         -- @todo the cutscene shows walkers acting like pingpong balls and tanks acting like paddles, might need an adjustment to spawn location
         AudioMessage(audio.nsdf);
         objective.AddObjective('bdmisn2208.otf',"WHITE");
@@ -526,10 +519,8 @@ statemachine.Create("main_objectives", {
         local c,e,g = createWave("avtank",{"spawn_avtank1","spawn_avtank2","spawn_avtank3"},"nsdf_path");
         local d,h,i = createWave("avtank",{"spawn_w1","spawn_w2","spawn_w3"},"west_path");
         local f,j = createWave("svtank",{"spawn_n4","spawn_n5"},"north_path");
-        --- @diagnostic disable-next-line: inject-field
         state.camTarget = camTarget;
         CameraReady();
-        --- @diagnostic disable-next-line: inject-field
         state.targets = {a,b,c,d,e,f,g,h,i,camTarget,j};
         for i,v in pairs(state.targets) do
             v:SetObjectiveOn();
@@ -540,7 +531,7 @@ statemachine.Create("main_objectives", {
         state:next();
     end },
     function (state)
-        --- @diagnostic disable-next-line: undefined-field
+        --- @cast state RBD01_Mission_state
         if (state:SecondsHavePassed(10) or CameraPath("camera_nsdf", 1000, 1500, state.camTarget:GetHandle()) or CameraCancelled()) then
             state:SecondsHavePassed(); -- clear timer if we got here without it being cleared
             CameraFinish();
@@ -553,7 +544,7 @@ statemachine.Create("main_objectives", {
         state:next();
     end,
     function (state)
-        --- @diagnostic disable-next-line: undefined-field
+        --- @cast state RBD01_Mission_state
         if areAllDead(state.targets, 2) then
             gameobject.GetRecyclerGameObject(2):SetObjectiveOn();
             objective.UpdateObjective('bdmisn2208.otf',"GREEN");
@@ -763,4 +754,5 @@ function()
 end,
 function(g)
     mission_data = g;
+    debugprint(table.show(mission_data));
 end);

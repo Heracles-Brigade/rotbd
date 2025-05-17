@@ -178,35 +178,29 @@ local audio = {
 
 statemachine.Create("cca_relic_attack",
     function (state)
-        --- @diagnostic disable-next-line: undefined-field
         if state.v:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
-        --- @diagnostic disable-next-line: undefined-field
         state.v:Goto("cca_relic_attack");
         state:next();
     end,
     function (state)
-        --- @diagnostic disable-next-line: undefined-field
         if state.v:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
-        --- @diagnostic disable-next-line: undefined-field
         state.v:Defend2(state.relic);
         state:next();
     end,
     function (state)
-        --- @diagnostic disable-next-line: undefined-field
         if state.v:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
-        --- @diagnostic disable-next-line: undefined-field
         state.v:Defend();
         state:next();
         return statemachine.AbortResult();
@@ -214,24 +208,20 @@ statemachine.Create("cca_relic_attack",
 
 statemachine.Create("cca_attack_base",
     function (state)
-        --- @diagnostic disable-next-line: undefined-field
         if state.v:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
-        --- @diagnostic disable-next-line: undefined-field
         state.v:Goto("front_line");
         state:next();
     end,
     function (state)
-        --- @diagnostic disable-next-line: undefined-field
         if state.v:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
-        --- @diagnostic disable-next-line: undefined-field
         state.v:Defend();
         state:next();
         return statemachine.AbortResult();
@@ -508,7 +498,7 @@ statemachine.Create("main_objectives", {
         --mission_data.day_id = ProducerAi:queueJob(ProductionJob("apwrckz",3,mission_data.relic));
         --self:call("_setUpProdListeners",mission_data.day_id,"_setDayWrecker");
         mission_data.detect_daywrecker = true;
-        local units, lead = mission.spawnInFormation2({"   1   ","1 1 2 2", "3 3 3 3"},"cca_relic_attack",{"svtank","svrckt","svfigh"},2,15);
+        local units, lead = spawnInFormation2({"   1   ","1 1 2 2", "3 3 3 3"},"cca_relic_attack",{"svtank","svrckt","svfigh"},2,15);
         for i, v in pairs(units) do
             if(v ~= lead) then
                 v:Defend2(lead);
@@ -562,7 +552,7 @@ statemachine.Create("main_objectives", {
                 self:next();
             else
                 --self:taskFail("nuke");
-                objective.UpdateObjective("rbd0525.otf","red");
+                objective.UpdateObjective("rbd0525.otf","RED");
                 FailMission(GetTime()+5.0,mission_data.failCauses[cause or "NONE"]);
                 self:switch(nil);
             end
@@ -914,7 +904,7 @@ statemachine.Create("main_objectives", {
             --self:success();
             AudioMessage(audio.pickup_done);
             for i,v in pairs(mission_data.apcs) do
-                Stop(v,0);
+                v:Stop(0);
             end  
             objective.UpdateObjective("rbdnew3503.otf","GREEN");
             --mission.Objective:Start("escortAPCs");
@@ -927,15 +917,15 @@ statemachine.Create("main_objectives", {
         mission_data.apcs = {gameobject.GetGameObject("apc1"),gameobject.GetGameObject("apc2")};
         -- start
         objective.ClearObjectives();
-        objective.AddObjective("bdmisn2602.otf","white");
-        objective.AddObjective("bdmisn2603.otf","white");
+        objective.AddObjective("bdmisn2602.otf","WHITE");
+        objective.AddObjective("bdmisn2603.otf","WHITE");
 
         self:next();
     end },
     function(self)
         if(checkAnyDead(mission_data.apcs)) then
             --self:fail();
-            objective.UpdateObjective("bdmisn2603.otf","red");
+            objective.UpdateObjective("bdmisn2603.otf","RED");
             FailMission(GetTime()+5.0,"bdmisn26l1.des");
             self:switch(nil);
         end
