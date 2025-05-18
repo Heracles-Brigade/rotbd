@@ -59,6 +59,63 @@ mission_data.pwers = {};
 --local bzRoutine = require("bz_routine");
 --local bzObjects = require("bz_objects");
 
+--- @param handle GameObject
+--- @param odf string
+--- @param kill boolean
+--- @return GameObject
+local function copyObject(handle,odf,kill)
+    local transform = handle:GetTransform();
+    if not transform then error("Failed to get transform of " .. handle:GetObjectiveName()) end
+    local nObject = gameobject.BuildGameObject(odf,handle:GetTeamNum(),transform);
+    if not nObject then error("Failed to build object " .. odf .. " at " .. tostring(transform)) end
+    local pilot = handle:GetPilotClass() or "";
+    local hp = handle:GetCurHealth() or 0;
+    local mhp = handle:GetMaxHealth() or 0;
+    local ammo = handle:GetCurAmmo() or 0;
+    local mammo = handle:GetMaxAmmo() or 0;
+    local vel = handle:GetVelocity();
+    local omega = handle:GetOmega();
+    local label = handle:GetLabel();
+    local d = handle:IsDeployed();
+    local currentCommand = handle:GetCurrentCommand();
+    local currentWho = handle:GetCurrentWho();
+    local independence = handle:GetIndependence();
+    local weapons = {
+        handle:GetWeaponClass(0),
+        handle:GetWeaponClass(1),
+        handle:GetWeaponClass(2),
+        handle:GetWeaponClass(3),
+        handle:GetWeaponClass(4),
+    };
+    for i=1,#weapons do
+        nObject:GiveWeapon(weapons[i],i-1);
+    end
+    nObject:SetTransform(transform);
+    --SetMaxAmmo(nObject,mammo);
+    --SetMaxHealth(nObject,mhp);
+    nObject:SetCurHealth(hp);
+    nObject:SetCurAmmo(hp);
+    print("Kill?",kill);
+    if(handle:IsAliveAndPilot()) then
+        nObject:SetPilotClass(pilot);
+    elseif((not handle:IsAlive()) and kill) then
+        handle:RemovePilot();
+    end
+    nObject:SetLabel(label); --- @todo figure out if a nil param is possible in stock API
+    nObject:SetVelocity(vel);
+    nObject:SetOmega(omega);
+    if(not handle:IsBusy()) then
+      --SetCommand(nObject,currentCommand,0,currentWho,transform,0);
+    end
+    if(d) then
+        nObject:Deploy();
+    end
+    nObject:SetOwner(handle:GetOwner());
+    return nObject;
+    --RemoveObject(handle);
+  end
+
+
 local IsIn = function(a,inB) 
     for i,v in pairs(inB) do
         if(a == v) then
@@ -68,7 +125,21 @@ local IsIn = function(a,inB)
     return false;
 end
 
+--- @param handles GameObject[]
+--- @return boolean
+local function checkDead(handles)
+    for i,v in pairs(handles) do
+        if(v:IsAlive()) then
+            return false;
+        end
+    end
+    return true;
+end
 
+--- @param odf string
+--- @param team TeamNum
+--- @param path string
+--- @return GameObject[]
 local function spawnAtPath(odf,team,path)
     local handles = {};
     local current = GetPosition(path);
@@ -167,40 +238,77 @@ local audio = {
     done_d = "rbd0504.wav",
     back_to_base = "rbd0505.wav",
 
-    
     apc_spawn = "rbd0506.wav",
     pickup_done = "rbd0507.wav",
     win = "rbd0508.wav"
 }
 
+local objective_files = {
+    Rendezvous = "rbd0521.otf",
+    WaitForUnits = "rbd0522.otf",
+    InvestigateRelic = "rbd0523.otf",
+    DestroyRelic = "rbd0524.otf",
+    DefendRelic = "rbd0525.otf",
+    UplinkConnecting = "rbd0530.otf",
+    UplinkTransmitting = "rbd0531.otf",
+    ReturnToBase = "rbd0532.otf",
+    UplinkRetry = "rbd0533.otf",
+    UplinkRunNuke = "rbd0534.otf",
+    EscordAPCsToBase = "bdmisn2601.otf",
+    SendAPCsToEvac = "bdmisn2602.otf",
+    EscortAPCsToEvac = "bdmisn2603.otf",
+    bdmisn2504 = "bdmisn2504.otf",
+    rbdnew3502 = "rbdnew3502.otf",
+};
 
+local end_mission_text = {
+    CommandTowerDestroyed = "rbdnew15l1.des",
+    RelicDestroyedEarly = "rbdnew15l2.des",
+    KilledRescueMen = "rbdnew15l3.des",
+    ApcLost = "rbdnew15l4.des",
+    Success5 = "rbdnew15w.des",
+    Missing1 = nil,
+    Missing2 = nil,
+    ApcLost2 = "bdmisn26l1.des", -- possible dupe?
+    SurvivingForcesKilled = "bdmisn26l2.des",
+    EvacSuccess6 = "bdmisn26wn.des",
+};
 
+--- @class CCA_Relic_Attack_state : StateMachineIter
+--- @field v GameObject
+--- @field relic GameObject
 
 statemachine.Create("cca_relic_attack",
     function (state)
+        --- @cast state CCA_Relic_Attack_state
         if state.v:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
+        --- @cast state CCA_Relic_Attack_state
         state.v:Goto("cca_relic_attack");
         state:next();
     end,
     function (state)
+        --- @cast state CCA_Relic_Attack_state
         if state.v:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
+        --- @cast state CCA_Relic_Attack_state
         state.v:Defend2(state.relic);
         state:next();
     end,
     function (state)
+        --- @cast state CCA_Relic_Attack_state
         if state.v:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
+        --- @cast state CCA_Relic_Attack_state
         state.v:Defend();
         state:next();
         return statemachine.AbortResult();
@@ -208,20 +316,24 @@ statemachine.Create("cca_relic_attack",
 
 statemachine.Create("cca_attack_base",
     function (state)
+        --- @cast state CCA_Relic_Attack_state
         if state.v:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
+        --- @cast state CCA_Relic_Attack_state
         state.v:Goto("front_line");
         state:next();
     end,
     function (state)
+        --- @cast state CCA_Relic_Attack_state
         if state.v:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
+        --- @cast state CCA_Relic_Attack_state
         state.v:Defend();
         state:next();
         return statemachine.AbortResult();
@@ -314,7 +426,7 @@ statemachine.Create("main_objectives", {
             p_north_center = "l_center"
         });
         --set patrol_id
-        mission_data.patrol_id = patrol_rid;
+        --mission_data.patrol_id = patrol_rid;
         --Start first task, go to base
         --self:startTask("rendezvous");
         mission_data.endWait = 7;
@@ -369,18 +481,18 @@ statemachine.Create("main_objectives", {
         self:next();
       end },
     { "rendezvous__start", function(self)
-        objective.AddObjective("rbd0521.otf");
+        objective.AddObjective(objective_files.Rendezvous);
         self:next();
     end },
     { "rendezvous__update", function(self)
         local rec = gameobject.GetRecyclerGameObject(3);
         if rec and gameobject.GetPlayerGameObject():IsWithin(rec, 100) then
-            objective.UpdateObjective("rbd0521.otf","GREEN");
+            objective.UpdateObjective(objective_files.Rendezvous,"GREEN");
             self:next();
         end
     end },
     { "wait_for_units__start", function(self)
-        objective.AddObjective("rbd0522.otf");
+        objective.AddObjective(objective_files.WaitForUnits);
         --Make producer create units
         --ProductionJob:createMultiple(count,odf,team)
         --Queue Production Jobs for the player
@@ -409,7 +521,7 @@ statemachine.Create("main_objectives", {
     end },
     statemachine.SleepSeconds(7),
     function(self)
-        objective.UpdateObjective("rbd0522.otf","GREEN");
+        objective.UpdateObjective(objective_files.WaitForUnits,"GREEN");
         self:next();
     end,
     { "success", function(self)
@@ -419,7 +531,7 @@ statemachine.Create("main_objectives", {
         self:next();
     end },
     { "goto_relic__start", function(self)
-        objective.AddObjective("rbd0523.otf");
+        objective.AddObjective(objective_files.InvestigateRelic);
         mission_data.camera_handle:SetTeamNum(1);
         AudioMessage(audio.intro);
         mission_data.camera_keep_teamed = true;
@@ -431,14 +543,14 @@ statemachine.Create("main_objectives", {
         end
     end },
     function(self)
-        objective.UpdateObjective("rbd0523.otf","GREEN");
+        objective.UpdateObjective(objective_files.InvestigateRelic,"GREEN");
         self:next();
     end,
     { "defendRelic", function(self)
         mission_data.failCauses = {};
         mission_data.relic = gameobject.GetGameObject("relic_1");
 
-        mission_data.patrol_id = patrol_id;
+        --mission_data.patrol_id = patrol_id;
         mission_data.wait_while_shooting = 2;
         mission_data.nuke_wait_t1 = 5;
         mission_data.nuke_wait_t2 = 2;
@@ -473,7 +585,7 @@ statemachine.Create("main_objectives", {
         end
     end,
     { "defendRelic.destroy_relic.start", function(self)
-        objective.AddObjective("rbd0524.otf");
+        objective.AddObjective(objective_files.DestroyRelic);
         mission_data.relic:SetTeamNum(2);
         self:next();
     end },
@@ -488,14 +600,14 @@ statemachine.Create("main_objectives", {
     end },
     function(self)
         if not mission_data.destroy_audio or IsAudioMessageDone(mission_data.destroy_audio) then
-            objective.UpdateObjective("rbd0524.otf","RED");
+            objective.UpdateObjective(objective_files.DestroyRelic,"RED");
             --self:startTask("nuke");
             self:next();
         end
     end,
     { "defendRelic.nuke.start", function(self)
-        objective.AddObjective("rbd0525.otf");
-        --mission_data.day_id = ProducerAi:queueJob(ProductionJob("apwrckz",3,mission_data.relic));
+        objective.AddObjective(objective_files.DefendRelic);
+        mission_data.day_id = producer.QueueJob("apwrckz",3,mission_data.relic);
         --self:call("_setUpProdListeners",mission_data.day_id,"_setDayWrecker");
         mission_data.detect_daywrecker = true;
         local units, lead = spawnInFormation2({"   1   ","1 1 2 2", "3 3 3 3"},"cca_relic_attack",{"svtank","svrckt","svfigh"},2,15);
@@ -514,63 +626,61 @@ statemachine.Create("main_objectives", {
         self:next();
     end },
     { "defendRelic.nuke.update", function(self)
-        -- this should be ported partially to a sub-machine
-        if(gameobject.GetPlayerGameObject():IsAlive() and (mission_data.nuke_state < 4) and (GetDistance(GetPlayerHandle(),"relic_site") > 200)) then
-            objective.RemoveObjective(mission_data.nuke_state < 2 and "rbd0530.otf" or "rbd0531.otf");
-            objective.AddObjective("rbd0533.otf","RED");
-            --self:taskFail("nuke");
-            self:switch(nil);
-            FailMission(GetTime()+5.0,nil);
-            mission_data.nuke_state = 4;
-        elseif(mission_data.nuke_state == 0) then
-            mission_data.nuke_wait_t1 = mission_data.nuke_wait_t1 - dtime; -- 5
-            if(mission_data.nuke_wait_t1 <= 0) then
-                objective.AddObjective("rbd0530.otf");
-                mission_data.nuke_state = 1;
-            end
-        elseif(mission_data.nuke_state == 1) then
-            mission_data.nuke_wait_t2 = mission_data.nuke_wait_t2 - dtime; -- 2
-            if(mission_data.nuke_wait_t2 <= 0) then
-                objective.RemoveObjective("rbd0530.otf");
-                objective.AddObjective("rbd0531.otf");
-                mission_data.nuke_state = 3;
-            end
-        elseif(mission_data.nuke_state == 3) then
-            if(Length(mission_data.daywrecker:GetPosition() - mission_data.relic:GetPosition()) < 100) then
-                objective.RemoveObjective(mission_data.nuke_state < 2 and "rbd0530.otf" or "rbd0531.otf");
-                objective.AddObjective("rbd0534.otf","GREEN");
-                AudioMessage(audio.done_d);
-                mission_data.nuke_state = 5;
-            end
+        mission_data.mission_states:on("relic_leave_too_early_fail");
+        self:next();
+    end },
+    { "defendRelic.nuke.update.0", statemachine.SleepSeconds(5) },
+    { "defendRelic.nuke.update.0.next", function(self)
+        objective.AddObjective(objective_files.UplinkConnecting);
+        self:next();
+    end },
+    { "defendRelic.nuke.update.1", statemachine.SleepSeconds(2) },
+    { "defendRelic.nuke.update.1.next", function(self)
+        objective.RemoveObjective(objective_files.UplinkConnecting);
+        objective.AddObjective(objective_files.UplinkTransmitting);
+        self:next();
+    end },
+    { "defendRelic.nuke.update.3", function(self)
+        if mission_data.daywrecker and Length(mission_data.daywrecker:GetPosition() - mission_data.relic:GetPosition()) < 100 then
+            objective.RemoveObjective(objective_files.UplinkConnecting);
+            objective.RemoveObjective(objective_files.UplinkTransmitting);
+            objective.AddObjective(objective_files.UplinkRunNuke,"GREEN");
+            AudioMessage(audio.done_d);
+            mission_data.mission_states:off("relic_leave_too_early_fail");
+            self:next();
         end
-        if(not mission_data.daywrecker:IsValid() and mission_data.daywrecker) then
-            print(mission_data.relic:IsValid());
-            if(not mission_data.relic:IsValid()) then
+    end },
+    { function(self)
+        --- @todo this might need an extra delay giving time for the relic to be destroyed by the daywrecker's explosion
+        if mission_data.daywrecker and not mission_data.daywrecker:IsValid() then
+            -- wait till the daywrecker is dead but the var is valid (probably don't need the valid var check)
+            if not mission_data.relic:IsValid() then
+                -- if relic is dead, we are done
                 --self:taskSucceed("nuke");
                 objective.ClearObjectives();
                 --mission.Objective:Start("rtbAssumeControl");
                 self:next();
             else
+                -- relic is still alive, we failed (but how, isn't this automatic?)
                 --self:taskFail("nuke");
-                objective.UpdateObjective("rbd0525.otf","RED");
-                FailMission(GetTime()+5.0,mission_data.failCauses[cause or "NONE"]);
+                objective.UpdateObjective(objective_files.DefendRelic,"RED");
+                FailMission(GetTime()+5.0,end_mission_text.Missing2);
                 self:switch(nil);
             end
         end
     end },
     { "rtbAssumeControl", function(self)
-        objective.AddObjective("rbd0532.otf");
-        --self:startTask("fix_base");
-        mission_data.waitToSuccess = 5;
+        objective.AddObjective(objective_files.ReturnToBase);
         self:next();
     end },
     { "rtbAssumeControl.update.fix_base", function(self)
-        if(gameobject.GetPlayerGameObject():GetDistance("bdog_base") < 700) then 
+        if(gameobject.GetPlayerGameObject():GetDistance("bdog_base") < 700) then
             --wait a bit, success
             local hasComm = false;
             gameobject.GetFactoryGameObject(3):Damage(10000);
             local oldRecy = gameobject.GetRecyclerGameObject(3);
-            mission_data.recy = bzObjects.copyObject(oldRecy,"bvrecx",false);
+            if not oldRecy then error("Failed to get recycler") end
+            mission_data.recy = copyObject(oldRecy,"bvrecx",false); --- @todo this recycler seems to lack the ability to make a constructor
             oldRecy:RemoveObject();
             for v in gameobject.ObjectsInRange(500,"bdog_base") do
                 if(v:GetClassLabel() == "wingman" and v:GetTeamNum() ~= 1) then
@@ -608,13 +718,14 @@ statemachine.Create("main_objectives", {
     end },
     { "destorySovietComm", function(self)
         mission_data.scomm = gameobject.GetGameObject("sovietcomm");
-        objective.AddObjective("rbdnew3502.otf");
+        objective.AddObjective(objective_files.rbdnew3502);
         mission_data.spawnDef = false;
         mission_data.scc = false;
         mission_data.t1 = 30;
         self:next();
     end },
     { "destorySovietComm.update.spawnDef", function(self)
+        -- when you attack the com tower, spawn defenders
         if GetWhoShotMe(mission_data.scomm:GetHandle()) ~= nil then
             mission_data.spawnDef = true;
             mission_data.ktargets = {
@@ -631,19 +742,15 @@ statemachine.Create("main_objectives", {
     end },
     { "destorySovietComm.update.scc", function(self)
         if not mission_data.scomm:IsAlive() then
-            objective.UpdateObjective("rbdnew3502.otf","GREEN");
+            objective.UpdateObjective(objective_files.rbdnew3502,"GREEN");
             mission_data.scc = true;
             self:next();
         end
     end },
-    { "destorySovietComm.update.scc.finish", function(self)
-        mission_data.t1 = mission_data.t1 - dtime;
-        if( (mission_data.t1 <= 0) or checkDead(mission_data.ktargets or {}) ) then
-            --self:success();
-            --mission.Objective:Start("baseDestroyCin",mission_data.ktargets);
-            self:next();
-        end
-    end },
+    { "destorySovietComm.update.scc.finish", statemachine.SleepSeconds(30, nil, function(state)
+        --- @todo lack of feedback here is kinda strange
+        return checkDead(mission_data.ktargets or {});
+    end )},
     { "baseDestroyCin.initstart", function(self)
         -- init
         mission_data.targets = {
@@ -697,15 +804,16 @@ statemachine.Create("main_objectives", {
         self:next();
     end },
     statemachine.SleepSeconds(7),
-    function (self)
+    { "base_destruction_camera_start", function (self)
         mission_data.cam = CameraReady();
         mission_data.camstage = 1;
         self:SecondsHavePassed(mission_data.minwait); -- start counting internally
+        self:next();
         return statemachine.FastResult(); -- trigger next state immediately
-    end,
+    end },
     function (self)
         if mission_data.attackers[3]:IsAlive() then
-            CameraObject(mission_data.attackers[3],0,1000,-3000,mission_data.attackers[3]);
+            CameraObject(mission_data.attackers[3]:GetHandle(),0,1000,-3000,mission_data.attackers[3]:GetHandle());
         else
             mission_data.camstage = mission_data.camstage + 1;
             self:next();
@@ -713,7 +821,7 @@ statemachine.Create("main_objectives", {
     end,
     function (self)
         if mission_data.attackers[8]:IsAlive() then
-            CameraObject(mission_data.attackers[8],0,1000,-3000,mission_data.attackers[8]);
+            CameraObject(mission_data.attackers[8]:GetHandle(),0,1000,-3000,mission_data.attackers[8]:GetHandle());
         else
             mission_data.camstage = mission_data.camstage + 1;
             self:next();
@@ -721,7 +829,7 @@ statemachine.Create("main_objectives", {
     end,
     function (self)
         if mission_data.attackers[12]:IsAlive() then
-            CameraObject(mission_data.attackers[12],0,1000,-3000,mission_data.attackers[12]);
+            CameraObject(mission_data.attackers[12]:GetHandle(),0,1000,-3000,mission_data.attackers[12]:GetHandle());
         else
             mission_data.camstage = mission_data.camstage + 1;
             self:next();
@@ -729,22 +837,22 @@ statemachine.Create("main_objectives", {
     end,
     function (self)
         if mission_data.attackers[9]:IsAlive() then
-            CameraPath("25cin_pan1",5000,200,elf.attackers[9]);
+            CameraPath("25cin_pan1",5000,200,mission_data.attackers[9]:GetHandle());
         else
             mission_data.camstage = mission_data.camstage + 1;
+            mission_data.cam = not CameraFinish();
             self:next();
         end
     end,
-    function (self)
-        if self:SecondsHavePassed(mission_data.minwait) then
-            mission_data.cam = not CameraFinish();
-            for v in gameobject.ObjectsInRange(500,"bdog_base") do
-                if(GetPlayerGameObject() ~= v) then
-                    if(v:GetTeamNum() == 1) then
-                        v:Damage(v:GetMaxHealth()/12 * dtime * (math.random()*1.5 + 0.5));
-                    end
+    function (self, dtime)
+        for v in gameobject.ObjectsInRange(500,"bdog_base") do
+            if(gameobject.GetPlayerGameObject() ~= v) then
+                if(v:GetTeamNum() == 1) then
+                    v:Damage(v:GetMaxHealth()/12 * dtime * (math.random()*1.5 + 0.5));
                 end
             end
+        end
+        if self:SecondsHavePassed(mission_data.minwait) then
             self:next();
         end
     end,
@@ -762,15 +870,16 @@ statemachine.Create("main_objectives", {
         --miss26setup();
         --Spawns inital objects
         AudioMessage(audio.apc_spawn);
-        objective.RemoveObjective("rbdnew3502.otf");
+        objective.RemoveObjective(objective_files.rbdnew3502);
         spawnAtPath("proxminb",2,"spawn_prox");
         spawnAtPath("svfigh",2,"26spawn_figh");
         spawnAtPath("svrckt",2,"26spawn_rock");
         spawnAtPath("svturr",2,"26spawn_turr");
         spawnAtPath("svltnk",2,"26spawn_light");
         local apcs = spawnAtPath("bvapc26",1,"26spawn_apc");
+        debugprint(table.show(apcs,"apcs"));
         for i, v in pairs(apcs) do
-            SetLabel(v,("apc%d"):format(i));
+            v:SetLabel(("apc%d"):format(i));
             v:SetObjectiveName(("Transport %d"):format(i));
             v:SetObjectiveOn();
             v:Goto("26apc_meatup",1);
@@ -786,22 +895,22 @@ statemachine.Create("main_objectives", {
         -- init
         mission_data.apcs = {gameobject.GetGameObject("apc1"),gameobject.GetGameObject("apc2")};
         -- start
-        objective.AddObjective("bdmisn2504.otf","WHITE");
-
+        objective.AddObjective(objective_files.bdmisn2504,"WHITE");
+        --- @todo why does the mission talk about NSDF after this?
         self:next();
     end },
     { "apcMeetup.update", function(self)
         if(checkAnyDead(mission_data.apcs)) then
             --self:fail();
-            objective.UpdateObjective("bdmisn2504.otf","RED");
-            FailMission(GetTime()+5.0,"bdmisn26l1.des");
+            objective.UpdateObjective(objective_files.bdmisn2504,"RED");
+            FailMission(GetTime()+5.0,end_mission_text.ApcLost2);
             self:switch(nil);
             return;
         end
         if(gameobject.GetPlayerGameObject():GetDistance(mission_data.apcs[1]) < 50) then
             --self:success();
-            objective.UpdateObjective("bdmisn2504.otf","GREEN");
-            mission.Objective:Start("pickupSurvivors");
+            objective.UpdateObjective(objective_files.bdmisn2504,"GREEN");
+            --mission.Objective:Start("pickupSurvivors");
             self:next();
             return;
         end
@@ -816,7 +925,7 @@ statemachine.Create("main_objectives", {
         mission_data.arived = false;
         local navs = spawnAtPath("apcamr",1,"26spawn_nav");
         for i, v in pairs(navs) do
-            SetLabel(v,("nav%d"):format(i));
+            v:SetLabel(("nav%d"):format(i));
             v:SetMaxHealth(0);
             v:SetPosition(v:GetPosition() + SetVector(0,100,0));
         end
@@ -834,7 +943,7 @@ statemachine.Create("main_objectives", {
     { "pickupSurvivors.update", function(self)
         if(checkAnyDead(mission_data.apcs)) then
             --self:fail(1);
-            FailMission(GetTime()+5.0,"bdmisn26l1.des");
+            FailMission(GetTime()+5.0,end_mission_text.ApcLost2);
             self:switch(nil);
             return;
         end
@@ -851,13 +960,13 @@ statemachine.Create("main_objectives", {
     { "pickupSurvivors.update.pilots", function(self)
         if(checkAnyDead(mission_data.apcs)) then
             --self:fail(1);
-            FailMission(GetTime()+5.0,"bdmisn26l1.des");
+            FailMission(GetTime()+5.0,end_mission_text.ApcLost2);
             self:switch(nil);
             return;
         end
         if(checkAnyDead(mission_data.pilots)) then
             --self:fail(2);
-            FailMission(GetTime()+5.0,"bdmisn26l2.des");
+            FailMission(GetTime()+5.0,end_mission_text.SurvivingForcesKilled);
             self:switch(nil);
             return;
         end
@@ -873,13 +982,13 @@ statemachine.Create("main_objectives", {
     { "pickupSurvivors.update.pilots2", function(self)
         if(checkAnyDead(mission_data.apcs)) then
             --self:fail(1);
-            FailMission(GetTime()+5.0,"bdmisn26l1.des");
+            FailMission(GetTime()+5.0,end_mission_text.ApcLost2);
             self:switch(nil);
             return;
         end
         if(checkAnyDead(mission_data.pilots)) then
             --self:fail(2);
-            FailMission(GetTime()+5.0,"bdmisn26l2.des");
+            FailMission(GetTime()+5.0,end_mission_text.SurvivingForcesKilled);
             self:switch(nil);
             return;
         end
@@ -888,7 +997,7 @@ statemachine.Create("main_objectives", {
                 v:Dropoff(v:GetPosition());
             end
         end
-        mission_data.t1 = mission_data.t1 - dtime;
+        --mission_data.t1 = mission_data.t1 - dtime;
         local pleft = 0;
         for i,v in pairs(mission_data.pilots) do
             
@@ -917,24 +1026,24 @@ statemachine.Create("main_objectives", {
         mission_data.apcs = {gameobject.GetGameObject("apc1"),gameobject.GetGameObject("apc2")};
         -- start
         objective.ClearObjectives();
-        objective.AddObjective("bdmisn2602.otf","WHITE");
-        objective.AddObjective("bdmisn2603.otf","WHITE");
+        objective.AddObjective(objective_files.SendAPCsToEvac,"WHITE");
+        objective.AddObjective(objective_files.EscortAPCsToEvac,"WHITE");
 
         self:next();
     end },
     function(self)
         if(checkAnyDead(mission_data.apcs)) then
             --self:fail();
-            objective.UpdateObjective("bdmisn2603.otf","RED");
-            FailMission(GetTime()+5.0,"bdmisn26l1.des");
+            objective.UpdateObjective(objective_files.EscortAPCsToEvac,"RED");
+            FailMission(GetTime()+5.0,end_mission_text.ApcLost2);
             self:switch(nil);
         end
         if(mission_data.apcs[1]:IsWithin(mission_data.nav,100) and mission_data.apcs[2]:IsWithin(mission_data.nav,100)) then
             --self:success();
-            objective.UpdateObjective("bdmisn2602.otf","GREEN");
-            objective.UpdateObjective("bdmisn2603.otf","GREEN");
+            objective.UpdateObjective(objective_files.SendAPCsToEvac,"GREEN");
+            objective.UpdateObjective(objective_files.EscortAPCsToEvac,"GREEN");
             AudioMessage(audio.win);
-            SucceedMission(GetTime()+5.0, "bdmisn26wn.des");
+            SucceedMission(GetTime()+5.0, end_mission_text.EvacSuccess6);
             self:switch(nil);
         end
     end
@@ -956,6 +1065,19 @@ stateset.Create("mission")
     --        state:off(name, true);
     --    end
     --end)
+    :Add("relic_leave_too_early_fail", function(state, name)
+        if gameobject.GetPlayerGameObject():IsAlive() and gameobject.GetPlayerGameObject():GetDistance("relic_site") > 200 then
+            objective.RemoveObjective(objective_files.UplinkConnecting);
+            objective.RemoveObjective(objective_files.UplinkTransmitting);
+            objective.AddObjective(objective_files.UplinkRetry,"RED");
+            FailMission(GetTime()+5.0,end_mission_text.Missing1);
+            state:off("main_objectives", true); -- turn off main machine, we lost
+            state:off(name, true); -- turn off this machine too
+        end
+    end)
+    :Add("nuke_watch", function(state, name)
+
+    end)
     ;
 
 hook.Add("Producer:BuildComplete", "Mission:ProducerBuildComplete", function (object, producer, data)
