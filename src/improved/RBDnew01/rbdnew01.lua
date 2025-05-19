@@ -37,11 +37,14 @@ tracker.setFilterClass("turrettank"); -- track turrettanks
 
 local mission_data = {};
 
---Returns true of all of the handles given are dead
---areAnyAlive = not areAllDead
+--- Returns true of all of the handles given are dead
+--- areAnyAlive = not areAllDead
+--- @param handles GameObject[]
+--- @param team integer
+--- @return boolean
 local function areAllDead(handles, team)
     for i,v in pairs(handles) do
-        if v:IsAlive() and (team==nil or team == v:GetTeamNum(v)) then
+        if v:IsAlive() and (team==nil or team == v:GetTeamNum()) then
             return false;
         end
     end
@@ -754,5 +757,4 @@ function()
 end,
 function(g)
     mission_data = g;
-    debugprint(table.show(mission_data));
 end);
