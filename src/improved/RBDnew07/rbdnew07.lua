@@ -1,47 +1,70 @@
 --Rev_2
 
+require("_printfix");
+
+print("\27[34m----START MISSION----\27[0m");
+
+--- @diagnostic disable-next-line: lowercase-global
+debugprint = print;
+--traceprint = print;
+
+require("_requirefix").addmod("rotbd");
+
 local api = require("_api");
 local gameobject = require("_gameobject");
 local hook = require("_hook");
 local statemachine = require("_statemachine");
 local stateset = require("_stateset");
+--local tracker = require("_tracker");
+local navmanager = require("_navmanager");
 local objective = require("_objective");
+local utility = require("_utility");
+local color = require("_color");
+local producer = require("_producer");
+local patrol = require("_patrol");
 
 --- @class MissionData_KeyObjects
 --- @field recy GameObject?
 --- @field tug GameObject?
-
---- @class RelicData
---- @field name string
---- @field other string
---- @field relic_name string
---- @field pickup_name string
---- @field vehicles string[]
---- @field relic GameObject?
+--- @field relic table<string, GameObject?>
 
 --- @class MissionData
 --- @field key_objects MissionData_KeyObjects
---- @field relic_data table<string, RelicData>
-local mission_data = {};
-mission_data.key_objects = {};
-mission_data.relic_data = {
+--- @field sub_machines StateMachineIter[]
+--- @field audio_played table<string, boolean>
+local mission_data = {
+    key_objects = {
+        relic = {},
+    },
+    sub_machines = {},
+    audio_played = {},
+    waveinterval = 140,
+};
+
+--- @class RelicData
+--- @field name string Used for various purposes, such as a key into mission_data.key_objects.relic or for portions of strings for paths, other variables, etc
+--- @field other string
+--- @field objective_name string key into otfs table
+--- @field pickup_name string
+--- @field vehicles string[]
+
+--- @alias relic_data table<string, RelicData>
+local relic_data = {
     nsdf = { name = "nsdf",
-    other = "cca",
+             other = "cca",
+             objective_name = "nsdf_tug",
              relic_name = "relic_nsdf",
              pickup_name = "relic_nsdf_pickup",
              vehicles = { "avfigh","avtank","avltnk","avhaul","avrckt","avhraz" },
              wave = "wave5" },
     cca  = { name = "cca",
              other = "nsdf",
+             objective_name = "cca_tug",
              relic_name = "relic_cca",
              pickup_name = "relic_cca_pickup",
              vehicles = { "svfigh","svtank","svrckt","svhaul","svltnk","svhraz" },
              wave = "wave4" },
-
 }
-
-
-
 
 local labels = {
     relic_tug = "relic_tug"
@@ -262,13 +285,14 @@ statemachine.Create("delayed_spawn_formation_and_goto", {
 --- @field attackers GameObject[] "attackers" spawned at the start, will nil when no longer used
 --- @field cond_escort_completed boolean Temporary memo boolean to reduce calls
 --- @field cond_kill_attackers_completed boolean Temporary memo boolean to reduce calls
+--- @field tug_spawners table<string, RelicTugSpawner_state> StateMachines for the tugs
 statemachine.Create("main_objectives", {
     { "escortRecycler.start", function (state)
         --- @cast state MainMissionStateMachineIter
         
         -- init
         mission_data.key_objects.recy = gameobject.GetRecyclerGameObject();
-        mission_data.key_objects.tug = gameobject.GetHandle(labels.relic_tug);
+        mission_data.key_objects.tug = gameobject.GetGameObject(labels.relic_tug);
         
         local formation = {" 2 ",
                            "1 1"};
@@ -321,61 +345,31 @@ statemachine.Create("main_objectives", {
             state:next();
         end
     end },
-    { "reteriveRelics.state", function(self)
-        -- init
-        --self.enemies = {
-        --    relic_nsdf = "nsdf",
-        --    relic_cca = "cca",
-        --    relic_nsdf_pickup = "nsdf",
-        --    relic_cca_pickup = "cca"
-        --}
-        --self.other = {
-        --    nsdf = "cca",
-        --    cca = "nsdf"
-        --}
-        --mission_data.relic_data.nsdf.relic = gameobject.GetGameObject("relic_nsdf");
-        --mission_data.relic_data.cca.relic  = gameobject.GetGameObject("relic_cca");
-        --self.vehicles = {
-        --    cca  = {"svfigh","svtank","svrckt","svhaul","svltnk","svhraz"},
-        --    nsdf = {"avfigh","avtank","avltnk","avhaul","avrckt","avhraz"}
-        --}
-        --self.waves = {
-        --    relic_nsdf = "wave5",
-        --    relic_cca  = "wave4"
-        --}
-        --mission_data.key_objects.recy = gameobject.GetRecyclerGameObject();
-        --mission_data.key_objects.tug = gameobject.GetGameObject(labels.relic_tug);
-        --self.waveInterval = 140;
-
-        -- start
+    { "reteriveRelics.state", function(state)
+        --- @cast state MainMissionStateMachineIter
+        
+        mission_data.key_objects.relic = {
+            nsdf = gameobject.GetGameObject("relic_nsdf"),
+            cca  = gameobject.GetGameObject("relic_cca"),
+        };
 
         --Spawn attack @ nsdf_attack
-        for _, v in pairs(spawnInFormation2({"1 3"}, ("nsdf_attack"), mission_data.relic_data.nsdf.vehicles, 2, 15)) do
+        for _, v in pairs(spawnInFormation2({"1 3"}, ("nsdf_attack"), relic_data.nsdf.vehicles, 2, 15)) do
             v:Goto("nsdf_attack");
         end
         
         --Spawn attack @ nsdf_base
-        for _, v in pairs(spawnInFormation2({"1 1","6 6"}, "nsdf_path", mission_data.relic_data.nsdf.vehicles, 2, 15)) do
-            --local def_seq = mission.TaskManager:sequencer(v);
-            ----Goto relic site
-            --def_seq:queue2("Goto",("nsdf_path"):format(f));
-            ----Attack players base
-            --def_seq:queue2("Goto",("nsdf_attack"):format(f));
-
+        for _, v in pairs(spawnInFormation2({"1 1","6 6"}, "nsdf_path", relic_data.nsdf.vehicles, 2, 15)) do
             local def_seq = statemachine.Start("nsdf_base_attack", nil, { v = v });
             mission_data.sub_machines = mission_data.sub_machines or {};
             table.insert(mission_data.sub_machines, def_seq);
         end
 
-        for _, v in pairs(spawnInFormation2({" 1 ","5 5"}, "cca_attack", mission_data.relic_data.cca.vehicles, 2, 15)) do
+        for _, v in pairs(spawnInFormation2({" 1 ","5 5"}, "cca_attack", relic_data.cca.vehicles, 2, 15)) do
             v:Goto("cca_attack");
         end
 
-        --self:startTask("relic_nsdf");
-        --self:startTask("relic_cca");
-        --self:startTask("relic_nsdf_pickup");
-        --self:startTask("relic_cca_pickup");
-
+        -- this mess needs to be cleaned up
         mission_data.fucking_garbage = mission_data.fucking_garbage or {};
         mission_data.fucking_garbage.relic_nsdf = "running";
         mission_data.fucking_garbage.relic_cca = "running";
@@ -386,114 +380,107 @@ statemachine.Create("main_objectives", {
         --Timer will be set to 30 if the player
         --picks up one of the relics
         local ranC = math.random(0,1);
-        self.bufferTime = {
-            cca = ranC*500 + 500,
-            nsdf = math.abs(ranC-1)*500 + 500
-        };
-        self.spawnedEnemyTugs = {
-            cca = false,
-            nsdf = false
-        };
-        --self.waveTimer = {
-        --    cca = ranC*self.waveInterval + self.waveInterval,
-        --    nsdf = math.abs(ranC-1)*self.waveInterval + self.waveInterval
+        --state.bufferTime = {
+        --    cca = ranC*500 + 500,
+        --    nsdf = math.abs(ranC-1)*500 + 500
         --};
-        self.distressCountdown = 5;
-        self.audio_played = false;
+        --state.spawnedEnemyTugs = {
+        --    cca = false,
+        --    nsdf = false
+        --};
+        --state.distressCountdown = 5;
         objective.AddObjective(otfs.relics, "WHITE", 16);
         
-        self.nsdf_attack = statemachine.Run("relic_wave_spawner", nil, { f = "nsdf", noExtraWait = ranC == 1,  waveInterval = 140, vehicles = { "avfigh","avtank","avltnk","avhaul","avrckt","avhraz" } });
-        self.cca_attack  = statemachine.Run("relic_wave_spawner", nil, { f = "cca" , noExtraWait = ranC == 0 , waveInterval = 140, vehicles = { "svfigh","svtank","svrckt","svhaul","svltnk","svhraz" } });
-        self.nsdf_tug = statemachine.Run("relic_tug_spawner", nil, { f = "nsdf", noExtraWait = ranC == 1,  bufferTime = 500, vehicles = { "avfigh","avtank","avltnk","avhaul","avrckt","avhraz" }, otf = otfs.nsdf_tug });
-        self.cca_tug  = statemachine.Run("relic_tug_spawner", nil, { f = "cca" , noExtraWait = ranC == 0 , bufferTime = 500, vehicles = { "svfigh","svtank","svrckt","svhaul","svltnk","svhraz" }, otf = otfs.cca_tug  });
+        local nsdf_attack = statemachine.Start("relic_wave_spawner", nil, { key = "nsdf", noExtraWait = ranC == 1,  waveInterval = 140 });
+        local cca_attack  = statemachine.Start("relic_wave_spawner", nil, { key = "cca" , noExtraWait = ranC == 0 , waveInterval = 140 });
+        local nsdf_tug = statemachine.Start("relic_tug_spawner", nil, { key = "nsdf", noExtraWait = ranC == 1,  bufferTime = 500, otf = otfs.nsdf_tug });
+        local cca_tug  = statemachine.Start("relic_tug_spawner", nil, { key = "cca" , noExtraWait = ranC == 0 , bufferTime = 500, otf = otfs.cca_tug  });
+        state.tug_spawners = {
+            nsdf = nsdf_tug,
+            cca  = cca_tug
+        };
         mission_data.sub_machines = mission_data.sub_machines or {};
-        table.insert(mission_data.sub_machines, self.nsdf_attack);
-        table.insert(mission_data.sub_machines, self.cca_attack);
-        table.insert(mission_data.sub_machines, self.nsdf_tug);
-        table.insert(mission_data.sub_machines, self.cca_tug);
+        table.insert(mission_data.sub_machines, nsdf_attack);
+        table.insert(mission_data.sub_machines, cca_attack);
+        table.insert(mission_data.sub_machines, nsdf_tug);
+        table.insert(mission_data.sub_machines, cca_tug);
 
         mission_data.mission_states:on("relic_destroyed");
 
-        self:next();
+        state:next();
     end },
-    { "reteriveRelics.update", function(self)
-        for relic_task,relic in pairs(mission_data.key_objects.relics) do
-            --- @cast relic GameObject
-            --- @cast relic_task "relic_nsdf"|"relic_cca" -- was k
+    { "reteriveRelics.update", function(state)
+        --- @cast state MainMissionStateMachineIter
+        
+        for _, relic_datum in pairs(relic_data) do
+            local relic_object = mission_data.key_objects.relic[relic_datum.name];
+            if relic_object == nil then error("relic_object is nil"); end
+            
+            local relic_task = relic_datum.relic_name;
 
-            local f = self.enemies[relic_task];
-            --- @cast f "nsdf"|"cca"
+            local f = relic_datum.name;
             
             --- Pickup Task
-            local pickup_relic_task = relic_task.."_pickup"; -- was ptask
-            --- @cast pickup_relic_task "relic_nsdf_pickup"|"relic_cca_pickup"
+            local pickup_relic_task = relic_datum.pickup_name; -- was ptask
             
             --Check which base the relics are in if any at all
-            local bdog = relic:GetDistance("bdog_base") < 100;
-            local cca  = relic:GetDistance("cca_base" ) < 100;
-            local nsdf = relic:GetDistance("nsdf_base") < 100;
-            local tug = relic:GetTug();
+            local bdog = relic_object:GetDistance("bdog_base") < 100;
+            local cca  = relic_object:GetDistance("cca_base" ) < 100;
+            local nsdf = relic_object:GetDistance("nsdf_base") < 100;
+            local tug_carrying = relic_object:GetTug();
             --If no one has capture the relic yet
-            if(mission_data.fucking_garbage[relic_task] == "running") then -- NSDF and CCA base tasks are active
+            if mission_data.fucking_garbage[relic_task] == "running" then -- NSDF and CCA base tasks are active
                 --If bdog has it, set state to succeeded
-                if(bdog) then
-                    if(not tug or not tug:IsValid()) then
-                        --self:taskSucceed(relic_task);
+                if bdog then
+                    if not tug_carrying or not tug_carrying:IsValid() then
+                        -- a tug is not carrying the relic but it is in the bdog base
                         mission_data.fucking_garbage[relic_task] = "succeeded"
-
-                        local fac = self.enemies[relic_task];
-                        objective.UpdateObjective(otfs[("%s_tug"):format(fac)],"GREEN");
-                        if(not self.audio_played) then
+                        
+                        objective.UpdateObjective(otfs[("%s_tug"):format(relic_datum.name)], "GREEN");
+                        
+                        if not mission_data.audio_played[audio.relic_secured_1] then
                             AudioMessage(audio.relic_secured_1);
-                            self.audio_played = true;
+                            mission_data.audio_played[audio.relic_secured_1] = true;
                         end
                     end
                     --Else if cca or nsdf has it, set state to failed
-                elseif(cca or nsdf) then
-                    --self:taskFail(relic_task);
+                elseif cca or nsdf then
                     mission_data.fucking_garbage[relic_task] = "failed"
 
-                    local fac = self.enemies[relic_task];
-                    objective.UpdateObjective(otfs[("%s_tug"):format(fac)],"RED");
-                    --self:fail(("%s_loss"):format(name));
-                    FailMission(GetTime() + 5,des[("%s_loss"):format(name)]);
+                    objective.UpdateObjective(otfs[("%s_tug"):format(relic_datum.name)], "RED");
+                    FailMission(GetTime() + 5, des[("%s_loss"):format(relic_datum.relic_name)]);
                 end
                 --If someone had it, but no longer has reset the state
-            elseif(mission_data.fucking_garbage[relic_task] == "running" and (not (bdog or cca or nsdf) )) then
-                --self:taskReset(relic_task);
+            elseif mission_data.fucking_garbage[relic_task] and not bdog and not cca and not nsdf then
                 mission_data.fucking_garbage[relic_task] = "running"
 
-                local fac = self.enemies[relic_task];
-                objective.UpdateObjective(otfs[("%s_tug"):format(fac)],"WHITE");
+                objective.UpdateObjective(otfs[("%s_tug"):format(relic_datum.name)], "WHITE");
             end
-            if(mission_data.fucking_garbage[pickup_relic_task] == "running" ) then -- NSDF and CCA pickup tasks are active
-                if(tug and tug:GetTeamNum() == 1) then
-                    --self:taskSucceed(pickup_relic_task);
+            if mission_data.fucking_garbage[pickup_relic_task] == "running" then -- NSDF and CCA pickup tasks are active
+                if tug_carrying and tug_carrying:GetTeamNum() == 1 then
                     mission_data.fucking_garbage[pickup_relic_task] = "succeeded"
-                elseif(tug and tug:GetTeamNum() == 2) then
-                    --self:taskFail(pickup_relic_task,tug,relic);
+                elseif tug_carrying and tug_carrying:GetTeamNum() == 2 then
                     mission_data.fucking_garbage[pickup_relic_task] = "failed"
                     --Fail task, reset if player manages to retake it
                     
                     --Paint the enemy tug carrying the relic
-                    tug:SetObjectiveOn()
+                    tug_carrying:SetObjectiveOn()
                     --Unpaint the relic
-                    relic:SetObjectiveOff()
+                    relic_object:SetObjectiveOff()
                     --Set relic's team to 2, so that the AI can attack
                     --the tug carrying it, might want to do this when the
                     --players tug also captures the relic
-                    relic:SetTeamNum(2);
+                    relic_object:SetTeamNum(2);
                 end
-            elseif(tug and mission_data.fucking_garbage[pickup_relic_task] ~= "running" and not tug:IsValid()) then
-                --self:taskReset(pickup_relic_task,tug,relic);
+            elseif tug_carrying and mission_data.fucking_garbage[pickup_relic_task] ~= "running" and not tug_carrying:IsValid() then
                 mission_data.fucking_garbage[pickup_relic_task] = "running"
                 
                 --Unpain the tug carrying the relic
-                tug:SetObjectiveOff();
+                tug_carrying:SetObjectiveOff();
                 --Pain the relic
-                relic:SetObjectiveOn();
+                relic_object:SetObjectiveOn();
                 --Reset team of the relic to 0
-                relic:SetTeamNum(0);
+                relic_object:SetTeamNum(0);
             end
         end
         
@@ -502,35 +489,34 @@ statemachine.Create("main_objectives", {
         or mission_data.fucking_garbage["relic_cca_pickup"] == "succeeded"
         or mission_data.fucking_garbage["relic_nsdf"] == "succeeded"
         or mission_data.fucking_garbage["relic_cca"] == "succeeded") then
-            for i,v in pairs(mission_data.key_objects.relics) do
-                local pickup_task = i .. "_pickup";
-                local faction = self.enemies[i];
-                local other_faction = self.other[faction];
-                local other_task = ("relic_%s"):format(other_faction);
-                local other_pickup_task = other_task .. "_pickup";
-                local other_relic = mission_data.key_objects.relics[other_task];
+            for _, relic_datum in pairs(relic_data) do
+                local pickup_task = relic_datum.pickup_name;
+                local faction = relic_datum.name;
+                local other_faction = relic_datum.other;
+                local other_task = relic_data[other_faction].relic_name;
+                local other_pickup_task = relic_data[other_faction].pickup_name;
+                local relic = mission_data.key_objects.relic[faction];
+                local other_relic = mission_data.key_objects.relic[other_faction];
                 --If we have picked up one of the relics
                 --if(name == pickup_task) then
                 if(true) then
                     --AI has no time to lose
-                    self.bufferTime[faction] = math.min(self.bufferTime[faction],10);
-                    self.bufferTime[other_faction] = math.min(self.bufferTime[other_faction],180);
+                    state.tug_spawners[faction].bufferTime       = math.min(state.tug_spawners[faction].bufferTime,        10);
+                    state.tug_spawners[other_faction].bufferTime = math.min(state.tug_spawners[other_faction].bufferTime, 180);
                     --If there hasn't been a distress call yet
-                    if(self:hasTaskSucccededBefore(other_pickup_task) and (not self:hasTaskStarted("distress"))) then
+                    if mission_data.fucking_garbage[other_pickup_task] == "succeeded" and mission_data.fucking_garbage.distress ~= "running" then
                         --The same faction should create a distress call
                         mission_data.distress_faction = faction;
                         mission_data.fucking_garbage.distress = "running";
-                        stateset:on("distress");
+                        mission_data.mission_states:on("distress");
                     end
                 end
 
-                if(name == i) then
-                    --Spawn wave4 or wave5
-                    local p = self.waves[i];
-                    --Spawn two bombers
-                    for _,v in pairs(spawnInFormation2({"6 6"},p,self.vehicles[faction],2,15)) do
-                        v:Goto(("%s_path"):format(p));
-                    end
+                --Spawn wave4 or wave5
+                --Spawn two bombers
+                local datum = relic_data[faction];
+                for _, v in pairs(spawnInFormation2({"6 6"}, datum.wave, datum.vehicles, 2, 15)) do
+                    v:Goto(("%s_path"):format(datum.wave));
                 end
             end
         end
@@ -540,7 +526,7 @@ statemachine.Create("main_objectives", {
         and mission_data.fucking_garbage["relic_cca"] == "succeeded" then
             objective.UpdateObjective(otfs.relics,"GREEN");
             SucceedMission(GetTime() + 5, des.win);
-            self:next();
+            state:next();
         end
     end }
 });
@@ -548,7 +534,7 @@ statemachine.Create("main_objectives", {
 --- @class RelicTugEscortOrders_state : StateMachineIter
 --- @field v GameObject
 --- @field tug GameObject
---- @field f string
+--- @field key string
 statemachine.Create("relic_tug_escort_orders", {
     function (state)
         --- @cast state RelicTugEscortOrders_state
@@ -569,14 +555,14 @@ statemachine.Create("relic_tug_escort_orders", {
     end,
     function (state)
         --- @cast state RelicTugEscortOrders_state
-        state.v:Goto(("%s_attack"):format(state.f));
+        state.v:Goto(("%s_attack"):format(state.key));
         state:next();
     end
 });
 
 --- @class RelicTugAttackOrders_state : StateMachineIter
 --- @field v GameObject
---- @field f string
+--- @field key string
 statemachine.Create("relic_tug_attack_orders", {
     function (state)
         --- @cast state RelicTugAttackOrders_state
@@ -586,7 +572,7 @@ statemachine.Create("relic_tug_attack_orders", {
     end,
     function (state)
         --- @cast state RelicTugAttackOrders_state
-        state.v:Goto(("%s_path"):format(state.f));
+        state.v:Goto(("%s_path"):format(state.key));
         state:next();
     end,
     function (state)
@@ -597,14 +583,14 @@ statemachine.Create("relic_tug_attack_orders", {
     end,
     function (state)
         --- @cast state RelicTugAttackOrders_state
-        state.v:Goto(("%s_attack"):format(state.f));
+        state.v:Goto(("%s_attack"):format(state.key));
         state:next();
     end
 });
 
 --- @class RelicTugOrders_state : StateMachineIter
 --- @field v GameObject
---- @field f string
+--- @field key string
 --- @field relic GameObject
 statemachine.Create("relic_tug_orders", {
     function (state)
@@ -615,7 +601,7 @@ statemachine.Create("relic_tug_orders", {
     end,
     function (state)
         --- @cast state RelicTugOrders_state
-        state.v:Goto(("%s_path"):format(state.f));
+        state.v:Goto(("%s_path"):format(state.key));
         state:next();
     end,
     { "pre_tug_state", function (state)
@@ -641,7 +627,7 @@ statemachine.Create("relic_tug_orders", {
     end,
     function (state)
         --- @cast state RelicTugOrders_state
-        state.v:Goto(("%s_path"):format(state.f));
+        state.v:Goto(("%s_path"):format(state.key));
         state:next();
     end,
     function (state)
@@ -652,7 +638,7 @@ statemachine.Create("relic_tug_orders", {
     end,
     function (state)
         --- @cast state RelicTugOrders_state
-        state.v:Goto(("%s_return"):format(state.f));
+        state.v:Goto(("%s_return"):format(state.key));
         state:next();
         return statemachine.AbortResult();
     end,
@@ -664,7 +650,7 @@ statemachine.Create("relic_tug_orders", {
     end,
     function (state)
         --- @cast state RelicTugOrders_state
-        state.v:Dropoff(("%s_base"):format(state.f));
+        state.v:Dropoff(("%s_base"):format(state.key));
         state:next();
         return statemachine.AbortResult();
     end
@@ -701,14 +687,15 @@ statemachine.Create("nsdf_base_attack", {
 
 --- @class RelicTugSpawner_state : StateMachineIter
 --- @field noExtraWait boolean
---- @field f string Prefix to some path point names
+--- @field key string
+--- @field bufferTime number
 --- @field otf string
 statemachine.Create("relic_tug_spawner", {
     function (state)
         --- @cast state RelicTugSpawner_state
         -- I thought this was to stagger the waves but this just delays one a cycle, but after that will line up with each other
         -- I feel like it would make more sense to make this delay for waveinterval/2 instead
-        if state.noExtraWait or state:SecondsHavePassed(mission_data.bufferTime) then
+        if state.noExtraWait or state:SecondsHavePassed(state.bufferTime) then
             state:SecondsHavePassed();
             state:next();
             return statemachine.FastResult(); -- start next state immediately
@@ -716,41 +703,41 @@ statemachine.Create("relic_tug_spawner", {
     end,
     function (state)
         --- @cast state RelicTugSpawner_state
-        if state:SecondsHavePassed(mission_data.bufferTime) then
+        if state:SecondsHavePassed(state.bufferTime) then
             --AddObjective(otfs[("%s_tug"):format(state.f)],color);
             objective.AddObjective(state.otf,"WHITE");
 
-            local s = ("%s_spawn"):format(f);
-            local tug = gameobject.BuildGameObject(state.vehicles[4],2,s);
+            local s = ("%s_spawn"):format(state.key);
+            local tug = gameobject.BuildGameObject(relic_data[state.key].vehicles[4], 2, s);
             --Create a sequence with all the tugs actions from creation to end
             --local tug_sequencer = mission.TaskManager:sequencer(tug);
             --tug_sequencer:queue2("Goto",("%s_path"):format(f));
             --tug_sequencer:queue3("TugPickup",relic,1);
             --tug_sequencer:queue2("Goto",("%s_return"):format(f));
             --tug_sequencer:queue2("Dropoff",("%s_base"):format(f));
-            local tug_sequencer = statemachine.Start("relic_tug_orders", nil, { v = tug, f = state.f, relic = state.relic });
+            local tug_sequencer = statemachine.Start("relic_tug_orders", nil, { v = tug, key = state.key, relic = mission_data.key_objects.relic[state.key] });
 
             mission_data.sub_machines = mission_data.sub_machines or {};
             table.insert(mission_data.sub_machines, tug_sequencer);
 
             --Create escort
-            for _,v in pairs(spawnInFormation2({"2 2"},s,state.vehicles,2,15)) do
+            for _,v in pairs(spawnInFormation2({"2 2"}, s, relic_data[state.key].vehicles, 2, 15)) do
                 --local def_seq = mission.TaskManager:sequencer(v);
                 --def_seq:queue2("Defend2",tug);
                 ----If tug dies, attack the players base
                 --def_seq:queue2("Goto",("%s_attack"):format(f));
-                local def_seq = statemachine.Start("relic_tug_escort_orders", nil, { v = v, tug = tug, f = state.f });
+                local def_seq = statemachine.Start("relic_tug_escort_orders", nil, { v = v, tug = tug, key = state.key });
                 table.insert(mission_data.sub_machines, def_seq);
             end
             
             --Create Attack
-            for _,v in pairs(spawnInFormation2({"1 1"},("%s_path"):format(state.f),state.vehicles,2,15)) do
+            for _,v in pairs(spawnInFormation2({"1 1"},("%s_path"):format(state.key), relic_data[state.key].vehicles, 2, 15)) do
                 --local def_seq = mission.TaskManager:sequencer(v);
                 ----Goto relic site
                 --def_seq:queue2("Goto",("%s_path"):format(f));
                 ----Attack players base
                 --def_seq:queue2("Goto",("%s_attack"):format(f));
-                local def_seq = statemachine.Start("relic_tug_attack_orders", nil, { v = v, f = state.f });
+                local def_seq = statemachine.Start("relic_tug_attack_orders", nil, { v = v, key = state.key });
                 table.insert(mission_data.sub_machines, def_seq);
             end
 
@@ -761,8 +748,7 @@ statemachine.Create("relic_tug_spawner", {
 
 --- @class RelicWaveSpawner_state : StateMachineIter
 --- @field waveInterval number
---- @field f string Prefix to some path point names
---- @field vehicles string[] Vehicles odfs to spawn
+--- @field key string Prefix to some path point names
 --- @field noExtraWait boolean
 statemachine.Create("relic_wave_spawner", {
     function (state)
@@ -778,7 +764,7 @@ statemachine.Create("relic_wave_spawner", {
     function (state)
         --- @cast state RelicWaveSpawner_state
         if state:SecondsHavePassed(mission_data.waveinterval) then -- can't use lap mode due to needing to change the delay
-            mission_data.waveinterval = mission_data.waveinterval + mission_data.waveinterval*0.05; -- push the next wave out further
+            mission_data.waveinterval = mission_data.waveinterval + mission_data.waveinterval * 0.05; -- push the next wave out further
 
             local wave = chooseA(
                 { item = { " 2 ", "1 1" }, chance = 10 }, -- tank, two fighters
@@ -786,10 +772,10 @@ statemachine.Create("relic_wave_spawner", {
                 { item = { " 2 ", " 6 " }, chance =  4 }  -- tank and two bombers
             );
 
-            local units, lead = spawnInFormation2(wave,("%s_path"):format(state.f),self.vehicles,2,15)
+            local units, lead = spawnInFormation2(wave, ("%s_path"):format(state.key), relic_data[state.key].vehicles, 2, 15);
             mission_data.sub_machines = mission_data.sub_machines or {};
-            for i2, v2 in pairs(units) do
-                local machine = statemachine.Start("relic_wave_orders", nil, { v = v2, f = state.f, lead = lead });
+            for _, v in pairs(units) do
+                local machine = statemachine.Start("relic_wave_orders", nil, { v = v, key = state.key, leader = lead });
                 table.insert(mission_data.sub_machines, machine);
             end
         end
@@ -798,12 +784,13 @@ statemachine.Create("relic_wave_spawner", {
 
 --- @class RelicWaveOrders_state : StateMachineIter
 --- @field v GameObject
---- @field f string
+--- @field key string
 --- @field leader GameObject
 statemachine.Create("relic_wave_orders", {
     function (state)
         --- @cast state RelicWaveOrders_state
         if state.v ~= state.leader then
+            -- defend the leader if I am not the leader
             state.v:Defend2(state.leader);
             state:next();
         else
@@ -813,13 +800,14 @@ statemachine.Create("relic_wave_orders", {
     function (state)
         --- @cast state RelicWaveOrders_state
         if state.v:GetCurrentCommand() == AiCommand["NONE"] then
+            -- if we lose our order (defend the leader) switch to direct attack
             state:switch("attack"); -- if the leader dies, inherit attack state
         end
     end,
     -- Goto relic site
     { "leader_goto", function (state)
         --- @cast state RelicWaveOrders_state
-        state.v:Goto(("%s_path"):format(state.f));
+        state.v:Goto(("%s_path"):format(state.key));
         state:next();
     end },
     function (state)
@@ -831,29 +819,39 @@ statemachine.Create("relic_wave_orders", {
     -- Attack players base
     { "attack", function (state)
         --- @cast state RelicWaveOrders_state
-        state.v:Goto(("%s_attack"):format(state.f));
+        state.v:Goto(("%s_attack"):format(state.key));
         state:next();
         return statemachine.AbortResult();
     end }
 });
 
-statemachine.Create("FUCKING WHATEVER THE FUCK THIS IS", {
+--- @class DistressAmbushOrders_state : StateMachineIter
+--- @field v GameObject
+statemachine.Create("distress_ambush_orders", {
     function (state)
+        --- @cast state DistressAmbushOrders_state
         if state.v:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
-        state.v:Attack(gameobject.GetPlayerGameObject());
-        state:next();
+        --- @cast state DistressAmbushOrders_state
+        local player = gameobject.GetPlayerGameObject();
+        --if player == nil then error("player is nil"); end
+        if player then
+            state.v:Attack(player);
+            state:next();
+        end
     end,
     function (state)
+        --- @cast state DistressAmbushOrders_state
         if state.v:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     -- Attack players base
     { "attack", function (state)
+        --- @cast state DistressAmbushOrders_state
         state.v:Goto(("%s_attack"):format(mission_data.distress_faction));
         state:next();
         return statemachine.AbortResult();
@@ -876,17 +874,13 @@ stateset.Create("mission")
         end
     end)
     :Add("relic_destroyed", function (state, name)
-        if not mission_data.key_objects.relics.nsdf or not mission_data.key_objects.relics.nsdf:IsAlive() then
-            --objective.UpdateObjective(otfs.escort,"RED"); -- not sure what objective to red here
-            FailMission(GetTime() + 5,des.relic_destroyed);
-            state:off(name, true);
-            return;
-        end
-        if not mission_data.key_objects.relics.cca or not mission_data.key_objects.relics.cca:IsAlive() then
-            --objective.UpdateObjective(otfs.escort,"RED"); -- not sure what objective to red here
-            FailMission(GetTime() + 5,des.relic_destroyed);
-            state:off(name, true);
-            return;
+        for _, relic_datum in pairs(relic_data) do
+            if not mission_data.key_objects.relic[relic_datum.name] or not mission_data.key_objects.relic[relic_datum.name]:IsAlive() then
+                --objective.UpdateObjective(otfs.escort,"RED"); -- not sure what objective to red here
+                FailMission(GetTime() + 5, des.relic_destroyed);
+                state:off(name, true);
+                return;
+            end
         end
     end)
 
@@ -900,38 +894,32 @@ statemachine.Create("distress", {
         end
     end,
     statemachine.SleepSeconds(5),
-    function (self)
-        local distress_l = ("%s_distress"):format(a1); 
-        local nav = gameobject.BuildGameObject("apcamr",1,distress_l);
+    function (state)
+        local distress_l = ("%s_distress"):format(mission_data.distress_faction);
+        local nav = gameobject.BuildGameObject("apcamr", 1, distress_l);
+        if nav == nil then error("nav is nil"); end
         nav:SetObjectiveName("Distress Call");
         objective.AddObjective(otfs[distress_l]);
-        self:next();
+        state:next();
     end,
-    function (self)
+    function (state)
         local dpath = ("%s_distress"):format(mission_data.distress_faction);
         local apath = ("%s_ambush"):format(mission_data.distress_faction);
-        local d_att = self.vehicles[mission_data.distress_faction];
+        local d_att = relic_data[mission_data.distress_faction].vehicles;
         if(gameobject.GetPlayerGameObject():GetDistance(dpath) < 100) then
             --It is a trap, spawn ambush
-            for _,v in pairs(spawnInFormation2({"1 2 3 1"},apath,d_att,2,15)) do
-                --local tm = mission.TaskManager:sequencer(v);
-                ----Everyone attack the player
-                --tm:queue2("Attack",gameobject.GetPlayerGameObject());
-                ----Then attack the base!
-                --tm:queue2("Goto",("%s_attack"):format(mission_data.distress_faction));
-
-                local tm = statemachine.Start("FUCKING WHATEVER THE FUCK THIS IS", nil, { v = v });
+            for _,v in pairs(spawnInFormation2({"1 2 3 1"}, apath, d_att, 2, 15)) do
+                local tm = statemachine.Start("distress_ambush_orders", nil, { v = v });
                 mission_data.sub_machines = mission_data.sub_machines or {};
                 table.insert(mission_data.sub_machines, tm);
             end
-            --self:taskSucceed("distress");
-            self:next();
+            state:next();
         end
     end,
-    function (self)
+    function (state)
         objective.UpdateObjective(otfs[("%s_distress"):format(mission_data.distress_faction)],"GREEN");
         mission_data.fucking_garbage.distress = "succeeded";
-        self:next();
+        state:next();
     end
 });
 
