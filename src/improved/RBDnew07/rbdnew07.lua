@@ -23,13 +23,14 @@ local color = require("_color");
 local producer = require("_producer");
 local patrol = require("_patrol");
 
---- @class MissionData_KeyObjects
+--- @class MissionData07_KeyObjects
 --- @field recy GameObject?
 --- @field tug GameObject?
 --- @field relic table<string, GameObject?>
 
---- @class MissionData
---- @field key_objects MissionData_KeyObjects
+--- @class MissionData07
+--- @field mission_states StateSetRunner
+--- @field key_objects MissionData07_KeyObjects
 --- @field sub_machines StateMachineIter[]
 --- @field audio_played table<string, boolean>
 local mission_data = {
@@ -395,6 +396,8 @@ statemachine.Create("main_objectives", {
         local cca_attack  = statemachine.Start("relic_wave_spawner", nil, { key = "cca" , noExtraWait = ranC == 0 , waveInterval = 140 });
         local nsdf_tug = statemachine.Start("relic_tug_spawner", nil, { key = "nsdf", noExtraWait = ranC == 1,  bufferTime = 500, otf = otfs.nsdf_tug });
         local cca_tug  = statemachine.Start("relic_tug_spawner", nil, { key = "cca" , noExtraWait = ranC == 0 , bufferTime = 500, otf = otfs.cca_tug  });
+        --- @cast nsdf_tug RelicTugSpawner_state
+        --- @cast cca_tug RelicTugSpawner_state
         state.tug_spawners = {
             nsdf = nsdf_tug,
             cca  = cca_tug
@@ -560,58 +563,58 @@ statemachine.Create("relic_tug_escort_orders", {
     end
 });
 
---- @class RelicTugAttackOrders_state : StateMachineIter
+--- @class RelicTugAttackOrders07_state : StateMachineIter
 --- @field v GameObject
 --- @field key string
 statemachine.Create("relic_tug_attack_orders", {
     function (state)
-        --- @cast state RelicTugAttackOrders_state
+        --- @cast state RelicTugAttackOrders07_state
         if state.v:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
-        --- @cast state RelicTugAttackOrders_state
+        --- @cast state RelicTugAttackOrders07_state
         state.v:Goto(("%s_path"):format(state.key));
         state:next();
     end,
     function (state)
-        --- @cast state RelicTugAttackOrders_state
+        --- @cast state RelicTugAttackOrders07_state
         if state.v:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
-        --- @cast state RelicTugAttackOrders_state
+        --- @cast state RelicTugAttackOrders07_state
         state.v:Goto(("%s_attack"):format(state.key));
         state:next();
     end
 });
 
---- @class RelicTugOrders_state : StateMachineIter
+--- @class RelicTugOrders07_state : StateMachineIter
 --- @field v GameObject
 --- @field key string
 --- @field relic GameObject
 statemachine.Create("relic_tug_orders", {
     function (state)
-        --- @cast state RelicTugOrders_state
+        --- @cast state RelicTugOrders07_state
         if state.v:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
-        --- @cast state RelicTugOrders_state
+        --- @cast state RelicTugOrders07_state
         state.v:Goto(("%s_path"):format(state.key));
         state:next();
     end,
     { "pre_tug_state", function (state)
-        --- @cast state RelicTugOrders_state
+        --- @cast state RelicTugOrders07_state
         if state.v:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end },
     function (state)
-        --- @cast state RelicTugOrders_state
+        --- @cast state RelicTugOrders07_state
         local t = state.relic:GetTug();
         if t and t:IsValid() then
             --If another tug has the relic, goto the relic
@@ -626,30 +629,30 @@ statemachine.Create("relic_tug_orders", {
         end
     end,
     function (state)
-        --- @cast state RelicTugOrders_state
+        --- @cast state RelicTugOrders07_state
         state.v:Goto(("%s_path"):format(state.key));
         state:next();
     end,
     function (state)
-        --- @cast state RelicTugOrders_state
+        --- @cast state RelicTugOrders07_state
         if state.v:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
-        --- @cast state RelicTugOrders_state
+        --- @cast state RelicTugOrders07_state
         state.v:Goto(("%s_return"):format(state.key));
         state:next();
         return statemachine.AbortResult();
     end,
     function (state)
-        --- @cast state RelicTugOrders_state
+        --- @cast state RelicTugOrders07_state
         if state.v:GetCurrentCommand() == AiCommand["NONE"] then
             state:next();
         end
     end,
     function (state)
-        --- @cast state RelicTugOrders_state
+        --- @cast state RelicTugOrders07_state
         state.v:Dropoff(("%s_base"):format(state.key));
         state:next();
         return statemachine.AbortResult();

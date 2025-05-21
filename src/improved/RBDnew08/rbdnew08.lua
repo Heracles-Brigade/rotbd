@@ -1,483 +1,587 @@
+require("_printfix");
 
-local minit = require("minit")
+print("\27[34m----START MISSION----\27[0m");
 
+--- @diagnostic disable-next-line: lowercase-global
+debugprint = print;
+--traceprint = print;
 
-local OOP = require("oop");
-local mission = require("cmisnlib");
-local buildAi = require("buildAi");
-local core = require("bz_core");
-local misc = require("misc");
-local ProducerAi = buildAi.ProducerAi;
-local ProductionJob = buildAi.ProductionJob;
-local IsIn = OOP.isIn;
+require("_requirefix").addmod("rotbd");
 
+local api = require("_api");
+local gameobject = require("_gameobject");
+local hook = require("_hook");
+local statemachine = require("_statemachine");
+local stateset = require("_stateset");
+--local tracker = require("_tracker");
+local navmanager = require("_navmanager");
+local objective = require("_objective");
+local utility = require("_utility");
+local color = require("_color");
+local producer = require("_producer");
+local patrol = require("_patrol");
 
+--- @class MissionData08_KeyObjects
+--- @field comms GameObject[]
+--- @field powers GameObject[]
+--- @field grigg GameObject?
+
+--- @class MissionData08
+--- @field mission_states StateSetRunner
+--- @field key_objects MissionData08_KeyObjects
+--- @field sub_machines StateMachineIter[]
+--- @field timerOut boolean didn't destroy all towers in time but did enough to progress mission
+--- @field prior_dead integer?
+--- @field grigg_start_evac boolean used to push grigg out of a held state
+--- @field grigg_audio_waits number[]
+local mission_data = {
+    key_objects = {
+        comms = {},
+        powers = {},
+    },
+    sub_machines = {},
+    timerOut = false,
+    prior_dead = nil,
+    grigg_start_evac = false,
+    grigg_audio_waits = { 60, 30, 30},
+};
 
 local audio = {
-  intro = "rbd0801.wav",
-  -- after tower 1 is down
-  tower1 = "rbd0802.wav",
-  --(Grigg’s updates, interspersed throughout)
-  grigg_updates = {"rbdnew0820.wav", "rbdnew0821.wav", "rbdnew0822.wav"},
+    intro = "rbd0801.wav",
+    -- after tower 1 is down
+    tower1 = "rbd0802.wav",
+    --(Grigg’s updates, interspersed throughout)
+    grigg_updates = {"rbdnew0820.wav", "rbdnew0821.wav", "rbdnew0822.wav"},
 
-  -- after tower 2 is down
-  tower2 = "rbd0803.wav",
-  --going_in = "rbd0804.wav", replaced by rbd0802.wav
-  evacuate = "rbd0805.wav",
-  timer_out = "rbd0806.wav",
-  timer_out_loss = "rbd0802L.wav",
-  one_minute = "rbd0807.wav",
-  too_close_loss = "rbd0801L.wav",
-
+    -- after tower 2 is down
+    tower2 = "rbd0803.wav",
+    --going_in = "rbd0804.wav", replaced by rbd0802.wav
+    evacuate = "rbd0805.wav",
+    timer_out = "rbd0806.wav",
+    timer_out_loss = "rbd0802L.wav",
+    one_minute = "rbd0807.wav",
+    too_close_loss = "rbd0801L.wav",
 }
 
-function GriggAtGt(handle,sequencer)
-  sequencer:push2("Goto", "grigg_out");
-  -- Make all base units hunt grigg
-  local l = Length(GetPosition("base_warning",1) - GetPosition("base_warning",0));
-  for obj in ObjectsInRange(l, "base_warning") do
-    if(GetTeamNum(obj) == 2 and IsCraft(obj) and not (CanBuild(obj))) then
-      Attack(obj, handle);
+local tower_audio = {
+    audio.tower1,
+    audio.tower2,
+};
+
+local function countDead(handles, team)
+    local c = 0;
+    for i,v in pairs(handles) do
+        if not (v:IsAlive(v) and (team==nil or team == v:GetTeamNum())) then
+            c = c + 1;
+        end
     end
-  end
+    return c;
 end
 
--- Objectives
-local introCinematic;
-local avoidBase;
-local destroyComms;
-local evac;
-
-
-introCinematic = mission.Objective:define("intoCinematic"):createTasks(
-  "focus_comm1","focus_comm2","focus_comm3","focus_base","build_howiz"
-):setListeners({
-  init = function(self)
-    self.next_tasks = {
-      focus_comm1 = "focus_comm2",
-      focus_comm2 = "focus_comm3",
-      focus_comm3 = "focus_base"
-    };
-    self.comms = {
-      GetHandle("comm1"),
-      GetHandle("comm2"),
-      GetHandle("comm3")
-    };
-  end,
-  _setUpProdListeners = function(self,id,each,done)
-    local bundle = ProducerAi:getBundle(id);
-    if(bundle) then
-      bundle:forEach():subscribe(function(...)
-        self:call(each,...);
-      end);
-      bundle:onFinish():subscribe(function(...)
-        self:call(done,...);
-      end);
-    end
-  end,
-  start = function(self)
-    SetPilot(2,4);
-    self.cam = CameraReady();
-    self:startTask("focus_comm1");
-    self:startTask("build_howiz");
-    AudioMessage(audio.intro);
-  end,
-  _forEachHowie = function(self,job,handle)
-    Goto(handle,job:getLocation());
-  end,
-  _doneHowiz = function(self)
-    self:taskSucceed("build_howiz");
-  end,
-  update = function(self,dtime)
-    if(self.cam and CameraCancelled()) then
-      self.cam = not CameraFinish();
-    end
-    for i=1, 3 do
-      if(self:isTaskActive(("focus_comm%d"):format(i))) then
-        if((not self.cam) or CameraPath(("pan_%d"):format(i),1500,1000,self.comms[i])) then
-          self:taskSucceed(("focus_comm%d"):format(i));
+local function countAlive(handles, team)
+    local c = 0;
+    for _,v in pairs(handles) do
+        if v:IsAlive() and (team == nil or team == v:GetTeamNum()) then
+            c = c + 1;
         end
-      end
     end
-    if(self:isTaskActive("focus_base")) then
-      if((not self.cam) or CameraPath("pan_4",500,2000,GetHandle("ubtart0_i76building"))) then
-        self:taskSucceed("focus_base");
-      end
-    end
-  end,
-  save = function(self)
-    return {
-      howizJobs = self.howizJobs,
-      cam = self.cam
-    };
-  end,
-  load = function(self,data)
-    self.howizJobs = data.howizJobs;
-    self.cam = data.cam;
-    if(self.howizJobs) then
-      self:call("_setUpProdListeners",self.howizJobs,"_forEachHowie","_doneHowiz");
-    end
-  end,
-  task_start = function(self,name)
-    if(name == "build_howiz") then
-      self.howizJobs = ProducerAi:queueJobs2({
-        ProductionJob("avartlf",2,GetPosition("base_artillery",0),1),
-        ProductionJob("svartlf",2,GetPosition("base_artillery",1),1),
-        ProductionJob("avartlf",2,GetPosition("base_artillery",2),1),
-        ProductionJob("svartlf",2,GetPosition("base_artillery",3),1)
-      });
-      self:call("_setUpProdListeners",self.howizJobs,"_forEachHowie","_doneHowiz");
-    end
-  end,
-  task_success = function(self,name)
-    if(name == "focus_base") then
-      if(self.cam) then
-        self.cam = not CameraFinish();
-      end
-      mission.Objective:Start("misison");
-    else
-      self:startTask(self.next_tasks[name]);
-    end
-    if(self:hasTasksSucceeded("focus_base","build_howiz")) then
-      self:success();
-    end
-  end,
-  success = function(self)
-  end
-});
+    return c;
+end
 
-avoidBase = mission.Objective:define("avoidBase"):createTasks(
-  "warning", "wayTooClose"
-):setListeners({
-  start = function(self)
-    AddObjective("rbd0804.otf");
-    self:startTask("warning");
-    self:startTask("wayTooClose");
-  end,
-  fail = function(self)
-    UpdateObjective("rbd0804.otf","red");
-    FailMission(GetTime() + 5.0, "rbd08l01.des");
-  end,
-  task_reset = function(self,name)
-    if(name == "warning") then
-      UpdateObjective("rbd0804.otf","white");
-    end
-  end,
-  task_fail = function(self,name,first)
-    if(name == "wayTooClose") then
-      self:fail();
-    elseif(name == "warning") then
-      if(first) then
-        --Warning audio
-      end
-      UpdateObjective("rbd0804.otf","yellow");
-    end
-  end,
-  update = function(self)
-    local d = GetDistance(GetPlayerHandle(),"base_warning");
-    local l = Length(GetPosition("base_warning",1) - GetPosition("base_warning",0));
-    if(self:isTaskActive("warning") and (d < l)) then
-      self:taskFail("warning");
-    elseif((d > l) and (not self:isTaskActive("warning"))) then
-      self:taskReset("warning");
-    end
-    if(self:isTaskActive("wayTooClose")) then
-      local d = GetDistance(GetPlayerHandle(),"base");
-      local l = Length(GetPosition("base",1) - GetPosition("base",0));
-      if d < l then
-        self:taskFail("wayTooClose");
-      end
-    end
-  end
-});
+--- @class MainObjectives07_state : StateMachineIter
+--- @field nextAudio integer
+--- @field lastComm GameObject
+statemachine.Create("main_objectives", {
+    { "intoCinematic", function(state)
+        --- @cast state MainObjectives07_state
+        mission_data.comms = {
+            gameobject.GetGameObject("comm1"),
+            gameobject.GetGameObject("comm2"),
+            gameobject.GetGameObject("comm3")
+        };
 
+        if not mission_data.comms[1]
+        or not mission_data.comms[2]
+        or not mission_data.comms[3] then
+            error("Missing comms");
+        end
 
+        SetPilot(2,4);
+        CameraReady();
+        --self:startTask("focus_comm1");
+        --self:startTask("build_howiz");
+        AudioMessage(audio.intro);
+        state:next();
+        return statemachine.FastResult();
+    end },
+    { "intoCinematic.build_howiz", function(state)
+        --- @cast state MainObjectives07_state
+        producer.QueueJob("avartlf", 2, nil, { name = "_forEachHowie", location = GetPosition("base_artillery", 0) });
+        producer.QueueJob("svartlf", 2, nil, { name = "_forEachHowie", location = GetPosition("base_artillery", 1) });
+        producer.QueueJob("avartlf", 2, nil, { name = "_forEachHowie", location = GetPosition("base_artillery", 2) });
+        producer.QueueJob("svartlf", 2, nil, { name = "_forEachHowie", location = GetPosition("base_artillery", 3) });
+        state:next();
+        return statemachine.FastResult();
+    end },
+    { "intoCinematic.focus_comm1", function(state)
+        --- @cast state MainObjectives07_state
+        if CameraCancelled() then
+            state:switch("intoCinematic.end");
+            return statemachine.FastResult();
+        end
+        if CameraPath("pan_1", 1500, 1000, mission_data.comms[1]:GetHandle()) then
+            state:next();
+        end
+    end },
+    { "intoCinematic.focus_comm2", function(state)
+        --- @cast state MainObjectives07_state
+        if CameraCancelled() then
+            state:switch("intoCinematic.end");
+            return statemachine.FastResult();
+        end
+        if CameraPath("pan_2", 1500, 1000, mission_data.comms[2]:GetHandle()) then
+            state:next();
+        end
+    end },
+    { "intoCinematic.focus_comm3", function(state)
+        --- @cast state MainObjectives07_state
+        if CameraCancelled() then
+            state:switch("intoCinematic.end");
+            return statemachine.FastResult();
+        end
+        if CameraPath("pan_3", 1500, 1000, mission_data.comms[3]:GetHandle()) then
+            state:next();
+        end
+    end },
+    { "intoCinematic.focus_base", function(state)
+        --- @cast state MainObjectives07_state
+        if CameraCancelled() or CameraPath("pan_4", 500, 2000, gameobject.GetGameObject("ubtart0_i76building"):GetHandle()) then
+            state:next();
+            return statemachine.FastResult();
+        end
+    end },
+    { "intoCinematic.end", function(state)
+        --- @cast state MainObjectives07_state
+        CameraFinish();
+        --mission.Objective:Start("misison"); -- destroyComms
+        state:next();
+        return statemachine.FastResult();
+    end },
+    { "destroyComms.init", function(state)
+        --- @cast state MainObjectives07_state
+        mission_data.key_objects.powers = {
+            gameobject.GetGameObject("power1"),
+            gameobject.GetGameObject("power2"),
+            gameobject.GetGameObject("power3")
+        };
 
-
-
-destroyComms = mission.Objective:define("misison"):createTasks(
-  "destroyComms", "startEvac"
-):setListeners({
-  init = function(self)
-    self.comms = {
-      GetHandle("power1"),
-      GetHandle("power2"),
-      GetHandle("power3")
-    };
-    self.audio = {
-      audio.tower1,
-      audio.tower2
-    };
-    self.grigg_audio = audio.grigg_updates;
-  end,
-  _spawnGrigg = function(self)
-    self.grigg = BuildObject("avtank",1,"spawn_griggs");
-    SetObjectiveName(self.grigg, "Pvt. Grigg");
-    SetObjectiveOn(self.grigg);
-    local s = mission.TaskManager:sequencer(self.grigg);
-    local pp = GetPathPoints("grigg_in");
-    SetIndependence(self.grigg,0);
-    SetPerceivedTeam(self.grigg,2);
-    s:queue2("Goto","grigg_in");
-    s:queue2("Dropoff",pp[#pp]);
-    self.grigg_spawned = true;
-    
-    local griggAudioSequence = mission.AudioSequence();
-    griggAudioSequence:queueAudio(self.grigg_audio[1], 55 + math.random(10));
-    griggAudioSequence:queueAudio(self.grigg_audio[2], 20 + math.random(20));
-    griggAudioSequence:queueAudio(self.grigg_audio[3], 20 + math.random(20));
-
-    self.grigg_id = mission.AudioManager:PlayAndCall(griggAudioSequence, self, nil, "_nextGriggAudio");
-
-
-  end,
-  _nextGriggAudio = function(self, clip)
-    print(("Grigg audio playing #%d"):format(clip));
-  end,
-  task_start = function(self,name)
-    if(name == "destroyComms") then
-      self.timerOut = false;
-      AddObjective("rbd0801.otf");
-    elseif(name == "wait") then
-
-    elseif(name == "startEvac") then
-      evac:start(self.grigg, self.timerOut, self.comms[3]);
-    end
-  end,
-  task_success = function(self, name)
-    if(name == "destroyComms") then
-      UpdateObjective("rbd0801.otf","green");
-      StopCockpitTimer();
-      HideCockpitTimer();
-      if(not self:isTaskActive("startEvac")) then
-        self:startTask("startEvac");
-      end
-      self:success();
-    end
-  end,
-  task_fail = function(self,name)
-    if(name == "destroyComms") then
-      UpdateObjective("rbd0801.otf","red");
-      self:fail();
-    else
-      self:fail("grigg");
-    end
-  end,
-  start = function(self)
-    self.grigg_spawned = false;
-    SetObjectiveOn(self.comms[1]);
-    for i, v in ipairs(self.comms) do
-      SetObjectiveName(v,("Power %d"):format(i));
-    end
-    self:startTask("destroyComms");
-    self.timer = 60*8;
-    self.nextAudio = 0;
-    StartCockpitTimer(self.timer,self.timer*0.5,self.timer*0.1);
-  end,
-  update = function(self,dtime)
-    if(self:isTaskActive("destroyComms")) then
-      local dead = mission.countDead(self.comms);
-      self.timer = self.timer - dtime;
-      if(not self.grigg_spawned and dead >= 1) then
-        self:call("_spawnGrigg");
-      end
-      if(dead >= #self.comms) then
-        self:taskSucceed("destroyComms");
-      end
-      
-      if(self.timer <= 0) then
-        if(not self.timerOut) then
-          self.timerOut = true;
-          if(mission.countAlive(self.comms) > 1) then
-            self:taskFail("destroyComms");
-          else -- One tower left when time runs out, player does not fail
-            HideCockpitTimer();
-            -- Play audio message
-            AudioMessage(audio.timer_out);
-            if(not self:isTaskActive("startEvac")) then
-              self:startTask("startEvac");
+        -- start
+        --state.grigg_spawned = false;
+        mission_data.key_objects.powers[1]:SetObjectiveOn();
+        for i, v in ipairs(mission_data.key_objects.powers) do
+            v:SetObjectiveName(("Power %d"):format(i));
+        end
+        --self:startTask("destroyComms");
+        local timer = 60 * 8;
+        state.nextAudio = 0;
+        StartCockpitTimer(timer, timer * 0.5, timer * 0.1);
+        state:next();
+        return statemachine.FastResult();
+    end },
+    { "destroyComms.destroyComms.start", function(state)
+        --- @cast state MainObjectives07_state
+        mission_data.timerOut = false;
+        objective.AddObjective("rbd0801.otf");
+        mission_data.mission_states:on("grigg");
+        state:next();
+        return statemachine.FastResult();
+    end },
+    { "destroyComms.destroyComms", function(state)
+        --- @cast state MainObjectives07_state
+        local dead = countDead(mission_data.key_objects.powers);
+        if dead ~= mission_data.prior_dead then
+            state.nextAudio = state.nextAudio + 1;
+            if tower_audio[state.nextAudio] then
+                AudioMessage(tower_audio[state.nextAudio]);
             end
-          end
+            mission_data.prior_dead = dead;
+
+            -- this seems redandant but do check into it
+            for i, v in ipairs(mission_data.key_objects.powers) do
+                if v:IsAlive() then
+                    v:SetObjectiveOn();
+                    break;
+                end
+            end
         end
-      end
-    end
+        if dead >= #mission_data.key_objects.powers then
+            --self:taskSucceed("destroyComms");
+            state:next();
+            return;
+        end
+        if GetCockpitTimer() <= 0 then
+            mission_data.timerOut = true;
+            if countAlive(mission_data.key_objects.powers) > 1 then
+                --self:taskFail("destroyComms");
+                objective.UpdateObjective("rbd0801.otf", "RED");
+                FailMission(GetTime()+5.0,"rbd08l02.des");
+                state:switch(nil);
+                return;
+            else -- One tower left when time runs out, player does not fail
+                -- Play audio message
+                AudioMessage(audio.timer_out);
+                --self:startTask("startEvac");
+                state:next();
+                return;
+            end
+        end
+    end },
+    { "destroyComms.destroyComms.finish", function(state)
+        --- @cast state MainObjectives07_state
+        StopCockpitTimer();
+        HideCockpitTimer();
+        objective.UpdateObjective("rbd0801.otf", "GREEN");
+        --mission.AudioManager:Stop(self.grigg_id);
+        
+        mission_data.mission_states
+            --:off("grigg")
+            --:off("grigg_dead")
+            :off("grigg_voice");
+        state:next();
+    end },
+    { "evac.start", function(state)
+        --- @cast state MainObjectives07_state
+        --print("Evac started");
+        --state.wait_timer = 5;
+        --state:startTask("wait");
+        --state.lastComm = lastComm; -- the old code just used the last comm object
+        state.lastComm = mission_data.key_objects.comms[#mission_data.key_objects.comms];
+        for i = #mission_data.key_objects.comms, 1, -1 do
+            local comm = mission_data.key_objects.comms[i];
+            if comm:IsAlive() then
+                state.lastComm = comm;
+                break;
+            end
+        end
+        state:next();
+    end },
+    statemachine.SleepSeconds(5),
+    { "evac.evacuate.start", function(state)
+        --- @cast state MainObjectives07_state
+        AudioMessage(audio.evacuate);
+        objective.AddObjective("rbd0803.otf");
 
-    if(self.grigg_spawned and not IsAlive(self.grigg)) then
-      self:fail("grigg");
-    end
-  end,
-  success = function(self)
-    --SucceedMission(GetTime()+5.0,"rbd08w01.des");
-    
-  end,
-  delete_object = function(self,handle)
-    local m = nil;
-    if(IsIn(handle,self.comms)) then
-      print("next audio");
-      self.nextAudio = self.nextAudio + 1;
-      if(self.audio[self.nextAudio]) then
-        AudioMessage(self.audio[self.nextAudio]);
-      end
-    end
-    for i, v in ipairs(self.comms) do
-      print(i, v, IsAlive(v));
-      if(IsAlive(v)) then
-        SetObjectiveOn(v);
-        break;
-      end
-    end
-  end,
-  fail = function(self,what)
-    if(what == "grigg") then
-      FailMission(GetTime()+5.0,"rbd08l05.des");
-    else
-      FailMission(GetTime()+5.0,"rbd08l02.des");
-    end
-  end,
-  finish = function(self)
-    mission.AudioManager:Stop(self.grigg_id);
-  end,
-  save = function(self)
-    return self.timer, self.wait_1, self.grigg, self.timerOut, self.grigg_spawned, self.grigg_audio, self.nextAudio, self.grigg_id;
-  end,
-  load = function(self,...)
-    self.timer, self.wait_1, self.grigg, self.timerOut, self.grigg_spawned, self.grigg_audio, self.nextAudio, self.grigg_id  = ...;
-    if(not self.timerOut) then
-      StartCockpitTimer(self.timer,self.timer*0.5,self.timer*0.1);
-    end
-  end
+        --local s = mission.TaskManager:sequencer(mission_data.key_objects.grigg);
+        --s:clear();
+        mission_data.grigg_start_evac = true;
+        --Goto(mission_data.key_objects.grigg,"grigg_to_gt");
+        --s:queue3("GriggAtGt");
+        state:next();
+    end },
+    { "evac.evacuate", function(state)
+        --- @cast state MainObjectives07_state
+        local d1 = Length(gameobject.GetPlayerGameObject():GetPosition() - GetPosition("spawn_griggs"));
+        local d2 = Length(mission_data.key_objects.grigg:GetPosition() - GetPosition("spawn_griggs"));
+        if d1 < 100 and d2 < 100 and (not state.lastComm or not state.lastComm:IsAlive()) then
+            --self:taskSucceed("evacuate");
+            state:next();
+        end
+    end },
+    { "evac.evacuate.success", function(state)
+        --- @cast state MainObjectives07_state
+        objective.UpdateObjective("rbd0803.otf","GREEN");
+        if(mission_data.timerOut) then
+            SucceedMission(GetTime() + 5.0, "rbd08w02.des");
+        else
+            SucceedMission(GetTime() + 5.0, "rbd08w01.des");
+        end
+        state:switch(nil);
+    end },
 });
 
+--- @class Grigg07_state : StateMachineIter
+statemachine.Create("grigg", {
+    { "powers", function(state)
+        --- @cast state Grigg07_state
+        local dead = countDead(mission_data.key_objects.powers);
+        if dead >= 1 then
+            mission_data.key_objects.grigg = gameobject.BuildGameObject("avtank", 1, "spawn_griggs");
+            mission_data.key_objects.grigg:SetObjectiveName("Pvt. Grigg");
+            mission_data.key_objects.grigg:SetObjectiveOn();
+            --local s = mission.TaskManager:sequencer(mission_data.key_objects.grigg);
+            --local pp = GetPathPoints("grigg_in");
+            mission_data.key_objects.grigg:SetIndependence(0);
+            mission_data.key_objects.grigg:SetPerceivedTeam(2);
+            --s:queue2("Goto","grigg_in");
+            --s:queue2("Dropoff",pp[#pp]);
+            --self.grigg_spawned = true;
+            
+            --local griggAudioSequence = mission.AudioSequence();
+            --griggAudioSequence:queueAudio(audio.grigg_updates[1], 55 + math.random(10));
+            --griggAudioSequence:queueAudio(audio.grigg_updates[2], 20 + math.random(20));
+            --griggAudioSequence:queueAudio(audio.grigg_updates[3], 20 + math.random(20));
+            --self.grigg_id = mission.AudioManager:PlayAndCall(griggAudioSequence, self, nil, "_nextGriggAudio");
 
-evac = mission.Objective:define("evac"):createTasks(
-  "wait", "evacuate"
-):setListeners({
-  init = function(self)
+            mission_data.grigg_audio_waits = {
+                55 + math.random(10),
+                20 + math.random(20),
+                20 + math.random(20),
+            }
 
-  end,
-  start = function(self, grigg, slowEvac, lastComm)
-    print("Evac started");
-    self.slowEvac = slowEvac;
-    self.grigg = grigg;
-    self.wait_timer = 5;
-    self:startTask("wait");
-    self.lastComm = lastComm;
-  end,
-  task_start = function(self, name)
-    if(name == "wait") then
-      --AddObjective("rbd0801i.otf");
-    elseif(name == "evacuate") then
-      AudioMessage(audio.evacuate);
-      AddObjective("rbd0803.otf");
+            mission_data.mission_states
+                :on("grigg_dead")
+                :on("grigg_voice");
 
-      local s = mission.TaskManager:sequencer(self.grigg);
-      s:clear();
-      Goto(self.grigg,"grigg_to_gt");
-      s:queue3("GriggAtGt");
-    end
-  end,
-  task_success = function(self, name)
-    if(name == "wait") then
-      --RemoveObjective("rbd0801i.otf");
-      --AddObjective("rbd0802i.otf","green");
-      self:startTask("evacuate");
-    elseif(name == "evacuate") then
-      UpdateObjective("rbd0803.otf","green");
-      self:success();
-    end
-  end,
-  update = function(self, dtime)
-    if(self:isTaskActive("evacuate")) then
-      local d1 = Length(GetPosition(GetPlayerHandle()) - GetPosition("spawn_griggs"));
-      local d2 = Length(GetPosition(self.grigg) - GetPosition("spawn_griggs"));
-      if(d1 < 100 and d2 < 100) and (not IsAlive(self.lastComm)) then
-        self:taskSucceed("evacuate");
-      end
-      if(not IsAlive(self.grigg)) then
-        self:taskFail("evacuate");
-      end
-    elseif(self:isTaskActive("wait")) then
-      self.wait_timer = self.wait_timer - dtime;
-      if(self.wait_timer <= 0) then
-        self:taskSucceed("wait");
-      end
-    end
-  end,
-  save = function(self)
-    return self.slowEvac, self.wait_timer, self.grigg, self.lastComm;
-  end,
-  load = function(self, ...)
-    self.slowEvac, self.wait_timer, self.grigg, self.lastComm = ...;
-  end,
-  fail = function(self)
-    FailMission(GetTime()+5.0,"rbd08l05.des");
-  end,
-  success = function(self)
-    if(self.slowEvac) then
-      SucceedMission(GetTime() + 5.0, "rbd08w02.des");
-    else
-      SucceedMission(GetTime() + 5.0, "rbd08w01.des");
-    end
-  end
+            state:next();
+        end
+    end },
+    { "order_wait_1", function (state)
+        --- @cast state Grigg07_state
+        if mission_data.grigg_start_evac then
+            state:switch("evac");
+            return;
+        end
+        if mission_data.key_objects.grigg:GetCurrentCommand() == AiCommand["NONE"] then
+            state:next();
+        end
+    end },
+    { "goto", function (state)
+        --- @cast state Grigg07_state
+        if mission_data.grigg_start_evac then
+            state:switch("evac");
+            return;
+        end
+        mission_data.key_objects.grigg:Goto("grigg_in");
+        state:next();
+    end },
+    { "order_wait_2", function (state)
+        --- @cast state Grigg07_state
+        if mission_data.grigg_start_evac then
+            state:switch("evac");
+            return;
+        end
+        if mission_data.key_objects.grigg:GetCurrentCommand() == AiCommand["NONE"] then
+            state:next();
+        end
+    end },
+    { "dropoff", function (state)
+        --- @cast state Grigg07_state
+        if mission_data.grigg_start_evac then
+            state:switch("evac");
+            return;
+        end
+        --local pp = GetPathPoints("grigg_in");
+        local last_path_point = GetPosition("grigg_in", GetPathPointCount("grigg_in") - 1);
+        if last_path_point == nil then error("Grigg path point not found"); end
+        mission_data.key_objects.grigg:Dropoff(last_path_point); -- stuck order since it's impossible
+        state:next();
+    end },
+    --{ "order_wait_3", function (state)
+    --    --- @cast state Grigg07_state
+    --    if mission_data.grigg_start_evac then
+    --        state:switch("evac");
+    --        return;
+    --    end
+    --    if mission_data.key_objects.grigg:GetCurrentCommand() == AiCommand["NONE"] then
+    --        state:next();
+    --    end
+    --end },
+    { "hold_state", function (state)
+        --- @cast state Grigg07_state
+        if mission_data.grigg_start_evac then
+            state:switch("evac");
+        end
+    end },
+    { "evac", function (state)
+        --- @cast state Grigg07_state
+        mission_data.key_objects.grigg:Goto("grigg_to_gt");
+        state:next();
+    end },
+    { "order_wait_4", function (state)
+        --- @cast state Grigg07_state
+        if mission_data.key_objects.grigg:GetCurrentCommand() == AiCommand["NONE"] then
+            state:next();
+        end
+    end },
+    { "goto_huntdown", function (state)
+        --- @cast state Grigg07_state
+        mission_data.key_objects.grigg:Goto("grigg_out");
+        -- Make all base units hunt grigg
+        local l = Length(GetPosition("base_warning", 1) - GetPosition("base_warning", 0));
+        for obj in gameobject.ObjectsInRange(l, "base_warning") do
+            if obj:GetTeamNum() == 2 and obj:IsCraft() and not obj:CanBuild() then
+                obj:Attack(mission_data.key_objects.grigg);
+            end
+        end
+        state:next();
+    end }
 });
 
-function Start()
-  print("pack test")
-  print(#(table.pack(1, 2, nil, 3, 4)));
-  print(#({1, 2, nil, 3, 4}));
+--- @class AvoidBase08_state : StateMachineIter
+--- @field warning boolean
+statemachine.Create("avoidBase", {
+    { "start", function(state)
+        --- @cast state AvoidBase08_state
+        objective.AddObjective("rbd0804.otf");
+        state.warning = false;
+        state:next();
+    end },
+    { "update", function (state)
+        --- @cast state AvoidBase08_state
+        local d = gameobject.GetPlayerGameObject():GetDistance("base_warning");
+        local l = Length(GetPosition("base_warning", 1) - GetPosition("base_warning", 0));
+        if not state.warning and d < l then
+            --self:taskFail("warning");
+            state.warning = true;
+            objective.UpdateObjective("rbd0804.otf","YELLOW");
+        elseif state.warning and d > l then
+            --self:taskReset("warning");
+            state.warning = false;
+            objective.UpdateObjective("rbd0804.otf","WHITE");
+        end
 
-  core:onStart();
-  introCinematic:start();
-  avoidBase:start();
-  for i = 1, 6 do
-    BuildObject("avartl", 2, ("spawn_artl%d"):format(i));
-  end
-  SetPathLoop("walker1_path");
-  SetPathLoop("walker2_path");
-  Goto(GetHandle("avwalk1"),"walker1_path");
-  Goto(GetHandle("avwalk2"),"walker2_path");
-  for i = 1, 4 do
-    local nav = GetHandle("nav" .. i);
-    if i == 4 then
-      SetObjectiveName(nav, "Pickup Zone");
-    else
-      SetObjectiveName(nav, "Navpoint " .. i);
+        local d2 = gameobject.GetPlayerGameObject():GetDistance("base");
+        local l2 = Length(GetPosition("base",1) - GetPosition("base", 0));
+        if d2 < l2 then
+            objective.UpdateObjective("rbd0804.otf","RED");
+            FailMission(GetTime() + 5.0, "rbd08l01.des");
+            state:switch(nil);
+        end
+    end }
+});
+
+--- @class GriggVoice08_state : StateMachineIter
+--- @field audio AudioMessage?
+statemachine.Create("grigg_voice", {
+    function(state)
+        --- @cast state GriggVoice08_state
+        if state:SecondsHavePassed(mission_data.grigg_audio_waits[1]) then
+            state.audio = AudioMessage(audio.grigg_updates[1]);
+            state:next();
+        end
+    end,
+    function(state)
+        --- @cast state GriggVoice08_state
+        if not state.audio or IsAudioMessageDone(state.audio) then
+            state.audio = nil;
+            state:next();
+        end
+    end,
+    function(state)
+        --- @cast state GriggVoice08_state
+        if state:SecondsHavePassed(mission_data.grigg_audio_waits[2]) then
+            state.audio = AudioMessage(audio.grigg_updates[2]);
+            state:next();
+        end
+    end,
+    function(state)
+        --- @cast state GriggVoice08_state
+        if not state.audio or IsAudioMessageDone(state.audio) then
+            state.audio = nil;
+            state:next();
+        end
+    end,
+    function(state)
+        --- @cast state GriggVoice08_state
+        if state:SecondsHavePassed(mission_data.grigg_audio_waits[3]) then
+            state.audio = AudioMessage(audio.grigg_updates[3]);
+            state:next();
+        end
+    end,
+})
+
+stateset.Create("mission")
+    :Add("main_objectives", stateset.WrapStateMachine("main_objectives"))
+    :Add("avoidBase", stateset.WrapStateMachine("avoidBase"))
+    :Add("grigg", stateset.WrapStateMachine("grigg"))
+    :Add("grigg_voice", stateset.WrapStateMachine("grigg_voice"))
+    :Add("grigg_dead", function(state, name)
+        if not mission_data.key_objects.grigg or not mission_data.key_objects.grigg:IsAlive() then
+            FailMission(GetTime()+5.0, "rbd08l05.des");
+            state:off(name);
+        end
+    end)
+;
+
+hook.Add("Producer:BuildComplete", "Mission:ProducerBuildComplete", function (object, producer, data)
+    --- @cast object GameObject
+    --- @cast producer GameObject
+    --- @cast data any
+
+    debugprint("Producer:BuildComplete", object:GetOdf(), producer:GetOdf(), data and table.show(data));
+
+    if data and data.name then
+        if data.name == "_forEachHowie" then
+            object:Goto(data.location);
+        end
     end
-    SetMaxHealth(nav, 0);
-  end
-  for i = 1, 3 do
-    local comm = GetHandle("comm" .. i);
-    SetMaxHealth(comm, 0); -- These can't be killed.
-  end
-end
+end);
 
-function Update(dtime)
-  core:update(dtime);
-  mission:Update(dtime);
-end
+hook.Add("Start", "Mission:Start", function ()
+    --introCinematic:start();
+    --avoidBase:start();
+    for i = 1, 6 do
+        gameobject.BuildGameObject("avartl", 2, ("spawn_artl%d"):format(i));
+    end
+    SetPathLoop("walker1_path");
+    SetPathLoop("walker2_path");
+    gameobject.GetGameObject("avwalk1"):Goto("walker1_path");
+    gameobject.GetGameObject("avwalk2"):Goto("walker2_path");
+    for i = 1, 4 do
+        local nav = gameobject.GetGameObject("nav" .. i);
+        if not nav then error("Missing nav " .. i); end
+        if i == 4 then
+            nav:SetObjectiveName("Pickup Zone");
+        else
+            nav:SetObjectiveName("Navpoint " .. i);
+        end
+        nav:SetMaxHealth(0);
+    end
+    for i = 1, 3 do
+        local comm = gameobject.GetGameObject("comm" .. i);
+        if not comm then error("Missing comm " .. i); end
+        comm:SetMaxHealth(0); -- These can't be killed.
+    end
 
-function CreateObject(handle)
-  core:onCreateObject(handle);
-  mission:CreateObject(handle);
-end
+    mission_data.mission_states = stateset.Start("mission")
+        :on("main_objectives")
+        :on("avoidBase");
+end);
 
-function AddObject(handle)
-  core:onAddObject(handle);
-  mission:AddObject(handle);
-end
+hook.Add("Update", "Mission:Update", function (dtime, ttime)
+    if mission_data.sub_machines then
+        -- call update on all items and remove them if they return false
+        for i = #mission_data.sub_machines, 1, -1 do
+            local v = mission_data.sub_machines[i];
+            if(v) then
+                local success = v:run(dtime);
+                --- @cast success StateMachineIterWrappedResult
+                if not success or (statemachine.isstatemachineiterwrappedresult(success) and success.Abort) then
+                    table.remove(mission_data.sub_machines,i); -- clean up dead machines from the list
+                end
+            end
+        end
+    end
 
-function DeleteObject(handle)
-  core:onDeleteObject(handle);
-  mission:DeleteObject(handle);
-end
+    mission_data.mission_states:run();
+end);
 
-function Save()
-  return mission:Save(),{core:save()};
-end
+--function CreateObject(handle)
+--    mission:CreateObject(handle);
+--end
+--
+--function AddObject(handle)
+--    mission:AddObject(handle);
+--end
+--
+--function DeleteObject(handle)
+--    mission:DeleteObject(handle);
+--end
 
-function Load(missison_date,cdata)
-  core:load(unpack(cdata));
-  mission:Load(missison_date);
-end
-
-minit.init()
+hook.AddSaveLoad("Mission",
+function()
+    return mission_data;
+end,
+function(g)
+    mission_data = g;
+end);
