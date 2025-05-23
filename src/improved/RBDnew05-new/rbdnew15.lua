@@ -101,6 +101,7 @@ local function copyObject(handle,odf,kill)
     elseif((not handle:IsAlive()) and kill) then
         handle:RemovePilot();
     end
+    if not label then error("Failed to get label of " .. handle:GetObjectiveName()) end
     nObject:SetLabel(label); --- @todo figure out if a nil param is possible in stock API
     nObject:SetVelocity(vel);
     nObject:SetOmega(omega);
@@ -113,7 +114,7 @@ local function copyObject(handle,odf,kill)
     nObject:SetOwner(handle:GetOwner());
     return nObject;
     --RemoveObject(handle);
-  end
+end
 
 
 local IsIn = function(a,inB) 
@@ -277,7 +278,6 @@ local end_mission_text = {
 --- @class CCA_Relic_Attack_state : StateMachineIter
 --- @field v GameObject
 --- @field relic GameObject
-
 statemachine.Create("cca_relic_attack",
     function (state)
         --- @cast state CCA_Relic_Attack_state
@@ -861,7 +861,9 @@ statemachine.Create("main_objectives", {
         for i,v in pairs(mission_data.attackers) do
             v:RemoveObject();
         end
-        for v in gameobject.ObjectsInRange(500,GetPosition("nsdf_base")) do
+        local vec = GetPosition("nsdf_base");
+        if not vec then error("Failed to get nsdf_base") end
+        for v in gameobject.ObjectsInRange(500, vec) do
             if(gameobject.GetPlayerGameObject() ~= v) then 
                 v:Damage(100000);
             end
@@ -973,6 +975,7 @@ statemachine.Create("main_objectives", {
         if(mission_data.apcs[1]:IsWithin(mission_data.nav,50) or mission_data.apcs[2]:IsWithin(mission_data.nav,50)) then
             for i,v in ipairs(mission_data.pilots) do
                 local t = mission_data.apcs[math.floor( (i-1)/3 ) + 1];
+                if not t then error("Failed to get apc") end
                 v:Goto(t);
             end
             mission_data.arived = true;
@@ -994,14 +997,18 @@ statemachine.Create("main_objectives", {
         end
         for i,v in pairs(mission_data.apcs) do
             if(v:IsWithin(mission_data.nav,40) ) then
-                v:Dropoff(v:GetPosition());
+                local pos = v:GetPosition();
+                if not pos then error("Failed to get position") end
+                v:Dropoff(pos);
             end
         end
         --mission_data.t1 = mission_data.t1 - dtime;
         local pleft = 0;
         for i,v in pairs(mission_data.pilots) do
             
-            if(v:IsWithin(v:GetCurrentWho(),10) or (v:GetCurrentCommand() == AiCommand["NONE"]) ) then
+            local who = v:GetCurrentWho();
+            if not who then error("Failed to get current who") end
+            if v:IsWithin(who,10) or v:GetCurrentCommand() == AiCommand["NONE"] then
                 v:RemoveObject();
                 mission_data.pilots[i] = nil;
             else

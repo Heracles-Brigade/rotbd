@@ -88,12 +88,12 @@ local function countAlive(handles, team)
     return c;
 end
 
---- @class MainObjectives07_state : StateMachineIter
+--- @class MainObjectives08_state : StateMachineIter
 --- @field nextAudio integer
 --- @field lastComm GameObject
 statemachine.Create("main_objectives", {
     { "intoCinematic", function(state)
-        --- @cast state MainObjectives07_state
+        --- @cast state MainObjectives08_state
         mission_data.comms = {
             gameobject.GetGameObject("comm1"),
             gameobject.GetGameObject("comm2"),
@@ -115,7 +115,7 @@ statemachine.Create("main_objectives", {
         return statemachine.FastResult();
     end },
     { "intoCinematic.build_howiz", function(state)
-        --- @cast state MainObjectives07_state
+        --- @cast state MainObjectives08_state
         producer.QueueJob("avartlf", 2, nil, { name = "_forEachHowie", location = GetPosition("base_artillery", 0) });
         producer.QueueJob("svartlf", 2, nil, { name = "_forEachHowie", location = GetPosition("base_artillery", 1) });
         producer.QueueJob("avartlf", 2, nil, { name = "_forEachHowie", location = GetPosition("base_artillery", 2) });
@@ -124,7 +124,7 @@ statemachine.Create("main_objectives", {
         return statemachine.FastResult();
     end },
     { "intoCinematic.focus_comm1", function(state)
-        --- @cast state MainObjectives07_state
+        --- @cast state MainObjectives08_state
         if CameraCancelled() then
             state:switch("intoCinematic.end");
             return statemachine.FastResult();
@@ -134,7 +134,7 @@ statemachine.Create("main_objectives", {
         end
     end },
     { "intoCinematic.focus_comm2", function(state)
-        --- @cast state MainObjectives07_state
+        --- @cast state MainObjectives08_state
         if CameraCancelled() then
             state:switch("intoCinematic.end");
             return statemachine.FastResult();
@@ -144,7 +144,7 @@ statemachine.Create("main_objectives", {
         end
     end },
     { "intoCinematic.focus_comm3", function(state)
-        --- @cast state MainObjectives07_state
+        --- @cast state MainObjectives08_state
         if CameraCancelled() then
             state:switch("intoCinematic.end");
             return statemachine.FastResult();
@@ -154,21 +154,21 @@ statemachine.Create("main_objectives", {
         end
     end },
     { "intoCinematic.focus_base", function(state)
-        --- @cast state MainObjectives07_state
+        --- @cast state MainObjectives08_state
         if CameraCancelled() or CameraPath("pan_4", 500, 2000, gameobject.GetGameObject("ubtart0_i76building"):GetHandle()) then
             state:next();
             return statemachine.FastResult();
         end
     end },
     { "intoCinematic.end", function(state)
-        --- @cast state MainObjectives07_state
+        --- @cast state MainObjectives08_state
         CameraFinish();
         --mission.Objective:Start("misison"); -- destroyComms
         state:next();
         return statemachine.FastResult();
     end },
     { "destroyComms.init", function(state)
-        --- @cast state MainObjectives07_state
+        --- @cast state MainObjectives08_state
         mission_data.key_objects.powers = {
             gameobject.GetGameObject("power1"),
             gameobject.GetGameObject("power2"),
@@ -189,7 +189,7 @@ statemachine.Create("main_objectives", {
         return statemachine.FastResult();
     end },
     { "destroyComms.destroyComms.start", function(state)
-        --- @cast state MainObjectives07_state
+        --- @cast state MainObjectives08_state
         mission_data.timerOut = false;
         objective.AddObjective("rbd0801.otf");
         mission_data.mission_states:on("grigg");
@@ -197,7 +197,7 @@ statemachine.Create("main_objectives", {
         return statemachine.FastResult();
     end },
     { "destroyComms.destroyComms", function(state)
-        --- @cast state MainObjectives07_state
+        --- @cast state MainObjectives08_state
         local dead = countDead(mission_data.key_objects.powers);
         if dead ~= mission_data.prior_dead then
             state.nextAudio = state.nextAudio + 1;
@@ -237,7 +237,7 @@ statemachine.Create("main_objectives", {
         end
     end },
     { "destroyComms.destroyComms.finish", function(state)
-        --- @cast state MainObjectives07_state
+        --- @cast state MainObjectives08_state
         StopCockpitTimer();
         HideCockpitTimer();
         objective.UpdateObjective("rbd0801.otf", "GREEN");
@@ -250,7 +250,7 @@ statemachine.Create("main_objectives", {
         state:next();
     end },
     { "evac.start", function(state)
-        --- @cast state MainObjectives07_state
+        --- @cast state MainObjectives08_state
         --print("Evac started");
         --state.wait_timer = 5;
         --state:startTask("wait");
@@ -267,7 +267,7 @@ statemachine.Create("main_objectives", {
     end },
     statemachine.SleepSeconds(5),
     { "evac.evacuate.start", function(state)
-        --- @cast state MainObjectives07_state
+        --- @cast state MainObjectives08_state
         AudioMessage(audio.evacuate);
         objective.AddObjective("rbd0803.otf");
 
@@ -279,7 +279,7 @@ statemachine.Create("main_objectives", {
         state:next();
     end },
     { "evac.evacuate", function(state)
-        --- @cast state MainObjectives07_state
+        --- @cast state MainObjectives08_state
         local d1 = Length(gameobject.GetPlayerGameObject():GetPosition() - GetPosition("spawn_griggs"));
         local d2 = Length(mission_data.key_objects.grigg:GetPosition() - GetPosition("spawn_griggs"));
         if d1 < 100 and d2 < 100 and (not state.lastComm or not state.lastComm:IsAlive()) then
@@ -288,7 +288,7 @@ statemachine.Create("main_objectives", {
         end
     end },
     { "evac.evacuate.success", function(state)
-        --- @cast state MainObjectives07_state
+        --- @cast state MainObjectives08_state
         objective.UpdateObjective("rbd0803.otf","GREEN");
         if(mission_data.timerOut) then
             SucceedMission(GetTime() + 5.0, "rbd08w02.des");
