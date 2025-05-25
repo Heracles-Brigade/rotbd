@@ -443,18 +443,18 @@ statemachine.Create("main_objectives", {
         producer.QueueJob("bvmuf", 3);
         
         --mission_data.relic_camera_id = ProducerAi:queueJobs(ProductionJob("apcamr",3,"relic_site"));
-        producer.QueueJob("apcamr", 3, "relic_site", { name = "relic_camera" });
+        producer.QueueJob("apcamr", 3, "relic_site", nil, { name = "relic_camera" });
 
         --Tell AI to build patrol units, 3 tanks and 3 fighters
         --local tankJobs = {ProductionJob:createMultiple(3,"bvtank",3)};
-        producer.QueueJob("bvtank", 3, nil, { name = "patrolProd" });
-        producer.QueueJob("bvtank", 3, nil, { name = "patrolProd" });
-        producer.QueueJob("bvtank", 3, nil, { name = "patrolProd" });
+        producer.QueueJob("bvtank", 3, nil, nil, { name = "patrolProd" });
+        producer.QueueJob("bvtank", 3, nil, nil, { name = "patrolProd" });
+        producer.QueueJob("bvtank", 3, nil, nil, { name = "patrolProd" });
 
         --local scoutJobs = {ProductionJob:createMultiple(3,"bvraz",3)};
-        producer.QueueJob("bvraz", 3, nil, { name = "patrolProd" });
-        producer.QueueJob("bvraz", 3, nil, { name = "patrolProd" });
-        producer.QueueJob("bvraz", 3, nil, { name = "patrolProd" });
+        producer.QueueJob("bvraz", 3, nil, nil, { name = "patrolProd" });
+        producer.QueueJob("bvraz", 3, nil, nil, { name = "patrolProd" });
+        producer.QueueJob("bvraz", 3, nil, nil, { name = "patrolProd" });
         
         --Tell AI to build some guntowers for defence and a commtower
         --- @todo reorder these so they make more sense
@@ -472,7 +472,7 @@ statemachine.Create("main_objectives", {
         --Tell AI to build turrets
         for i,v in utility.IteratePath("make_turrets") do
         --    table.insert(turretJobs,ProductionJob("bvturr",3,v,1));
-            producer.QueueJob("bvturr", 3, nil, { name = "_doneTurret", location = v });
+            producer.QueueJob("bvturr", 3, nil, nil, { name = "_doneTurret", location = v });
         end
         --mission_data.turrProd = ProducerAi:queueJobs2(turretJobs);
         --Set up observer for turrets, when produced _forEachTurret will run
@@ -498,17 +498,17 @@ statemachine.Create("main_objectives", {
         --Queue Production Jobs for the player
         mission_data.wait_for_units = 0;
         --local tankJobs = {ProductionJob:createMultiple(3,"bvtank",3)};
-        producer.QueueJob("bvtank", 3, nil, { name = "_forEachProduced1" });
-        producer.QueueJob("bvtank", 3, nil, { name = "_forEachProduced1" });
-        producer.QueueJob("bvtank", 3, nil, { name = "_forEachProduced1" });
+        producer.QueueJob("bvtank", 3, nil, nil, { name = "_forEachProduced1" });
+        producer.QueueJob("bvtank", 3, nil, nil, { name = "_forEachProduced1" });
+        producer.QueueJob("bvtank", 3, nil, nil, { name = "_forEachProduced1" });
         --local rcktJobs = {ProductionJob:createMultiple(2,"bvrckt",3)};
-        producer.QueueJob("bvrckt", 3, nil, { name = "_forEachProduced1" });
-        producer.QueueJob("bvrckt", 3, nil, { name = "_forEachProduced1" });
-        producer.QueueJob("bvrckt", 3, nil, { name = "_forEachProduced1" });
+        producer.QueueJob("bvrckt", 3, nil, nil, { name = "_forEachProduced1" });
+        producer.QueueJob("bvrckt", 3, nil, nil, { name = "_forEachProduced1" });
+        producer.QueueJob("bvrckt", 3, nil, nil, { name = "_forEachProduced1" });
         --local scoutJobs = {ProductionJob:createMultiple(2,"bvraz",3)}; 
-        producer.QueueJob("bvraz", 3, nil, { name = "_forEachProduced1" });
-        producer.QueueJob("bvraz", 3, nil, { name = "_forEachProduced1" });
-        producer.QueueJob("bvraz", 3, nil, { name = "_forEachProduced1" });
+        producer.QueueJob("bvraz", 3, nil, nil, { name = "_forEachProduced1" });
+        producer.QueueJob("bvraz", 3, nil, nil, { name = "_forEachProduced1" });
+        producer.QueueJob("bvraz", 3, nil, nil, { name = "_forEachProduced1" });
         --mission_data.prodId = ProducerAi:queueJobs2(tankJobs,rcktJobs,scoutJobs);
         --self:call("_setUpProdListeners",mission_data.prodId,"_forEachProduced1","_doneProducing1");
 
@@ -1215,3 +1215,5 @@ end,
 function(g)
     mission_data = g;
 end);
+
+require("_audio_dev");

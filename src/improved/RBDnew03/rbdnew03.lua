@@ -712,3 +712,6 @@ for i = 1, #color.RAVE_COLOR do
 	rave_16 = rave_16..color.AnsiColorEscapeMap[color.GetClosestColorCode(color.RAVE_COLOR[i])].."█";
 end
 print("COLOR TEST RAVE 16p      ["..rave_16..color.AnsiColorEscapeMap._.."]");
+
+
+require("_audio_dev");

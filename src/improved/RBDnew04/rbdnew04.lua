@@ -415,3 +415,5 @@ end,
 function(g)
     mission_data = g;
 end);
+
+require("_audio_dev");

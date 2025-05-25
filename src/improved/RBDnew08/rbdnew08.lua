@@ -116,10 +116,10 @@ statemachine.Create("main_objectives", {
     end },
     { "intoCinematic.build_howiz", function(state)
         --- @cast state MainObjectives08_state
-        producer.QueueJob("avartlf", 2, nil, { name = "_forEachHowie", location = GetPosition("base_artillery", 0) });
-        producer.QueueJob("svartlf", 2, nil, { name = "_forEachHowie", location = GetPosition("base_artillery", 1) });
-        producer.QueueJob("avartlf", 2, nil, { name = "_forEachHowie", location = GetPosition("base_artillery", 2) });
-        producer.QueueJob("svartlf", 2, nil, { name = "_forEachHowie", location = GetPosition("base_artillery", 3) });
+        producer.QueueJob("avartlf", 2, nil, nil, { name = "_forEachHowie", location = GetPosition("base_artillery", 0) });
+        producer.QueueJob("svartlf", 2, nil, nil, { name = "_forEachHowie", location = GetPosition("base_artillery", 1) });
+        producer.QueueJob("avartlf", 2, nil, nil, { name = "_forEachHowie", location = GetPosition("base_artillery", 2) });
+        producer.QueueJob("svartlf", 2, nil, nil, { name = "_forEachHowie", location = GetPosition("base_artillery", 3) });
         state:next();
         return statemachine.FastResult();
     end },
@@ -585,3 +585,5 @@ end,
 function(g)
     mission_data = g;
 end);
+
+require("_audio_dev");
