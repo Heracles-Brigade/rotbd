@@ -41,6 +41,7 @@ local function IsFakeAudioMessageDone(msg)
     if messages[msg.wav] then
         return world_ttime > msg.end_time;
     end
+    return true;
 end
 
 --- @param msg DummyAudioMessage
@@ -99,7 +100,7 @@ end
 --- Plays the given audio file, which must be an uncompressed RIFF WAVE (.WAV) file.
 --- Returns an audio message handle.
 --- @param filename string
---- @return AudioMessage|DummyAudioMessage
+--- @return AudioMessage
 --- @function AudioMessage
 function AudioMessage(filename)
     local fileExists = UseItem(filename) and true or false;
@@ -123,27 +124,30 @@ function AudioMessage(filename)
             end_time = world_ttime + length,
         };
         PlayFakeAudioMessage(lastAudio);
+        --- @cast lastAudio AudioMessage
         return lastAudio;
     end
     return Original.AudioMessage(filename);
 end
 
 --- Returns true if the audio message has stopped. Returns false otherwise.
---- @param msg AudioMessage
+--- @param msg AudioMessage|DummyAudioMessage
 --- @return boolean
 --- @function IsAudioMessageDone
 function IsAudioMessageDone(msg)
     if utility.istable(msg) then
+        --- @cast msg DummyAudioMessage
         return IsFakeAudioMessageDone(msg);
     end
     return Original.IsAudioMessageDone(msg);
 end
 
 --- Stops the given audio message.
---- @param msg AudioMessage
+--- @param msg AudioMessage|DummyAudioMessage
 --- @function StopAudioMessage
 function StopAudioMessage(msg)
     if utility.istable(msg) then
+        --- @cast msg DummyAudioMessage
         StopFakeAudioMessage(msg);
         return;
     end

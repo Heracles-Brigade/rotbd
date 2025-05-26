@@ -22,6 +22,7 @@ local objective = require("_objective");
 local utility = require("_utility");
 local bit = require("_bit")
 local color = require("_color");
+local camera = require("_camera");
 
 -- Fill navlist gaps with important navs
 navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToGap);
@@ -151,14 +152,14 @@ end
 
 statemachine.Create("main_objectives", {
     { "start", function (state)
-        CameraReady();
+        camera.CameraReady();
         AudioMessage(audio.intro);
         state:next();
     end },
     { "opening_cin", function (state)
-        if state:SecondsHavePassed(20) or CameraPath("opening_cin", 2000, 1000, mission_data.cafe:GetHandle()) or CameraCancelled() then
+        if state:SecondsHavePassed(20) or camera.CameraPath("opening_cin", 2000, 1000, mission_data.cafe) or camera.CameraCancelled() then
             state:SecondsHavePassed(); -- clear timer if we got here without it being cleared
-            CameraFinish();
+            camera.CameraFinish();
             state:next();
         end
     end },
@@ -248,7 +249,7 @@ statemachine.Create("main_objectives", {
         
         objective.AddObjective('bdmisn214.otf',"WHITE");
         objective.AddObjective('bdmisn215.otf',"WHITE");
-        CameraReady();
+        camera.CameraReady();
         local apc = gameobject.BuildGameObject("avapc",2,"spawn_apc");
         if not apc then error("Failed to create APC."); end
         local tug = gameobject.BuildGameObject("avhaul",2,"spawn_tug");
@@ -278,8 +279,8 @@ statemachine.Create("main_objectives", {
         state:next();
     end },
     { "convoy_cin", function (state)
-        if CameraPath("convoy_cin",2000,2000, mission_data.cafe:GetHandle()) or CameraCancelled() then
-            CameraFinish();
+        if camera.CameraPath("convoy_cin",2000,2000, mission_data.cafe) or camera.CameraCancelled() then
+            camera.CameraFinish();
             state:next();
         end
     end },
@@ -523,7 +524,7 @@ statemachine.Create("main_objectives", {
         local d,h,i = createWave("avtank",{"spawn_w1","spawn_w2","spawn_w3"},"west_path");
         local f,j = createWave("svtank",{"spawn_n4","spawn_n5"},"north_path");
         state.camTarget = camTarget;
-        CameraReady();
+        camera.CameraReady();
         state.targets = {a,b,c,d,e,f,g,h,i,camTarget,j};
         for i,v in pairs(state.targets) do
             v:SetObjectiveOn();
@@ -535,9 +536,9 @@ statemachine.Create("main_objectives", {
     end },
     function (state)
         --- @cast state RBD01_Mission_state
-        if (state:SecondsHavePassed(10) or CameraPath("camera_nsdf", 1000, 1500, state.camTarget:GetHandle()) or CameraCancelled()) then
+        if (state:SecondsHavePassed(10) or camera.CameraPath("camera_nsdf", 1000, 1500, state.camTarget) or camera.CameraCancelled()) then
             state:SecondsHavePassed(); -- clear timer if we got here without it being cleared
-            CameraFinish();
+            camera.CameraFinish();
             state:next();
         end
     end,

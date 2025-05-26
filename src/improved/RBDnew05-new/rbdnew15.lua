@@ -24,6 +24,7 @@ local utility = require("_utility");
 local color = require("_color");
 local producer = require("_producer");
 local patrol = require("_patrol");
+local camera = require("_camera");
 
 -- Fill navlist gaps with important navs
 navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToGap);
@@ -805,7 +806,7 @@ statemachine.Create("main_objectives", {
     end },
     statemachine.SleepSeconds(7),
     { "base_destruction_camera_start", function (self)
-        mission_data.cam = CameraReady();
+        camera.CameraReady();
         mission_data.camstage = 1;
         self:SecondsHavePassed(mission_data.minwait); -- start counting internally
         self:next();
@@ -813,7 +814,7 @@ statemachine.Create("main_objectives", {
     end },
     function (self)
         if mission_data.attackers[3]:IsAlive() then
-            CameraObject(mission_data.attackers[3]:GetHandle(),0,1000,-3000,mission_data.attackers[3]:GetHandle());
+            camera.CameraObject(mission_data.attackers[3],0,1000,-3000,mission_data.attackers[3]);
         else
             mission_data.camstage = mission_data.camstage + 1;
             self:next();
@@ -821,7 +822,7 @@ statemachine.Create("main_objectives", {
     end,
     function (self)
         if mission_data.attackers[8]:IsAlive() then
-            CameraObject(mission_data.attackers[8]:GetHandle(),0,1000,-3000,mission_data.attackers[8]:GetHandle());
+            camera.CameraObject(mission_data.attackers[8],0,1000,-3000,mission_data.attackers[8]);
         else
             mission_data.camstage = mission_data.camstage + 1;
             self:next();
@@ -829,7 +830,7 @@ statemachine.Create("main_objectives", {
     end,
     function (self)
         if mission_data.attackers[12]:IsAlive() then
-            CameraObject(mission_data.attackers[12]:GetHandle(),0,1000,-3000,mission_data.attackers[12]:GetHandle());
+            camera.CameraObject(mission_data.attackers[12],0,1000,-3000,mission_data.attackers[12]);
         else
             mission_data.camstage = mission_data.camstage + 1;
             self:next();
@@ -837,10 +838,10 @@ statemachine.Create("main_objectives", {
     end,
     function (self)
         if mission_data.attackers[9]:IsAlive() then
-            CameraPath("25cin_pan1",5000,200,mission_data.attackers[9]:GetHandle());
+            camera.CameraPath("25cin_pan1",5000,200,mission_data.attackers[9]);
         else
             mission_data.camstage = mission_data.camstage + 1;
-            mission_data.cam = not CameraFinish();
+            camera.CameraFinish();
             self:next();
         end
     end,

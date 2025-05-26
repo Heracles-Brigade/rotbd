@@ -20,6 +20,7 @@ local utility = require("_utility");
 local color = require("_color");
 local producer = require("_producer");
 local patrol = require("_patrol");
+local camera = require("_camera");
 
 --- @class MissionData08_KeyObjects
 --- @field comms GameObject[]
@@ -107,7 +108,7 @@ statemachine.Create("main_objectives", {
         end
 
         SetPilot(2,4);
-        CameraReady();
+        camera.CameraReady();
         --self:startTask("focus_comm1");
         --self:startTask("build_howiz");
         AudioMessage(audio.intro);
@@ -125,44 +126,45 @@ statemachine.Create("main_objectives", {
     end },
     { "intoCinematic.focus_comm1", function(state)
         --- @cast state MainObjectives08_state
-        if CameraCancelled() then
+        if camera.CameraCancelled() then
             state:switch("intoCinematic.end");
             return statemachine.FastResult();
         end
-        if CameraPath("pan_1", 1500, 1000, mission_data.comms[1]:GetHandle()) then
+        if camera.CameraPath("pan_1", 1500, 1000, mission_data.comms[1]) then
             state:next();
         end
     end },
     { "intoCinematic.focus_comm2", function(state)
         --- @cast state MainObjectives08_state
-        if CameraCancelled() then
+        if camera.CameraCancelled() then
             state:switch("intoCinematic.end");
             return statemachine.FastResult();
         end
-        if CameraPath("pan_2", 1500, 1000, mission_data.comms[2]:GetHandle()) then
+        if camera.CameraPath("pan_2", 1500, 1000, mission_data.comms[2]) then
             state:next();
         end
     end },
     { "intoCinematic.focus_comm3", function(state)
         --- @cast state MainObjectives08_state
-        if CameraCancelled() then
+        if camera.CameraCancelled() then
             state:switch("intoCinematic.end");
             return statemachine.FastResult();
         end
-        if CameraPath("pan_3", 1500, 1000, mission_data.comms[3]:GetHandle()) then
+        if camera.CameraPath("pan_3", 1500, 1000, mission_data.comms[3]) then
             state:next();
         end
     end },
     { "intoCinematic.focus_base", function(state)
         --- @cast state MainObjectives08_state
-        if CameraCancelled() or CameraPath("pan_4", 500, 2000, gameobject.GetGameObject("ubtart0_i76building"):GetHandle()) then
+        local target = gameobject.GetGameObject("ubtart0_i76building");
+        if camera.CameraCancelled() or not target or camera.CameraPath("pan_4", 500, 2000, target) then
             state:next();
             return statemachine.FastResult();
         end
     end },
     { "intoCinematic.end", function(state)
         --- @cast state MainObjectives08_state
-        CameraFinish();
+        camera.CameraFinish();
         --mission.Objective:Start("misison"); -- destroyComms
         state:next();
         return statemachine.FastResult();

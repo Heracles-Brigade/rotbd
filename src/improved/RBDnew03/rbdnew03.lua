@@ -28,6 +28,7 @@ local navmanager = require("_navmanager");
 local objective = require("_objective");
 local utility = require("_utility");
 local color = require("_color");
+local camera = require("_camera");
 
 -- Fill navlist gaps with important navs
 navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToGap);
@@ -300,7 +301,7 @@ statemachine.Create("main_objectives", {
 		state:next();
 		
 		-- Pre-play setup complete. Time to start the shit.
-		CameraReady();
+		camera.CameraReady();
 		mission_data.Aud1 = AudioMessage(audio.intro);
 
 		mission_data.mission_states
@@ -310,8 +311,8 @@ statemachine.Create("main_objectives", {
 	end },
 	{ "cinematic", function (state)
 		--Opening Cinematic. Show off Deus Ex's wondrous creation!
-		if CameraPath("camera_path", 1000, 2000, mission_data.Mammoth:GetHandle()) or CameraCancelled() then
-			CameraFinish();
+		if camera.CameraPath("camera_path", 1000, 2000, mission_data.Mammoth) or camera.CameraCancelled() then
+			camera.CameraFinish();
 			SpawnNav(1);
 			mission_data.OpeningCinDone = true;
 			state:next();
