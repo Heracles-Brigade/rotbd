@@ -260,12 +260,13 @@ statemachine.Create("scrap_field_filler", {
 statemachine.Create("mammoth_shield", function (state)
 		--- @cast state mammoth_shield_state
 		keepOutside(mission_data.key_objects.Player, mission_data.key_objects.Mammoth);
-		if state:SecondsHavePassed(3.5, true) or not state.first then
+		if state:SecondsHavePassed(3.5, true, true) then
 			MakeExplosion("sdome", mission_data.key_objects.Mammoth:GetHandle());
-			state.first = true;
 		end
 	end);
 
+--- @class main_objectives03_state : StateMachineIter
+--- @field shield_up boolean? Camera mammoth shield activation debounce, temporary
 statemachine.Create("main_objectives", {
 	{ "start", function (state)
 		ColorFade(1.1, 0.4, 0, 0, 0);
@@ -312,14 +313,14 @@ statemachine.Create("main_objectives", {
 	end },
 	{ "cinematic", function (state)
 		--Opening Cinematic. Show off Deus Ex's wondrous creation!
-		if camera.CameraPathPathFollow("pan_path", 1000, 300, "pan_target_path") or camera.CameraCancelled() then
+		if camera.CameraCancelled() or camera.CameraPathPathFollow("pan_path", 1000, 300, "pan_target_path") then
 			state:next();
 			return statemachine.FastResult();
 		end
 	end },
 	{ "cinematic2", function (state)
 		--Opening Cinematic. Show off Deus Ex's wondrous creation!
-		if camera.CameraPathPathFollow("pan2_path", 500, 300, "pan2_target_path", 0, 200) or camera.CameraCancelled() then
+		if camera.CameraCancelled() or camera.CameraPathPathFollow("pan2_path", 500, 300, "pan2_target_path", 0, 200) then
 			state:next();
 			return statemachine.FastResult();
 		end
@@ -327,7 +328,7 @@ statemachine.Create("main_objectives", {
 	{ "cinematic3", function (state)
 		--Opening Cinematic. Show off Deus Ex's wondrous creation!
 		--if camera.CameraPath("camera_path", 1000, 2000, mission_data.key_objects.Mammoth) or camera.CameraCancelled() then
-		if camera.CameraPathPathFollow("pan3_path", 1500, 400, "pan3_target_path", 0, 200) or camera.CameraCancelled() then
+		if camera.CameraCancelled() or camera.CameraPathPathFollow("pan3_path", 1500, 400, "pan3_target_path", 0, 200) then
 			camera.CameraFinish();
 			SpawnNav(1);
 			state:next();
@@ -376,7 +377,8 @@ statemachine.Create("main_objectives", {
 		end
 	end },
 	{ "detect_shield", function (state)
-		if mission_data.key_objects.Player:GetDistance(mission_data.key_objects.Mammoth) < 225.0 then
+		--if mission_data.key_objects.Player:GetDistance(mission_data.key_objects.Mammoth) < 225.0 then
+		if mission_data.key_objects.Player:GetDistance(mission_data.key_objects.Mammoth) < 125.0 then
 			mission_data.playerSLF = gameobject.BuildGameObject("bvslf", 1, "NukeSpawn", 1);
 			SetMaxScrap(1, 20);
 			SetScrap(1, 20);
@@ -413,6 +415,8 @@ statemachine.Create("main_objectives", {
 		-- found set via a watcher in CreateObject for daywrecker instances
 		if mission_data.key_objects.Wrecker and mission_data.key_objects.Wrecker:IsValid() then
 			--if not mission_data.impactPending and not mission_data.wreckerTargetMissed then
+				print(mission_data.armoryTarget, mission_data.armoryTarget.__type, table.show(mission_data.armoryTarget,"armoryTarget"))
+				print(mission_data.key_objects.ControlTower, mission_data.key_objects.ControlTower.__type, table.show(mission_data.key_objects.ControlTower,"ControlTower"))
 				print(mission_data.armoryTarget == mission_data.key_objects.ControlTower)
 				if mission_data.armoryTarget == mission_data.key_objects.ControlTower then
 					mission_data.impactPending = true;

@@ -175,6 +175,14 @@ hook.Add("Update", "FakeAudioMessage.Update", function(dtime, ttime)
     end
 end);
 
+hook.AddSaveLoad("FakeAudioMessage", function()
+    return lastAudio, world_ttime, messages;
+end, function(_lastAudio, _world_ttime, _messages)
+    lastAudio = _lastAudio;
+    world_ttime = _world_ttime;
+    messages = _messages;
+end);
+
 --- @class DummyAudioMessage
 --- @field dummy_audio boolean
 --- @field wav string
