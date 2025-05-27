@@ -319,7 +319,7 @@ statemachine.Create("main_objectives", {
 	end },
 	{ "cinematic2", function (state)
 		--Opening Cinematic. Show off Deus Ex's wondrous creation!
-		if camera.CameraPathPathFollow("pan2_path", 1000, 300, "pan2_target_path", 0, 200) or camera.CameraCancelled() then
+		if camera.CameraPathPathFollow("pan2_path", 500, 300, "pan2_target_path", 0, 200) or camera.CameraCancelled() then
 			state:next();
 			return statemachine.FastResult();
 		end
@@ -339,14 +339,18 @@ statemachine.Create("main_objectives", {
 			mission_data.mission_states
 				:on("detection_check_radar_tower_1")
 				:on("detection_check_radar_tower_2")
-				:on("detection_check_radar_tower_3");
+				:on("detection_check_radar_tower_3")
+				:on("mammoth_shield"); -- double sure it's on
+			
+			state.shield_up = nil;
+			return;
 		end
 		local cam_pos = camera.GetCameraPosition();
 
 		-- turn the shield on once the camera exits the shield area
-		if not mission_data.shield_up and mission_data.key_objects.Mammoth:GetDistance(cam_pos) > 40 then
+		if not state.shield_up and mission_data.key_objects.Mammoth:GetDistance(cam_pos) > 40 then
 			mission_data.mission_states:on("mammoth_shield");
-			mission_data.shield_up = true;
+			state.shield_up = true;
 		end
 	end },
 	{ "hanger_info", function (state)

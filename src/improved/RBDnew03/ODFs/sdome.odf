@@ -8,23 +8,54 @@ damageConcussion = 0
 damageFlame = 0
 damageImpact = 0
 
-particleTypes = 1
+particleTypes = 2
 
 particleClass1 = "sdome.sphere"
 particleCount1 = 1
 particleVeloc1 = "0.0 0.0 0.0"
 
+particleClass2 = "sdome.sphere2stage"
+particleCount2 = 1
+particleVeloc2 = "0.0 0.0 0.0"
+
 
 [Sphere]
-simulateBase = "sim_smoke"
+simulateBase = "sim_null"
+lifeTime = 3
+renderBase = "draw_sphere"
+textureName = "vsmoke.tga"
+startColor = "255 0 0 0"
+finishColor = "255 0 0 200"
+startRadius = 40.0
+finishRadius = 40.0
+animateTime = 3
+latitudeBands = 32
+longitudeSegments = 64
+InitialPitch = 0.0
+InitialYaw = 0.0
+InitialRoll = 0.0
+AddPitch = 10.0
+AddYaw = 100.0
+AddRoll = 10.0
+
+[Sphere2Stage]
+StartDelay = 3
+simulateBase = "sim_null"
 lifeTime = 3.5
+renderBase = "draw_emit"
+emitName = "sdome.sphere2"
+emitDelay = 1e6
+
+[Sphere2]
+simulateBase = "sim_null"
+lifeTime = 0.5
 renderBase = "draw_sphere"
 textureName = "vsmoke.tga"
 startColor = "255 0 0 200"
-finishColor = "255 0 0 0"
+finishColor = "0 0 0 0"
 startRadius = 40.0
-finishRadius = 40.0
-animateTime = 3.5
+finishRadius = 39.5
+animateTime = 0.5
 latitudeBands = 32
 longitudeSegments = 64
 InitialPitch = 0.0
