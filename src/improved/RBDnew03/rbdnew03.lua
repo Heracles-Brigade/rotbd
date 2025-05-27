@@ -91,37 +91,39 @@ local objectives = {
 	Extract = "rbdnew0308.otf"
 }
 
+
+--- @class MissionData03_KeyObjects
+--- @field Player GameObject? The player object.
+--- @field Mammoth GameObject? The mammoth object.
+--- @field ObjectiveNav GameObject? The current objective nav point.
+--- @field ControlTower GameObject? The control tower object.
+--- @field Wrecker GameObject? The day wrecker object.
+--- @field Hangar GameObject? The hangar object.
+--- @field Tug GameObject? The tug object.
+--- @field Supply GameObject? Seems unused?
+--- @field Defenders GameObject[] A list of defender objects spawned during the mission.
+
+--- @class MissionData03
+--- @field key_objects MissionData03_KeyObjects
+--- @field MammothReachedBefore boolean Has the mammoth been reached before?
+--- @field mission_states StateSetRunner The state set for the mission.
 local mission_data = { --Sets mission flow and progression. Booleans and values will be changed to "true" and appropriate names/integers as mission progresses. Necessary for save files to function as well as objective flow in later if statements.
-OpeningCinDone = false,
-IsDetected = false,
-HangarInfoed = false,
-TugAquired = false,
-ShieldDetected = false,
-ControlDead = false,
-MammothReached = false,
-MammothReachedPrevious = false,
-MammothInfoed = false,
-SafetyReached = false,
-MissionOver = false,
-MammothTime = 0,
-RadarTime = 0,
-LastShieldTime = 0,
-WreckTime1 = 0,
-WreckTime2 = 0,
+	key_objects = {
+		Player = nil,
+		Mammoth = nil,
+		ObjectiveNav = nil,
+		ControlTower = nil,
+		Wrecker = nil,
+		Hangar = nil,
+		Tug = nil,
+		Supply = nil,
+		Defenders = {},
+	},
+
+	MammothReachedBefore = false,
+
 -- Handles; values will be assigned during mission setup and play
-Player = nil,
-ObjectiveNav = nil,
-NavCoord = { },
-Defenders = { },
-NextDefender = 1,
-Tug = nil,
-Mammoth = nil,
-ControlTower = nil,
-Hangar = nil,
-Supply = nil,
-Wrecker = nil,
-Armory = false,
-Aud1 = 0
+NavCoord = { }
 }
 
 
@@ -137,20 +139,19 @@ local function SpawnNav(num) -- Spawns the Nth Nav point.
 	nav:SetMaxHealth(0); -- Can't go boom-boom. I accidentally destroyed Nav 3 with the DW before this.
 	
 	-- Switches the active objective from the old nav to the new nav.
-	if mission_data.ObjectiveNav then
-		mission_data.ObjectiveNav:SetObjectiveOff();
+	if mission_data.key_objects.ObjectiveNav then
+		mission_data.key_objects.ObjectiveNav:SetObjectiveOff();
 	end
 	nav:SetObjectiveOn();
-	mission_data.ObjectiveNav = nav; -- Sets the new nav to the ObjectiveNav so that the next time this function is called, it can switch off of it.
+	mission_data.key_objects.ObjectiveNav = nav; -- Sets the new nav to the ObjectiveNav so that the next time this function is called, it can switch off of it.
 end
 
 local function SpawnFromTo(odf, fp, fpp, tp)
 	local obj = gameobject.BuildGameObject(odf, 2, fp, fpp)
 	if not obj then error("Failed to spawn "..odf.." from "..tostring(fp).." to "..tostring(tp)); end -- If the object fails to spawn, throw an error.
 	obj:Goto(tp, 0);
-	obj:SetLabel(fp.."_"..mission_data.NextDefender);
-	mission_data.Defenders[mission_data.NextDefender] = obj;
-	mission_data.NextDefender = mission_data.NextDefender + 1;
+	obj:SetLabel(fp.."_"..(#mission_data.key_objects.Defenders + 1));
+	table.insert(mission_data.key_objects.Defenders, obj);
 end
 
 -- 
@@ -204,16 +205,15 @@ end
 
 hook.Add("CreateObject", "Mission:CreateObject", function (object)
 	--- @cast object GameObject
-	if not mission_data.Wrecker and object:GetClassLabel() == "daywrecker" then
-		mission_data.Wrecker = object
+	if not mission_data.key_objects.Wrecker and object:GetClassLabel() == "daywrecker" then
+		mission_data.key_objects.Wrecker = object
 	end
 end);
 
 
 local function FailByDetection()
-	Aud1 = AudioMessage(audio.lose4);
+	AudioMessage(audio.lose4);
 	FailMission(GetTime() + 5.0, "rbdnew03l4.des"); -- cover blown
-	mission_data.MissionOver = true;
 	objective.UpdateObjective(objectives.Detection, "RED");
 end
 
@@ -221,7 +221,6 @@ end
 --- @field path string Path to the scrap field.
 --- @field scrap_objects GameObject[] Table of scrap objects in the field.
 --- @field scrap_options string[] Table of scrap odf options to choose from.
-
 statemachine.Create("scrap_field_filler", {
 	{ "start", function (state)
 		--- @cast state scrap_field_filler_state_03
@@ -260,24 +259,25 @@ statemachine.Create("scrap_field_filler", {
 --- @field first boolean DoWhile simulating bool
 statemachine.Create("mammoth_shield", function (state)
 		--- @cast state mammoth_shield_state
-		keepOutside(mission_data.Player, mission_data.Mammoth);
+		keepOutside(mission_data.key_objects.Player, mission_data.key_objects.Mammoth);
 		if state:SecondsHavePassed(3.5, true) or not state.first then
-			MakeExplosion("sdome", mission_data.Mammoth:GetHandle());
+			MakeExplosion("sdome", mission_data.key_objects.Mammoth:GetHandle());
 			state.first = true;
 		end
 	end);
 
 statemachine.Create("main_objectives", {
 	{ "start", function (state)
-		mission_data.Mammoth = gameobject.GetGameObject("mammoth");
-		mission_data.Mammoth:SetIndependence(0); -- Mammoth shouldn't respond or do anything in this mission.
-		mission_data.Hangar = gameobject.GetGameObject("hangar");
-		mission_data.Supply = gameobject.GetGameObject("supply");
-		mission_data.Tug = gameobject.GetGameObject("tug");
-		mission_data.Tug:RemovePilot();
-		mission_data.ControlTower = gameobject.GetGameObject("control");
+		ColorFade(1.1, 0.4, 0, 0, 0);
+		mission_data.key_objects.Mammoth = gameobject.GetGameObject("mammoth");
+		mission_data.key_objects.Mammoth:SetIndependence(0); -- Mammoth shouldn't respond or do anything in this mission.
+		mission_data.key_objects.Hangar = gameobject.GetGameObject("hangar");
+		mission_data.key_objects.Supply = gameobject.GetGameObject("supply");
+		mission_data.key_objects.Tug = gameobject.GetGameObject("tug");
+		mission_data.key_objects.Tug:RemovePilot();
+		mission_data.key_objects.ControlTower = gameobject.GetGameObject("control");
 		SetMaxScrap(2,10000);
-		mission_data.Player:SetPerceivedTeam(2); -- Make sure player isn't detected right away.
+		mission_data.key_objects.Player:SetPerceivedTeam(2); -- Make sure player isn't detected right away.
 		
 		for i = 1, 5 do
 			local navtmp = gameobject.GetGameObject("nav"..i); -- Harvests the current nav's coordinates then deletes it. The saved coordinates are used later to respawn the nav when it is needed.
@@ -297,24 +297,25 @@ statemachine.Create("main_objectives", {
 			gameobject.GetGameObject("patrol3_" .. i):Patrol("patrol_3", 1)
 		end
 		
-		
 		state:next();
 		
 		-- Pre-play setup complete. Time to start the shit.
 		camera.CameraReady();
-		mission_data.Aud1 = AudioMessage(audio.intro);
+		AudioMessage(audio.intro);
 
 		mission_data.mission_states
 			:on("detection_check_perceived_team")
 			:on("hanger_still_alive")
 			:on("mammoth_destroyed");
+
+		return statemachine.FastResult();
 	end },
 	{ "cinematic", function (state)
 		--Opening Cinematic. Show off Deus Ex's wondrous creation!
-		if camera.CameraPath("camera_path", 1000, 2000, mission_data.Mammoth) or camera.CameraCancelled() then
+		--if camera.CameraPath("camera_path", 1000, 2000, mission_data.key_objects.Mammoth) or camera.CameraCancelled() then
+		if camera.CameraPathPathFollow("pan_path", 1000, 1000, "pan_target_path") or camera.CameraCancelled() then
 			camera.CameraFinish();
 			SpawnNav(1);
-			mission_data.OpeningCinDone = true;
 			state:next();
 
 			objective.AddObjective(objectives.Detection, "WHITE");
@@ -329,10 +330,9 @@ statemachine.Create("main_objectives", {
 		end
 	end },
 	{ "hanger_info", function (state)
-		if mission_data.Hangar:IsAlive() and mission_data.Player and mission_data.Player:GetDistance(mission_data.Hangar) < 50.0 then
-			mission_data.Aud1 = AudioMessage(audio.inspect);
+		if mission_data.key_objects.Hangar:IsAlive() and mission_data.key_objects.Player and mission_data.key_objects.Player:GetDistance(mission_data.key_objects.Hangar) < 50.0 then
+			AudioMessage(audio.inspect);
 			SpawnNav(2);
-			mission_data.HangarInfoed = true;
 			objective.RemoveObjective(objectives.Hanger);
 			--UpdateObjectives();
 			state:next();
@@ -342,24 +342,21 @@ statemachine.Create("main_objectives", {
 		end
 	end },
 	{ "aquire_tug", function (state)
-		if mission_data.Player == mission_data.Tug then
-			mission_data.TugAquired = true;
+		if mission_data.key_objects.Player == mission_data.key_objects.Tug then
 			objective.UpdateObjective(objectives.Tug, "GREEN");
 			objective.AddObjective(objectives.Mammoth1, "WHITE");
 			--UpdateObjectives();
-			mission_data.Aud1 = AudioMessage(audio.tug);
+			AudioMessage(audio.tug);
 			SpawnNav(3)
 			state:next();
 		end
 	end },
 	{ "detect_shield", function (state)
-		if mission_data.Player:GetDistance(mission_data.Mammoth) < 225.0 then
+		if mission_data.key_objects.Player:GetDistance(mission_data.key_objects.Mammoth) < 225.0 then
 			mission_data.playerSLF = gameobject.BuildGameObject("bvslf", 1, "NukeSpawn", 1);
-			mission_data.Armory = true;
 			SetMaxScrap(1, 20);
 			SetScrap(1, 20);
-			mission_data.ShieldDetected = true;
-			mission_data.Aud1 = AudioMessage(audio.first_a);
+			AudioMessage(audio.first_a);
 			SpawnNav(4);
 			objective.UpdateObjective(objectives.Mammoth1, "GREEN");
 			objective.AddObjective(objectives.Control, "WHITE");
@@ -390,10 +387,10 @@ statemachine.Create("main_objectives", {
 	end },
 	{ "wrecker", function (state)
 		-- found set via a watcher in CreateObject for daywrecker instances
-		if mission_data.Wrecker and mission_data.Wrecker:IsValid() then
+		if mission_data.key_objects.Wrecker and mission_data.key_objects.Wrecker:IsValid() then
 			--if not mission_data.impactPending and not mission_data.wreckerTargetMissed then
-				print(mission_data.armoryTarget == mission_data.ControlTower)
-				if mission_data.armoryTarget == mission_data.ControlTower then
+				print(mission_data.armoryTarget == mission_data.key_objects.ControlTower)
+				if mission_data.armoryTarget == mission_data.key_objects.ControlTower then
 					mission_data.impactPending = true;
 					state:next();
 					objective.UpdateObjective(objectives.Control, color.ColorLabel.Yellow);
@@ -401,9 +398,8 @@ statemachine.Create("main_objectives", {
 					-- there is no yellow objective, old comment?
 				else
 
-					mission_data.Aud1 = AudioMessage(audio.lose4);
+					AudioMessage(audio.lose4);
 					FailMission(GetTime() + 5.0, "rbdnew03l5.des");
-					mission_data.MissionOver = true;
 					mission_data.wreckerTargetMissed = true;
 					objective.UpdateObjective(objectives.Control, "RED");
 					--UpdateObjectives(); --red
@@ -419,28 +415,26 @@ statemachine.Create("main_objectives", {
 		end
 	end },
 	{ "impact_pending", function (state)
-		if not mission_data.Wrecker:IsValid() then
+		if not mission_data.key_objects.Wrecker:IsValid() then
 			-- we should expect a dead shield control tower right about now
-			if not mission_data.ControlTower:IsValid() then
-				mission_data.ControlDead = true;
+			if not mission_data.key_objects.ControlTower:IsValid() then
 				mission_data.mission_states:off("mammoth_shield");
 				mission_data.impactPending = false;
 				
 				objective.UpdateObjective(objectives.Control, "GREEN");
 
 				--UpdateObjectives(); -- green
-				mission_data.Aud1 = AudioMessage(audio.dayw);
-				mission_data.ObjectiveNav:SetObjectiveOff();
-				mission_data.Mammoth:SetObjectiveOn();
-				mission_data.Mammoth:SetObjectiveName("Mammoth");
+				AudioMessage(audio.dayw);
+				mission_data.key_objects.ObjectiveNav:SetObjectiveOff();
+				mission_data.key_objects.Mammoth:SetObjectiveOn();
+				mission_data.key_objects.Mammoth:SetObjectiveName("Mammoth");
 				SpawnArmy();
 				state:next();
 				objective.AddObjective(objectives.Mammoth2, "WHITE");
 			-- else
 				-- if not M.wreckerTargetMissed == true then
-					-- M.Aud1 = AudioMessage(audio.lose4);
+					-- AudioMessage(audio.lose4);
 					-- FailMission(GetTime() + 5.0, "rbdnew03l5.des");
-					-- M.MissionOver = true;
 					-- M.wreckerTargetMissed = true;
 					-- UpdateObjectives(); --red
 				-- end
@@ -451,9 +445,7 @@ statemachine.Create("main_objectives", {
 		end
 	end },
 	{ "reach_mammoth_2", function (state)
-		if mission_data.Player:GetDistance(mission_data.Mammoth) < 35 then
-			mission_data.MammothTime = GetTime() + 10.0; -- Wait 10 seconds to gather info.
-			mission_data.MammothReached = true;
+		if mission_data.key_objects.Player:GetDistance(mission_data.key_objects.Mammoth) < 35 then
 			mission_data.mission_states
 				:off("detection_check_perceived_team")
 				:off("detection_check_radar_tower_1")
@@ -462,61 +454,53 @@ statemachine.Create("main_objectives", {
 			objective.RemoveObjective(objectives.Detection); -- should this be done sooner?
 			objective.ReplaceObjective(objectives.Mammoth2, objectives.TranStart, "WHITE"); -- should this be done sooner?
 			--UpdateObjectives();
-			if not mission_data.MammothReachedPrevious then
-				mission_data.Aud1 = AudioMessage(audio.second_a);
-				mission_data.MammothReachedPrevious = true;
+			if not mission_data.MammothReachedBefore then
+				AudioMessage(audio.second_a);
+				mission_data.MammothReachedBefore = true;
 			else
-				mission_data.Aud1 = AudioMessage(audio.backinrange)
+				AudioMessage(audio.backinrange)
 			end
 			state:next();
 		end
 	end },
 	{ "mammoth_scan_waiting", function (state)
-		if GetTime() < mission_data.MammothTime then
-			if mission_data.MammothReached and mission_data.Player:GetDistance(mission_data.Mammoth) > 35 then
-				mission_data.MammothTime = 0;
-				mission_data.MammothReached = false;
-				--UpdateObjectives();
-				mission_data.Aud1 = AudioMessage(audio.transint);
-				objective.ReplaceObjective(objectives.TranStart, objectives.Mammoth2, "WHITE");
-				state:switch("reach_mammoth_2");
-			end
-		else
+		if state:SecondsHavePassed(10) then
 			state:next();
+		elseif mission_data.key_objects.Player:GetDistance(mission_data.key_objects.Mammoth) > 35 then
+			state:SecondsHavePassed();
+			--UpdateObjectives();
+			AudioMessage(audio.transint);
+			objective.ReplaceObjective(objectives.TranStart, objectives.Mammoth2, "WHITE");
+			state:switch("reach_mammoth_2");
 		end
 	end },
 	{ "mammoth_scan_finished", function (state)
-        mission_data.Aud1 = AudioMessage(audio.flee);
+        AudioMessage(audio.flee);
         StartCockpitTimer(120, 30, 10);
-		mission_data.Mammoth:SetObjectiveOff();
+		mission_data.key_objects.Mammoth:SetObjectiveOff();
 --		BuildObject("bvapc", 3, GetPositionNear(GetPosition(GetHandle("nav5"))));
         SpawnNav(5);
-        mission_data.MammothInfoed = true;
 		objective.ReplaceObjective(objectives.TranStart, objectives.TranFin, "GREEN");
 		objective.AddObjective(objectives.Extract, "WHITE");
         --UpdateObjectives();
-        mission_data.Player:SetPerceivedTeam(1);
-        for i=1, 18 do
-            local tmp = mission_data.Defenders[i];
-            if tmp:GetOdf() ~= "svwalk" then
-                tmp:Attack(mission_data.Player);
-            end
-        end
+        mission_data.key_objects.Player:SetPerceivedTeam(1);
+		for _, v in pairs(mission_data.key_objects.Defenders) do
+			if v:GetOdf() ~= "svwalk" then
+                v:Attack(mission_data.key_objects.Player);
+			end
+		end
 		state:next();
 	end },
 	{ "run_away", function (state)
-		if mission_data.ObjectiveNav:GetObjectiveName() == "Extraction Point" and mission_data.Player and mission_data.Player:GetDistance(mission_data.ObjectiveNav) < 50.0 then
-			Aud1 = AudioMessage(audio.win);
+		if mission_data.key_objects.ObjectiveNav:GetObjectiveName() == "Extraction Point" and mission_data.key_objects.Player and mission_data.key_objects.Player:GetDistance(mission_data.key_objects.ObjectiveNav) < 50.0 then
+			AudioMessage(audio.win);
 			SucceedMission(GetTime()+5.0, "rbdnew03wn.des"); -- mission complete
-			mission_data.MissionOver = true;
-			mission_data.SafetyReached = true;
 			objective.UpdateObjective(objectives.Extract, "GREEN");
 			--UpdateObjectives();
 			state:next();
 		elseif GetCockpitTimer() == 0 then
-			Aud1 = AudioMessage(audio.lose2);
+			AudioMessage(audio.lose2);
 			FailMission(GetTime() + 5.0, "rbdnew03l2.des"); -- time expired
-			mission_data.MissionOver = true;
 			--UpdateObjectives();
 			state:next();
 		end
@@ -542,8 +526,8 @@ statemachine.Create("detection_check_radar_tower", {
 	{ "check", function (state)
 		--- @cast state detection_check_radar_tower_state
 		if state.object:IsAlive() then
-			if mission_data.Player:GetDistance(state.object) < 100.0 then
-				mission_data.Aud1 = AudioMessage(audio.commwarn);
+			if mission_data.key_objects.Player:GetDistance(state.object) < 100.0 then
+				AudioMessage(audio.commwarn);
 				StartCockpitTimer(30, 15, 5);
 				state:next();
 			end
@@ -555,15 +539,14 @@ statemachine.Create("detection_check_radar_tower", {
 	end },
 	{ "too_close", function (state)
 		--- @cast state detection_check_radar_tower_state
-		if mission_data.Player:GetDistance(state.object) > 100.0 then
-			Aud1 = AudioMessage(audio.commclear);
+		if mission_data.key_objects.Player:GetDistance(state.object) > 100.0 then
+			AudioMessage(audio.commclear);
 			state:SecondsHavePassed();
 			state:switch("check");
 			StopCockpitTimer();
 			HideCockpitTimer();
 		--elseif state:SecondsHavePassed(30) then
 		elseif GetCockpitTimer() == 0 then
-			mission_data.IsDetected = true;
 			--UpdateObjectives();
 			-- this is a failure state
 			-- Show Failed No-Detect Objective
@@ -580,8 +563,7 @@ stateset.Create("mission")
 	:Add("main_objectives", stateset.WrapStateMachine("main_objectives"))
 	:Add("scrap_field_filler_1", stateset.WrapStateMachine("scrap_field_filler", nil, { path = "scrpfld1" }))
 	:Add("detection_check_perceived_team", function(state, name)
-		if mission_data.Player and mission_data.Player:GetPerceivedTeam() == 1 then
-			mission_data.IsDetected = true;
+		if mission_data.key_objects.Player and mission_data.key_objects.Player:GetPerceivedTeam() == 1 then
 			--UpdateObjectives();
 			-- this is a failure state
 			-- Show Failed No-Detect Objective
@@ -595,19 +577,17 @@ stateset.Create("mission")
 	:Add("detection_check_radar_tower_2", stateset.WrapStateMachine("detection_check_radar_tower", nil, { label = "radar2" }))
 	:Add("detection_check_radar_tower_3", stateset.WrapStateMachine("detection_check_radar_tower", nil, { label = "radar3" }))
 	:Add("hanger_still_alive", function (state, name)
-		if not mission_data.Hangar:IsAlive() then
+		if not mission_data.key_objects.Hangar:IsAlive() then
 			FailMission(GetTime()+5.0, "rbdnew03l3.des"); -- hangar destroyed
-			mission_data.MissionOver = true;
 			objective.UpdateObjective(objectives.Hanger, "RED");
 			--UpdateObjectives();
 		end
 	end)
 	:Add("mammoth_shield", stateset.WrapStateMachine("mammoth_shield"))
 	:Add("mammoth_destroyed", function (state, name)
-		if not mission_data.Mammoth:IsAlive() then 
-			mission_data.Aud1 = AudioMessage(audio.lose1);
+		if not mission_data.key_objects.Mammoth:IsAlive() then 
+			AudioMessage(audio.lose1);
 			FailMission(GetTime()+5.0, "rbdnew03l1.des"); -- mammoth destroyed
-			mission_data.MissionOver = true;
 			--UpdateObjectives();
 		end
 	end);
@@ -619,7 +599,7 @@ hook.Add("Start", "Mission:Start", function ()
 end);
 
 hook.Add("Update", "Mission:Update", function (dtime, ttime)
-	mission_data.Player = gameobject.GetPlayerGameObject();
+	mission_data.key_objects.Player = gameobject.GetPlayerGameObject();
 	mission_data.mission_states:run();
 end);
 
