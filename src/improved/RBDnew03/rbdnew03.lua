@@ -326,6 +326,8 @@ statemachine.Create("main_objectives", {
 		end
 	end },
 	{ "cinematic3", function (state)
+		--- @cast state main_objectives03_state
+		
 		--Opening Cinematic. Show off Deus Ex's wondrous creation!
 		--if camera.CameraPath("camera_path", 1000, 2000, mission_data.key_objects.Mammoth) or camera.CameraCancelled() then
 		if camera.CameraCancelled() or camera.CameraPathPathFollow("pan3_path", 1500, 400, "pan3_target_path", 0, 200) then
@@ -640,87 +642,5 @@ function(g)
 end);
 
 print("\27[34m----END MISSION----\27[0m");
-
-print("COLOR TEST Exact ["..
-color.RGBAtoAnsi24Escape(color.ColorValues.BLACK    ).."██"..
-color.RGBAtoAnsi24Escape(color.ColorValues.DKGREY   ).."██"..
-color.RGBAtoAnsi24Escape(color.ColorValues.GREY     ).."██"..
-color.RGBAtoAnsi24Escape(color.ColorValues.WHITE    ).."██"..
-color.RGBAtoAnsi24Escape(color.ColorValues.BLUE     ).."██"..
-color.RGBAtoAnsi24Escape(color.ColorValues.DKBLUE   ).."██"..
-color.RGBAtoAnsi24Escape(color.ColorValues.GREEN    ).."██"..
-color.RGBAtoAnsi24Escape(color.ColorValues.DKGREEN  ).."██"..
-color.RGBAtoAnsi24Escape(color.ColorValues.YELLOW   ).."██"..
-color.RGBAtoAnsi24Escape(color.ColorValues.DKYELLOW ).."██"..
-color.RGBAtoAnsi24Escape(color.ColorValues.RED      ).."██"..
-color.RGBAtoAnsi24Escape(color.ColorValues.DKRED    ).."██"..
-color.RGBAtoAnsi24Escape(color.ColorValues.CYAN     ).."██"..
-color.RGBAtoAnsi24Escape(color.ColorValues.DKCYAN   ).."██"..
-color.RGBAtoAnsi24Escape(color.ColorValues.MAGENTA  ).."██"..
-color.RGBAtoAnsi24Escape(color.ColorValues.DKMAGENTA).."██"..
-color.AnsiColorEscapeMap._.."]");
-
-print("COLOR TEST 256   ["..
-color.RGBAtoAnsi256Escape(color.ColorValues.BLACK    ).."██"..
-color.RGBAtoAnsi256Escape(color.ColorValues.DKGREY   ).."██"..
-color.RGBAtoAnsi256Escape(color.ColorValues.GREY     ).."██"..
-color.RGBAtoAnsi256Escape(color.ColorValues.WHITE    ).."██"..
-color.RGBAtoAnsi256Escape(color.ColorValues.BLUE     ).."██"..
-color.RGBAtoAnsi256Escape(color.ColorValues.DKBLUE   ).."██"..
-color.RGBAtoAnsi256Escape(color.ColorValues.GREEN    ).."██"..
-color.RGBAtoAnsi256Escape(color.ColorValues.DKGREEN  ).."██"..
-color.RGBAtoAnsi256Escape(color.ColorValues.YELLOW   ).."██"..
-color.RGBAtoAnsi256Escape(color.ColorValues.DKYELLOW ).."██"..
-color.RGBAtoAnsi256Escape(color.ColorValues.RED      ).."██"..
-color.RGBAtoAnsi256Escape(color.ColorValues.DKRED    ).."██"..
-color.RGBAtoAnsi256Escape(color.ColorValues.CYAN     ).."██"..
-color.RGBAtoAnsi256Escape(color.ColorValues.DKCYAN   ).."██"..
-color.RGBAtoAnsi256Escape(color.ColorValues.MAGENTA  ).."██"..
-color.RGBAtoAnsi256Escape(color.ColorValues.DKMAGENTA).."██"..
-color.AnsiColorEscapeMap._.."]");
-
-print("COLOR TEST 16p   ["..
-color.AnsiColorEscapeMap.BLACK    .."██"..
-color.AnsiColorEscapeMap.DKGREY   .."██"..
-color.AnsiColorEscapeMap.GREY     .."██"..
-color.AnsiColorEscapeMap.WHITE    .."██"..
-color.AnsiColorEscapeMap.BLUE     .."██"..
-color.AnsiColorEscapeMap.DKBLUE   .."██"..
-color.AnsiColorEscapeMap.GREEN    .."██"..
-color.AnsiColorEscapeMap.DKGREEN  .."██"..
-color.AnsiColorEscapeMap.YELLOW   .."██"..
-color.AnsiColorEscapeMap.DKYELLOW .."██"..
-color.AnsiColorEscapeMap.RED      .."██"..
-color.AnsiColorEscapeMap.DKRED    .."██"..
-color.AnsiColorEscapeMap.CYAN     .."██"..
-color.AnsiColorEscapeMap.DKCYAN   .."██"..
-color.AnsiColorEscapeMap.MAGENTA  .."██"..
-color.AnsiColorEscapeMap.DKMAGENTA.."██"..
-color.AnsiColorEscapeMap._.."]");
-
-local rave_exact = "";
-for i = 1, #color.RAVE_COLOR do
-	rave_exact = rave_exact..color.RGBAtoAnsi24Escape(color.RAVE_COLOR[i]).."█";
-end
-print("COLOR TEST RAVE Exact    ["..rave_exact..color.AnsiColorEscapeMap._.."]");
-
-local rave_256 = "";
-for i = 1, #color.RAVE_COLOR do
-	rave_256 = rave_256..color.RGBAtoAnsi256Escape(color.RAVE_COLOR[i]).."█";
-end
-print("COLOR TEST RAVE 256      ["..rave_256..color.AnsiColorEscapeMap._.."]");
-
-local rave_16Map = "";
-for i = 1, #color.RAVE_COLOR do
-	rave_16Map = rave_16Map..color.RGBAtoAnsi24Escape(color.ColorValues[color.GetClosestColorCode(color.RAVE_COLOR[i])]).."█";
-end
-print("COLOR TEST RAVE 16->Exact["..rave_16Map..color.AnsiColorEscapeMap._.."]");
-
-local rave_16 = "";
-for i = 1, #color.RAVE_COLOR do
-	rave_16 = rave_16..color.AnsiColorEscapeMap[color.GetClosestColorCode(color.RAVE_COLOR[i])].."█";
-end
-print("COLOR TEST RAVE 16p      ["..rave_16..color.AnsiColorEscapeMap._.."]");
-
 
 require("_audio_dev");

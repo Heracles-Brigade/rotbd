@@ -652,106 +652,6 @@ end);
 
 --hook.Add("DeleteObject", "Mission:DeleteObject", function (object) end);
 
-statemachine.Create("Cheat_BZSKIP",
-    function (state, key) if key == "Ctrl+Shift+B" then state:next(); end end,
-    function (state, key) if key == "Ctrl+Shift+Z" then state:next(); else state:switch(1); end end,
-    function (state, key) if key == "Ctrl+Shift+S" then state:next(); else state:switch(1); end end,
-    function (state, key) if key == "Ctrl+Shift+K" then state:next(); else state:switch(1); end end,
-    function (state, key) if key == "Ctrl+Shift+I" then state:next(); else state:switch(1); end end,
-    function (state, key) if key == "Ctrl+Shift+P" then
-        ColorFade(1.0, 5.0, 0, 0, 255);
-        StartSound("apcann.wav");
-
-        local machine_state = mission_data.mission_states.StateMachines.main_objectives;
-        --- @cast machine_state StateMachineIter
-        machine_state:SecondsHavePassed(); -- clear timer in case we were in one
-        --CameraFinish(); -- clearing a camera when there is none will crash
-        machine_state:next(); -- move to the next state
-
-        state:switch(1);
-        return true;
-    else state:switch(1); end end
-);
-local Cheat_BZSKIP = statemachine.Start("Cheat_BZSKIP");
-hook.Add("GameKey", "Mission:GameKey:Cheat_BZSKIP", function (key)
-    local success, result = Cheat_BZSKIP:run(key);
-    if result then
-        debugprint("BZSKIP stopping more hooks");
-        return hook.AbortResult();
-    end
-end);
-
-statemachine.Create("Cheat_BZRAVE",
-    function (state, key) if key == "Ctrl+Shift+B" then state:next(); end end,
-    function (state, key) if key == "Ctrl+Shift+Z" then state:next(); else state:switch(1); end end,
-    function (state, key) if key == "Ctrl+Shift+R" then state:next(); else state:switch(1); end end,
-    function (state, key) if key == "Ctrl+Shift+A" then state:next(); else state:switch(1); end end,
-    function (state, key) if key == "Ctrl+Shift+V" then state:next(); else state:switch(1); end end,
-    function (state, key) if key == "Ctrl+Shift+E" then
-        --ColorFade(1.0, 5.0, 128, 0, 255);
-        StartSound("grave00.wav");
-
-        local player = gameobject.GetPlayerGameObject();
-        if player and player:IsCraft() then
-            player:GiveWeapon("gtechno", 0)
-            player:GiveWeapon("gtechno", 1)
-            player:GiveWeapon("gtechno", 2)
-            player:GiveWeapon("gtechno", 3)
-            player:GiveWeapon("gtechno", 4)
-        end
-
-        -- if this works properly the hookName and Cheat_BZRAVE_effect should be in a closure that the hook function has access to
-        local hookName = "Mission:Update:Cheat_BZRAVE_effect_" .. tostring(GetTime());
-        local Cheat_BZRAVE_effect = statemachine.Start("Cheat_BZRAVE_effect");
-        hook.Add("Update", hookName, function (dtime, ttime)
-            local success, retval = Cheat_BZRAVE_effect:run();
-            if not success or retval then
-                hook.Remove("Update", hookName);
-            end
-        end);
-
-        state:switch(1);
-        return true;
-    else state:switch(1); end end
-);
---- @class Cheat_BZRAVE_effect_state : StateMachineIter
---- @field rave_index number
-statemachine.Create("Cheat_BZRAVE_effect",
-    function (state)
-        --- @cast state Cheat_BZRAVE_effect_state
-        state.rave_index = 1;
-        state:next();
-        state:SecondsHavePassed(); -- make sure it's reset before we start a lap based usage
-    end,
-    { "color", function (state)
-        --- @cast state Cheat_BZRAVE_effect_state
-        if state:SecondsHavePassed(0.4, true) or state.rave_index == 1 then
-            local rgba = color.RAVE_COLOR[state.rave_index];
-            local r = bit.rshift(rgba, 24) -- Extract the red component
-            local g = bit.band(bit.rshift(rgba, 16), 0xFF) -- Extract the green component
-            local b = bit.band(bit.rshift(rgba, 8), 0xFF)  -- Extract the blue component
-
-            ColorFade(1.0, 5.0, r, g, b);
-
-            -- run through the rave color list once, which is as long as the music
-            state.rave_index = state.rave_index + 1;
-            if state.rave_index > #color.RAVE_COLOR then
-                state:SecondsHavePassed(); -- probably not needed but just in case
-                state:switch(nil);
-                return true;
-            end
-        end
-    end }
-);
-local Cheat_BZRAVE = statemachine.Start("Cheat_BZRAVE");
-hook.Add("GameKey", "Mission:GameKey:Cheat_BZRAVE", function (key)
-    local success, result = Cheat_BZRAVE:run(key);
-    if result then
-        debugprint("BZRAVE stopping more hooks");
-        return hook.AbortResult();
-    end
-end);
-
 hook.AddSaveLoad("Mission",
 function()
     return mission_data;
@@ -761,3 +661,14 @@ function(g)
 end);
 
 require("_audio_dev");
+require("_cheat_bzrave")
+require("_cheat_bzskip");
+hook.Add("Cheat", "Mission:Cheat", function (cheat)
+    if cheat == "BZSKIP" then
+        local machine_state = mission_data.mission_states.StateMachines.main_objectives;
+        --- @cast machine_state StateMachineIter
+        machine_state:SecondsHavePassed(); -- clear timer in case we were in one
+        --CameraFinish(); -- clearing a camera when there is none will crash
+        machine_state:next(); -- move to the next state
+    end
+end);
