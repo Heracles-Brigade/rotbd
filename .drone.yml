@@ -5,6 +5,10 @@ kind: pipeline
 name: default
 
 steps:
+- name: submodules
+  image: alpine/git
+  commands:
+  - git submodule update --init --recursive
 - name: pre-process
   image: thejanne/bztools:latest
   when:
@@ -15,17 +19,19 @@ steps:
   commands:
     - mkdir /tmp/files
     - mkdir /tmp/lua
-    - find /rotbd -type f \( -name "*.lua" -o -name "*.squish" \) -exec cp {} /tmp/lua \;
-    - python3 /bztools/luaSquish.py /tmp/lua -r
-    - find /rotbd -not -ipath '*/\.*' -not -name '*.lua' -not -name '*.bin' -type f -exec cp {} /tmp/files \;
+    #- find /rotbd -type f \( -name "*.lua" -o -name "*.squish" \) -exec cp {} /tmp/lua \;
+    - find /rotbd/src -type f \( -name "*.lua" -o -name "*.lua" \) -exec cp {} /tmp/lua \;
+    - find /rotbd/deps/BZ98R-Advanced-Lua-API/baked -type f \( -name "*.lua" -o -name "*.lua" \) -exec cp {} /tmp/lua \;
+    #- python3 /bztools/luaSquish.py /tmp/lua -r
+    - find /rotbd/src -not -ipath '*/\.*' -not -name '*.lua' -not -name '*.bin' -type f -exec cp {} /tmp/files \;
     - find /tmp/lua -name '*.lua' -type f -exec mv {} /tmp/files \;
-    - python3 /bztools/textToSpeech.py /tmp/files
+    #- python3 /bztools/textToSpeech.py /tmp/files
     - python3 /bztools/crlf_fixer.py /tmp/files
     - mkdir -p /rotbd/build
     - zip -j -r /rotbd/build/rotbd_${DRONE_TAG}.zip /tmp/files
-    - find -type f -name '*.bzn' -exec python3 /bztools/bznDown.py {} {} \;
-    - zip -j -r /rotbd/build/rotbd_1.5c_${DRONE_TAG}.zip /tmp/files
-    - cp /rotbd/build/rotbd_1.5c_${DRONE_TAG}.zip /rotbd/build/rotbd_1.5c_latest.zip
+    #- find -type f -name '*.bzn' -exec python3 /bztools/bznDown.py {} {} \;
+    #- zip -j -r /rotbd/build/rotbd_1.5c_${DRONE_TAG}.zip /tmp/files
+    #- cp /rotbd/build/rotbd_1.5c_${DRONE_TAG}.zip /rotbd/build/rotbd_1.5c_latest.zip
     - cp /rotbd/build/rotbd_${DRONE_TAG}.zip /rotbd/build/rotbd_latest.zip
 
 - name: upload
