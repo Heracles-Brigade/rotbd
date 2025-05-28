@@ -138,17 +138,17 @@ local function SpawnNav(num)
 end
 
 local function SpawnBaker()
-	mission_data.Baker = gameobject.BuildGameObject("bvhaul", 3, "bakerspawn");
+	mission_data.Baker = gameobject.BuildObject("bvhaul", 3, "bakerspawn");
 	local bakerspawn = GetPosition("bakerspawn");
 	if bakerspawn == nil then
 		error("Baker spawn is nil!");
 	end
-	gameobject.BuildGameObject("bvfigh", 3, GetPositionNear(bakerspawn)):Defend2(mission_data.Baker, 1);
-	gameobject.BuildGameObject("bvfigh", 3, GetPositionNear(bakerspawn)):Defend2(mission_data.Baker, 1);
-	gameobject.BuildGameObject("bvtank", 3, GetPositionNear(bakerspawn)):Defend2(mission_data.Baker, 1);
-	gameobject.BuildGameObject("bvtank", 3, GetPositionNear(bakerspawn)):Defend2(mission_data.Baker, 1);
-	gameobject.BuildGameObject("bvtank", 3, GetPositionNear(bakerspawn)):Defend2(mission_data.Baker, 1);
-	gameobject.BuildGameObject("bvtank", 3, GetPositionNear(bakerspawn)):Defend2(mission_data.Baker, 1);
+	gameobject.BuildObject("bvfigh", 3, GetPositionNear(bakerspawn)):Defend2(mission_data.Baker, 1);
+	gameobject.BuildObject("bvfigh", 3, GetPositionNear(bakerspawn)):Defend2(mission_data.Baker, 1);
+	gameobject.BuildObject("bvtank", 3, GetPositionNear(bakerspawn)):Defend2(mission_data.Baker, 1);
+	gameobject.BuildObject("bvtank", 3, GetPositionNear(bakerspawn)):Defend2(mission_data.Baker, 1);
+	gameobject.BuildObject("bvtank", 3, GetPositionNear(bakerspawn)):Defend2(mission_data.Baker, 1);
+	gameobject.BuildObject("bvtank", 3, GetPositionNear(bakerspawn)):Defend2(mission_data.Baker, 1);
 end
 
 
@@ -187,7 +187,7 @@ statemachine.Create("scrap_field_filler", {
 		if pos then
 			for i, scrap in ipairs(state.scrap_objects) do -- consider making this a slow-loop that checks 1 per turn
 				if not scrap or not scrap:IsValid() then
-					state.scrap_objects[i] = gameobject.BuildGameObject(choose(table.unpack(state.scrap_options)), 0, GetPositionNear(pos, 1, 35));
+					state.scrap_objects[i] = gameobject.BuildObject(choose(table.unpack(state.scrap_options)), 0, GetPositionNear(pos, 1, 35));
 				end
 			end
 		end
@@ -276,16 +276,16 @@ statemachine.Create("main_objectives", {
 	{ "DecoyTriggered", function (state)
 		-- Spawn Armada
 		mission_data.DecoyAmbush = {
-			gameobject.BuildGameObject("svhraz", 2, "spawn_svhraz1"),
-			gameobject.BuildGameObject("svhraz", 2, "spawn_svhraz2"),
-			gameobject.BuildGameObject("svfigh", 2, "spawn_svfigh1"),
-			gameobject.BuildGameObject("svfigh", 2, "spawn_svfigh2"),
-			gameobject.BuildGameObject("svrckt", 2, "spawn_svrckt1"),
-			gameobject.BuildGameObject("svrckt", 2, "spawn_svrckt2"),
-			gameobject.BuildGameObject("svtank", 2, "spawn_svtank1"),
-			gameobject.BuildGameObject("svtank", 2, "spawn_svtank2"),
-			gameobject.BuildGameObject("svtank", 2, "spawn_svtank3"),
-			gameobject.BuildGameObject("svtank", 2, "spawn_svtank4"),
+			gameobject.BuildObject("svhraz", 2, "spawn_svhraz1"),
+			gameobject.BuildObject("svhraz", 2, "spawn_svhraz2"),
+			gameobject.BuildObject("svfigh", 2, "spawn_svfigh1"),
+			gameobject.BuildObject("svfigh", 2, "spawn_svfigh2"),
+			gameobject.BuildObject("svrckt", 2, "spawn_svrckt1"),
+			gameobject.BuildObject("svrckt", 2, "spawn_svrckt2"),
+			gameobject.BuildObject("svtank", 2, "spawn_svtank1"),
+			gameobject.BuildObject("svtank", 2, "spawn_svtank2"),
+			gameobject.BuildObject("svtank", 2, "spawn_svtank3"),
+			gameobject.BuildObject("svtank", 2, "spawn_svtank4"),
 		}
 		for i = 1,#mission_data.DecoyAmbush do
 			mission_data.DecoyAmbush[i]:Attack(mission_data.Player);
@@ -365,12 +365,12 @@ statemachine.Create("main_objectives", {
 	{ "WantItBack", function (state)
 		if mission_data.ObjectiveNav:GetLabel() == "nav3" and mission_data.Player:GetDistance(mission_data.ObjectiveNav) < 1450 and mission_data.Player == mission_data.Mammoth then
 			mission_data.RecoverySquad = {
-				gameobject.BuildGameObject("svfigh", 2, "final_spawn3"),
-				gameobject.BuildGameObject("svfigh", 2, "final_spawn4"),
-				gameobject.BuildGameObject("svfigh", 2, "final_spawn6"),
-				gameobject.BuildGameObject("svfigh", 2, "final_spawn7"),
-				gameobject.BuildGameObject("svrckt", 2, "final_spawn1"),
-				gameobject.BuildGameObject("svrckt", 2, "final_spawn2")
+				gameobject.BuildObject("svfigh", 2, "final_spawn3"),
+				gameobject.BuildObject("svfigh", 2, "final_spawn4"),
+				gameobject.BuildObject("svfigh", 2, "final_spawn6"),
+				gameobject.BuildObject("svfigh", 2, "final_spawn7"),
+				gameobject.BuildObject("svrckt", 2, "final_spawn1"),
+				gameobject.BuildObject("svrckt", 2, "final_spawn2")
 			}
 			for i = 1,#mission_data.RecoverySquad do
 				mission_data.RecoverySquad[i]:Attack(mission_data.Player); -- what if the player isn't in the mammoth anymore?
@@ -404,7 +404,7 @@ statemachine.Create("main_objectives", {
 });
 
 hook.Add("Update", "Mission:Update", function (dtime, ttime)
-	mission_data.Player = gameobject.GetPlayerGameObject();
+	mission_data.Player = gameobject.GetPlayer();
 	mission_data.mission_states:run();
 end);
 

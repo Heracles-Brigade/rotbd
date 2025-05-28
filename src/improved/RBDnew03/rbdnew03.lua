@@ -147,7 +147,7 @@ local function SpawnNav(num) -- Spawns the Nth Nav point.
 end
 
 local function SpawnFromTo(odf, fp, fpp, tp)
-	local obj = gameobject.BuildGameObject(odf, 2, fp, fpp)
+	local obj = gameobject.BuildObject(odf, 2, fp, fpp)
 	if not obj then error("Failed to spawn "..odf.." from "..tostring(fp).." to "..tostring(tp)); end -- If the object fails to spawn, throw an error.
 	obj:Goto(tp, 0);
 	obj:SetLabel(fp.."_"..(#mission_data.key_objects.Defenders + 1));
@@ -248,7 +248,7 @@ statemachine.Create("scrap_field_filler", {
 		if pos then
 			for i, scrap in ipairs(state.scrap_objects) do -- consider making this a slow-loop that checks 1 per turn
 				if not scrap or not scrap:IsValid() then
-					state.scrap_objects[i] = gameobject.BuildGameObject(choose(table.unpack(state.scrap_options)), 0, GetPositionNear(pos, 1, 35));
+					state.scrap_objects[i] = gameobject.BuildObject(choose(table.unpack(state.scrap_options)), 0, GetPositionNear(pos, 1, 35));
 				end
 			end
 		end
@@ -381,7 +381,7 @@ statemachine.Create("main_objectives", {
 	{ "detect_shield", function (state)
 		--if mission_data.key_objects.Player:GetDistance(mission_data.key_objects.Mammoth) < 225.0 then
 		if mission_data.key_objects.Player:GetDistance(mission_data.key_objects.Mammoth) < 125.0 then
-			mission_data.playerSLF = gameobject.BuildGameObject("bvslf", 1, "NukeSpawn", 1);
+			mission_data.playerSLF = gameobject.BuildObject("bvslf", 1, "NukeSpawn", 1);
 			SetMaxScrap(1, 20);
 			SetScrap(1, 20);
 			AudioMessage(audio.first_a);
@@ -629,7 +629,7 @@ hook.Add("Start", "Mission:Start", function ()
 end);
 
 hook.Add("Update", "Mission:Update", function (dtime, ttime)
-	mission_data.key_objects.Player = gameobject.GetPlayerGameObject();
+	mission_data.key_objects.Player = gameobject.GetPlayer();
 	mission_data.mission_states:run();
 end);
 

@@ -117,7 +117,7 @@ local function spawnInFormation(formation,location,dir,units,team,seperation)
             local x = (i3-(length/2))*seperation;
             local z = i2*seperation*2;
             local pos = x*formationAlign + -z*directionVec + location;
-            local h = gameobject.BuildGameObject(units[n],team,pos);
+            local h = gameobject.BuildObject(units[n],team,pos);
             if not h then error("Failed to build object " .. units[n] .. " at " .. tostring(pos)) end
             local t = BuildDirectionalMatrix(h:GetPosition(),directionVec);
             h:SetTransform(t);
@@ -292,7 +292,7 @@ statemachine.Create("main_objectives", {
         --- @cast state MainMissionStateMachineIter
         
         -- init
-        mission_data.key_objects.recy = gameobject.GetRecyclerGameObject();
+        mission_data.key_objects.recy = gameobject.GetRecycler();
         mission_data.key_objects.tug = gameobject.GetGameObject(labels.relic_tug);
         
         local formation = {" 2 ",
@@ -336,7 +336,7 @@ statemachine.Create("main_objectives", {
     end },
     { "escortRecycler.update", function(state)
         --- @cast state MainMissionStateMachineIter
-        state.cond_escort_completed = state.cond_escort_completed or gameobject.GetRecyclerGameObject():GetDistance("bdog_base") < 100;
+        state.cond_escort_completed = state.cond_escort_completed or gameobject.GetRecycler():GetDistance("bdog_base") < 100;
         state.cond_kill_attackers_completed = state.cond_kill_attackers_completed or areAllDead(state.attackers, 2);
         if state.cond_escort_completed and state.cond_kill_attackers_completed then
             objective.UpdateObjective(otfs.escort,"GREEN");
@@ -711,7 +711,7 @@ statemachine.Create("relic_tug_spawner", {
             objective.AddObjective(state.otf,"WHITE");
 
             local s = ("%s_spawn"):format(state.key);
-            local tug = gameobject.BuildGameObject(relic_data[state.key].vehicles[4], 2, s);
+            local tug = gameobject.BuildObject(relic_data[state.key].vehicles[4], 2, s);
             --Create a sequence with all the tugs actions from creation to end
             --local tug_sequencer = mission.TaskManager:sequencer(tug);
             --tug_sequencer:queue2("Goto",("%s_path"):format(f));
@@ -839,7 +839,7 @@ statemachine.Create("distress_ambush_orders", {
     end,
     function (state)
         --- @cast state DistressAmbushOrders_state
-        local player = gameobject.GetPlayerGameObject();
+        local player = gameobject.GetPlayer();
         --if player == nil then error("player is nil"); end
         if player then
             state.v:Attack(player);
@@ -899,7 +899,7 @@ statemachine.Create("distress", {
     statemachine.SleepSeconds(5),
     function (state)
         local distress_l = ("%s_distress"):format(mission_data.distress_faction);
-        local nav = gameobject.BuildGameObject("apcamr", 1, distress_l);
+        local nav = gameobject.BuildObject("apcamr", 1, distress_l);
         if nav == nil then error("nav is nil"); end
         nav:SetObjectiveName("Distress Call");
         objective.AddObjective(otfs[distress_l]);
@@ -909,7 +909,7 @@ statemachine.Create("distress", {
         local dpath = ("%s_distress"):format(mission_data.distress_faction);
         local apath = ("%s_ambush"):format(mission_data.distress_faction);
         local d_att = relic_data[mission_data.distress_faction].vehicles;
-        if(gameobject.GetPlayerGameObject():GetDistance(dpath) < 100) then
+        if(gameobject.GetPlayer():GetDistance(dpath) < 100) then
             --It is a trap, spawn ambush
             for _,v in pairs(spawnInFormation2({"1 2 3 1"}, apath, d_att, 2, 15)) do
                 local tm = statemachine.Start("distress_ambush_orders", nil, { v = v });

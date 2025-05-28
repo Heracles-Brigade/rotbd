@@ -67,7 +67,7 @@ mission_data.pwers = {};
 local function copyObject(handle,odf,kill)
     local transform = handle:GetTransform();
     if not transform then error("Failed to get transform of " .. handle:GetObjectiveName()) end
-    local nObject = gameobject.BuildGameObject(odf,handle:GetTeamNum(),transform);
+    local nObject = gameobject.BuildObject(odf,handle:GetTeamNum(),transform);
     if not nObject then error("Failed to build object " .. odf .. " at " .. tostring(transform)) end
     local pilot = handle:GetPilotClass() or "";
     local hp = handle:GetCurHealth() or 0;
@@ -149,7 +149,7 @@ local function spawnAtPath(odf,team,path)
     local c = 0;
     while current and current ~= prev do
         c = c + 1;
-        table.insert(handles,gameobject.BuildGameObject(odf,team,current));
+        table.insert(handles,gameobject.BuildObject(odf,team,current));
         prev = current;
         current = GetPosition(path,c);
     end
@@ -195,7 +195,7 @@ local function spawnInFormation(formation,location,dir,units,team,seperation)
             local x = (i3-(length/2))*seperation;
             local z = i2*seperation*2;
             local pos = x*formationAlign + -z*directionVec + location;
-            local h = gameobject.BuildGameObject(units[n],team,pos);
+            local h = gameobject.BuildObject(units[n],team,pos);
             if not h then error("Failed to build object " .. units[n] .. " at " .. tostring(pos)) end
             local t = BuildDirectionalMatrix(h:GetPosition(),directionVec);
             h:SetTransform(t);
@@ -389,10 +389,10 @@ statemachine.Create("secondWave",
     statemachine.SleepSeconds(10),
     function (state)
         for i = 1, 4 do
-            gameobject.BuildGameObject("svfigh", 2, "patrol_path"):Goto("wave_2");
+            gameobject.BuildObject("svfigh", 2, "patrol_path"):Goto("wave_2");
         end
         for i = 1, 2 do
-            gameobject.BuildGameObject("svtank", 2, "patrol_path"):Goto("wave_2");
+            gameobject.BuildObject("svtank", 2, "patrol_path"):Goto("wave_2");
         end
         state:next();
         return statemachine.AbortResult();
@@ -486,8 +486,8 @@ statemachine.Create("main_objectives", {
         self:next();
     end },
     { "rendezvous__update", function(self)
-        local rec = gameobject.GetRecyclerGameObject(3);
-        if rec and gameobject.GetPlayerGameObject():IsWithin(rec, 100) then
+        local rec = gameobject.GetRecycler(3);
+        if rec and gameobject.GetPlayer():IsWithin(rec, 100) then
             objective.UpdateObjective(objective_files.Rendezvous,"GREEN");
             self:next();
         end
@@ -675,11 +675,11 @@ statemachine.Create("main_objectives", {
         self:next();
     end },
     { "rtbAssumeControl.update.fix_base", function(self)
-        if(gameobject.GetPlayerGameObject():GetDistance("bdog_base") < 700) then
+        if(gameobject.GetPlayer():GetDistance("bdog_base") < 700) then
             --wait a bit, success
             local hasComm = false;
-            gameobject.GetFactoryGameObject(3):Damage(10000);
-            local oldRecy = gameobject.GetRecyclerGameObject(3);
+            gameobject.GetFactory(3):Damage(10000);
+            local oldRecy = gameobject.GetRecycler(3);
             if not oldRecy then error("Failed to get recycler") end
             mission_data.recy = copyObject(oldRecy,"bvrecx",false); --- @todo this recycler seems to lack the ability to make a constructor
             oldRecy:RemoveObject();
@@ -696,7 +696,7 @@ statemachine.Create("main_objectives", {
         end
     end },
     function (self)
-        if gameobject.GetPlayerGameObject():GetDistance("bdog_base") < 200 then
+        if gameobject.GetPlayer():GetDistance("bdog_base") < 200 then
             self:next();
         end
     end,
@@ -730,10 +730,10 @@ statemachine.Create("main_objectives", {
         if GetWhoShotMe(mission_data.scomm:GetHandle()) ~= nil then
             mission_data.spawnDef = true;
             mission_data.ktargets = {
-                gameobject.BuildGameObject("svfigh", 2, "defense_spawn"),
-                gameobject.BuildGameObject("svfigh", 2, "defense_spawn"),
-                gameobject.BuildGameObject("svtank", 2, "defense_spawn"),
-                gameobject.BuildGameObject("svltnk", 2, "defense_spawn")
+                gameobject.BuildObject("svfigh", 2, "defense_spawn"),
+                gameobject.BuildObject("svfigh", 2, "defense_spawn"),
+                gameobject.BuildObject("svtank", 2, "defense_spawn"),
+                gameobject.BuildObject("svltnk", 2, "defense_spawn")
             };
             for i,v in pairs(mission_data.ktargets) do
                 v:Patrol("defense_path");
@@ -847,7 +847,7 @@ statemachine.Create("main_objectives", {
     end,
     function (self, dtime)
         for v in gameobject.ObjectsInRange(500,"bdog_base") do
-            if(gameobject.GetPlayerGameObject() ~= v) then
+            if(gameobject.GetPlayer() ~= v) then
                 if(v:GetTeamNum() == 1) then
                     v:Damage(v:GetMaxHealth()/12 * dtime * (math.random()*1.5 + 0.5));
                 end
@@ -865,7 +865,7 @@ statemachine.Create("main_objectives", {
         local vec = GetPosition("nsdf_base");
         if not vec then error("Failed to get nsdf_base") end
         for v in gameobject.ObjectsInRange(500, vec) do
-            if(gameobject.GetPlayerGameObject() ~= v) then 
+            if(gameobject.GetPlayer() ~= v) then 
                 v:Damage(100000);
             end
         end
@@ -910,7 +910,7 @@ statemachine.Create("main_objectives", {
             self:switch(nil);
             return;
         end
-        if(gameobject.GetPlayerGameObject():GetDistance(mission_data.apcs[1]) < 50) then
+        if(gameobject.GetPlayer():GetDistance(mission_data.apcs[1]) < 50) then
             --self:success();
             objective.UpdateObjective(objective_files.bdmisn2504,"GREEN");
             --mission.Objective:Start("pickupSurvivors");
@@ -952,7 +952,7 @@ statemachine.Create("main_objectives", {
         end
         if(mission_data.apcs[1]:IsWithin(mission_data.nav,200) or 
         mission_data.apcs[2]:IsWithin(mission_data.nav,200) or 
-            gameobject.GetPlayerGameObject():IsWithin(mission_data.nav,200)) then
+            gameobject.GetPlayer():IsWithin(mission_data.nav,200)) then
             mission_data.pilots = spawnAtPath("aspilo",1,"spawn_pilots")
             for i,v in pairs(mission_data.pilots) do
                 v:SetIndependence(0);
@@ -1074,7 +1074,7 @@ stateset.Create("mission")
     --    end
     --end)
     :Add("relic_leave_too_early_fail", function(state, name)
-        if gameobject.GetPlayerGameObject():IsAlive() and gameobject.GetPlayerGameObject():GetDistance("relic_site") > 200 then
+        if gameobject.GetPlayer():IsAlive() and gameobject.GetPlayer():GetDistance("relic_site") > 200 then
             objective.RemoveObjective(objective_files.UplinkConnecting);
             objective.RemoveObjective(objective_files.UplinkTransmitting);
             objective.AddObjective(objective_files.UplinkRetry,"RED");

@@ -79,7 +79,7 @@ local function createWave(odf, path_list, follow)
     local ret = {};
     print("Spawning:" .. odf);
     for i,v in pairs(path_list) do
-        local h = gameobject.BuildGameObject(odf, 2, v);
+        local h = gameobject.BuildObject(odf, 2, v);
         if h and follow then
             h:Goto(follow);
         end
@@ -175,7 +175,7 @@ statemachine.Create("main_objectives", {
     end },
     { "check_command_passfail", function (state)
         --- @cast state RBD01_Mission_state
-        if gameobject.GetPlayerGameObject():GetDistance(state.command) < 50.0 then
+        if gameobject.GetPlayer():GetDistance(state.command) < 50.0 then
             AudioMessage(audio.inspect);
             state.nav1:SetObjectiveOff();
             objective.UpdateObjective('bdmisn211.otf',"GREEN");
@@ -250,9 +250,9 @@ statemachine.Create("main_objectives", {
         objective.AddObjective('bdmisn214.otf',"WHITE");
         objective.AddObjective('bdmisn215.otf',"WHITE");
         camera.CameraReady();
-        local apc = gameobject.BuildGameObject("avapc",2,"spawn_apc");
+        local apc = gameobject.BuildObject("avapc",2,"spawn_apc");
         if not apc then error("Failed to create APC."); end
-        local tug = gameobject.BuildGameObject("avhaul",2,"spawn_tug");
+        local tug = gameobject.BuildObject("avhaul",2,"spawn_tug");
         if not tug then error("Failed to create Tug."); end
         tug:SetMaxHealth(0); -- This is invincible.
         apc:SetMaxHealth(0); -- This is invincible.
@@ -272,9 +272,9 @@ statemachine.Create("main_objectives", {
 
         --Pickup(tug,globals.relic); -- this seems redundant
 
-        gameobject.BuildGameObject("avtank",2,"spawn_tank1"):Goto(mission_data.comm);
-        gameobject.BuildGameObject("avtank",2,"spawn_tank2"):Goto(mission_data.comm);
-        gameobject.BuildGameObject("avtank",2,"spawn_tank3"):Goto(mission_data.comm);
+        gameobject.BuildObject("avtank",2,"spawn_tank1"):Goto(mission_data.comm);
+        gameobject.BuildObject("avtank",2,"spawn_tank2"):Goto(mission_data.comm);
+        gameobject.BuildObject("avtank",2,"spawn_tank3"):Goto(mission_data.comm);
 
         state:next();
     end },
@@ -327,11 +327,11 @@ statemachine.Create("main_objectives", {
             -- if we use the alternate text we have to turn it green here
         end
         AudioMessage(audio.recycler);
-        local recy = gameobject.BuildGameObject("bvrecy22",1,"recy_spawn");
+        local recy = gameobject.BuildObject("bvrecy22",1,"recy_spawn");
         if not recy then error("Failed to create recycler."); end
-        local e1 = gameobject.BuildGameObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn") or SetVector(),20,100));
+        local e1 = gameobject.BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn") or SetVector(),20,100));
         if not e1 then error("Failed to create escort tank 1."); end
-        local e2 = gameobject.BuildGameObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn") or SetVector(),20,100));
+        local e2 = gameobject.BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn") or SetVector(),20,100));
         if not e2 then error("Failed to create escort tank 2."); end
         e1:Defend2(recy, 0);
         e2:Defend2(recy, 0);
@@ -359,11 +359,11 @@ statemachine.Create("main_objectives", {
         SetPilot(2,0);
         mission_data.nav_research:SetObjectiveOn();
         --initial wave
-        gameobject.BuildGameObject("svrecy",2,"spawn_svrecy");
-        gameobject.BuildGameObject("svmuf",2,"spawn_svmuf");
+        gameobject.BuildObject("svrecy",2,"spawn_svrecy");
+        gameobject.BuildObject("svmuf",2,"spawn_svmuf");
         --AudioMessage(audio.attack);
-        mission_data.sb_turr_1 = gameobject.BuildGameObject("sbtowe",2,"spawn_sbtowe1");
-        mission_data.sb_turr_2 = gameobject.BuildGameObject("sbtowe",2,"spawn_sbtowe2");
+        mission_data.sb_turr_1 = gameobject.BuildObject("sbtowe",2,"spawn_sbtowe1");
+        mission_data.sb_turr_2 = gameobject.BuildObject("sbtowe",2,"spawn_sbtowe2");
         --Not really creating a wave, but spawns sbspow
         createWave("sbspow",{"spawn_sbspow1","spawn_sbspow2"});
         --Start wave after a delay?
@@ -384,7 +384,7 @@ statemachine.Create("main_objectives", {
         state:next();
     end },
     function (state)
-        if gameobject.GetRecyclerGameObject(1):IsDeployed() then
+        if gameobject.GetRecycler(1):IsDeployed() then
             state:next();
         end
     end,
@@ -509,7 +509,7 @@ statemachine.Create("main_objectives", {
     end,
     function (state)
         --UpdateObjective('bdmisn2207.otf',"GREEN");
-        gameobject.GetRecyclerGameObject(2):SetObjectiveOff();
+        gameobject.GetRecycler(2):SetObjectiveOff();
 
         --mission.Objective:Start('nsdf_attack');
         state:next();
@@ -529,7 +529,7 @@ statemachine.Create("main_objectives", {
         for i,v in pairs(state.targets) do
             v:SetObjectiveOn();
         end
-        if not gameobject.GetRecyclerGameObject(2):IsAlive() then
+        if not gameobject.GetRecycler(2):IsAlive() then
             objective.UpdateObjective('bdmisn2208.otf',"GREEN"); -- this is odd, this code isn't running anymore right?
         end
         state:next();
@@ -543,20 +543,20 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        gameobject.GetRecyclerGameObject(2):SetObjectiveOn();
+        gameobject.GetRecycler(2):SetObjectiveOn();
         objective.UpdateObjective('bdmisn2208.otf',"GREEN");
         state:next();
     end,
     function (state)
         --- @cast state RBD01_Mission_state
         if areAllDead(state.targets, 2) then
-            gameobject.GetRecyclerGameObject(2):SetObjectiveOn();
+            gameobject.GetRecycler(2):SetObjectiveOn();
             objective.UpdateObjective('bdmisn2208.otf',"GREEN");
             state:next();
         end
     end,
     function (state)
-        if not gameobject.GetRecyclerGameObject(2):IsAlive() then
+        if not gameobject.GetRecycler(2):IsAlive() then
             objective.UpdateObjective("bdmisn2207.otf","GREEN");
             state:next();
         end
@@ -574,11 +574,11 @@ stateset.Create("mission")
     :Add("destoryNSDF", function (state)
         if( checkDead(mission_data.patrolUnits) ) then
             local reinforcements = {
-                gameobject.BuildGameObject("svfigh", 2, "spawn_svfigh1"),
-                gameobject.BuildGameObject("svfigh", 2, "spawn_svfigh2"),
-                gameobject.BuildGameObject("svrckt", 2, "spawn_svrckt1"),
-                gameobject.BuildGameObject("svrckt", 2, "spawn_svrckt2"),
-                gameobject.BuildGameObject("svhraz", 2, "spawn_svhraz")
+                gameobject.BuildObject("svfigh", 2, "spawn_svfigh1"),
+                gameobject.BuildObject("svfigh", 2, "spawn_svfigh2"),
+                gameobject.BuildObject("svrckt", 2, "spawn_svrckt1"),
+                gameobject.BuildObject("svrckt", 2, "spawn_svrckt2"),
+                gameobject.BuildObject("svhraz", 2, "spawn_svhraz")
             };
             -- Send the reinforcements to Nav 4.
             local nav4Pos = mission_data.nav_research:GetPosition();
@@ -593,8 +593,8 @@ stateset.Create("mission")
 
     -- this state never runs?
     --:Add("toofarfrom_recy", function (state)
-    --    if(gameobject.GetPlayerGameObject():IsAlive()) then
-    --        if gameobject.GetRecyclerGameObject(1):IsAlive() and gameobject.GetPlayerGameObject():GetDistance(gameobject.GetRecyclerGameObject(1) or SetVector()) > 700.0 then
+    --    if(gameobject.GetPlayer():IsAlive()) then
+    --        if gameobject.GetRecycler(1):IsAlive() and gameobject.GetPlayer():GetDistance(gameobject.GetRecycler(1) or SetVector()) > 700.0 then
     --            print(state.alive);
     --            FailMission(GetTime() + 5, "bdmisn22l1.des");
     --            state:off("toofarfrom_recy");
@@ -604,7 +604,7 @@ stateset.Create("mission")
     
     -- Lose conditions by GBD. No idea if i did this right, mission doesn't update otfs, or goto a next thing, it runs throughout the mission. (distance check until ordered to attack CCA base, and recy loss throughout entire mission.)
     :Add("lose_recy", function (state)
-        if not gameobject.GetRecyclerGameObject(1):IsAlive() then
+        if not gameobject.GetRecycler(1):IsAlive() then
             FailMission(GetTime() + 5, "bdmisn22l2.des");
             state:off("lose_recy");
         end

@@ -69,7 +69,7 @@ local otfs = {
 local function copyObject(handle,odf,kill)
     local transform = handle:GetTransform();
     if not transform then error("Failed to get transform of " .. handle:GetObjectiveName()) end
-    local nObject = gameobject.BuildGameObject(odf,handle:GetTeamNum(),transform);
+    local nObject = gameobject.BuildObject(odf,handle:GetTeamNum(),transform);
     if not nObject then error("Failed to build object " .. odf .. " at " .. tostring(transform)) end
     local pilot = handle:GetPilotClass() or "";
     local hp = handle:GetCurHealth() or 0;
@@ -144,7 +144,7 @@ local function spawnInFormation(formation,location,dir,units,team,seperation)
             local x = (i3-(length/2))*seperation;
             local z = i2*seperation*2;
             local pos = x*formationAlign + -z*directionVec + location;
-            local h = gameobject.BuildGameObject(units[n],team,pos);
+            local h = gameobject.BuildObject(units[n],team,pos);
             if not h then error("Failed to build object " .. units[n] .. " at " .. tostring(pos)) end
             local t = BuildDirectionalMatrix(h:GetPosition(),directionVec);
             h:SetTransform(t);
@@ -195,7 +195,7 @@ end
 function ChangeTeamAndReplace(origHandle, odfName, newTeam)
     local origXfrm = origHandle:GetTransform();
     origHandle:RemoveObject();
-	local newHandle = gameobject.BuildGameObject(odfName, newTeam, origXfrm);
+	local newHandle = gameobject.BuildObject(odfName, newTeam, origXfrm);
     return newHandle
 end
 
@@ -256,7 +256,7 @@ statemachine.Create("main_objectives", {
     end },
     { "findRelic.update.findRelic", function(state)
         --- @cast state MainObjectives09_state
-        local ph = gameobject.GetPlayerGameObject();
+        local ph = gameobject.GetPlayer();
         if ph == nil then error("Player handle is nil"); end
         if ph:GetDistance("relic_site") < 400 then
             --state:taskSucceed("findRelic");
@@ -576,7 +576,7 @@ stateset.Create("mission")
         local secure = true;
         local pp = utility.IteratorToArray(utility.IteratePath("supply_site"));
         local l = Length(pp[2] - pp[1])
-        if gameobject.GetPlayerGameObject():GetDistance(pp[1]) < l then
+        if gameobject.GetPlayer():GetDistance(pp[1]) < l then
             for obj in gameobject.ObjectsInRange(l, pp[1]) do
                 if obj:IsCraft() and obj:GetTeamNum() == 2 then
                     secure = false;

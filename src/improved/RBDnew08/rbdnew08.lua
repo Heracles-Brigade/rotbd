@@ -282,7 +282,7 @@ statemachine.Create("main_objectives", {
     end },
     { "evac.evacuate", function(state)
         --- @cast state MainObjectives08_state
-        local d1 = Length(gameobject.GetPlayerGameObject():GetPosition() - GetPosition("spawn_griggs"));
+        local d1 = Length(gameobject.GetPlayer():GetPosition() - GetPosition("spawn_griggs"));
         local d2 = Length(mission_data.key_objects.grigg:GetPosition() - GetPosition("spawn_griggs"));
         if d1 < 100 and d2 < 100 and (not state.lastComm or not state.lastComm:IsAlive()) then
             --self:taskSucceed("evacuate");
@@ -307,7 +307,7 @@ statemachine.Create("grigg", {
         --- @cast state Grigg07_state
         local dead = countDead(mission_data.key_objects.powers);
         if dead >= 1 then
-            mission_data.key_objects.grigg = gameobject.BuildGameObject("avtank", 1, "spawn_griggs");
+            mission_data.key_objects.grigg = gameobject.BuildObject("avtank", 1, "spawn_griggs");
             mission_data.key_objects.grigg:SetObjectiveName("Pvt. Grigg");
             mission_data.key_objects.grigg:SetObjectiveOn();
             --local s = mission.TaskManager:sequencer(mission_data.key_objects.grigg);
@@ -430,7 +430,7 @@ statemachine.Create("avoidBase", {
     end },
     { "update", function (state)
         --- @cast state AvoidBase08_state
-        local d = gameobject.GetPlayerGameObject():GetDistance("base_warning");
+        local d = gameobject.GetPlayer():GetDistance("base_warning");
         local l = Length(GetPosition("base_warning", 1) - GetPosition("base_warning", 0));
         if not state.warning and d < l then
             --self:taskFail("warning");
@@ -442,7 +442,7 @@ statemachine.Create("avoidBase", {
             objective.UpdateObjective("rbd0804.otf","WHITE");
         end
 
-        local d2 = gameobject.GetPlayerGameObject():GetDistance("base");
+        local d2 = gameobject.GetPlayer():GetDistance("base");
         local l2 = Length(GetPosition("base",1) - GetPosition("base", 0));
         if d2 < l2 then
             objective.UpdateObjective("rbd0804.otf","RED");
@@ -523,7 +523,7 @@ hook.Add("Start", "Mission:Start", function ()
     --introCinematic:start();
     --avoidBase:start();
     for i = 1, 6 do
-        gameobject.BuildGameObject("avartl", 2, ("spawn_artl%d"):format(i));
+        gameobject.BuildObject("avartl", 2, ("spawn_artl%d"):format(i));
     end
     SetPathLoop("walker1_path");
     SetPathLoop("walker2_path");

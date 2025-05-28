@@ -110,7 +110,7 @@ local function spawnInFormation(formation,location,dir,units,team,seperation)
             local x = (i3-(length/2))*seperation;
             local z = i2*seperation*2;
             local pos = x*formationAlign + -z*directionVec + location;
-            local h = gameobject.BuildGameObject(units[n],team,pos);
+            local h = gameobject.BuildObject(units[n],team,pos);
             if not h then error("Failed to build object " .. units[n] .. " at " .. tostring(pos)) end
             local t = BuildDirectionalMatrix(h:GetPosition(),directionVec);
             h:SetTransform(t);
@@ -219,7 +219,7 @@ statemachine.Create("main_objectives", {
         local pp = utility.IteratorToArray(utility.IteratePath("bdog_base"));
         pp[1].y = 0;
         pp[2].y = 0;
-        if gameobject.GetPlayerGameObject():GetDistance(pp[1]) < Length(pp[2]-pp[1]) then
+        if gameobject.GetPlayer():GetDistance(pp[1]) < Length(pp[2]-pp[1]) then
             state:next();
             return statemachine.FastResult(true);
         end
@@ -265,7 +265,7 @@ statemachine.Create("main_objectives", {
     { "build_launchpad.order_to_build.update", function(state)
         --- @cast state MainObjectives10_state
         
-        local const = gameobject.GetConstructorGameObject();
+        local const = gameobject.GetConstructor();
         if not const then error("Constructor not found") end
         local d1 = GetPosition("launchpad");
         local ctask = const:GetCurrentCommand();
@@ -363,7 +363,7 @@ statemachine.Create("main_objectives", {
             --self:startTask("escort_transports");
             state:next();
         else
-            if not gameobject.GetFactoryGameObject():IsAlive() then
+            if not gameobject.GetFactory():IsAlive() then
                 --self:taskFail("build_transports","factory");
                 --self:fail("factory");
                 objective.UpdateObjective("rbd1003.otf","RED");
@@ -413,7 +413,7 @@ statemachine.Create("factory_spawn", {
         end
     end },
     { "update", function(state)
-        local f = gameobject.BuildGameObject("bvmuf30",1,"spawn_factory");
+        local f = gameobject.BuildObject("bvmuf30",1,"spawn_factory");
         --local s = mission.TaskManager:sequencer(f);
         --s:queue2("Goto","factory_path");
         --s:queue(AiCommand["GO_TO_GEYSER"]);
@@ -433,7 +433,7 @@ statemachine.Create("factory_spawn", {
         state:next();
     end },
     { "alive_monitor", function(state)
-        if not gameobject.GetFactoryGameObject():IsAlive() then
+        if not gameobject.GetFactory():IsAlive() then
             FailMission(GetTime()+5.0,fail_des["factory"]);
             state:switch(nil);
         end
@@ -612,14 +612,14 @@ statemachine.Create("wave_orders", {
 stateset.Create("mission")
     :Add("main_objectives", stateset.WrapStateMachine("main_objectives"))
     :Add("protectRecycler", function(state, name)
-        local playerRecycler = gameobject.GetRecyclerGameObject();
+        local playerRecycler = gameobject.GetRecycler();
         if not playerRecycler or not playerRecycler:IsAlive() then
             FailMission(GetTime()+5.0,fail_des.recycler);
             state:off(name, true);
         end
     end)
     :Add("protectConstructor", function(state, name)
-        local playerCons = gameobject.GetConstructorGameObject();
+        local playerCons = gameobject.GetConstructor();
         if not playerCons or not playerCons:IsAlive() then
             objective.UpdateObjective("rbd1002.otf", "RED");
             FailMission(GetTime()+5.0,fail_des.const);
@@ -700,7 +700,7 @@ hook.Add("Producer:BuildComplete", "Mission:ProducerBuildComplete", function (ob
     if data and data.name then
         if data.name == "_lpad_done" then
             mission_data.key_objects.lpad = object;
-            gameobject.GetConstructorGameObject():Stop(0);
+            gameobject.GetConstructor():Stop(0);
             HideCockpitTimer();
             mission_data.mission_states:on("protectLPad");
             --self:taskSucceed("build_lpad"); -- assume true when mission_data.key_objects.lpad is not nil
@@ -728,7 +728,7 @@ hook.Add("Start", "Mission:Start", function ()
     n2:SetObjectiveName("Dropship build site");
 
     -- Move player into the air
-    local player = gameobject.GetPlayerGameObject();
+    local player = gameobject.GetPlayer();
     if not player then error("Failed to get player") end
     local p = player:GetPosition();
     if not p then error("Failed to get player position") end
@@ -776,13 +776,13 @@ hook.Add("Update", "Mission:Update", function (dtime, ttime)
 
 
     --cheating for testing
-    local cons = gameobject.GetConstructorGameObject();
+    local cons = gameobject.GetConstructor();
     if cons and cons:IsAlive() then cons:SetCurHealth(cons:GetMaxHealth()); end
-    local rec = gameobject.GetRecyclerGameObject();
+    local rec = gameobject.GetRecycler();
     if rec and rec:IsAlive() then rec:SetCurHealth(rec:GetMaxHealth()); end
-    local fac = gameobject.GetFactoryGameObject();
+    local fac = gameobject.GetFactory();
     if fac and fac:IsAlive() then fac:SetCurHealth(fac:GetMaxHealth()); end
-    local armory = gameobject.GetArmoryGameObject();
+    local armory = gameobject.GetArmory();
     if armory and armory:IsAlive() then armory:SetCurHealth(armory:GetMaxHealth()); end
     local lpad = mission_data.key_objects.lpad;
     if lpad and lpad:IsAlive() then lpad:SetCurHealth(lpad:GetMaxHealth()); end
