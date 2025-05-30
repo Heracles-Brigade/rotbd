@@ -15,6 +15,7 @@ debugprint("_audio_dev Loading");
 local objective = require("_objective");
 local utility = require("_utility");
 local hook = require("_hook");
+local camera = require("_camera");
 
 local Original = {
     RepeatAudioMessage = _G.RepeatAudioMessage,
@@ -64,7 +65,6 @@ local function IsFakeAudioMessagePlaying()
 end
 
 --- Repeat the last audio message.
---- @function RepeatAudioMessage
 function RepeatAudioMessage()
     if utility.istable(lastAudio) then
         --- @cast lastAudio DummyAudioMessage
@@ -101,7 +101,6 @@ end
 --- Returns an audio message handle.
 --- @param filename string
 --- @return AudioMessage
---- @function AudioMessage
 function AudioMessage(filename)
     local fileExists = UseItem(filename) and true or false;
     if fileExists then
@@ -122,6 +121,7 @@ function AudioMessage(filename)
             content = cleanContent,
             time = length,
             end_time = world_ttime + length,
+            camera = camera.InCamera(),
         };
         PlayFakeAudioMessage(lastAudio);
         --- @cast lastAudio AudioMessage
@@ -133,7 +133,6 @@ end
 --- Returns true if the audio message has stopped. Returns false otherwise.
 --- @param msg AudioMessage|DummyAudioMessage
 --- @return boolean
---- @function IsAudioMessageDone
 function IsAudioMessageDone(msg)
     if utility.istable(msg) then
         --- @cast msg DummyAudioMessage
@@ -156,7 +155,6 @@ end
 
 --- Returns true if <em>any</em> audio message is playing. Returns false otherwise.
 --- @return boolean
---- @function IsAudioMessagePlaying
 function IsAudioMessagePlaying()
     return IsFakeAudioMessagePlaying() or Original.IsAudioMessagePlaying();
 end
@@ -169,7 +167,11 @@ hook.Add("Update", "FakeAudioMessage.Update", function(dtime, ttime)
                 objective.RemoveObjective(msg.wav);
                 --messages[msg.wav] = nil;
             else
-                objective.UpdateObjective(msg.wav, "GREY", nil, "["..tostring(math.floor(msg.end_time - world_ttime)).."] "..msg.content);
+                if camera.InCamera() then
+                    msg.camera = true;
+                    msg.end_time = msg.end_time + dtime; -- bump the end time if the camera is active
+                end
+                objective.UpdateObjective(msg.wav, "GREY", nil, (msg.camera and "[Delayed]" or "").."["..tostring(math.floor(msg.end_time - world_ttime)).."] "..msg.content);
             end
         end
     end
@@ -190,3 +192,4 @@ end);
 --- @field content string
 --- @field time number
 --- @field end_time number
+--- @field camera boolean? If true, the camera was active and we were delayed

@@ -1,11 +1,72 @@
---[[
-	Contributors:
-	 - Herp McDerperson
-	 - Seqan
-	 - GBD
-	 - Vemahk
-	 - Janne
---]]
+--- Rise of the Black Dogs
+---
+--- [2] Covert Ops
+--- Original Mission:
+--- [3] Exploratory
+---
+--- World: Mars (Sol IV)
+--- Map Data: NEW (is this a new map or an old stock one?)
+---
+--- Authors:
+--- * Herp McDerperson
+--- * Seqan
+--- * GBD
+--- * Vemahk
+--- * Janne
+--- * John "Nielk1" Klein
+---
+--- High Level Objectives
+--- * Explore Mars base site
+--- * Uncover information on Mammoth
+---
+--- Events
+--- 
+--- Information pieced together from CCA outposts on the moon reveals that the information gleaned from
+--- the armory was being used alongside research gained during the Fury project in the development of a
+--- CCA super heavy tank in the Cydonia region of Mars under the codename "Mammoth". Desperate to prevent
+--- the CCA from completing this weapon, and with the majority of NSDF forces on Titan, Shaw orders a wing
+--- of his men to redeploy to Mars to put a stop to the project.
+--- 
+--- With the information on the project's location vague and their numbers limited the Black Dogs have little
+--- choice but to deploy a single soldier to infiltrate the area and locate the site of the project’s
+--- development. Cobra One is deployed in a stolen CCA IEVA suit to spy on the operation.
+--- 
+--- Cobra One's progress is hindered by a number of satellite towers around the area; by approaching these
+--- he risks exposure should the tower notice him and attempt to contact him. For this reason he is instructed
+--- to spend as little time near them as possible.
+--- 
+--- The only set of coordinates the Black Dogs discovered are not specific so Cobra One's first target is the
+--- nearest building of potential interest: a CCA hanger. The stolen suit connects to the radio automatically
+--- and reveals that the Mammoth is protected by several layers of security; of most immediate concern are
+--- tight access restrictions allowing only utility vehicles transporting cargo and personnel. Shaw tells
+--- Cobra One to hijack a supply shipment from a nearby outpost, so Cobra One makes their way there on foot.
+--- 
+--- When Cobra One arrives at the outpost they are able to steal an empty tug without being detected. Now that
+--- they have an authorised vehicle their next problem is the protective forcefield projected around the Mammoth
+--- and controlled from another outpost. The Black Dogs deploy an armory nearby and Shaw has Cobra One destroy
+--- the outpost using a Day Wrecker.
+--- 
+--- With the control tower destroyed Cobra One is able to proceed to the Mammoth. Getting close to it is enough
+--- to gather a technical readout but the transmission back to Shaw is detected by the CCA and a large attack
+--- squadron is deployed to eliminate the source and Cobra One is forced to flee to an evacuation point.
+--- 
+--- The stolen data will allow the Black Dogs to construct a Mammoth of their own once they have acquired the
+--- prototype.
+---
+--- Notes
+--- Standard CCA sniper rile for this mission. (not currently?)
+--- Satellite towers do not detect player for 30s within 100m, or two minutes within 200m. (not currently, clear up how this should work exactly?)
+--- Player receives burst of Russian speech if they are detected by a Satellite Tower (not currently?)
+--- Several tugs and APCs travelling between the Mammoth site and various outposts around the map
+--- Stolen tug to be empty prior to player's arrival (no pilot? yeah that's how it is)
+--- Off-map armory to be used to bomb the shield generator control tower (it's actually on-map, but out of the area you would play)
+---
+--- Issues (Remove these are they are fixed and move relevent information into Notes)
+--- Treatment says "Cydonia" but we're not using that map anymore are we? Hadley needs to comment
+--- The detection by the satellite towers is really slow, consider changes to this process to either be shorter or involve a "noticed" concept
+--- The range on the first objective to investigate the mammoth has been reduced so it no longer trips while the mamoth is still outside of vis-range, but this still feels wrong.  Maybe the tug should need to actually approach the mammoth to see the shield and/or need to tug materials to the base to justify its presence?
+--- For some reason they player has 100 sniper shots.  This doesn't make sense, especially since using it will lose the mission.
+--- steal lines from Flying Solo for the hailing
 
 require("_printfix");
 

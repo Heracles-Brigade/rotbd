@@ -1,5 +1,7 @@
 -- Battlezone: Rise of the Black Dogs Redux, Mission 3 "The Mammoth Project" recoded by Vemahk and Seqan based off GBD's 1:1 script
 
+-- for some reason the backup objective of going to the fake after driving the real mammoth didn't work, look into why
+-- flash bang and explosion of the fake happened late
 
 
 require("_printfix");
