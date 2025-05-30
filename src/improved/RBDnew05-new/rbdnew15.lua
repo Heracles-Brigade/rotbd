@@ -1,5 +1,13 @@
 --Combination of The Last Stand and Evacuate Venus
 
+-- relic doesn't go enemy right away when voiceover starts, meaning it takes a while before you shoot at it
+-- consider making all friendly units that are attacking the mammoth, STOP ATTACKING THE MAMMOTH, once it is shown to be impossible to damage
+-- Constructor is not given to player when they go to base, why?
+-- recycler cannot make constructor or factory, why?
+-- why does the armory have a DW that cost 200, why not remove it?
+-- In playtest camera somehow targeted non-existing object, despite code that says to point at each alive in sequence.
+-- in a playtest, a light tank failed to attack an Lpower becaused it was being gang raped by its own allies following it, add timer to auto destroy everything is an emergency backup
+-- Camera sequence only advances when the targets of the sequence die, when the player removes all combat units from the base due to knowing it's going to be destroyed, the attacker doesn't die, and thus the mission softlocks in a camera sequence.
 
 require("_printfix");
 
