@@ -6,7 +6,7 @@
 -- recycler cannot make constructor or factory, why?
 -- why does the armory have a DW that cost 200, why not remove it?
 -- In playtest camera somehow targeted non-existing object, despite code that says to point at each alive in sequence.
--- in a playtest, a light tank failed to attack an Lpower becaused it was being gang raped by its own allies following it, add timer to auto destroy everything is an emergency backup
+-- in a playtest, a light tank failed to attack an Lpower becaused it was being swarmed by its own allies following it, add timer to auto destroy everything is an emergency backup
 -- Camera sequence only advances when the targets of the sequence die, when the player removes all combat units from the base due to knowing it's going to be destroyed, the attacker doesn't die, and thus the mission softlocks in a camera sequence.
 
 require("_printfix");
