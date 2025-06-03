@@ -5,8 +5,12 @@
         "src/scripts/": true,
         "src/mp/": true,
         "src/baseline/": true,
-        "src/Assets/": true,
+        //"src/Assets/": true,
         "deps/**/temp/": true
     },
-    "Lua.runtime.version": "Lua 5.1"
+    "Lua.runtime.version": "Lua 5.1",
+    "Lua.workspace.library": [
+        "deps/BZ98R-Advanced-Lua-API/dev/scriptutils.lua",
+        "deps/BZ98R-Advanced-Lua-API/baked",
+    ]
 }

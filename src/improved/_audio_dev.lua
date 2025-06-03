@@ -185,6 +185,8 @@ end, function(_lastAudio, _world_ttime, _messages)
     messages = _messages;
 end);
 
+debugprint("_audio_dev Loaded");
+
 --- @class DummyAudioMessage
 --- @field dummy_audio boolean
 --- @field wav string
