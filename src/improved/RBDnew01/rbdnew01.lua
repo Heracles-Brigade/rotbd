@@ -869,7 +869,7 @@ hook.Add("Cheat", "Mission:Cheat", function (cheat)
         local machine_state = mission_data.mission_states.StateMachines.main_objectives;
         --- @cast machine_state StateMachineIter
         machine_state:SecondsHavePassed(); -- clear timer in case we were in one
-        --CameraFinish(); -- clearing a camera when there is none will crash
+        camera.CameraFinish(); -- protected camera exit that won't crash
         machine_state:next(); -- move to the next state
     end
 end);
@@ -877,7 +877,7 @@ end);
 
 
 --- @class RotBD01_MissionState : StateMachineIter
---- \@field recy GameObject?
+--- @field recy GameObject?
 --- \@field nav1 GameObject?
 --- \@field command GameObject?
 --- \@field nav_solar1 GameObject?
