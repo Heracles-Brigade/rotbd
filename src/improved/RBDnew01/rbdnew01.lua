@@ -56,18 +56,17 @@
 --- Notes
 --- The Command Tower should be mission critical for the duration of the mission.
 --- CCA research base uses Blast Cannon equipt Gun Towers.
---- Relic is Hadean, suggest using the hocrys model
+--- Relic is Hadean, using new hbdata object that is an obdata edited to look like an hocrys.
 ---
 --- Issues (Remove these are they are fixed and move relevent information into Notes)
---- Relic is currently obdata3 artifact, confirm with Hadley if changes are needed.
 --- Should the tapped communications be used to hint during the mission at various infomation?
 --- Second part of the mission feels like a tutorial beacuse it guides you through making scavs and other pointless elements
---- Cafeteria in the CCA Research base should be renamed to "Research Facility" and be made unkillable or be a trigger for loss
 --- Look into Black Dog recycler's build list to determine if it's correct
 --- Look at NSDF reinforcement spawns for correct location and makeup, currently Sasquatches trip over hover-units too in the cutscene
 --- There are various ways to crash the mission when losing, such as player death.
 --- The current factory build list includes a scav... and its order will give people a stroke due to muscle memory.
 --- Killing the recycler before the guntowers will break the mission right now, a nilcheck will fix that, but the logic is still confusing.
+--- Establish a base at Nav 4 is an odd objective, since the nav, while in slot 4 if you didn't make other navs, is not called "Nav 4".
 
 require("_printfix");
 
@@ -833,17 +832,17 @@ hook.Add("Update", "Mission:Update", function (dtime, ttime)
 end);
 
 hook.Add("NavManager:NavSwap", "Mission:NavManager_NavSwap", function (old, new)
-    if mission_data.mission_states.StateMachines.main_objectives.nav1 == old then
-        mission_data.mission_states.StateMachines.main_objectives.nav1 = new;
+    if mission_data.key_objects.nav1 == old then
+        mission_data.key_objects.nav1 = new;
     end
-    if mission_data.mission_states.StateMachines.main_objectives.nav_solar1 == old then
-        mission_data.mission_states.StateMachines.main_objectives.nav_solar1 = new;
+    if mission_data.key_objects.nav_solar1 == old then
+        mission_data.key_objects.nav_solar1 = new;
     end
-    if mission_data.mission_states.StateMachines.main_objectives.nav_solar2 == old then
-        mission_data.mission_states.StateMachines.main_objectives.nav_solar2 = new;
+    if mission_data.key_objects.nav_solar2 == old then
+        mission_data.key_objects.nav_solar2 = new;
     end
-    if mission_data.nav_research == old then
-        mission_data.nav_research = new;
+    if mission_data.key_objects.nav_research == old then
+        mission_data.key_objects.nav_research = new;
     end
 end);
 

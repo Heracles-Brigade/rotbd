@@ -1,0 +1,8 @@
+[GameObjectClass]
+baseName = "hocrys"
+classLabel = "artifact"
+scrapCost = 0
+scrapValue = 0
+maxHealth = 7000
+maxAmmo = 0
+unitName = "Data Disk"
