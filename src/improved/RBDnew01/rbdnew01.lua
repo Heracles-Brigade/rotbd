@@ -63,7 +63,7 @@
 --- Second part of the mission feels like a tutorial beacuse it guides you through making scavs and other pointless elements
 --- Look into Black Dog recycler's build list to determine if it's correct
 --- Look at NSDF reinforcement spawns for correct location and makeup, currently Sasquatches trip over hover-units too in the cutscene
---- There are various ways to crash the mission when losing, such as player death.
+--- There are various ways to crash the mission when losing, such as player death. - might be fixed
 --- The current factory build list includes a scav... and its order will give people a stroke due to muscle memory.
 --- Killing the recycler before the guntowers will break the mission right now, a nilcheck will fix that, but the logic is still confusing.
 --- Establish a base at Nav 4 is an odd objective, since the nav, while in slot 4 if you didn't make other navs, is not called "Nav 4".
@@ -350,7 +350,8 @@ statemachine.Create("main_objectives", {
     end },
     { "check_command_passfail", function (state)
         --- @cast state RotBD01_MissionState
-        if gameobject.GetPlayer():GetDistance(mission_data.key_objects.command_tower) < 50.0 then
+        local player = gameobject.GetPlayer();
+        if player and player:GetDistance(mission_data.key_objects.command_tower) < 50.0 then
             AudioMessage(constants.audio.inspect);
             mission_data.key_objects.nav1:SetObjectiveOff();
             objective.UpdateObjective(constants.objectives.bdmisn211, C.Green);
