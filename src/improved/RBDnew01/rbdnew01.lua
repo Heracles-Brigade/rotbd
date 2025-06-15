@@ -65,7 +65,6 @@
 --- Look at NSDF reinforcement spawns for correct location and makeup, currently Sasquatches trip over hover-units too in the cutscene
 --- There are various ways to crash the mission when losing, such as player death. - might be fixed
 --- The current factory build list includes a scav... and its order will give people a stroke due to muscle memory.
---- Killing the recycler before the guntowers will break the mission right now, a nilcheck will fix that, but the logic is still confusing.
 --- Establish a base at Nav 4 is an odd objective, since the nav, while in slot 4 if you didn't make other navs, is not called "Nav 4".
 
 require("_printfix");
@@ -674,10 +673,13 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        --UpdateObjective('bdmisn2207.otf', C.Green);
-        gameobject.GetRecycler(2):SetObjectiveOff(); --- @todo had a nil error here
+		--UpdateObjective('bdmisn2207.otf', C.Green);
+				
+		if gameobject.GetRecycler(2):IsAlive() then
+			gameobject.GetRecycler(2):SetObjectiveOff(); --- @todo had a nil error here
+		end
 
-        --mission.Objective:Start('nsdf_attack');
+		--mission.Objective:Start('nsdf_attack');
         state:next();
     end,
     { "nsdf_attack", function (state)
@@ -710,14 +712,18 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        gameobject.GetRecycler(2):SetObjectiveOn();
+		if gameobject.GetRecycler(2):IsAlive() then
+			gameobject.GetRecycler(2):SetObjectiveOn();
+		end
         objective.UpdateObjective(constants.objectives.bdmisn2208, C.Green);
         state:next();
     end,
     function (state)
         --- @cast state RotBD01_MissionState
         if areAllDead(state.targets, 2) then
-            gameobject.GetRecycler(2):SetObjectiveOn(); --- @todo failed here
+			if gameobject.GetRecycler(2):IsAlive() then
+				gameobject.GetRecycler(2):SetObjectiveOn(); --- @todo failed here
+			end
             objective.UpdateObjective(constants.objectives.bdmisn2208, C.Green);
             state:next();
         end
