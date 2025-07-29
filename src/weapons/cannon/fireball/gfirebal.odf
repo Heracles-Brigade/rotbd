@@ -1,7 +1,7 @@
 [WeaponClass]
 classLabel = "cannon"
 ordName = "firebal"
-wpnName = "Firebal"
+wpnName = "Fireball"
 fireSound = "gpopp00.wav"
 wpnReticle = "gsandbag"
 wpnPriority = 6
