@@ -120,36 +120,87 @@ local function choose(...)
     return t[rn];
 end
 
-local audio = {
-	intro = "rbdnew0301.wav",
-	commwarn = "rbdnew0301W.wav",
-	commclear = "rbdnew0302W.wav",
-	inspect = "rbdnew0302.wav",
-	tug = "rbdnew0303.wav",
-	first_a = "rbdnew0304.wav",
-	dayw = "rbdnew0305.wav",
-	second_a = "rbdnew0306.wav",
-	transint = "",
-	backinrange = "",
-	flee = "rbdnew0307.wav",
-	win = "rbdnew0308.wav",
-	lose1 = "rbdnew0301L.wav", --Mammoth Destroyed/sniped
-	lose2 = "rbdnew0302L.wav", --Failed to extract on time
-	lose3 = "rbdnew0303L.wav", --Detected, loser
-	lose4 = "rbdnew0304L.wav", --Evidently you can't aim Day Wreckers
-	lose5 = "rbdnew0305L.wav" --Why didn't you make a Day Wrecker?
-}
+--- @class RBD03_Constants_Audio
+--- @field intro string
+--- @field commwarn string
+--- @field commclear string
+--- @field inspect string
+--- @field tug string
+--- @field first_a string
+--- @field dayw string
+--- @field second_a string
+--- @field transint string
+--- @field backinrange string
+--- @field flee string
+--- @field win string
+--- @field lose1 string
+--- @field lose2 string
+--- @field lose3 string
+--- @field lose4 string
+--- @field lose5 string
 
-local objectives = {
-	Detection = "rbdnew0300.otf",
-	Hanger = "rbdnew0301.otf",
-	Tug = "rbdnew0303.otf",
-	Mammoth1 = "rbdnew0302.otf",
-	Control = "rbdnew0304.otf",
-	Mammoth2 = "rbdnew0305.otf",
-	TranStart = "rbdnew0306.otf",
-	TranFin = "rbdnew0307.otf",
-	Extract = "rbdnew0308.otf"
+--- @class RBD03_Constants_Objectives
+--- @field Detection string
+--- @field Hanger string
+--- @field Tug string
+--- @field Mammoth1 string
+--- @field Control string
+--- @field Mammoth2 string
+--- @field TranStart string
+--- @field TranFin string
+--- @field Extract string
+
+--- @class RBD03_Constants_Debriefing
+--- @field rbdnew03l1 string
+--- @field rbdnew03l2 string
+--- @field rbdnew03l3 string
+--- @field rbdnew03l4 string
+--- @field rbdnew03l5 string
+--- @field rbdnew03wn string
+
+--- @class RBD03_Constants
+--- @field audio RBD03_Constants_Audio
+--- @field objectives RBD03_Constants_Objectives
+--- @field debriefing RBD03_Constants_Debriefing
+local constants = {
+	audio = {
+		intro = "rbdnew0301.wav",
+		commwarn = "rbdnew0301W.wav",
+		commclear = "rbdnew0302W.wav",
+		inspect = "rbdnew0302.wav",
+		tug = "rbdnew0303.wav",
+		first_a = "rbdnew0304.wav",
+		dayw = "rbdnew0305.wav",
+		second_a = "rbdnew0306.wav",
+		transint = "",
+		backinrange = "",
+		flee = "rbdnew0307.wav",
+		win = "rbdnew0308.wav",
+		lose1 = "rbdnew0301L.wav", --Mammoth Destroyed/sniped
+		lose2 = "rbdnew0302L.wav", --Failed to extract on time
+		lose3 = "rbdnew0303L.wav", --Detected, loser
+		lose4 = "rbdnew0304L.wav", --Evidently you can't aim Day Wreckers
+		lose5 = "rbdnew0305L.wav" --Why didn't you make a Day Wrecker?
+	},
+	objectives = {
+		Detection = "rbdnew0300.otf",
+		Hanger = "rbdnew0301.otf",
+		Tug = "rbdnew0303.otf",
+		Mammoth1 = "rbdnew0302.otf",
+		Control = "rbdnew0304.otf",
+		Mammoth2 = "rbdnew0305.otf",
+		TranStart = "rbdnew0306.otf",
+		TranFin = "rbdnew0307.otf",
+		Extract = "rbdnew0308.otf"
+	},
+	debriefing = {
+		rbdnew03l1 = "rbdnew03l1.des",
+		rbdnew03l2 = "rbdnew03l2.des",
+		rbdnew03l3 = "rbdnew03l3.des",
+		rbdnew03l4 = "rbdnew03l4.des",
+		rbdnew03l5 = "rbdnew03l5.des",
+		rbdnew03wn = "rbdnew03wn.des"
+	}
 }
 
 
@@ -273,9 +324,9 @@ end);
 
 
 local function FailByDetection()
-	AudioMessage(audio.lose4);
-	FailMission(GetTime() + 5.0, "rbdnew03l4.des"); -- cover blown
-	objective.UpdateObjective(objectives.Detection, "RED");
+	AudioMessage(constants.audio.lose4);
+	FailMission(GetTime() + 5.0, constants.debriefing.rbdnew03l4); -- cover blown
+	objective.UpdateObjective(constants.objectives.Detection, "RED");
 end
 
 --- @class scrap_field_filler_state_03 : StateMachineIter
@@ -363,7 +414,7 @@ statemachine.Create("main_objectives", {
 		
 		-- Pre-play setup complete. Time to start the shit.
 		camera.CameraReady();
-		AudioMessage(audio.intro);
+		AudioMessage(constants.audio.intro);
 
 		mission_data.mission_states
 			:on("detection_check_perceived_team")
@@ -396,8 +447,8 @@ statemachine.Create("main_objectives", {
 			SpawnNav(1);
 			state:next();
 
-			objective.AddObjective(objectives.Detection, "WHITE");
-			objective.AddObjective(objectives.Hanger, "WHITE");
+			objective.AddObjective(constants.objectives.Detection, "WHITE");
+			objective.AddObjective(constants.objectives.Hanger, "WHITE");
 
 			--UpdateObjectives();
 			mission_data.mission_states
@@ -419,22 +470,22 @@ statemachine.Create("main_objectives", {
 	end },
 	{ "hanger_info", function (state)
 		if mission_data.key_objects.Hangar:IsAlive() and mission_data.key_objects.Player and mission_data.key_objects.Player:GetDistance(mission_data.key_objects.Hangar) < 50.0 then
-			AudioMessage(audio.inspect);
+			AudioMessage(constants.audio.inspect);
 			SpawnNav(2);
-			objective.RemoveObjective(objectives.Hanger);
+			objective.RemoveObjective(constants.objectives.Hanger);
 			--UpdateObjectives();
 			state:next();
 
 			mission_data.mission_states:off("hanger_still_alive");
-			objective.AddObjective(objectives.Tug, "WHITE");
+			objective.AddObjective(constants.objectives.Tug, "WHITE");
 		end
 	end },
 	{ "aquire_tug", function (state)
 		if mission_data.key_objects.Player == mission_data.key_objects.Tug then
-			objective.UpdateObjective(objectives.Tug, "GREEN");
-			objective.AddObjective(objectives.Mammoth1, "WHITE");
+			objective.UpdateObjective(constants.objectives.Tug, "GREEN");
+			objective.AddObjective(constants.objectives.Mammoth1, "WHITE");
 			--UpdateObjectives();
-			AudioMessage(audio.tug);
+			AudioMessage(constants.audio.tug);
 			SpawnNav(3)
 			state:next();
 		end
@@ -445,10 +496,10 @@ statemachine.Create("main_objectives", {
 			mission_data.playerSLF = gameobject.BuildObject("bvslf", 1, "NukeSpawn", 1);
 			SetMaxScrap(1, 20);
 			SetScrap(1, 20);
-			AudioMessage(audio.first_a);
+			AudioMessage(constants.audio.first_a);
 			SpawnNav(4);
-			objective.UpdateObjective(objectives.Mammoth1, "GREEN");
-			objective.AddObjective(objectives.Control, "WHITE");
+			objective.UpdateObjective(constants.objectives.Mammoth1, "GREEN");
+			objective.AddObjective(constants.objectives.Control, "WHITE");
 			--UpdateObjectives();
 			state:next();
 		end
@@ -484,15 +535,15 @@ statemachine.Create("main_objectives", {
 				if mission_data.armoryTarget == mission_data.key_objects.ControlTower then
 					mission_data.impactPending = true;
 					state:next();
-					objective.UpdateObjective(objectives.Control, color.ColorLabel.Yellow);
+					objective.UpdateObjective(constants.objectives.Control, color.ColorLabel.Yellow);
 					--UpdateObjectives(); --yellow
 					-- there is no yellow objective, old comment?
 				else
 
-					AudioMessage(audio.lose4);
-					FailMission(GetTime() + 5.0, "rbdnew03l5.des");
+					AudioMessage(constants.audio.lose4);
+					FailMission(GetTime() + 5.0, constants.debriefing.rbdnew03l5);
 					mission_data.wreckerTargetMissed = true;
-					objective.UpdateObjective(objectives.Control, "RED");
+					objective.UpdateObjective(constants.objectives.Control, "RED");
 					--UpdateObjectives(); --red
 					-- there is no objective for this, old comment?
 					state:switch(nil);
@@ -512,20 +563,20 @@ statemachine.Create("main_objectives", {
 				mission_data.mission_states:off("mammoth_shield");
 				mission_data.impactPending = false;
 				
-				objective.UpdateObjective(objectives.Control, "GREEN");
+				objective.UpdateObjective(constants.objectives.Control, "GREEN");
 
 				--UpdateObjectives(); -- green
-				AudioMessage(audio.dayw);
+				AudioMessage(constants.audio.dayw);
 				mission_data.key_objects.ObjectiveNav:SetObjectiveOff();
 				mission_data.key_objects.Mammoth:SetObjectiveOn();
 				mission_data.key_objects.Mammoth:SetObjectiveName("Mammoth");
 				SpawnArmy();
 				state:next();
-				objective.AddObjective(objectives.Mammoth2, "WHITE");
+				objective.AddObjective(constants.objectives.Mammoth2, "WHITE");
 			-- else
 				-- if not M.wreckerTargetMissed == true then
-					-- AudioMessage(audio.lose4);
-					-- FailMission(GetTime() + 5.0, "rbdnew03l5.des");
+					-- AudioMessage(constants.audio.lose4);
+					-- FailMission(GetTime() + 5.0, constants.debriefing.rbdnew03l5);
 					-- M.wreckerTargetMissed = true;
 					-- UpdateObjectives(); --red
 				-- end
@@ -542,14 +593,14 @@ statemachine.Create("main_objectives", {
 				:off("detection_check_radar_tower_1")
 				:off("detection_check_radar_tower_2")
 				:off("detection_check_radar_tower_3");
-			objective.RemoveObjective(objectives.Detection); -- should this be done sooner?
-			objective.ReplaceObjective(objectives.Mammoth2, objectives.TranStart, "WHITE"); -- should this be done sooner?
+			objective.RemoveObjective(constants.objectives.Detection); -- should this be done sooner?
+			objective.ReplaceObjective(constants.objectives.Mammoth2, constants.objectives.TranStart, "WHITE"); -- should this be done sooner?
 			--UpdateObjectives();
 			if not mission_data.MammothReachedBefore then
-				AudioMessage(audio.second_a);
+				AudioMessage(constants.audio.second_a);
 				mission_data.MammothReachedBefore = true;
 			else
-				AudioMessage(audio.backinrange)
+				AudioMessage(constants.audio.backinrange)
 			end
 			state:next();
 		end
@@ -560,19 +611,19 @@ statemachine.Create("main_objectives", {
 		elseif mission_data.key_objects.Player:GetDistance(mission_data.key_objects.Mammoth) > 35 then
 			state:SecondsHavePassed();
 			--UpdateObjectives();
-			AudioMessage(audio.transint);
-			objective.ReplaceObjective(objectives.TranStart, objectives.Mammoth2, "WHITE");
+			AudioMessage(constants.audio.transint);
+			objective.ReplaceObjective(constants.objectives.TranStart, constants.objectives.Mammoth2, "WHITE");
 			state:switch("reach_mammoth_2");
 		end
 	end },
 	{ "mammoth_scan_finished", function (state)
-        AudioMessage(audio.flee);
+        AudioMessage(constants.audio.flee);
         StartCockpitTimer(120, 30, 10);
 		mission_data.key_objects.Mammoth:SetObjectiveOff();
 --		BuildObject("bvapc", 3, GetPositionNear(GetPosition(GetHandle("nav5"))));
         SpawnNav(5);
-		objective.ReplaceObjective(objectives.TranStart, objectives.TranFin, "GREEN");
-		objective.AddObjective(objectives.Extract, "WHITE");
+		objective.ReplaceObjective(constants.objectives.TranStart, constants.objectives.TranFin, "GREEN");
+		objective.AddObjective(constants.objectives.Extract, "WHITE");
         --UpdateObjectives();
         mission_data.key_objects.Player:SetPerceivedTeam(1);
 		for _, v in pairs(mission_data.key_objects.Defenders) do
@@ -584,14 +635,14 @@ statemachine.Create("main_objectives", {
 	end },
 	{ "run_away", function (state)
 		if mission_data.key_objects.ObjectiveNav:GetObjectiveName() == "Extraction Point" and mission_data.key_objects.Player and mission_data.key_objects.Player:GetDistance(mission_data.key_objects.ObjectiveNav) < 50.0 then
-			AudioMessage(audio.win);
-			SucceedMission(GetTime()+5.0, "rbdnew03wn.des"); -- mission complete
-			objective.UpdateObjective(objectives.Extract, "GREEN");
+			AudioMessage(constants.audio.win);
+			SucceedMission(GetTime()+5.0, constants.debriefing.rbdnew03wn); -- mission complete
+			objective.UpdateObjective(constants.objectives.Extract, "GREEN");
 			--UpdateObjectives();
 			state:next();
 		elseif GetCockpitTimer() == 0 then
-			AudioMessage(audio.lose2);
-			FailMission(GetTime() + 5.0, "rbdnew03l2.des"); -- time expired
+			AudioMessage(constants.audio.lose2);
+			FailMission(GetTime() + 5.0, constants.debriefing.rbdnew03l2); -- time expired
 			--UpdateObjectives();
 			state:next();
 		end
@@ -618,7 +669,7 @@ statemachine.Create("detection_check_radar_tower", {
 		--- @cast state detection_check_radar_tower_state
 		if state.object:IsAlive() then
 			if mission_data.key_objects.Player:GetDistance(state.object) < 100.0 then
-				AudioMessage(audio.commwarn);
+				AudioMessage(constants.audio.commwarn);
 				StartCockpitTimer(30, 15, 5);
 				state:next();
 			end
@@ -631,7 +682,7 @@ statemachine.Create("detection_check_radar_tower", {
 	{ "too_close", function (state)
 		--- @cast state detection_check_radar_tower_state
 		if mission_data.key_objects.Player:GetDistance(state.object) > 100.0 then
-			AudioMessage(audio.commclear);
+			AudioMessage(constants.audio.commclear);
 			state:SecondsHavePassed();
 			state:switch("check");
 			StopCockpitTimer();
@@ -669,16 +720,16 @@ stateset.Create("mission")
 	:Add("detection_check_radar_tower_3", stateset.WrapStateMachine("detection_check_radar_tower", nil, { label = "radar3" }))
 	:Add("hanger_still_alive", function (state, name)
 		if not mission_data.key_objects.Hangar:IsAlive() then
-			FailMission(GetTime()+5.0, "rbdnew03l3.des"); -- hangar destroyed
-			objective.UpdateObjective(objectives.Hanger, "RED");
+			FailMission(GetTime()+5.0, constants.debriefing.rbdnew03l3); -- hangar destroyed
+			objective.UpdateObjective(constants.objectives.Hanger, "RED");
 			--UpdateObjectives();
 		end
 	end)
 	:Add("mammoth_shield", stateset.WrapStateMachine("mammoth_shield"))
 	:Add("mammoth_destroyed", function (state, name)
 		if not mission_data.key_objects.Mammoth:IsAlive() then 
-			AudioMessage(audio.lose1);
-			FailMission(GetTime()+5.0, "rbdnew03l1.des"); -- mammoth destroyed
+			AudioMessage(constants.audio.lose1);
+			FailMission(GetTime()+5.0, constants.debriefing.rbdnew03l1); -- mammoth destroyed
 			--UpdateObjectives();
 		end
 	end);

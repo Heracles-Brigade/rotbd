@@ -209,40 +209,73 @@ local function areAllDead(handles, team)
     return true;
 end
 
---All the otfs we use
-local otfs = {
-    escort = "rbd0701.otf",
-    relics = "rbd07ob1.otf",
-    nsdf_distress = "rbd0703.otf",
-    cca_distress = "rbd0704.otf",
-    nsdf_tug = "rbd0705.otf",
-    cca_tug = "rbd0706.otf"
-}
+--- @class RBD07_Constants_Audio
+--- @field intro string
+--- @field surrender string
+--- @field relic string
+--- @field relic_secured_1 string
+--- @field distress string
+--- @field trap string
+--- @field win string
+--- @field tug_loss string
+--- @field enemy_tug string
+--- @field attack_wave string
+--- @field enemy_got_relic string
+--- @field enemy_captured_relic string
 
---All the description files we use
-local des = {
-    loseRecycler = "rbd07los.des",
-    loseTug = "rbd07l04.des",
-    relic_nsdf_loss = "rbd07l02.des",
-    relic_cca_loss = "rbd07l02.des",
-    win = "rbd07win.des",
-    relic_destroyed = "rbd07l03.des"
-}
+--- @class RBD07_Constants_Objectives
+--- @field escort string
+--- @field relics string
+--- @field nsdf_distress string
+--- @field cca_distress string
+--- @field nsdf_tug string
+--- @field cca_tug string
 
-local audio = {
-    intro = "rbd0701.wav",
-    surrender = "rbd0702.wav",
-    relic = "rbd0703.wav",
-    relic_secured_1 = "rbd0704.wav",
-    distress = "rbd0705.wav",
-    trap = "rbd0706.wav",
-    win = "rbd07wn.wav",
-    tug_loss = "rbd0701L.wav",
-    enemy_tug = "rbd0701W.wav",
-    attack_wave = "rbd0702W.wav",
-    enemy_got_relic = "rbd0703W.wav",
-    enemy_captured_relic = "rbd0702L.wav"
-}
+--- @class RBD07_Constants_Debriefing
+--- @field loseRecycler string
+--- @field loseTug string
+--- @field relic_nsdf_loss string
+--- @field relic_cca_loss string
+--- @field win string
+--- @field relic_destroyed string
+
+--- @class RBD07_Constants
+--- @field audio RBD07_Constants_Audio
+--- @field objectives RBD07_Constants_Objectives
+--- @field debriefing RBD07_Constants_Debriefing
+local constants = {
+    audio = {
+        intro = "rbd0701.wav",
+        surrender = "rbd0702.wav",
+        relic = "rbd0703.wav",
+        relic_secured_1 = "rbd0704.wav",
+        distress = "rbd0705.wav",
+        trap = "rbd0706.wav",
+        win = "rbd07wn.wav",
+        tug_loss = "rbd0701L.wav",
+        enemy_tug = "rbd0701W.wav",
+        attack_wave = "rbd0702W.wav",
+        enemy_got_relic = "rbd0703W.wav",
+        enemy_captured_relic = "rbd0702L.wav"
+    },
+    objectives = {
+        escort = "rbd0701.otf",
+        relics = "rbd07ob1.otf",
+        nsdf_distress = "rbd0703.otf",
+        cca_distress = "rbd0704.otf",
+        nsdf_tug = "rbd0705.otf",
+        cca_tug = "rbd0706.otf"
+    },
+    debriefing = {
+        loseRecycler = "rbd07los.des",
+        loseTug = "rbd07l04.des",
+        relic_nsdf_loss = "rbd07l02.des",
+        relic_cca_loss = "rbd07l02.des",
+        win = "rbd07win.des",
+        relic_destroyed = "rbd07l03.des"
+    }
+};
+
 
 --[[
   TODO:
@@ -304,8 +337,8 @@ statemachine.Create("main_objectives", {
             statemachine.Start("delayed_spawn_formation_and_goto", nil, { delay =  1, formation = formation, spawn = "wave3", dest = "wave3_path", odfs = { "svfigh", "svltnk" }, team = 2, seperation = 15 }),
         };
         state.attackers = {};
-        objective.AddObjective(otfs.escort,"WHITE");
-        AudioMessage(audio.intro);
+        objective.AddObjective(constants.objectives.escort,"WHITE");
+        AudioMessage(constants.audio.intro);
         
         -- enable loss conditions
         mission_data.mission_states:on("loseTug"):on("loseRecycler");
@@ -339,7 +372,7 @@ statemachine.Create("main_objectives", {
         state.cond_escort_completed = state.cond_escort_completed or gameobject.GetRecycler():GetDistance("bdog_base") < 100;
         state.cond_kill_attackers_completed = state.cond_kill_attackers_completed or areAllDead(state.attackers, 2);
         if state.cond_escort_completed and state.cond_kill_attackers_completed then
-            objective.UpdateObjective(otfs.escort,"GREEN");
+            objective.UpdateObjective(constants.objectives.escort,"GREEN");
             state.cond_escort_completed = nil;
             state.cond_kill_attackers_completed = nil;
             state.attackers = nil;
@@ -390,12 +423,12 @@ statemachine.Create("main_objectives", {
         --    nsdf = false
         --};
         --state.distressCountdown = 5;
-        objective.AddObjective(otfs.relics, "WHITE", 16);
+        objective.AddObjective(constants.objectives.relics, "WHITE", 16);
         
         local nsdf_attack = statemachine.Start("relic_wave_spawner", nil, { key = "nsdf", noExtraWait = ranC == 1,  waveInterval = 140 });
         local cca_attack  = statemachine.Start("relic_wave_spawner", nil, { key = "cca" , noExtraWait = ranC == 0 , waveInterval = 140 });
-        local nsdf_tug = statemachine.Start("relic_tug_spawner", nil, { key = "nsdf", noExtraWait = ranC == 1,  bufferTime = 500, otf = otfs.nsdf_tug });
-        local cca_tug  = statemachine.Start("relic_tug_spawner", nil, { key = "cca" , noExtraWait = ranC == 0 , bufferTime = 500, otf = otfs.cca_tug  });
+        local nsdf_tug = statemachine.Start("relic_tug_spawner", nil, { key = "nsdf", noExtraWait = ranC == 1,  bufferTime = 500, otf = constants.objectives.nsdf_tug });
+        local cca_tug  = statemachine.Start("relic_tug_spawner", nil, { key = "cca" , noExtraWait = ranC == 0 , bufferTime = 500, otf = constants.objectives.cca_tug  });
         --- @cast nsdf_tug RelicTugSpawner_state
         --- @cast cca_tug RelicTugSpawner_state
         state.tug_spawners = {
@@ -439,25 +472,28 @@ statemachine.Create("main_objectives", {
                         -- a tug is not carrying the relic but it is in the bdog base
                         mission_data.fucking_garbage[relic_task] = "succeeded"
                         
-                        objective.UpdateObjective(otfs[("%s_tug"):format(relic_datum.name)], "GREEN");
+                        --- @todo array access via string is a bit hairy but it works
+                        objective.UpdateObjective(constants.objectives[("%s_tug"):format(relic_datum.name)], "GREEN");
                         
-                        if not mission_data.audio_played[audio.relic_secured_1] then
-                            AudioMessage(audio.relic_secured_1);
-                            mission_data.audio_played[audio.relic_secured_1] = true;
+                        if not mission_data.audio_played[constants.audio.relic_secured_1] then
+                            AudioMessage(constants.audio.relic_secured_1);
+                            mission_data.audio_played[constants.audio.relic_secured_1] = true;
                         end
                     end
                     --Else if cca or nsdf has it, set state to failed
                 elseif cca or nsdf then
                     mission_data.fucking_garbage[relic_task] = "failed"
 
-                    objective.UpdateObjective(otfs[("%s_tug"):format(relic_datum.name)], "RED");
-                    FailMission(GetTime() + 5, des[("%s_loss"):format(relic_datum.relic_name)]);
+                    --- @todo array access via string is a bit hairy but it works
+                    objective.UpdateObjective(constants.objectives[("%s_tug"):format(relic_datum.name)], "RED");
+                    FailMission(GetTime() + 5, constants.debriefing[("%s_loss"):format(relic_datum.relic_name)]);
                 end
                 --If someone had it, but no longer has reset the state
             elseif mission_data.fucking_garbage[relic_task] and not bdog and not cca and not nsdf then
                 mission_data.fucking_garbage[relic_task] = "running"
 
-                objective.UpdateObjective(otfs[("%s_tug"):format(relic_datum.name)], "WHITE");
+                --- @todo array access via string is a bit hairy but it works
+                objective.UpdateObjective(constants.objectives[("%s_tug"):format(relic_datum.name)], "WHITE");
             end
             if mission_data.fucking_garbage[pickup_relic_task] == "running" then -- NSDF and CCA pickup tasks are active
                 if tug_carrying and tug_carrying:GetTeamNum() == 1 then
@@ -527,8 +563,8 @@ statemachine.Create("main_objectives", {
         if mission_data.fucking_garbage.distress == "succeeded"
         and mission_data.fucking_garbage["relic_nsdf"] == "succeeded"
         and mission_data.fucking_garbage["relic_cca"] == "succeeded" then
-            objective.UpdateObjective(otfs.relics,"GREEN");
-            SucceedMission(GetTime() + 5, des.win);
+            objective.UpdateObjective(constants.objectives.relics,"GREEN");
+            SucceedMission(GetTime() + 5, constants.debriefing.win);
             state:next();
         end
     end }
@@ -866,21 +902,21 @@ stateset.Create("mission")
 
     :Add("loseTug", function (state)
         if not mission_data.key_objects.tug:IsAlive() then
-            objective.UpdateObjective(otfs.escort,"RED");
-            FailMission(GetTime() + 5,des.loseTug);
+            objective.UpdateObjective(constants.objectives.escort,"RED");
+            FailMission(GetTime() + 5,constants.debriefing.loseTug);
         end
     end)
     :Add("loseRecycler", function (state)
         if not mission_data.key_objects.recy:IsAlive() then
-            objective.UpdateObjective(otfs.escort,"RED");
-            FailMission(GetTime() + 5,des.loseRecycler);
+            objective.UpdateObjective(constants.objectives.escort,"RED");
+            FailMission(GetTime() + 5,constants.debriefing.loseRecycler);
         end
     end)
     :Add("relic_destroyed", function (state, name)
         for _, relic_datum in pairs(relic_data) do
             if not mission_data.key_objects.relic[relic_datum.name] or not mission_data.key_objects.relic[relic_datum.name]:IsAlive() then
-                --objective.UpdateObjective(otfs.escort,"RED"); -- not sure what objective to red here
-                FailMission(GetTime() + 5, des.relic_destroyed);
+                --objective.UpdateObjective(constants.objectives.escort,"RED"); -- not sure what objective to red here
+                FailMission(GetTime() + 5, constants.debriefing.relic_destroyed);
                 state:off(name, true);
                 return;
             end
@@ -902,7 +938,8 @@ statemachine.Create("distress", {
         local nav = gameobject.BuildObject("apcamr", 1, distress_l);
         if nav == nil then error("nav is nil"); end
         nav:SetObjectiveName("Distress Call");
-        objective.AddObjective(otfs[distress_l]);
+        --- @todo this is a bit hairy, but it works
+        objective.AddObjective(constants.objectives[distress_l]);
         state:next();
     end,
     function (state)
@@ -920,7 +957,8 @@ statemachine.Create("distress", {
         end
     end,
     function (state)
-        objective.UpdateObjective(otfs[("%s_distress"):format(mission_data.distress_faction)],"GREEN");
+        --- @todo a bit hairy using the array this way
+        objective.UpdateObjective(constants.objectives[("%s_distress"):format(mission_data.distress_faction)],"GREEN");
         mission_data.fucking_garbage.distress = "succeeded";
         state:next();
     end
@@ -934,8 +972,8 @@ statemachine.Create("distress", {
 ---- was between escortRecycler and reteriveRelics
 --local setUpBase = mission.Objective:define("setUpBase"):setListeners({
 --    start = function()
---        AudioMessage(audio.surrender);
---        AddObjective(otfs.createBase);
+--        AudioMessage(constants.audio.surrender);
+--        AddObjective(constants.objectives.createBase);
 --    end,
 --    update = function(self)
 --        if(tracker:gotOfClass("wingman",5,1) and tracker:gotOfClass("turrettank",2)) then
@@ -945,11 +983,11 @@ statemachine.Create("distress", {
 --        end
 --    end,
 --    success = function(self)
---        UpdateObjective(otfs.createBase,"GREEN");
+--        UpdateObjective(constants.objectives.createBase,"GREEN");
 --    end,
 --    fail = function(self)
---        UpdateObjective(otfs.createBase,"RED");
---        FailMission(GetTime()+5,des.loseRecycler);
+--        UpdateObjective(constants.objectives.createBase,"RED");
+--        FailMission(GetTime()+5,constants.debriefing.loseRecycler);
 --    end
 --});
 

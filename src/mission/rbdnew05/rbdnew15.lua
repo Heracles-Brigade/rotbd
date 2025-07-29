@@ -240,48 +240,92 @@ end
 SetAIControl(2,false);
 SetAIControl(3,false);
 
+--- @class RBD05_Constants_Audio
+--- @field intro string
+--- @field inspect string
+--- @field destroy_f string
+--- @field done_d string
+--- @field back_to_base string
+--- @field apc_spawn string
+--- @field pickup_done string
+--- @field win string
 
-local audio = {
-    intro = "rbd0501.wav",
-    inspect = "rbd0502.wav",
-    destroy_f = "rbd0503.wav",
-    done_d = "rbd0504.wav",
-    back_to_base = "rbd0505.wav",
+--- @class RBD05_Constants_Objectives
+--- @field Rendezvous string
+--- @field WaitForUnits string
+--- @field InvestigateRelic string
+--- @field DestroyRelic string
+--- @field DefendRelic string
+--- @field UplinkConnecting string
+--- @field UplinkTransmitting string
+--- @field ReturnToBase string
+--- @field UplinkRetry string
+--- @field UplinkRunNuke string
+--- @field EscordAPCsToBase string
+--- @field SendAPCsToEvac string
+--- @field EscortAPCsToEvac string
+--- @field bdmisn2504 string
+--- @field rbdnew3502 string
+--- @field rbdnew3503 string
 
-    apc_spawn = "rbd0506.wav",
-    pickup_done = "rbd0507.wav",
-    win = "rbd0508.wav"
-}
+--- @class RBD05_Constants_Debriefing
+--- @field CommandTowerDestroyed string
+--- @field RelicDestroyedEarly string
+--- @field KilledRescueMen string
+--- @field ApcLost string
+--- @field Success5 string
+--- @field Missing1 string
+--- @field Missing2 string
+--- @field ApcLost2 string
+--- @field SurvivingForcesKilled string
+--- @field EvacSuccess6 string
 
-local objective_files = {
-    Rendezvous = "rbd0521.otf",
-    WaitForUnits = "rbd0522.otf",
-    InvestigateRelic = "rbd0523.otf",
-    DestroyRelic = "rbd0524.otf",
-    DefendRelic = "rbd0525.otf",
-    UplinkConnecting = "rbd0530.otf",
-    UplinkTransmitting = "rbd0531.otf",
-    ReturnToBase = "rbd0532.otf",
-    UplinkRetry = "rbd0533.otf",
-    UplinkRunNuke = "rbd0534.otf",
-    EscordAPCsToBase = "bdmisn2601.otf",
-    SendAPCsToEvac = "bdmisn2602.otf",
-    EscortAPCsToEvac = "bdmisn2603.otf",
-    bdmisn2504 = "bdmisn2504.otf",
-    rbdnew3502 = "rbdnew3502.otf",
-};
+--- @class RBD05_Constants
+--- @field audio RBD05_Constants_Audio
+--- @field objectives RBD05_Constants_Objectives
+--- @field debriefing RBD05_Constants_Debriefing
+local constants = {
+    audio = {
+        intro = "rbd0501.wav",
+        inspect = "rbd0502.wav",
+        destroy_f = "rbd0503.wav",
+        done_d = "rbd0504.wav",
+        back_to_base = "rbd0505.wav",
 
-local end_mission_text = {
-    CommandTowerDestroyed = "rbdnew15l1.des",
-    RelicDestroyedEarly = "rbdnew15l2.des",
-    KilledRescueMen = "rbdnew15l3.des",
-    ApcLost = "rbdnew15l4.des",
-    Success5 = "rbdnew15w.des",
-    Missing1 = nil,
-    Missing2 = nil,
-    ApcLost2 = "bdmisn26l1.des", -- possible dupe?
-    SurvivingForcesKilled = "bdmisn26l2.des",
-    EvacSuccess6 = "bdmisn26wn.des",
+        apc_spawn = "rbd0506.wav",
+        pickup_done = "rbd0507.wav",
+        win = "rbd0508.wav"
+    },
+    objectives = {
+        Rendezvous = "rbd0521.otf",
+        WaitForUnits = "rbd0522.otf",
+        InvestigateRelic = "rbd0523.otf",
+        DestroyRelic = "rbd0524.otf",
+        DefendRelic = "rbd0525.otf",
+        UplinkConnecting = "rbd0530.otf",
+        UplinkTransmitting = "rbd0531.otf",
+        ReturnToBase = "rbd0532.otf",
+        UplinkRetry = "rbd0533.otf",
+        UplinkRunNuke = "rbd0534.otf",
+        EscordAPCsToBase = "bdmisn2601.otf",
+        SendAPCsToEvac = "bdmisn2602.otf",
+        EscortAPCsToEvac = "bdmisn2603.otf",
+        bdmisn2504 = "bdmisn2504.otf",
+        rbdnew3502 = "rbdnew3502.otf",
+        rbdnew3503 = "rbdnew3503.otf"
+    },
+    debriefing = {
+        CommandTowerDestroyed = "rbdnew15l1.des",
+        RelicDestroyedEarly = "rbdnew15l2.des",
+        KilledRescueMen = "rbdnew15l3.des",
+        ApcLost = "rbdnew15l4.des",
+        Success5 = "rbdnew15w.des",
+        Missing1 = nil,
+        Missing2 = nil,
+        ApcLost2 = "bdmisn26l1.des", -- possible dupe?
+        SurvivingForcesKilled = "bdmisn26l2.des",
+        EvacSuccess6 = "bdmisn26wn.des",
+    }
 };
 
 --- @class CCA_Relic_Attack_state : StateMachineIter
@@ -490,18 +534,18 @@ statemachine.Create("main_objectives", {
         self:next();
       end },
     { "rendezvous__start", function(self)
-        objective.AddObjective(objective_files.Rendezvous);
+        objective.AddObjective(constants.objectives.Rendezvous);
         self:next();
     end },
     { "rendezvous__update", function(self)
         local rec = gameobject.GetRecycler(3);
         if rec and gameobject.GetPlayer():IsWithin(rec, 100) then
-            objective.UpdateObjective(objective_files.Rendezvous,"GREEN");
+            objective.UpdateObjective(constants.objectives.Rendezvous,"GREEN");
             self:next();
         end
     end },
     { "wait_for_units__start", function(self)
-        objective.AddObjective(objective_files.WaitForUnits);
+        objective.AddObjective(constants.objectives.WaitForUnits);
         --Make producer create units
         --ProductionJob:createMultiple(count,odf,team)
         --Queue Production Jobs for the player
@@ -530,7 +574,7 @@ statemachine.Create("main_objectives", {
     end },
     statemachine.SleepSeconds(7),
     function(self)
-        objective.UpdateObjective(objective_files.WaitForUnits,"GREEN");
+        objective.UpdateObjective(constants.objectives.WaitForUnits,"GREEN");
         self:next();
     end,
     { "success", function(self)
@@ -540,9 +584,9 @@ statemachine.Create("main_objectives", {
         self:next();
     end },
     { "goto_relic__start", function(self)
-        objective.AddObjective(objective_files.InvestigateRelic);
+        objective.AddObjective(constants.objectives.InvestigateRelic);
         mission_data.camera_handle:SetTeamNum(1);
-        AudioMessage(audio.intro);
+        AudioMessage(constants.audio.intro);
         mission_data.camera_keep_teamed = true;
         self:next();
     end },
@@ -552,7 +596,7 @@ statemachine.Create("main_objectives", {
         end
     end },
     function(self)
-        objective.UpdateObjective(objective_files.InvestigateRelic,"GREEN");
+        objective.UpdateObjective(constants.objectives.InvestigateRelic,"GREEN");
         self:next();
     end,
     { "defendRelic", function(self)
@@ -584,7 +628,7 @@ statemachine.Create("main_objectives", {
         end
 
 
-        mission_data.msg_inspect =  AudioMessage(audio.inspect);
+        mission_data.msg_inspect =  AudioMessage(constants.audio.inspect);
 
         self:next();
     end },
@@ -594,13 +638,13 @@ statemachine.Create("main_objectives", {
         end
     end,
     { "defendRelic.destroy_relic.start", function(self)
-        objective.AddObjective(objective_files.DestroyRelic);
+        objective.AddObjective(constants.objectives.DestroyRelic);
         mission_data.relic:SetTeamNum(2);
         self:next();
     end },
     { "defendRelic.destroy_relic.update", function(self)
         if mission_data.relic:GetMaxHealth() - mission_data.relic:GetCurHealth() >= 1000 then
-            mission_data.destroy_audio = AudioMessage(audio.destroy_f);
+            mission_data.destroy_audio = AudioMessage(constants.audio.destroy_f);
             -- @todo start a side-machine for "defendRelic.cca_attack_base"
             local machine = statemachine.Start("defendRelic.cca_attack_base");
             table.insert(mission_data.sub_machines, machine);
@@ -609,13 +653,13 @@ statemachine.Create("main_objectives", {
     end },
     function(self)
         if not mission_data.destroy_audio or IsAudioMessageDone(mission_data.destroy_audio) then
-            objective.UpdateObjective(objective_files.DestroyRelic,"RED");
+            objective.UpdateObjective(constants.objectives.DestroyRelic,"RED");
             --self:startTask("nuke");
             self:next();
         end
     end,
     { "defendRelic.nuke.start", function(self)
-        objective.AddObjective(objective_files.DefendRelic);
+        objective.AddObjective(constants.objectives.DefendRelic);
         mission_data.day_id = producer.QueueJob("apwrckz",3,mission_data.relic);
         --self:call("_setUpProdListeners",mission_data.day_id,"_setDayWrecker");
         mission_data.detect_daywrecker = true;
@@ -640,21 +684,21 @@ statemachine.Create("main_objectives", {
     end },
     { "defendRelic.nuke.update.0", statemachine.SleepSeconds(5) },
     { "defendRelic.nuke.update.0.next", function(self)
-        objective.AddObjective(objective_files.UplinkConnecting);
+        objective.AddObjective(constants.objectives.UplinkConnecting);
         self:next();
     end },
     { "defendRelic.nuke.update.1", statemachine.SleepSeconds(2) },
     { "defendRelic.nuke.update.1.next", function(self)
-        objective.RemoveObjective(objective_files.UplinkConnecting);
-        objective.AddObjective(objective_files.UplinkTransmitting);
+        objective.RemoveObjective(constants.objectives.UplinkConnecting);
+        objective.AddObjective(constants.objectives.UplinkTransmitting);
         self:next();
     end },
     { "defendRelic.nuke.update.3", function(self)
         if mission_data.daywrecker and Length(mission_data.daywrecker:GetPosition() - mission_data.relic:GetPosition()) < 100 then
-            objective.RemoveObjective(objective_files.UplinkConnecting);
-            objective.RemoveObjective(objective_files.UplinkTransmitting);
-            objective.AddObjective(objective_files.UplinkRunNuke,"GREEN");
-            AudioMessage(audio.done_d);
+            objective.RemoveObjective(constants.objectives.UplinkConnecting);
+            objective.RemoveObjective(constants.objectives.UplinkTransmitting);
+            objective.AddObjective(constants.objectives.UplinkRunNuke,"GREEN");
+            AudioMessage(constants.audio.done_d);
             mission_data.mission_states:off("relic_leave_too_early_fail");
             self:next();
         end
@@ -672,14 +716,14 @@ statemachine.Create("main_objectives", {
             else
                 -- relic is still alive, we failed (but how, isn't this automatic?)
                 --self:taskFail("nuke");
-                objective.UpdateObjective(objective_files.DefendRelic,"RED");
-                FailMission(GetTime()+5.0,end_mission_text.Missing2);
+                objective.UpdateObjective(constants.objectives.DefendRelic,"RED");
+                FailMission(GetTime()+5.0,constants.debriefing.Missing2);
                 self:switch(nil);
             end
         end
     end },
     { "rtbAssumeControl", function(self)
-        objective.AddObjective(objective_files.ReturnToBase);
+        objective.AddObjective(constants.objectives.ReturnToBase);
         self:next();
     end },
     { "rtbAssumeControl.update.fix_base", function(self)
@@ -710,7 +754,7 @@ statemachine.Create("main_objectives", {
     end,
     statemachine.SleepSeconds(5),
     { "rtbAssumeControl.success", function(self)
-        AudioMessage(audio.back_to_base);
+        AudioMessage(constants.audio.back_to_base);
         SetMaxScrap(1,50);
         SetScrap(1,30);
         for v in gameobject.ObjectsInRange(500,"bdog_base") do
@@ -727,7 +771,7 @@ statemachine.Create("main_objectives", {
     end },
     { "destorySovietComm", function(self)
         mission_data.scomm = gameobject.GetGameObject("sovietcomm");
-        objective.AddObjective(objective_files.rbdnew3502);
+        objective.AddObjective(constants.objectives.rbdnew3502);
         mission_data.spawnDef = false;
         mission_data.scc = false;
         mission_data.t1 = 30;
@@ -751,7 +795,7 @@ statemachine.Create("main_objectives", {
     end },
     { "destorySovietComm.update.scc", function(self)
         if not mission_data.scomm:IsAlive() then
-            objective.UpdateObjective(objective_files.rbdnew3502,"GREEN");
+            objective.UpdateObjective(constants.objectives.rbdnew3502,"GREEN");
             mission_data.scc = true;
             self:next();
         end
@@ -880,8 +924,8 @@ statemachine.Create("main_objectives", {
 
         --miss26setup();
         --Spawns inital objects
-        AudioMessage(audio.apc_spawn);
-        objective.RemoveObjective(objective_files.rbdnew3502);
+        AudioMessage(constants.audio.apc_spawn);
+        objective.RemoveObjective(constants.objectives.rbdnew3502);
         spawnAtPath("proxminb",2,"spawn_prox");
         spawnAtPath("svfigh",2,"26spawn_figh");
         spawnAtPath("svrckt",2,"26spawn_rock");
@@ -906,21 +950,21 @@ statemachine.Create("main_objectives", {
         -- init
         mission_data.apcs = {gameobject.GetGameObject("apc1"),gameobject.GetGameObject("apc2")};
         -- start
-        objective.AddObjective(objective_files.bdmisn2504,"WHITE");
+        objective.AddObjective(constants.objectives.bdmisn2504,"WHITE");
         --- @todo why does the mission talk about NSDF after this?
         self:next();
     end },
     { "apcMeetup.update", function(self)
         if(checkAnyDead(mission_data.apcs)) then
             --self:fail();
-            objective.UpdateObjective(objective_files.bdmisn2504,"RED");
-            FailMission(GetTime()+5.0,end_mission_text.ApcLost2);
+            objective.UpdateObjective(constants.objectives.bdmisn2504,"RED");
+            FailMission(GetTime()+5.0,constants.debriefing.ApcLost2);
             self:switch(nil);
             return;
         end
         if(gameobject.GetPlayer():GetDistance(mission_data.apcs[1]) < 50) then
             --self:success();
-            objective.UpdateObjective(objective_files.bdmisn2504,"GREEN");
+            objective.UpdateObjective(constants.objectives.bdmisn2504,"GREEN");
             --mission.Objective:Start("pickupSurvivors");
             self:next();
             return;
@@ -931,7 +975,7 @@ statemachine.Create("main_objectives", {
         mission_data.apcs = {gameobject.GetGameObject("apc1"),gameobject.GetGameObject("apc2")};
         mission_data.nav = gameobject.GetGameObject("nav1");
         -- start
-        objective.AddObjective("rbdnew3503.otf", "WHITE");
+        objective.AddObjective(constants.objectives.rbdnew3503, "WHITE");
         mission_data.t1 = 30;
         mission_data.arived = false;
         local navs = spawnAtPath("apcamr",1,"26spawn_nav");
@@ -954,7 +998,7 @@ statemachine.Create("main_objectives", {
     { "pickupSurvivors.update", function(self)
         if(checkAnyDead(mission_data.apcs)) then
             --self:fail(1);
-            FailMission(GetTime()+5.0,end_mission_text.ApcLost2);
+            FailMission(GetTime()+5.0,constants.debriefing.ApcLost2);
             self:switch(nil);
             return;
         end
@@ -971,13 +1015,13 @@ statemachine.Create("main_objectives", {
     { "pickupSurvivors.update.pilots", function(self)
         if(checkAnyDead(mission_data.apcs)) then
             --self:fail(1);
-            FailMission(GetTime()+5.0,end_mission_text.ApcLost2);
+            FailMission(GetTime()+5.0,constants.debriefing.ApcLost2);
             self:switch(nil);
             return;
         end
         if(checkAnyDead(mission_data.pilots)) then
             --self:fail(2);
-            FailMission(GetTime()+5.0,end_mission_text.SurvivingForcesKilled);
+            FailMission(GetTime()+5.0,constants.debriefing.SurvivingForcesKilled);
             self:switch(nil);
             return;
         end
@@ -994,13 +1038,13 @@ statemachine.Create("main_objectives", {
     { "pickupSurvivors.update.pilots2", function(self)
         if(checkAnyDead(mission_data.apcs)) then
             --self:fail(1);
-            FailMission(GetTime()+5.0,end_mission_text.ApcLost2);
+            FailMission(GetTime()+5.0,constants.debriefing.ApcLost2);
             self:switch(nil);
             return;
         end
         if(checkAnyDead(mission_data.pilots)) then
             --self:fail(2);
-            FailMission(GetTime()+5.0,end_mission_text.SurvivingForcesKilled);
+            FailMission(GetTime()+5.0,constants.debriefing.SurvivingForcesKilled);
             self:switch(nil);
             return;
         end
@@ -1027,11 +1071,11 @@ statemachine.Create("main_objectives", {
         end
         if((pleft <= 0)) then---or (mission_data.t1 <= 0)) then
             --self:success();
-            AudioMessage(audio.pickup_done);
+            AudioMessage(constants.audio.pickup_done);
             for i,v in pairs(mission_data.apcs) do
                 v:Stop(0);
             end  
-            objective.UpdateObjective("rbdnew3503.otf","GREEN");
+            objective.UpdateObjective(constants.objectives.rbdnew3503,"GREEN");
             --mission.Objective:Start("escortAPCs");
             self:next();
         end
@@ -1042,24 +1086,24 @@ statemachine.Create("main_objectives", {
         mission_data.apcs = {gameobject.GetGameObject("apc1"),gameobject.GetGameObject("apc2")};
         -- start
         objective.ClearObjectives();
-        objective.AddObjective(objective_files.SendAPCsToEvac,"WHITE");
-        objective.AddObjective(objective_files.EscortAPCsToEvac,"WHITE");
+        objective.AddObjective(constants.objectives.SendAPCsToEvac,"WHITE");
+        objective.AddObjective(constants.objectives.EscortAPCsToEvac,"WHITE");
 
         self:next();
     end },
     function(self)
         if(checkAnyDead(mission_data.apcs)) then
             --self:fail();
-            objective.UpdateObjective(objective_files.EscortAPCsToEvac,"RED");
-            FailMission(GetTime()+5.0,end_mission_text.ApcLost2);
+            objective.UpdateObjective(constants.objectives.EscortAPCsToEvac,"RED");
+            FailMission(GetTime()+5.0,constants.debriefing.ApcLost2);
             self:switch(nil);
         end
         if(mission_data.apcs[1]:IsWithin(mission_data.nav,100) and mission_data.apcs[2]:IsWithin(mission_data.nav,100)) then
             --self:success();
-            objective.UpdateObjective(objective_files.SendAPCsToEvac,"GREEN");
-            objective.UpdateObjective(objective_files.EscortAPCsToEvac,"GREEN");
-            AudioMessage(audio.win);
-            SucceedMission(GetTime()+5.0, end_mission_text.EvacSuccess6);
+            objective.UpdateObjective(constants.objectives.SendAPCsToEvac,"GREEN");
+            objective.UpdateObjective(constants.objectives.EscortAPCsToEvac,"GREEN");
+            AudioMessage(constants.audio.win);
+            SucceedMission(GetTime()+5.0, constants.debriefing.EvacSuccess6);
             self:switch(nil);
         end
     end
@@ -1077,16 +1121,16 @@ stateset.Create("mission")
     :Add("main_objectives", stateset.WrapStateMachine("main_objectives"))
     --:Add("pickupSurvivors.apc_watch", function(state, name)
     --    if(checkAnyDead(mission_data.apcs)) then
-    --        FailMission(GetTime()+5.0,"bdmisn26l1.des");
+    --        FailMission(GetTime()+5.0,constants.debriefing.bdmisn26l1);
     --        state:off(name, true);
     --    end
     --end)
     :Add("relic_leave_too_early_fail", function(state, name)
         if gameobject.GetPlayer():IsAlive() and gameobject.GetPlayer():GetDistance("relic_site") > 200 then
-            objective.RemoveObjective(objective_files.UplinkConnecting);
-            objective.RemoveObjective(objective_files.UplinkTransmitting);
-            objective.AddObjective(objective_files.UplinkRetry,"RED");
-            FailMission(GetTime()+5.0,end_mission_text.Missing1);
+            objective.RemoveObjective(constants.objectives.UplinkConnecting);
+            objective.RemoveObjective(constants.objectives.UplinkTransmitting);
+            objective.AddObjective(constants.objectives.UplinkRetry,"RED");
+            FailMission(GetTime()+5.0,constants.debriefing.Missing1);
             state:off("main_objectives", true); -- turn off main machine, we lost
             state:off(name, true); -- turn off this machine too
         end

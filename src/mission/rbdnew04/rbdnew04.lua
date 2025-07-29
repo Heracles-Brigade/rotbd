@@ -57,28 +57,86 @@ local function choose(...)
     return t[rn];
 end
 
+--- @class RBD04_Constants_Audio
+--- @field intro string
+--- @field itsatrap string
+--- @field freedom string
+--- @field planschange string
+--- @field gtfo string
+--- @field bypass string
+--- @field wasatrap string
+--- @field wantitback string
+--- @field homefree string
 
+--- @class RBD04_Constants_Objectives
+--- @field recon string
+--- @field escape string
+--- @field findit string
+--- @field extraction string
+--- @field mine string
+--- @field rbdnew0405 string
 
-local audio = {
-	intro = "rbdnew0401.wav",
-	itsatrap = "rbdnew0402.wav",
-	freedom = "rbdnew0403.wav",
-	planschange = "rbdnew0404.wav",
-	gtfo = "rbdnew0405.wav",
-	bypass = "rbdnew04a1.wav",
-	wasatrap = "rbdnew04a2.wav",
-	wantitback = "rbdnew0406.wav",
-	homefree = "rbdnew0407.wav"
+--- @class RBD04_Constants_Debriefing
+--- @field rbdnew04l1 string
+--- @field rbdnew04wn string
+
+--- @class RBD04_Constants
+--- @field audio RBD04_Constants_Audio
+--- @field objectives RBD04_Constants_Objectives
+--- @field debriefing RBD04_Constants_Debriefing
+local constants = {
+	audio = {
+		intro = "rbdnew0401.wav",
+		itsatrap = "rbdnew0402.wav",
+		freedom = "rbdnew0403.wav",
+		planschange = "rbdnew0404.wav",
+		gtfo = "rbdnew0405.wav",
+		bypass = "rbdnew04a1.wav",
+		wasatrap = "rbdnew04a2.wav",
+		wantitback = "rbdnew0406.wav",
+		homefree = "rbdnew0407.wav"
+	},
+	objectives = {
+		recon = "rbdnew0401.otf",
+		escape = "rbdnew0402.otf",
+		findit = "rbdnew0403.otf",
+		extraction = "rbdnew0404.otf",
+		mine = "rbdnew0406.otf",
+		rbdnew0405 = "rbdnew0405.otf",
+	},
+	debriefing = {
+		rbdnew04l1 = "rbdnew04l1.des",
+		rbdnew04wn = "rbdnew04wn.des",
+	}
 }
 
-local objs = {
-	recon = "rbdnew0401.otf",
-	escape = "rbdnew0402.otf",
-	findit = "rbdnew0403.otf",
-	extraction = "rbdnew0404.otf",
-	mine = "rbdnew0406.otf"
-}
-
+--- @class MissionData04
+--- @field UpdateObjectives boolean
+--- @field StartDone boolean
+--- @field Nav1Reached boolean
+--- @field DecoyTriggered boolean
+--- @field TrapEscaped boolean
+--- @field PlansChange boolean
+--- @field MammothStolen boolean
+--- @field MammothDead boolean
+--- @field WantItBack boolean
+--- @field RecoveryBeaten boolean
+--- @field DropZoneReached boolean
+--- @field MissionOver boolean
+--- @field Player GameObject?
+--- @field NavCoords Vector[]
+--- @field Nav GameObject[]
+--- @field ObjectiveNav GameObject?
+--- @field Mammoth GameObject?
+--- @field MammothDecoy GameObject?
+--- @field DecoyAmbush GameObject[]
+--- @field RecoverySquad GameObject[]
+--- @field Baker GameObject?
+--- @field scrapFields GameObject[]
+--- @field Aud1 number
+--- @field DecoyTime number
+--- @field FlashTime number
+--- @field patrol_r PatrolEngine
 local mission_data = {
 	-- Bools
 	UpdateObjectives = false,
@@ -97,13 +155,13 @@ local mission_data = {
 
 	-- Handles
 	Player = nil,
-	NavCoords = { },
-	Nav = { },
+	NavCoords = {},
+	Nav = {},
 	ObjectiveNav = nil,
 	Mammoth = nil,
 	MammothDecoy = nil,
-	DecoyAmbush = { },
-	RecoverySquad = { },
+	DecoyAmbush = {},
+	RecoverySquad = {},
 	Baker = nil,
 	scrapFields = {},
 
@@ -207,19 +265,19 @@ stateset.Create("mission")
 	:Add("mammoth_destroyed", function (state)
 		-- Lose Conditions
 		if not mission_data.Mammoth:IsValid() then -- YA BLEW UP THE MAMMOTH YA GOOF
-			FailMission(GetTime()+5.0, "rbdnew04l1.des");
+			FailMission(GetTime()+5.0, constants.debriefing.rbdnew04l1);
 			mission_data.MammothDead = true;
 			mission_data.MissionOver = true;
 
 			-- ITS DEAD! NOOOOO! NEW Fail objective. -GBD
 			objective.ClearObjectives();
-			objective.AddObjective("rbdnew0405.otf", "RED");
+			objective.AddObjective(constants.objectives.rbdnew0405, "RED");
 		end
 	end)
 	:Add("extra_find_decoy_after_real", function (state)
 		-- DecoyTriggered (Player enters real Mammoth)
 		if mission_data.Player:IsWithin(mission_data.MammothDecoy, 100.0) --[[and mission_data.Player == mission_data.Mammoth--]] then
-			mission_data.Aud1 = AudioMessage(audio.wasatrap);
+			mission_data.Aud1 = AudioMessage(constants.audio.wasatrap);
 			mission_data.DecoyTriggered = true;
 			state:off("extra_find_decoy_after_real");
 		end
@@ -260,9 +318,9 @@ statemachine.Create("main_objectives", {
 		
 		mission_data.StartDone = true;
 		
-		mission_data.Aud1 = AudioMessage(audio.intro);
+		mission_data.Aud1 = AudioMessage(constants.audio.intro);
 		--UpdateObjectives();
-		objective.AddObjective(objs.recon, "WHITE");
+		objective.AddObjective(constants.objectives.recon, "WHITE");
 		SpawnNav(1);
 		state:next();
 	end },
@@ -293,10 +351,10 @@ statemachine.Create("main_objectives", {
 			mission_data.DecoyAmbush[i]:Attack(mission_data.Player);
 		end
 		--mission_data.DecoyTime = GetTime() + 4.0;
-		mission_data.Aud1 = AudioMessage(audio.itsatrap);
+		mission_data.Aud1 = AudioMessage(constants.audio.itsatrap);
 		--UpdateObjectives();
-		objective.RemoveObjective(objs.recon);
-		objective.AddObjective(objs.escape, "WHITE");
+		objective.RemoveObjective(constants.objectives.recon);
+		objective.AddObjective(constants.objectives.escape, "WHITE");
 		state:next();
 	end },
 	statemachine.SleepSeconds(4),
@@ -318,18 +376,18 @@ statemachine.Create("main_objectives", {
 	end,
 	{ "TrapEscaped", function (state)
 		if areAllDead(mission_data.DecoyAmbush, 2) then
-			mission_data.Aud1 = AudioMessage(audio.freedom);
+			mission_data.Aud1 = AudioMessage(constants.audio.freedom);
 			mission_data.TrapEscaped = true;
 			SpawnNav(2);
 			--UpdateObjectives();
-			objective.UpdateObjective(objs.escape, "GREEN");
-			objective.AddObjective(objs.findit, "WHITE");
+			objective.UpdateObjective(constants.objectives.escape, "GREEN");
+			objective.AddObjective(constants.objectives.findit, "WHITE");
 			state:next();
 		end
 	end },
 	{ "PlansChange", function (state)
 		if not mission_data.Player:IsWithin(mission_data.Nav[1], 750.0) then
-			mission_data.Aud1 = AudioMessage(audio.planschange);
+			mission_data.Aud1 = AudioMessage(constants.audio.planschange);
 			mission_data.PlansChange = true;
 			state:next();
 		end
@@ -341,14 +399,14 @@ statemachine.Create("main_objectives", {
 	end,
 	{ "MammothStolen", function (state)
 		if mission_data.TrapEscaped then
-			mission_data.Aud1 = AudioMessage(audio.gtfo);
+			mission_data.Aud1 = AudioMessage(constants.audio.gtfo);
 			--SpawnNav(3);
 			--SpawnBaker();
 			--mission_data.Player:SetPerceivedTeam(1)
 			--mission_data.MammothStolen = true;
 			--UpdateObjectives();
 		else
-			mission_data.Aud1 = AudioMessage(audio.bypass);
+			mission_data.Aud1 = AudioMessage(constants.audio.bypass);
 			--SpawnNav(3);
 			--SpawnBaker();
 			--mission_data.Player:SetPerceivedTeam(1)
@@ -360,8 +418,8 @@ statemachine.Create("main_objectives", {
 		mission_data.Player:SetPerceivedTeam(1)
 		mission_data.MammothStolen = true;
 		objective.ClearObjectives();
-		objective.AddObjective(objs.findit, "GREEN");
-		objective.AddObjective(objs.extraction, "WHITE", nil, nil, 10);
+		objective.AddObjective(constants.objectives.findit, "GREEN");
+		objective.AddObjective(constants.objectives.extraction, "WHITE", nil, nil, 10);
 		state:next();
 	end },
 	{ "WantItBack", function (state)
@@ -377,10 +435,10 @@ statemachine.Create("main_objectives", {
 			for i = 1,#mission_data.RecoverySquad do
 				mission_data.RecoverySquad[i]:Attack(mission_data.Player); -- what if the player isn't in the mammoth anymore?
 			end
-			mission_data.Aud1 = AudioMessage(audio.wantitback);
+			mission_data.Aud1 = AudioMessage(constants.audio.wantitback);
 			mission_data.WantItBack = true;
 			--UpdateObjectives();
-			objective.AddObjective(objs.mine, "WHITE");
+			objective.AddObjective(constants.objectives.mine, "WHITE");
 			state:next();
 		end
 	end },
@@ -388,18 +446,18 @@ statemachine.Create("main_objectives", {
 		if areAllDead(mission_data.RecoverySquad, 2) and mission_data.Player == mission_data.Mammoth then
 			mission_data.RecoveryBeaten = true;
 			--UpdateObjectives();
-			objective.UpdateObjective(objs.mine, "GREEN");
+			objective.UpdateObjective(constants.objectives.mine, "GREEN");
 			state:next();
 		end
 	end },
 	{ "End", function (state)
 		if mission_data.Player == mission_data.Mammoth and mission_data.Player:IsWithin(mission_data.Nav[3], 75.0) then
-			mission_data.Aud1 = AudioMessage(audio.homefree);
-			SucceedMission(GetTime()+5.0, "rbdnew04wn.des");
+			mission_data.Aud1 = AudioMessage(constants.audio.homefree);
+			SucceedMission(GetTime()+5.0, constants.debriefing.rbdnew04wn);
 			mission_data.MissionOver = true;
 			mission_data.DropZoneReached = true;
 			--UpdateObjectives();
-			objective.UpdateObjective(objs.extraction, "GREEN");
+			objective.UpdateObjective(constants.objectives.extraction, "GREEN");
 			state:switch(nil);
 		end
 	end }

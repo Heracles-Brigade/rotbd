@@ -47,26 +47,62 @@ local mission_data = {
     grigg_audio_waits = { 60, 30, 30},
 };
 
-local audio = {
-    intro = "rbd0801.wav",
-    -- after tower 1 is down
-    tower1 = "rbd0802.wav",
-    --(Grigg’s updates, interspersed throughout)
-    grigg_updates = {"rbdnew0820.wav", "rbdnew0821.wav", "rbdnew0822.wav"},
+--- @class RBD08_Constants_Audio
+--- @field intro string
+--- @field grigg_updates string[]
+--- @field tower string[]
+--- @field evacuate string
+--- @field timer_out string
+--- @field timer_out_loss string
+--- @field one_minute string
+--- @field too_close_loss string
 
-    -- after tower 2 is down
-    tower2 = "rbd0803.wav",
-    --going_in = "rbd0804.wav", replaced by rbd0802.wav
-    evacuate = "rbd0805.wav",
-    timer_out = "rbd0806.wav",
-    timer_out_loss = "rbd0802L.wav",
-    one_minute = "rbd0807.wav",
-    too_close_loss = "rbd0801L.wav",
-}
+--- @class RBD08_Constants_Objectives
+--- @field rbd0801 string
+--- @field rbd0803 string
+--- @field rbd0804 string
 
-local tower_audio = {
-    audio.tower1,
-    audio.tower2,
+--- @class RBD08_Constants_Debriefing
+--- @field rbd08l01 string
+--- @field rbd08l02 string
+--- @field rbd08l05 string
+--- @field rbd08w01 string
+--- @field rbd08w02 string
+
+--- @class RBD08_Constants
+--- @field audio RBD08_Constants_Audio
+--- @field objectives RBD08_Constants_Objectives
+--- @field debriefing RBD08_Constants_Debriefing
+local constants = {
+    audio = {
+        intro = "rbd0801.wav",
+        
+        --(Grigg’s updates, interspersed throughout)
+        grigg_updates = {"rbdnew0820.wav", "rbdnew0821.wav", "rbdnew0822.wav"},
+
+        tower = {
+            "rbd0802.wav", -- after tower 1 is down
+            "rbd0803.wav", -- after tower 2 is down
+        },
+        --going_in = "rbd0804.wav", replaced by rbd0802.wav
+        evacuate = "rbd0805.wav",
+        timer_out = "rbd0806.wav",
+        timer_out_loss = "rbd0802L.wav",
+        one_minute = "rbd0807.wav",
+        too_close_loss = "rbd0801L.wav",
+    },
+    objectives = {
+        rbd0801 = "rbd0801.otf",
+        rbd0803 = "rbd0803.otf",
+        rbd0804 = "rbd0804.otf",
+    },
+    debriefing = {
+        rbd08l01 = "rbd08l01.des",
+        rbd08l02 = "rbd08l02.des",
+        rbd08l05 = "rbd08l05.des",
+        rbd08w01 = "rbd08w01.des",
+        rbd08w02 = "rbd08w02.des",
+    }
 };
 
 local function countDead(handles, team)
@@ -111,7 +147,7 @@ statemachine.Create("main_objectives", {
         camera.CameraReady();
         --self:startTask("focus_comm1");
         --self:startTask("build_howiz");
-        AudioMessage(audio.intro);
+        AudioMessage(constants.audio.intro);
         state:next();
         return statemachine.FastResult();
     end },
@@ -193,7 +229,7 @@ statemachine.Create("main_objectives", {
     { "destroyComms.destroyComms.start", function(state)
         --- @cast state MainObjectives08_state
         mission_data.timerOut = false;
-        objective.AddObjective("rbd0801.otf");
+        objective.AddObjective(constants.objectives.rbd0801);
         mission_data.mission_states:on("grigg");
         state:next();
         return statemachine.FastResult();
@@ -203,8 +239,8 @@ statemachine.Create("main_objectives", {
         local dead = countDead(mission_data.key_objects.powers);
         if dead ~= mission_data.prior_dead then
             state.nextAudio = state.nextAudio + 1;
-            if tower_audio[state.nextAudio] then
-                AudioMessage(tower_audio[state.nextAudio]);
+            if constants.audio.tower[state.nextAudio] then
+                AudioMessage(constants.audio.tower[state.nextAudio]);
             end
             mission_data.prior_dead = dead;
 
@@ -225,13 +261,13 @@ statemachine.Create("main_objectives", {
             mission_data.timerOut = true;
             if countAlive(mission_data.key_objects.powers) > 1 then
                 --self:taskFail("destroyComms");
-                objective.UpdateObjective("rbd0801.otf", "RED");
-                FailMission(GetTime()+5.0,"rbd08l02.des");
+                objective.UpdateObjective(constants.objectives.rbd0801, "RED");
+                FailMission(GetTime()+5.0,constants.debriefing.rbd08l02);
                 state:switch(nil);
                 return;
             else -- One tower left when time runs out, player does not fail
                 -- Play audio message
-                AudioMessage(audio.timer_out);
+                AudioMessage(constants.audio.timer_out);
                 --self:startTask("startEvac");
                 state:next();
                 return;
@@ -242,7 +278,7 @@ statemachine.Create("main_objectives", {
         --- @cast state MainObjectives08_state
         StopCockpitTimer();
         HideCockpitTimer();
-        objective.UpdateObjective("rbd0801.otf", "GREEN");
+        objective.UpdateObjective(constants.objectives.rbd0801, "GREEN");
         --mission.AudioManager:Stop(self.grigg_id);
         
         mission_data.mission_states
@@ -270,8 +306,8 @@ statemachine.Create("main_objectives", {
     statemachine.SleepSeconds(5),
     { "evac.evacuate.start", function(state)
         --- @cast state MainObjectives08_state
-        AudioMessage(audio.evacuate);
-        objective.AddObjective("rbd0803.otf");
+        AudioMessage(constants.audio.evacuate);
+        objective.AddObjective(constants.objectives.rbd0803);
 
         --local s = mission.TaskManager:sequencer(mission_data.key_objects.grigg);
         --s:clear();
@@ -291,11 +327,11 @@ statemachine.Create("main_objectives", {
     end },
     { "evac.evacuate.success", function(state)
         --- @cast state MainObjectives08_state
-        objective.UpdateObjective("rbd0803.otf","GREEN");
+        objective.UpdateObjective(constants.objectives.rbd0803,"GREEN");
         if(mission_data.timerOut) then
-            SucceedMission(GetTime() + 5.0, "rbd08w02.des");
+            SucceedMission(GetTime() + 5.0, constants.debriefing.rbd08w02);
         else
-            SucceedMission(GetTime() + 5.0, "rbd08w01.des");
+            SucceedMission(GetTime() + 5.0, constants.debriefing.rbd08w01);
         end
         state:switch(nil);
     end },
@@ -319,9 +355,9 @@ statemachine.Create("grigg", {
             --self.grigg_spawned = true;
             
             --local griggAudioSequence = mission.AudioSequence();
-            --griggAudioSequence:queueAudio(audio.grigg_updates[1], 55 + math.random(10));
-            --griggAudioSequence:queueAudio(audio.grigg_updates[2], 20 + math.random(20));
-            --griggAudioSequence:queueAudio(audio.grigg_updates[3], 20 + math.random(20));
+            --griggAudioSequence:queueAudio(constants.audio.grigg_updates[1], 55 + math.random(10));
+            --griggAudioSequence:queueAudio(constants.audio.grigg_updates[2], 20 + math.random(20));
+            --griggAudioSequence:queueAudio(constants.audio.grigg_updates[3], 20 + math.random(20));
             --self.grigg_id = mission.AudioManager:PlayAndCall(griggAudioSequence, self, nil, "_nextGriggAudio");
 
             mission_data.grigg_audio_waits = {
@@ -424,7 +460,7 @@ statemachine.Create("grigg", {
 statemachine.Create("avoidBase", {
     { "start", function(state)
         --- @cast state AvoidBase08_state
-        objective.AddObjective("rbd0804.otf");
+        objective.AddObjective(constants.objectives.rbd0804);
         state.warning = false;
         state:next();
     end },
@@ -435,18 +471,18 @@ statemachine.Create("avoidBase", {
         if not state.warning and d < l then
             --self:taskFail("warning");
             state.warning = true;
-            objective.UpdateObjective("rbd0804.otf","YELLOW");
+            objective.UpdateObjective(constants.objectives.rbd0804,"YELLOW");
         elseif state.warning and d > l then
             --self:taskReset("warning");
             state.warning = false;
-            objective.UpdateObjective("rbd0804.otf","WHITE");
+            objective.UpdateObjective(constants.objectives.rbd0804,"WHITE");
         end
 
         local d2 = gameobject.GetPlayer():GetDistance("base");
         local l2 = Length(GetPosition("base",1) - GetPosition("base", 0));
         if d2 < l2 then
-            objective.UpdateObjective("rbd0804.otf","RED");
-            FailMission(GetTime() + 5.0, "rbd08l01.des");
+            objective.UpdateObjective(constants.objectives.rbd0804,"RED");
+            FailMission(GetTime() + 5.0, constants.debriefing.rbd08l01);
             state:switch(nil);
         end
     end }
@@ -458,7 +494,7 @@ statemachine.Create("grigg_voice", {
     function(state)
         --- @cast state GriggVoice08_state
         if state:SecondsHavePassed(mission_data.grigg_audio_waits[1]) then
-            state.audio = AudioMessage(audio.grigg_updates[1]);
+            state.audio = AudioMessage(constants.audio.grigg_updates[1]);
             state:next();
         end
     end,
@@ -472,7 +508,7 @@ statemachine.Create("grigg_voice", {
     function(state)
         --- @cast state GriggVoice08_state
         if state:SecondsHavePassed(mission_data.grigg_audio_waits[2]) then
-            state.audio = AudioMessage(audio.grigg_updates[2]);
+            state.audio = AudioMessage(constants.audio.grigg_updates[2]);
             state:next();
         end
     end,
@@ -486,7 +522,7 @@ statemachine.Create("grigg_voice", {
     function(state)
         --- @cast state GriggVoice08_state
         if state:SecondsHavePassed(mission_data.grigg_audio_waits[3]) then
-            state.audio = AudioMessage(audio.grigg_updates[3]);
+            state.audio = AudioMessage(constants.audio.grigg_updates[3]);
             state:next();
         end
     end,
@@ -499,7 +535,7 @@ stateset.Create("mission")
     :Add("grigg_voice", stateset.WrapStateMachine("grigg_voice"))
     :Add("grigg_dead", function(state, name)
         if not mission_data.key_objects.grigg or not mission_data.key_objects.grigg:IsAlive() then
-            FailMission(GetTime()+5.0, "rbd08l05.des");
+            FailMission(GetTime()+5.0, constants.debriefing.rbd08l05);
             state:off(name);
         end
     end)
