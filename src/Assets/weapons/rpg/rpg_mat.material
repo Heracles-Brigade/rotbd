@@ -1,6 +1,0 @@
-import * from "sprites.material"
-
-material grpg : BZSprite/AlphaHUD
-{
-	set_texture_alias DiffuseMap rpg_ret.png
-}

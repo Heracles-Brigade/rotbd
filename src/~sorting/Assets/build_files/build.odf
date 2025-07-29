@@ -1,0 +1,12 @@
+[Builder]
+buildName = "Build"
+buildTeam = 0
+buildItem1 = "build_a"
+buildItem2 = "build_s"
+buildItem3 = "build_b"
+buildItem4 = "build_c"
+buildItem5 = "build_bd"
+buildItem7 = "build_pw"
+buildItem8 = "build_h"
+buildItem9 = "build_o"
+buildItem10 = "b_nebldg"

@@ -1,0 +1,15 @@
+[GameObjectClass]
+baseName = "hbbird"
+classLabel = "i76building"
+scrapCost = 45
+scrapValue = 35
+maxHealth = 450000
+maxAmmo = 0
+unitName = "Alien Craft"
+heatSignature = 1.0
+imageSignature = 2.0
+radarSignature = 0.5
+
+[BuildingClass]
+soundAmbient = "avartle1.wav"
+

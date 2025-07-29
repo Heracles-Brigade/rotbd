@@ -1,0 +1,37 @@
+[OrdnanceClass]
+classLabel = "bolt"
+
+shotGeometry = NULL
+xplGround = "xmslgnd"
+xplVehicle = "xmslcar"
+xplBuilding = "xmslbld"
+xplExpire = "xmslcar"
+
+renderName = "vangbolt.render"
+
+ammoCost = 5
+lifeSpan = 175e-6
+shotSpeed = 1e6
+damageBallistic = 150
+damageConcussion = 0
+damageFlame = 0
+damageImpact = 0
+
+[BoltClass]
+segmentRadius = 0.0 //0.2
+segmentLength = 3.0
+segmentVariance = 0.0 //0.5
+segmentTexture = "beam_r.1"
+
+[Render]
+renderBase = "draw_bolt"
+textureName = "beam_r0.tga"
+textureBlend = "one one modulate"
+startColor = "255 255 0 255"
+finishColor = "255 0 0 255"
+startRadius = 0.5
+finishRadius = 0.0
+segmentLength = 3.0
+segmentVariance = "0.2 0.2 0.2"
+animateTime = 0.2
+textureRate = 0.5

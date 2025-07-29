@@ -1,0 +1,16 @@
+[WeaponClass]
+classLabel = "cannon"
+ordName = "vangbolt"
+wpnName = "Ripper"
+fireSound = "gvblt00.wav"
+wpnReticle = "gbolt"
+wpnPriority = 0
+wpnCategory = "CANN"
+shotAlternate = 1
+
+[CannonClass]
+shotVariance = 0.015
+shotDelay = 1.4
+salvoDelay = 0.1
+salvoCount = 8
+

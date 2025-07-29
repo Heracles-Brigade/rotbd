@@ -1,0 +1,88 @@
+[GameObjectClass]
+baseName = "avartl"
+classLabel = "howitzer"
+scrapValue = 6
+scrapCost = 0
+buildTime = 5.0
+maxHealth = 2000
+maxAmmo = 2000
+unitName = "Howitzer"
+aiName = "ArtilleryFriend"
+aiName2 = "ArtilleryEnemy"
+heatSignature = 0.2
+imageSignature = 2.0
+radarSignature = 1.0
+
+weaponHard1 = "GM1"
+weaponName1 = "ghartill"
+
+[CraftClass]
+rangeScan = 400.0f
+periodScan = 5.0f
+velocJam = 0.0f
+
+goMsg = "avartlv0.wav"
+followMsg = "avartlv3.wav"
+repairMsg = "avartlv4.wav"
+reloadMsg = "avartlv5.wav"
+rescueMsg = "avartlv7.wav"
+recycleMsg = "avartlv8.wav"
+attackMsg = "avartlvb.wav"
+otherMsg = "avartlvm.wav"
+user1Msg = "avartlve.wav"
+
+selectWaitMsg = "avartlvc.wav"
+selectGoMsg = "avartlvh.wav"
+selectDeployingMsg = "avartlvj.wav"
+selectAttackMsg = "avartlvk.wav"
+selectOtherMsg = "avartlvn.wav"
+
+deployedMsg = "avartlvg.wav"
+packedMsg = "avartlvf.wav"
+killedMsg = "avartlvp.wav"
+diedMsg = "abetty2.wav"
+
+[HoverCraftClass]
+setAltitude = 1.0
+accelDragStop = 4.0
+accelDragFull = 1.0
+alphaTrack = 20.0
+alphaDamp = 5.0
+pitchPitch = 0.3
+pitchThrust = 0.1
+rollStrafe = 0.1
+rollSteer = 0.1
+
+velocForward = 8.0
+velocReverse = 8.0
+velocStrafe = 8.0
+accelThrust = 50.0
+accelBrake = 75.0
+omegaSpin = 3.5
+omegaTurn = 1.5
+alphaSteer = 5.0
+accelJump = 15.0
+
+pitchBaseNacelleRun = -0.3
+pitchThrotNacelleRun = 0.2
+pitchSteerNacelleRun = 0.2
+pitchBaseNacelleJump = -1.0
+pitchThrotNacelleJump = 0.2
+pitchThrotNacelleJump = 0.2
+pitchSteerNacelleJump = 0.2
+
+flameParent1="aar11nfl"
+flameOffset1="-0.35 -0.0 -1.4"
+flameAngles1="3.141592654 0.0 0.0f"
+flameParent2="aar11nfr"
+flameOffset2="0.35 -0.0 -1.4"
+flameAngles2="3.141592654 0.0 0.0f"
+flameParent3="aar11nrl"
+flameOffset3="0.0 0.3 -1.7"
+flameAngles3="3.141592654 0.0 0.0f"
+
+soundThrust = "avartle1.wav"
+soundSteer = "avartle6.wav"
+soundDeploy = "avartle0.wav"
+soundUndeploy = "avartle4.wav"
+

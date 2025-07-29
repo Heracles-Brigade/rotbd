@@ -1,0 +1,20 @@
+Early attack: wave1, wave2, wave3
+
+Later attack: wave4, wave5
+
+nsdf_spawn, cca_spawn: enemy tugs + assault
+nsdf_attack + cca_attack: assault base
+
+
+so there's 5 paths near the player base for attack 
+waves, wave1, wave2, and wave3 should be spawned right at the start of the beginning, 
+just some scouts/fighters and light tanks probably
+wave4 and wave5 should be later, maybe a bomber assault?
+nsdf_spawn / cca_spawn are for the tugs, then nsdf_path and cca_path for the paths they take from the relics
+the main attack wave paths lead from where the relics are to the player base, 
+I dunno if that's fine or not, you can edit them to lead all the way from enemy bases I guess
+no paths for any cameras, 
+if you use the idea of having a short cinematic whenever a tug leaves a base you'll have to put 
+those where you think is best
+and yeah
+

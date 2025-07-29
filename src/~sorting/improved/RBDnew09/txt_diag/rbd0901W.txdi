@@ -1,0 +1,4 @@
+PARENT diag.voices
+START
+BAKR:	It wont be long before they find out a patrol unit is missing [250];
+SHAW: Take out that command tower [50] that will buy us some time [100];

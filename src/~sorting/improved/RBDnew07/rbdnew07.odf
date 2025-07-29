@@ -1,0 +1,13 @@
+myScrap   = 10
+hisScrap  = 0
+myPilots   = 25
+hisPilots  = 0
+startVoice = ""
+missionObjective = "rbd07ob1.otf"
+shellSuccess = "rbd07win.des"
+shellFail = "rbd07los.des"
+failCondition = 0
+successCondition = 0
+timeLeft = 0.0f
+shellOutOfTime = 0
+

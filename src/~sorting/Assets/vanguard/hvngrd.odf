@@ -1,0 +1,52 @@
+[GameObjectClass]
+baseName = "hvngrd"
+classLabel = "wingman"
+scrapValue = 15
+scrapCost = 28
+pilotCost = 1
+pilotName = ""
+maxHealth = 14000
+maxAmmo = 12000
+unitName = "Vanguard"
+aiName = "TankFriend"
+aiName2 = "TankEnemy"
+heatSignature = 1.5
+imageSignature = 1.8
+radarSignature = 2.0
+
+weaponHard1 = "GC1"
+weaponName1 = "gvangblt"
+weaponHard2 = "GC1"
+weaponName2 = "gvangblt
+weaponHard3 = "GS1"
+weaponName3 = ""
+
+[CraftClass]
+rangeScan = 400.0f
+periodScan = 2.0f
+velocJam = 5.0f
+
+[HoverCraftClass]
+setAltitude = 10.0
+accelDragStop = 3.5
+accelDragFull = 1.0
+alphaTrack = 20.0
+alphaDamp = 5.0
+pitchPitch = 0.15
+pitchThrust = 0.0
+rollStrafe = 0.0
+rollSteer = 0.0
+
+velocForward = 40.0
+velocReverse = 5.0
+velocStrafe = 40.0
+accelThrust = 40.0
+accelBrake = 50.0
+omegaSpin = 4.0
+omegaTurn = 2.0
+alphaSteer = 5.0
+accelJump = 30.0
+
+soundDeploy = "avsave5.wav"
+soundUndeploy = "avsave6.wav"
+soundThrust = "avsave0.wav"
