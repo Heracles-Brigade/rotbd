@@ -79,6 +79,93 @@ navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToG
 
 
 
+--- @class RBD05_Constants_Audio
+--- @field intro string
+--- @field inspect string
+--- @field destroy_f string
+--- @field done_d string
+--- @field back_to_base string
+--- @field apc_spawn string
+--- @field pickup_done string
+--- @field win string
+
+--- @class RBD05_Constants_Objectives
+--- @field Rendezvous string
+--- @field WaitForUnits string
+--- @field InvestigateRelic string
+--- @field DestroyRelic string
+--- @field DefendRelic string
+--- @field UplinkConnecting string
+--- @field UplinkTransmitting string
+--- @field ReturnToBase string
+--- @field UplinkRetry string
+--- @field UplinkRunNuke string
+--- @field EscordAPCsToBase string
+--- @field SendAPCsToEvac string
+--- @field EscortAPCsToEvac string
+--- @field bdmisn2504 string
+--- @field rbdnew3502 string
+--- @field rbdnew3503 string
+
+--- @class RBD05_Constants_Debriefing
+--- @field CommandTowerDestroyed string
+--- @field RelicDestroyedEarly string
+--- @field KilledRescueMen string
+--- @field ApcLost string
+--- @field Success5 string
+--- @field Missing1 string
+--- @field Missing2 string
+--- @field ApcLost2 string
+--- @field SurvivingForcesKilled string
+--- @field EvacSuccess6 string
+
+--- @class RBD05_Constants
+--- @field audio RBD05_Constants_Audio
+--- @field objectives RBD05_Constants_Objectives
+--- @field debriefing RBD05_Constants_Debriefing
+local constants = {
+    audio = {
+        intro = "rbd0501.wav",
+        inspect = "rbd0502.wav",
+        destroy_f = "rbd0503.wav",
+        done_d = "rbd0504.wav",
+        back_to_base = "rbd0505.wav",
+
+        apc_spawn = "rbd0506.wav",
+        pickup_done = "rbd0507.wav",
+        win = "rbd0508.wav"
+    },
+    objectives = {
+        Rendezvous = "rbd0521.otf",
+        WaitForUnits = "rbd0522.otf",
+        InvestigateRelic = "rbd0523.otf",
+        DestroyRelic = "rbd0524.otf",
+        DefendRelic = "rbd0525.otf",
+        UplinkConnecting = "rbd0530.otf",
+        UplinkTransmitting = "rbd0531.otf",
+        ReturnToBase = "rbd0532.otf",
+        UplinkRetry = "rbd0533.otf",
+        UplinkRunNuke = "rbd0534.otf",
+        EscordAPCsToBase = "bdmisn2601.otf",
+        SendAPCsToEvac = "bdmisn2602.otf",
+        EscortAPCsToEvac = "bdmisn2603.otf",
+        bdmisn2504 = "bdmisn2504.otf",
+        rbdnew3502 = "rbdnew3502.otf",
+        rbdnew3503 = "rbdnew3503.otf"
+    },
+    debriefing = {
+        CommandTowerDestroyed = "rbdnew15l1.des",
+        RelicDestroyedEarly = "rbdnew15l2.des",
+        KilledRescueMen = "rbdnew15l3.des",
+        ApcLost = "rbdnew15l4.des",
+        Success5 = "rbdnew15w.des",
+        Missing1 = nil,
+        Missing2 = nil,
+        ApcLost2 = "bdmisn26l1.des", -- possible dupe?
+        SurvivingForcesKilled = "bdmisn26l2.des",
+        EvacSuccess6 = "bdmisn26wn.des",
+    }
+};
 
 
 
@@ -270,93 +357,6 @@ end
 SetAIControl(2,false);
 SetAIControl(3,false);
 
---- @class RBD05_Constants_Audio
---- @field intro string
---- @field inspect string
---- @field destroy_f string
---- @field done_d string
---- @field back_to_base string
---- @field apc_spawn string
---- @field pickup_done string
---- @field win string
-
---- @class RBD05_Constants_Objectives
---- @field Rendezvous string
---- @field WaitForUnits string
---- @field InvestigateRelic string
---- @field DestroyRelic string
---- @field DefendRelic string
---- @field UplinkConnecting string
---- @field UplinkTransmitting string
---- @field ReturnToBase string
---- @field UplinkRetry string
---- @field UplinkRunNuke string
---- @field EscordAPCsToBase string
---- @field SendAPCsToEvac string
---- @field EscortAPCsToEvac string
---- @field bdmisn2504 string
---- @field rbdnew3502 string
---- @field rbdnew3503 string
-
---- @class RBD05_Constants_Debriefing
---- @field CommandTowerDestroyed string
---- @field RelicDestroyedEarly string
---- @field KilledRescueMen string
---- @field ApcLost string
---- @field Success5 string
---- @field Missing1 string
---- @field Missing2 string
---- @field ApcLost2 string
---- @field SurvivingForcesKilled string
---- @field EvacSuccess6 string
-
---- @class RBD05_Constants
---- @field audio RBD05_Constants_Audio
---- @field objectives RBD05_Constants_Objectives
---- @field debriefing RBD05_Constants_Debriefing
-local constants = {
-    audio = {
-        intro = "rbd0501.wav",
-        inspect = "rbd0502.wav",
-        destroy_f = "rbd0503.wav",
-        done_d = "rbd0504.wav",
-        back_to_base = "rbd0505.wav",
-
-        apc_spawn = "rbd0506.wav",
-        pickup_done = "rbd0507.wav",
-        win = "rbd0508.wav"
-    },
-    objectives = {
-        Rendezvous = "rbd0521.otf",
-        WaitForUnits = "rbd0522.otf",
-        InvestigateRelic = "rbd0523.otf",
-        DestroyRelic = "rbd0524.otf",
-        DefendRelic = "rbd0525.otf",
-        UplinkConnecting = "rbd0530.otf",
-        UplinkTransmitting = "rbd0531.otf",
-        ReturnToBase = "rbd0532.otf",
-        UplinkRetry = "rbd0533.otf",
-        UplinkRunNuke = "rbd0534.otf",
-        EscordAPCsToBase = "bdmisn2601.otf",
-        SendAPCsToEvac = "bdmisn2602.otf",
-        EscortAPCsToEvac = "bdmisn2603.otf",
-        bdmisn2504 = "bdmisn2504.otf",
-        rbdnew3502 = "rbdnew3502.otf",
-        rbdnew3503 = "rbdnew3503.otf"
-    },
-    debriefing = {
-        CommandTowerDestroyed = "rbdnew15l1.des",
-        RelicDestroyedEarly = "rbdnew15l2.des",
-        KilledRescueMen = "rbdnew15l3.des",
-        ApcLost = "rbdnew15l4.des",
-        Success5 = "rbdnew15w.des",
-        Missing1 = nil,
-        Missing2 = nil,
-        ApcLost2 = "bdmisn26l1.des", -- possible dupe?
-        SurvivingForcesKilled = "bdmisn26l2.des",
-        EvacSuccess6 = "bdmisn26wn.des",
-    }
-};
 
 --- @class CCA_Relic_Attack_state : StateMachineIter
 --- @field v GameObject

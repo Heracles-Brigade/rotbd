@@ -84,23 +84,6 @@ navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToG
 
 
 
---Returns true of all of the handles given are dead
---areAnyAlive = not areAllDead
-local function areAllDead(handles, team)
-    for i,v in pairs(handles) do
-        if v:IsAlive() and (team==nil or team == v:GetTeamNum(v)) then
-            return false;
-        end
-    end
-    return true;
-end
-
-local function choose(...)
-    local t = {...};
-    local rn = math.random(#t);
-    return t[rn];
-end
-
 --- @class RBD04_Constants_Audio
 --- @field intro string
 --- @field itsatrap string
@@ -214,6 +197,25 @@ local mission_data = {
 	DecoyTime = 0,
 	FlashTime = 0
 }
+
+
+
+--Returns true of all of the handles given are dead
+--areAnyAlive = not areAllDead
+local function areAllDead(handles, team)
+    for i,v in pairs(handles) do
+        if v:IsAlive() and (team==nil or team == v:GetTeamNum(v)) then
+            return false;
+        end
+    end
+    return true;
+end
+
+local function choose(...)
+    local t = {...};
+    local rn = math.random(#t);
+    return t[rn];
+end
 
 local function SpawnNav(num)
 	local nav = navmanager.BuildImportantNav("apcamr", 1, mission_data.NavCoords[num]);

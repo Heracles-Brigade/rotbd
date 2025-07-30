@@ -72,9 +72,11 @@ buildItem2 = "aprepa"
 buildItem3 = "apammo"
 buildItem4 = "bvturr"
 buildItem5 = "bvraz"
-buildItem6 = "bvmufa"
-buildItem7 = "bvslfa"
-buildItem8 = "bvcnst22"
+//buildItem6 = "bvmufa" // fuckywucky build list with now howitzer or walker, but gains scav? no bueno
+buildItem6 = "bvmuf22" // custom to deal with fuckywucky
+//buildItem7 = "bvslfa" // no artillery or DW
+buildItem7 = "bvslfb" // just seems like a better option
+buildItem8 = "bvcnst22" // looks like stock?
 
 blockedGeyserMsg = "avrecyvb.wav"
 soundBuild = "avrecye2.wav"

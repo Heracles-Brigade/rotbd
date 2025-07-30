@@ -251,10 +251,13 @@ local constants = {
         bdmisn2209 = "bdmisn2209.otf", -- Build a Comm Tower
     },
     debriefing = {
-        bdmisn22l2 = "bdmisn22l2.des",
-        --bdmisn21ls = "bdmisn21ls.des",
-        bdmisn22wn = "bdmisn22wn.des",
+        bdmisn21ls = "bdmisn21ls.des", -- Command Tower destroyed (by player) (not used yet)
+        rbdnew01l1 = "rbdnew01l1.des", -- Command Tower destroyed (player didn't defend) (not used yet)
+        bdmisn22l2 = "bdmisn22l2.des", -- Recycler destroyed
+        rbdnew01l2 = "rbdnew01l2.des", -- Recycler destroyed (not used yet)
         --bdmisn21wn = "bdmisn21wn.des",
+        bdmisn22wn = "bdmisn22wn.des", -- We have a foothold on the moon now
+        rbdnew01w = "rbdnew01w.des", -- much better ending debriefing (not used yet)
     },
 };
 
