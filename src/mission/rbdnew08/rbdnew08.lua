@@ -24,13 +24,9 @@
 --- Notes
 --- Big base to be placed in middle of map, player is to avoid this
 
-require("_printfix");
+local logger = require("_logger");
 
-print("\27[34m----START MISSION----\27[0m");
-
---- @diagnostic disable-next-line: lowercase-global
-debugprint = print;
---traceprint = print;
+logger.print(logger.LogLevel.DEBUG, nil, "\27[34m----START MISSION----\27[0m");
 
 require("_requirefix").addmod("rotbd");
 
@@ -572,7 +568,7 @@ hook.Add("Producer:BuildComplete", "Mission:ProducerBuildComplete", function (ob
     --- @cast producer GameObject
     --- @cast data any
 
-    debugprint("Producer:BuildComplete", object:GetOdf(), producer:GetOdf(), data and table.show(data));
+    logger.print(logger.LogLevel.DEBUG, nil, "Producer:BuildComplete", object:GetOdf(), producer:GetOdf(), data and table.show(data));
 
     if data and data.name then
         if data.name == "_forEachHowie" then

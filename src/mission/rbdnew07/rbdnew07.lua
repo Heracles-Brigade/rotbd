@@ -26,13 +26,9 @@
 --- Notes
 --- Ambush force varies depending on which relic is retrieved first; CCA if west relic, NSDF if east relic.
 
-require("_printfix");
+local logger = require("_logger");
 
-print("\27[34m----START MISSION----\27[0m");
-
---- @diagnostic disable-next-line: lowercase-global
-debugprint = print;
---traceprint = print;
+logger.print(logger.LogLevel.DEBUG, nil, "\27[34m----START MISSION----\27[0m");
 
 require("_requirefix").addmod("rotbd");
 

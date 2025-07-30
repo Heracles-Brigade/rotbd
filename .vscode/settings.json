@@ -2,7 +2,6 @@
     "files.exclude": {
         "dev/": true,
         "dist/": true,
-        "src/scripts/": true,
         "src/mp/": true,
         "src/baseline/": true,
         //"src/Assets/": true,
@@ -17,6 +16,7 @@
     "Lua.workspace.library": [
         "deps/BZ98R-Advanced-Lua-API/dev/scriptutils.lua",
         "deps/BZ98R-Advanced-Lua-API/baked",
+        "src/scripts"
     ],
     "Lua.workspace.ignoreDir": [
         "deps/BZ98R-Advanced-Lua_API/dev/preprocessor.lua",

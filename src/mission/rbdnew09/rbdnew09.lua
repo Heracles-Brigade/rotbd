@@ -27,13 +27,9 @@
 --- Fury units to be Isis Vanguard fliers.
 --- Fury attacks come in waves; allows player to choose to attack during or between waves.
 
-require("_printfix");
+local logger = require("_logger");
 
-print("\27[34m----START MISSION----\27[0m");
-
---- @diagnostic disable-next-line: lowercase-global
-debugprint = print;
---traceprint = print;
+logger.print(logger.LogLevel.DEBUG, nil, "\27[34m----START MISSION----\27[0m");
 
 require("_requirefix").addmod("rotbd");
 
@@ -349,7 +345,7 @@ statemachine.Create("main_objectives", {
                     foundTurret = true;
                 end
                 if foundPower and foundTurret then
-                    debugprint("Found both powerplant and turret");
+                    logger.print(logger.LogLevel.DEBUG, nil, "Found both powerplant and turret");
                     break;
                 end
             end
@@ -673,6 +669,7 @@ stateset.Create("mission")
 
 local function setUpPatrols()
     --local patrol_rid, patrol_r = bzRoutine.routineManager:startRoutine("PatrolRoutine");
+    --- @type PatrolEngine patrol_r
     local patrol_r = patrol.new();
 
     --what are our `checkpoint` locations?

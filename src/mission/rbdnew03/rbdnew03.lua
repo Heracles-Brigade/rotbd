@@ -68,13 +68,9 @@
 --- For some reason they player has 100 sniper shots.  This doesn't make sense, especially since using it will lose the mission.
 --- steal lines from Flying Solo for the hailing
 
-require("_printfix");
+local logger = require("_logger");
 
-print("\27[34m----START MISSION----\27[0m");
-
---- @diagnostic disable-next-line: lowercase-global
-debugprint = print;
---traceprint = print;
+logger.print(logger.LogLevel.DEBUG, nil, "\27[34m----START MISSION----\27[0m");
 
 require("_requirefix").addmod("rotbd");
 

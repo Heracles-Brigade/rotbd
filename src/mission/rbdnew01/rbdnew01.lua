@@ -67,13 +67,9 @@
 --- The current factory build list includes a scav... and its order will give people a stroke due to muscle memory.
 --- Establish a base at Nav 4 is an odd objective, since the nav, while in slot 4 if you didn't make other navs, is not called "Nav 4".
 
-require("_printfix");
+local logger = require("_logger");
 
-print("\27[34m----START MISSION----\27[0m");
-
---- @diagnostic disable-next-line: lowercase-global
-debugprint = print;
---traceprint = print;
+logger.print(logger.LogLevel.DEBUG, nil, "\27[34m----START MISSION----\27[0m");
 
 require("_requirefix").addmod("rotbd");
 --require("_requirefix").addmod("3362534335");

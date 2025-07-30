@@ -39,13 +39,9 @@
 --- in a playtest, a light tank failed to attack an Lpower becaused it was being swarmed by its own allies following it, add timer to auto destroy everything is an emergency backup
 --- Camera sequence only advances when the targets of the sequence die, when the player removes all combat units from the base due to knowing it's going to be destroyed, the attacker doesn't die, and thus the mission softlocks in a camera sequence.
 
-require("_printfix");
+local logger = require("_logger");
 
-print("\27[34m----START MISSION----\27[0m");
-
---- @diagnostic disable-next-line: lowercase-global
-debugprint = print;
---traceprint = print;
+logger.print(logger.LogLevel.DEBUG, nil, "\27[34m----START MISSION----\27[0m");
 
 require("_requirefix").addmod("rotbd");
 
@@ -175,6 +171,13 @@ local constants = {
 
 --local minit = require("minit")
 
+--- @class MissionData05_Pwers
+--- @field h GameObject
+--- @field t TeamNum
+
+--- @class MissionData05
+--- @field pwers MissionData05_Pwers[]
+--- @field patrol_r PatrolEngine?
 local mission_data = {};
 mission_data.pwers = {};
 
@@ -364,7 +367,7 @@ SetAIControl(3,false);
 statemachine.Create("cca_relic_attack",
     function (state)
         --- @cast state CCA_Relic_Attack_state
-        if state.v:GetCurrentCommand() == AiCommand["NONE"] then
+        if state.v:GetCurrentCommand() == AiCommand.NONE then
             state:next();
         end
     end,
@@ -375,7 +378,7 @@ statemachine.Create("cca_relic_attack",
     end,
     function (state)
         --- @cast state CCA_Relic_Attack_state
-        if state.v:GetCurrentCommand() == AiCommand["NONE"] then
+        if state.v:GetCurrentCommand() == AiCommand.NONE then
             state:next();
         end
     end,
@@ -386,7 +389,7 @@ statemachine.Create("cca_relic_attack",
     end,
     function (state)
         --- @cast state CCA_Relic_Attack_state
-        if state.v:GetCurrentCommand() == AiCommand["NONE"] then
+        if state.v:GetCurrentCommand() == AiCommand.NONE then
             state:next();
         end
     end,
@@ -400,7 +403,7 @@ statemachine.Create("cca_relic_attack",
 statemachine.Create("cca_attack_base",
     function (state)
         --- @cast state CCA_Relic_Attack_state
-        if state.v:GetCurrentCommand() == AiCommand["NONE"] then
+        if state.v:GetCurrentCommand() == AiCommand.NONE then
             state:next();
         end
     end,
@@ -411,7 +414,7 @@ statemachine.Create("cca_attack_base",
     end,
     function (state)
         --- @cast state CCA_Relic_Attack_state
-        if state.v:GetCurrentCommand() == AiCommand["NONE"] then
+        if state.v:GetCurrentCommand() == AiCommand.NONE then
             state:next();
         end
     end,
@@ -868,7 +871,7 @@ statemachine.Create("main_objectives", {
     end },
     { "baseDestroyCin.update", function(self)
         for i,v in pairs(mission_data.attackers) do
-            local task = v:GetCurrentCommand() ~= AiCommand["NONE"];
+            local task = v:GetCurrentCommand() ~= AiCommand.NONE;
             --[[if(not task) then
                 for i2,v2 in pairs(mission_data.targets) do
                     if( i<=(i2*3) and (not task) ) then
@@ -962,7 +965,7 @@ statemachine.Create("main_objectives", {
         spawnAtPath("svturr",2,"26spawn_turr");
         spawnAtPath("svltnk",2,"26spawn_light");
         local apcs = spawnAtPath("bvapc26",1,"26spawn_apc");
-        debugprint(table.show(apcs,"apcs"));
+        logger.print(logger.LogLevel.DEBUG, nil, table.show(apcs,"apcs"));
         for i, v in pairs(apcs) do
             v:SetLabel(("apc%d"):format(i));
             v:SetObjectiveName(("Transport %d"):format(i));
@@ -1091,7 +1094,7 @@ statemachine.Create("main_objectives", {
  
             local who = v:GetCurrentWho();
             if not who then error("Failed to get current who") end
-            if v:IsWithin(who,10) or v:GetCurrentCommand() == AiCommand["NONE"] then
+            if v:IsWithin(who,10) or v:GetCurrentCommand() == AiCommand.NONE then
                 v:RemoveObject();
                 mission_data.pilots[i] = nil;
             else
@@ -1175,7 +1178,7 @@ hook.Add("Producer:BuildComplete", "Mission:ProducerBuildComplete", function (ob
     --- @cast producer GameObject
     --- @cast data any
 
-    debugprint("Producer:BuildComplete", object:GetOdf(), producer:GetOdf(), data and table.show(data));
+    logger.print(logger.LogLevel.DEBUG, nil, "Producer:BuildComplete", object:GetOdf(), producer:GetOdf(), data and table.show(data));
 
     if data and data.name then
         if data.name == "relic_camera" then
@@ -1236,7 +1239,7 @@ hook.Add("Update", "Mission:Update", function (dtime, ttime)
     --core:update(dtime);
     --mission:Update(dtime);
     for i,v in pairs(mission_data.pwers) do
-        if v.h:GetCurrentCommand() == AiCommand["GO"] then
+        if v.h:GetCurrentCommand() == AiCommand.GO then
             v.h:SetTeamNum(v.t);
             mission_data.pwers[i] = nil;
         end

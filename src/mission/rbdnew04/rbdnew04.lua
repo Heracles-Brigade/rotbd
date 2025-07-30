@@ -48,13 +48,9 @@
 --- for some reason the backup objective of going to the fake after driving the real mammoth didn't work, look into why
 --- flash bang and explosion of the fake happened late
 
-require("_printfix");
+local logger = require("_logger");
 
-print("\27[34m----START MISSION----\27[0m");
-
---- @diagnostic disable-next-line: lowercase-global
-debugprint = print;
---traceprint = print;
+logger.print(logger.LogLevel.DEBUG, nil, "\27[34m----START MISSION----\27[0m");
 
 require("_requirefix").addmod("rotbd");
 
@@ -163,7 +159,6 @@ local constants = {
 --- @field Aud1 number
 --- @field DecoyTime number
 --- @field FlashTime number
---- @field patrol_r PatrolEngine
 local mission_data = {
 	-- Bools
 	UpdateObjectives = false,

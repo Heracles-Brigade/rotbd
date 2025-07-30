@@ -30,13 +30,9 @@
 --- Fully formed and defended bases present; NSDF in south-east, CCA in south-west
 --- Constructor outside player’s control already ordered to build launch pad, progress slow
 
-require("_printfix");
+local logger = require("_logger");
 
-print("\27[34m----START MISSION----\27[0m");
-
---- @diagnostic disable-next-line: lowercase-global
-debugprint = print;
---traceprint = print;
+logger.print(logger.LogLevel.DEBUG, nil, "\27[34m----START MISSION----\27[0m");
 
 require("_requirefix").addmod("rotbd");
 
@@ -328,7 +324,7 @@ statemachine.Create("main_objectives", {
         if not const then error("Constructor not found") end
         local d1 = GetPosition("launchpad");
         local ctask = const:GetCurrentCommand();
-        --debugprint("Constructor command", ctask);
+        --logger.print(logger.LogLevel.DEBUG, nil, "Constructor command", ctask);
         if not state.building and const:GetDistance("launchpad") < 100 and ctask == AiCommand["NONE"] then
             --local pp = GetPathPoints("launchpad");
             local pp = utility.IteratorToArray(utility.IteratePath("launchpad"));
@@ -349,7 +345,7 @@ statemachine.Create("main_objectives", {
             --local btime = misc.odfFile("ablpadx"):getFloat("GameObjectClass","buildTime");
             local btime = paramdb.GetBuildTime("ablpadx");
             --self.factory_timer = math.min(self.factory_timer,btime);
-            debugprint("Factory timer", btime);
+            logger.print(logger.LogLevel.DEBUG, nil, "Factory timer", btime);
             StartCockpitTimer(btime);
 
             --self:startTask("build_lpad");
@@ -714,7 +710,7 @@ hook.Add("WaveSpawner:Spawned", "Mission:WaveSpawnerSpawned", function (name, un
     --- @cast units GameObject[]
     --- @cast leader GameObject
 
-    debugprint("WaveSpawner:Spawned", name, table.show(units,"units"), leader);
+    logger.print(logger.LogLevel.DEBUG, nil, "WaveSpawner:Spawned", name, table.show(units,"units"), leader);
 
     if mission_data.wave_state == "build_launchpad" then
         local n = {};
@@ -754,7 +750,7 @@ hook.Add("Producer:BuildComplete", "Mission:ProducerBuildComplete", function (ob
     --- @cast producer GameObject
     --- @cast data any
 
-    debugprint("Producer:BuildComplete", object:GetOdf(), producer:GetOdf(), data and table.show(data));
+    logger.print(logger.LogLevel.DEBUG, nil, "Producer:BuildComplete", object:GetOdf(), producer:GetOdf(), data and table.show(data));
 
     if data and data.name then
         if data.name == "_lpad_done" then
@@ -810,7 +806,7 @@ hook.Add("Update", "Mission:Update", function (dtime, ttime)
                 local success = v:run(dtime);
                 --- @cast success StateMachineIterWrappedResult
                 if not success or (statemachine.isstatemachineiterwrappedresult(success) and success.Abort) then
-                    debugprint("Removing sub machine", i);
+                    logger.print(logger.LogLevel.DEBUG, nil, "Removing sub machine", i);
                     table.remove(mission_data.sub_machines,i); -- clean up dead machines from the list
                 end
             end
@@ -824,7 +820,7 @@ hook.Add("Update", "Mission:Update", function (dtime, ttime)
                 local success = v:run(dtime);
                 --- @cast success StateMachineIterWrappedResult
                 if not success or (statemachine.isstatemachineiterwrappedresult(success) and success.Abort) then
-                    debugprint("Removing attacker machine", i);
+                    logger.print(logger.LogLevel.DEBUG, nil, "Removing attacker machine", i);
                     table.remove(mission_data.attacker_machines,i); -- clean up dead machines from the list
                 end
             end

@@ -5,12 +5,13 @@
 --- @module '_audio_dev'
 --- @author John "Nielk1" Klein
 
---- @diagnostic disable: undefined-global
-local debugprint = debugprint or function(...) end;
-local traceprint = traceprint or function(...) end;
---- @diagnostic enable: undefined-global
+-- Estimated timing constants
+local SECONDS_PER_CHAR = 1/13
+local SECONDS_PER_DEADAIR_UNIT = 1/10
 
-debugprint("_audio_dev Loading");
+local logger = require("_logger");
+
+logger.print(logger.LogLevel.DEBUG, nil, "_audio_dev Loading");
 
 local objective = require("_objective");
 local utility = require("_utility");
@@ -33,7 +34,7 @@ local messages = {};
 --- @param msg DummyAudioMessage
 local function PlayFakeAudioMessage(msg)
     messages[msg.wav] = msg;
-    objective.AddObjective(msg.wav, "GREY", msg.time, "["..tostring(math.floor(msg.end_time - world_ttime)).."] "..msg.content, 999, true);
+    objective.AddObjective(msg.wav, "GREY", msg.time, "["..tostring(math.floor(msg.end_time - world_ttime)).."]\n"..msg.content, 999, true);
 end
 
 --- @param msg DummyAudioMessage
@@ -75,26 +76,27 @@ function RepeatAudioMessage()
 end
 
 local function splitToLines(input, maxWidth)
-    local result = ""
-    local currentLine = ""
-
-    for word in input:gmatch("%S+") do
-        if #currentLine + #word + 1 <= maxWidth then
-            -- Add the word to the current line
-            currentLine = currentLine == "" and word or (currentLine .. " " .. word)
-        else
-            -- Add the current line to the result and start a new line
-            result = result .. currentLine .. "\n"
-            currentLine = word
+    local wrapped_lines = {}
+    for orig_line in input:gmatch("[^\n]*") do
+        local result = ""
+        local currentLine = ""
+        for word in orig_line:gmatch("%S+") do
+            if #currentLine + #word + 1 <= maxWidth then
+                currentLine = currentLine == "" and word or (currentLine .. " " .. word)
+            else
+                result = result .. currentLine .. "\n"
+                currentLine = word
+            end
+        end
+        if currentLine ~= "" then
+            result = result .. currentLine
+        end
+        -- Trim leading/trailing spaces from each wrapped line
+        for line in result:gmatch("[^\n]+") do
+            wrapped_lines[#wrapped_lines + 1] = line:gsub("^%s+", ""):gsub("%s+$", "")
         end
     end
-
-    -- Add the last line if it exists
-    if currentLine ~= "" then
-        result = result .. currentLine
-    end
-
-    return result
+    return table.concat(wrapped_lines, "\n")
 end
 
 --- Plays the given audio file, which must be an uncompressed RIFF WAVE (.WAV) file.
@@ -110,10 +112,29 @@ function AudioMessage(filename)
     local txdi = string.gsub(filename, "%.wav$", ".txdi");
     local content = UseItem(txdi);
     if content then
-        local cleanContent = splitToLines(content, 40);
-        print("AudioMessage: "..filename.." ("..txdi..")");
-        print(cleanContent);
-        local length = content:len() / 10;
+        local cleanContent = string.gsub(content, "PARENT diag%.voices\r?\n", "")
+        cleanContent = string.gsub(cleanContent, "START\r?\n", "")
+
+        -- Extract and sum all numbers between brackets
+        local deadAirTime = 0
+        cleanContent = string.gsub(cleanContent, "%[(%d+)%]", function(num)
+            local localDeadAir = tonumber(num) or 0;
+            deadAirTime = deadAirTime + localDeadAir
+            if localDeadAir >= 100 then
+                return "\n";
+            end
+            return "";
+        end)
+        -- Collapse multiple spaces to a single space
+        while string.find(cleanContent, "  ") do
+            cleanContent = string.gsub(cleanContent, "  ", " ")
+        end
+
+        cleanContent = splitToLines(cleanContent, 40)
+
+        print("AudioMessage: "..filename.." ("..txdi..")")
+        print(cleanContent)
+        local length = (content:len() * SECONDS_PER_CHAR) + (deadAirTime * SECONDS_PER_DEADAIR_UNIT)
         lastAudio = {
             dummy_audio = true,
             wav = filename,
@@ -122,10 +143,10 @@ function AudioMessage(filename)
             time = length,
             end_time = world_ttime + length,
             camera = camera.InCamera(),
-        };
-        PlayFakeAudioMessage(lastAudio);
+        }
+        PlayFakeAudioMessage(lastAudio)
         --- @cast lastAudio AudioMessage
-        return lastAudio;
+        return lastAudio
     end
     return Original.AudioMessage(filename);
 end
@@ -171,7 +192,7 @@ hook.Add("Update", "FakeAudioMessage.Update", function(dtime, ttime)
                     msg.camera = true;
                     msg.end_time = msg.end_time + dtime; -- bump the end time if the camera is active
                 end
-                objective.UpdateObjective(msg.wav, "GREY", nil, (msg.camera and "[Delayed]" or "").."["..tostring(math.floor(msg.end_time - world_ttime)).."] "..msg.content);
+                objective.UpdateObjective(msg.wav, "GREY", nil, (msg.camera and "[Delayed]" or "").."["..tostring(math.floor(msg.end_time - world_ttime)).."]\n"..msg.content);
             end
         end
     end
@@ -185,7 +206,7 @@ end, function(_lastAudio, _world_ttime, _messages)
     messages = _messages;
 end);
 
-debugprint("_audio_dev Loaded");
+logger.print(logger.LogLevel.DEBUG, nil, "_audio_dev Loaded");
 
 --- @class DummyAudioMessage
 --- @field dummy_audio boolean
