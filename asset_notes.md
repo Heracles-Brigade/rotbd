@@ -29,24 +29,51 @@ Any customizations should be done with a new file.
             * `abtowe03.inf` missing from stock
         * `abbarr`
             * `abbarx.*` *?*
+        * `avartl`
+            * `avartlf.odf` [rbdnew08]
+        * `avmuf`
+            * `avmuff.odf` [rbdnew08]
+        * `abstor`
+            * `abstorsp.*` [rbdnew09]
     * `bdog`
+        * `bvapc`
+            * `bvapc26.odf` [rbdnew15]
+            * `bvapc09.odf` [rbdnew09]
         * `bvmtnk` Goliath
             * `bdm*.geo` *core*
             * `bvmtnk*` *core*
+            * `bvmtnk30` [rbdnew10]
         * `bvrecy`
             * `bvrecy22.odf` [rbdnew01]
+            * `bvrecx.odf` [rbdnew15]
+            * `bvrecz.odf` [rbdnew15]
+            * `bvrecy7.odf` [rbdnew07]
+            * `bvrecy30.odf` [rbdnew10]
         * `bvmuf`
             * `bvmuf22.odf` [rbdnew01] (new custom to solve build list order issues)
+            * `bvmuf7.odf` [rbdnew07]
+            * `bvmuf30.odf` [rbdnew10]
+        * `bvslf`
+            * `bvslfz.odf` [rbdnew15]
+            * `bvslf30.odf` [rbdnew10]
         * `bvcnst`
             * `bvcnst22.odf` [rbdnew01] (matches stock even though it shouldn't?)
+            * `bvcnst7.odf` [rbdnew07]
+            * `bvcnst30.odf` [rbdnew10]
+        * `bblpad`
+            * `ablpadx.odf` [rbdnew10]
+        * `bvhaul`
+            * `bvhaul30.odf` [rbdnew10]
     * `soviet`
         * `svmtnk` Mammoth
             * `svmamm.odf` Possibly vestigian, listed in `b_rbdsov.odf` but nowhere else? (consider repurposing for extra-large version)
             * `smm*.geo` *core*
-            * `svmtnk*` *core*
+            * `svmtnk*` *core* [rbdnew04]
+            * `svmtnkd.*` Decoy Mammoth (only difference is a pilotName field, why?) [rbdnew04]
             * `mammoth.lua` old mammoth script, needs rewrite if used
         * `sbspow`
-            * `sbspowg.*` Special power for `rbdnew01`
+            * `sbspowg.*` [rbdnew01]
+            * `sbspow09.*` [rbdnew09]
         * `sbtowe`
             * `sbtowerb` Blast Gun Tower [rbdnew01]
         * `sbhang`
@@ -55,6 +82,10 @@ Any customizations should be done with a new file.
             * `sbhqcpa.*` Shield Control [rbdnew03]
         * `sspilo`
             * `bsuserco.odf` Black Dog pilot in CCA suit [rbdnew03]
+        * `svmuf`
+            * `svmuff.odf` [rbdnew08]
+        * `svartl`
+            * `svartlf.odf` [rbdnew08]
     * `hadean`
         * `hvngrd` Vanguard
         * `hbbird` Relic: Stymphalian Bird (Sigma3)
@@ -70,6 +101,8 @@ Any customizations should be done with a new file.
             * `apwrckz` 200 cost 2000000 damage
         * `sdome`
             * `sdome.odf` Shield dome effect [rbdnew03]
+        * `xbmbblnd`
+            * `xbmbblnd.odf` Decoy Mammoth Explosion [rbdnew04]
 * `weapons`
     * `mammoth` Vestigial? Mammoth Weapons
         * `gXinigun.odf` Minigun
@@ -113,19 +146,66 @@ Any customizations should be done with a new file.
         * `objectives`
     * `rbd06` Universal mission files
         * `debriefing`
+            * `bdmisn26l1.des` [rbdnew15]
+            * `bdmisn26l2.des` [rbdnew15]
+            * `bdmisn26wn.des` [rbdnew15]
         * `objectives`
+            * `bdmisn2601.otf` [rbdnew15]
+            * `bdmisn2602.otf` [rbdnew15]
+            * `bdmisn2603.otf` [rbdnew15]
     * `rbd07` Universal mission files
         * `debriefing`
+            * `rbd07l02.des` [rbdnew07]
+            * `rbd07l03.des` [rbdnew07]
+            * `rbd07l04.des` [rbdnew07]
+            * `rbd07los.des` [rbdnew07]
+            * `rbd07win.des` [rbdnew07]
         * `objectives`
+            * `rbd0701.otf` [rbdnew07]
+            * `rbd0702.otf` [rbdnew07]
+            * `rbd0703.otf` [rbdnew07]
+            * `rbd0704.otf` [rbdnew07]
+            * `rbd0705.otf` [rbdnew07]
+            * `rbd0706.otf` [rbdnew07]
+            * `rbd07ob1.otf` [rbdnew07]
     * `rbd08` Universal mission files
         * `debriefing`
+            * `rbd08l01.des` [rbdnew08]
+            * `rbd08l05.des` [rbdnew08]
+            * `rbd08w01.des` [rbdnew08]
+            * `rbd08w02.des` [rbdnew08]
         * `objectives`
+            * `rbd0801.otf` [rbdnew08]
+            * `rbd0801i.otf` [rbdnew08]
+            * `rbd0802.otf` [rbdnew08]
+            * `rbd0802i.otf` [rbdnew08]
+            * `rbd0803.otf` [rbdnew08]
+            * `rbd0804.otf` [rbdnew08]
     * `rbd09` Universal mission files
         * `debriefing`
+            * `rbd09l01.des` [rbdnew09]
+            * `rbd09l02.des` [rbdnew09]
+            * `rbd09wn.des` [rbdnew09]
         * `objectives`
+            * `rbd0901.otf` [rbdnew09]
+            * `rbd0902.otf` [rbdnew09]
+            * `rbd0902b.otf` [rbdnew09]
+            * `rbd0903.otf` [rbdnew09]
+            * `rbd0904.otf` [rbdnew09]
+            * `rbd0905.otf` [rbdnew09]
+            * `rbd0906.otf` [rbdnew09]
     * `rbd10` Universal mission files
         * `debriefing`
+            * `rbd10l01.des` [rbdnew10]
+            * `rbd10l02.des` [rbdnew10]
+            * `rbd10l03.des` [rbdnew10]
+            * `rbd10l04.des` [rbdnew10]
+            * `rbd10l05.des` [rbdnew10]
+            * `rbd10w01.des` [rbdnew10]
         * `objectives`
+            * `rbd1001.otf` [rbdnew10]
+            * `rbd1002.otf` [rbdnew10]
+            * `rbd1003.otf` [rbdnew10]
     * `rbdnew01`
         * `debriefing`
             * `rbdnew01l1.des` (for some reason these aren't used yet)
@@ -161,6 +241,23 @@ Any customizations should be done with a new file.
             * `rbdnew0405.otf` [rbdnew04]
             * `rbdnew0406.otf` [rbdnew04]
     * `rbdnew05`
+        * `debriefing`
+            * `rbdnew15l1.des` [rbdnew15]
+            * `rbdnew15l2.des` [rbdnew15]
+            * `rbdnew15l3.des` [rbdnew15]
+            * `rbdnew15l4.des` [rbdnew15]
+            * `rbdnew15w.des` [rbdnew15]
+        * `objectives`
+            * `rbd0521.otf` [rbdnew15]
+            * `rbd0522.otf` [rbdnew15]
+            * `rbd0523.otf` [rbdnew15]
+            * `rbd0524.otf` [rbdnew15]
+            * `rbd0525.otf` [rbdnew15]
+            * `rbd0530.otf` [rbdnew15]
+            * `rbd0531.otf` [rbdnew15]
+            * `rbd0532.otf` [rbdnew15]
+            * `rbd0533.otf` [rbdnew15]
+            * `rbd0534.otf` [rbdnew15]
     * `rbdnew07`
     * `rbdnew08`
     * `rbdnew09`

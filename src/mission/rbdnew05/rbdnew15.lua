@@ -159,9 +159,9 @@ local constants = {
         KilledRescueMen = "rbdnew15l3.des",
         ApcLost = "rbdnew15l4.des",
         Success5 = "rbdnew15w.des",
-        Missing1 = nil,
-        Missing2 = nil,
-        ApcLost2 = "bdmisn26l1.des", -- possible dupe?
+        Missing1 = nil, -- left the area of the relic before time
+        Missing2 = nil, -- relic not destroyed by DW (this should be coded to be force to happen, even if the DW is destroyed so this should become impossible)
+        ApcLost2 = "bdmisn26l1.des",
         SurvivingForcesKilled = "bdmisn26l2.des",
         EvacSuccess6 = "bdmisn26wn.des",
     }
@@ -1151,7 +1151,7 @@ stateset.Create("mission")
     :Add("main_objectives", stateset.WrapStateMachine("main_objectives"))
     --:Add("pickupSurvivors.apc_watch", function(state, name)
     --    if(checkAnyDead(mission_data.apcs)) then
-    --        FailMission(GetTime()+5.0,constants.debriefing.bdmisn26l1);
+    --        FailMission(GetTime()+5.0,constants.debriefing.ApcLost2);
     --        state:off(name, true);
     --    end
     --end)
