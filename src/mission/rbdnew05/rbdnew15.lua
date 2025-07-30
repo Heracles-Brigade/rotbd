@@ -1,13 +1,43 @@
---Combination of The Last Stand and Evacuate Venus
-
--- relic doesn't go enemy right away when voiceover starts, meaning it takes a while before you shoot at it
--- consider making all friendly units that are attacking the mammoth, STOP ATTACKING THE MAMMOTH, once it is shown to be impossible to damage
--- Constructor is not given to player when they go to base, why?
--- recycler cannot make constructor or factory, why?
--- why does the armory have a DW that cost 200, why not remove it?
--- In playtest camera somehow targeted non-existing object, despite code that says to point at each alive in sequence.
--- in a playtest, a light tank failed to attack an Lpower becaused it was being swarmed by its own allies following it, add timer to auto destroy everything is an emergency backup
--- Camera sequence only advances when the targets of the sequence die, when the player removes all combat units from the base due to knowing it's going to be destroyed, the attacker doesn't die, and thus the mission softlocks in a camera sequence.
+--- Rise of the Black Dogs
+---
+--- [4] The Hunt Begins
+--- Original Mission:
+--- [5] The Last Stand
+--- [6] Evacuate Venus
+---
+--- World: Venus (Sol II)
+--- Map Data: NEW (is this a new map or an old stock one?)
+---
+--- Authors:
+--- * ?
+--- * John "Nielk1" Klein
+--- 
+--- High Level Objectives
+--- Retrieve and defend Io relics
+--- 
+--- Events
+---
+--- The next set of coordinates leads the Black Dogs to Venus, near the outskirts of a large Coalition base. Cobra One is sent out to secure the relic while Shaw directs the construction of a command base from orbit.
+--- 
+--- Cobra One reaches and investigates the relic with minimal CCA resistance, but the Coalition are very quick to realise something is up and send a much larger force to secure the area. Fearing that they might discover the relic, Shaw orders Cobra One to destroy it - when that fails he orders the area bombed and retrieves as much information as possible via Cobra One’s uplink before ordering him to evacuate. Shaw’s base comes under attack while the data is transferring, but Cobra One is unable to assist without interrupting the transmission. When the Day Wrecker arrives he barely escapes it; the incoming forces do not.
+--- 
+--- Cobra One is forced to rush back to assist in the base’s defence and is given command, but is too late to do anything of use and is instead ordered to destroy the Communication Tower coordinating the assault. When this is destroyed the influx of CCA forces stops, but the base is too damaged to support any further operations and, now that they have the data in hand, Shaw orders its evacuation. Two APCs are dropped at the landing site to the east and Cobra One is ordered to escort them first to the base and then to the dust-off site, past the remaining CCA forces and a hastily-erected blockade.
+--- 
+--- The data from the down ship reveals that the Stymphalian Birds were an elite fighter squadron designed to combat the Heracles Brigade. It also indicates the location of a Hadean research base on Io where part of the project was conducted.
+---
+--- Notes
+--- Stymphalian Bird is at dust-off point to the north-west
+--- Leaving relic too early results in mission failure
+--- 
+--- Issues
+--- relic doesn't go enemy right away when voiceover starts, meaning it takes a while before you shoot at it
+--- consider making all friendly units that are attacking the mammoth, STOP ATTACKING THE MAMMOTH, once it is shown to be impossible to damage
+--- Constructor is not given to player when they go to base, why?
+--- recycler cannot make constructor or factory, why?
+--- why does the armory have a DW that cost 200, why not remove it?
+--- In playtest camera somehow targeted non-existing object, despite code that says to point at each alive in sequence.
+--- in a playtest, a light tank failed to attack an Lpower becaused it was being swarmed by its own allies following it, add timer to auto destroy everything is an emergency backup
+--- Camera sequence only advances when the targets of the sequence die, when the player removes all combat units from the base due to knowing it's going to be destroyed, the attacker doesn't die, and thus the mission softlocks in a camera sequence.
 
 require("_printfix");
 
@@ -126,7 +156,7 @@ local function copyObject(handle,odf,kill)
 end
 
 
-local IsIn = function(a,inB) 
+local IsIn = function(a,inB)
     for i,v in pairs(inB) do
         if(a == v) then
             return true;
@@ -400,7 +430,7 @@ statemachine.Create("defendRelic.cca_attack_base", {
             --local s = mission.TaskManager:sequencer(v);
             --s:queue2("Goto","front_line");
             --s:queue2("Defend");
-            
+ 
             local machine = statemachine.Start("cca_attack_base", nil, { v = v });
             table.insert(mission_data.sub_machines, machine);
         end
@@ -494,7 +524,7 @@ statemachine.Create("main_objectives", {
         producer.QueueJob("bvslfz", 3);
         --ProducerAi:queueJob(ProductionJob("bvmuf",3));
         producer.QueueJob("bvmuf", 3);
-        
+ 
         --mission_data.relic_camera_id = ProducerAi:queueJobs(ProductionJob("apcamr",3,"relic_site"));
         producer.QueueJob("apcamr", 3, "relic_site", nil, { name = "relic_camera" });
 
@@ -508,7 +538,7 @@ statemachine.Create("main_objectives", {
         producer.QueueJob("bvraz", 3, nil, nil, { name = "patrolProd" });
         producer.QueueJob("bvraz", 3, nil, nil, { name = "patrolProd" });
         producer.QueueJob("bvraz", 3, nil, nil, { name = "patrolProd" });
-        
+ 
         --Tell AI to build some guntowers for defence and a commtower
         --- @todo reorder these so they make more sense
         for i,v in utility.IteratePath("make_bblpow") do
@@ -558,7 +588,7 @@ statemachine.Create("main_objectives", {
         producer.QueueJob("bvrckt", 3, nil, nil, { name = "_forEachProduced1" });
         producer.QueueJob("bvrckt", 3, nil, nil, { name = "_forEachProduced1" });
         producer.QueueJob("bvrckt", 3, nil, nil, { name = "_forEachProduced1" });
-        --local scoutJobs = {ProductionJob:createMultiple(2,"bvraz",3)}; 
+        --local scoutJobs = {ProductionJob:createMultiple(2,"bvraz",3)};
         producer.QueueJob("bvraz", 3, nil, nil, { name = "_forEachProduced1" });
         producer.QueueJob("bvraz", 3, nil, nil, { name = "_forEachProduced1" });
         producer.QueueJob("bvraz", 3, nil, nil, { name = "_forEachProduced1" });
@@ -567,7 +597,7 @@ statemachine.Create("main_objectives", {
 
         self:next();
     end },
-    { "wait_for_units__update", function (state) 
+    { "wait_for_units__update", function (state)
         if mission_data.wait_for_units >= 9 then
             state:next();
         end
@@ -917,7 +947,7 @@ statemachine.Create("main_objectives", {
         local vec = GetPosition("nsdf_base");
         if not vec then error("Failed to get nsdf_base") end
         for v in gameobject.ObjectsInRange(500, vec) do
-            if(gameobject.GetPlayer() ~= v) then 
+            if(gameobject.GetPlayer() ~= v) then
                 v:Damage(100000);
             end
         end
@@ -990,7 +1020,7 @@ statemachine.Create("main_objectives", {
             v:Goto("apc_follow_path");
         end
         mission_data.nav = navs[1];
-        
+ 
         --mission_data.mission_states:on("pickupSurvivors.apc_watch");
         self:next();
 
@@ -1002,8 +1032,8 @@ statemachine.Create("main_objectives", {
             self:switch(nil);
             return;
         end
-        if(mission_data.apcs[1]:IsWithin(mission_data.nav,200) or 
-        mission_data.apcs[2]:IsWithin(mission_data.nav,200) or 
+        if(mission_data.apcs[1]:IsWithin(mission_data.nav,200) or
+        mission_data.apcs[2]:IsWithin(mission_data.nav,200) or
             gameobject.GetPlayer():IsWithin(mission_data.nav,200)) then
             mission_data.pilots = spawnAtPath("aspilo",1,"spawn_pilots")
             for i,v in pairs(mission_data.pilots) do
@@ -1058,7 +1088,7 @@ statemachine.Create("main_objectives", {
         --mission_data.t1 = mission_data.t1 - dtime;
         local pleft = 0;
         for i,v in pairs(mission_data.pilots) do
-            
+ 
             local who = v:GetCurrentWho();
             if not who then error("Failed to get current who") end
             if v:IsWithin(who,10) or v:GetCurrentCommand() == AiCommand["NONE"] then
@@ -1067,14 +1097,14 @@ statemachine.Create("main_objectives", {
             else
                 pleft = pleft + 1;
             end
-            
+ 
         end
         if((pleft <= 0)) then---or (mission_data.t1 <= 0)) then
             --self:success();
             AudioMessage(constants.audio.pickup_done);
             for i,v in pairs(mission_data.apcs) do
                 v:Stop(0);
-            end  
+            end
             objective.UpdateObjective(constants.objectives.rbdnew3503,"GREEN");
             --mission.Objective:Start("escortAPCs");
             self:next();

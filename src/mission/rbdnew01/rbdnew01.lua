@@ -130,7 +130,7 @@ local mission_data = {
         relic = nil, -- Relic
         cafe = nil, -- Cafeteria (used for camera paths)
         patrol_units = {}, -- Patrol units, used for camera paths
-        
+ 
         solarfarm1 = {}, -- Solar Array 1
         solarfarm2 = {}, -- Solar Array 2
 
@@ -420,7 +420,7 @@ statemachine.Create("main_objectives", {
         mission_data.nav_research:SetObjectiveOn();
 
         mission_data.key_objects.commtower:SetObjectiveOn();
-        
+ 
         objective.AddObjective(constants.objectives.bdmisn214, C.White);
         objective.AddObjective(constants.objectives.bdmisn215, C.White);
         camera.CameraReady();
@@ -470,7 +470,7 @@ statemachine.Create("main_objectives", {
             --Start 22 - Preparations
             --mission.Objective:Start("intermediate");
             --globals.intermediate = statemachine.Start("intermediate", { enemiesAtStart = false });
-            
+ 
 
             state:next();
         end
@@ -478,7 +478,7 @@ statemachine.Create("main_objectives", {
     function (state)
         --- @cast state RBD01_MissionState
         objective.ClearObjectives();
-        
+ 
         mission_data.key_objects.nav1:RemoveObject();
         mission_data.key_objects.nav_solar1:RemoveObject();
         mission_data.key_objects.nav_solar2:RemoveObject();
@@ -515,7 +515,7 @@ statemachine.Create("main_objectives", {
         --Make recycler follow path
         recy:Goto(mission_data.nav_research, 0);
         state.recy = recy;
-        
+ 
         recy:SetObjectiveOn();
         --state:success();
         state:next();
@@ -545,14 +545,14 @@ statemachine.Create("main_objectives", {
         createWave("sbspow",{"spawn_sbspow1","spawn_sbspow2"});
         --Start wave after a delay?
         createWave("svfigh",{"spawn_n1","spawn_n2","spawn_n3"},"north_path");
-        createWave("svtank",{"spawn_n4","spawn_n5"},"north_path"); 
-        
+        createWave("svtank",{"spawn_n4","spawn_n5"},"north_path");
+ 
         --local instance = deployRecy:start();
-        
+ 
         --local instance2 = loseRecy:start();
         mission_data.mission_states:on("lose_recy");
         state:next();
-        
+ 
         --local instance3 = TooFarFromRecy:start();
         --global.mission_states:on("toofarfrom_recy");
     end,
@@ -568,7 +568,7 @@ statemachine.Create("main_objectives", {
     function (state)
         objective.UpdateObjective(constants.objectives.bdmisn2201, C.Green);
         objective.ClearObjectives();
-        
+ 
         state:next();
         mission_data.mission_states:on("delayed_spawn");
     end,
@@ -589,7 +589,7 @@ statemachine.Create("main_objectives", {
     end,
     { "get_scrap", function (state)
         objective.AddObjective(constants.objectives.bdmisn2203,"WHITE");
-        createWave("svtank",{"spawn_w1"},"west_path"); 
+        createWave("svtank",{"spawn_w1"},"west_path");
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path");
         state:next();
     end },
@@ -617,7 +617,7 @@ statemachine.Create("main_objectives", {
     end,
     { "make_comm", function (state)
         objective.AddObjective(constants.objectives.bdmisn2209,"WHITE");
-        createWave("svtank",{"spawn_w1"},"west_path"); 
+        createWave("svtank",{"spawn_w1"},"west_path");
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path");
         state:next();
     end },
@@ -630,11 +630,11 @@ statemachine.Create("main_objectives", {
         objective.UpdateObjective(constants.objectives.bdmisn2209, C.Green);
         state:switch("destroy_soviet");
     end,
-    
+ 
     -- SKIPPED STATES?
     { "make_offensive", function (state)
         objective.AddObjective(constants.objectives.bdmisn2205,"WHITE");
-        createWave("svtank",{"spawn_w1"},"west_path"); 
+        createWave("svtank",{"spawn_w1"},"west_path");
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path");
         state:next()
     end },
@@ -650,7 +650,7 @@ statemachine.Create("main_objectives", {
     end,
     { "make_defensive", function (state)
         objective.AddObjective(constants.objectives.bdmisn2206,"WHITE");
-        createWave("svtank",{"spawn_w1"},"west_path"); 
+        createWave("svtank",{"spawn_w1"},"west_path");
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path"); -- Original Script did nothing with these 2. Possibly sent to guard Scavs instead? -GBD
         createWave("svscav",{"spawn_w2","spawn_w3"});
         state:next();
@@ -786,7 +786,7 @@ stateset.Create("mission")
     --        end
     --    end
     --end)
-    
+ 
     -- Lose conditions by GBD. No idea if i did this right, mission doesn't update otfs, or goto a next thing, it runs throughout the mission. (distance check until ordered to attack CCA base, and recy loss throughout entire mission.)
     :Add("lose_recy", function (state)
         if not gameobject.GetRecycler(1):IsAlive() then
@@ -796,7 +796,7 @@ stateset.Create("mission")
 	end)
 
     :Add("delayed_spawn", stateset.WrapStateMachine("delayed_spawn"))
-    
+ 
     :Add("tug_relic_convoy", stateset.WrapStateMachine("tug_relic_convoy"));
 
 hook.Add("Start", "Mission:Start", function ()
@@ -811,7 +811,7 @@ hook.Add("Start", "Mission:Start", function ()
             print("Warning: Solar farm 1 object " .. label .. " not found.");
         end
     end
-    
+ 
     for _, label in pairs(constants.labels.solarfarm2) do
         local obj = gameobject.GetGameObject(label);
         if obj then

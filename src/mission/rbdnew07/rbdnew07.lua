@@ -1,4 +1,30 @@
---Rev_2
+--- Rise of the Black Dogs
+---
+--- [5] Grave Robbers
+--- Original Mission:
+--- [7] Retrieve Relics
+---
+--- World: Io (Jupiter I), Jupiter (Sol V)
+--- Map Data: NEW (is this a new map or an old stock one?)
+---
+--- Authors:
+--- * ?
+--- * John "Nielk1" Klein
+---
+--- High Level Objectives
+--- Retrieve and defend Io relics
+--- 
+--- Events
+--- The relic retrieved from Venus points to a project the Hadean scientist Canis had headed called the Stymphalian Birds, fusing Cthon flesh with Biometal to create supersoldiers. Believing there to be relics on Io further connected to Canis’ research, Shaw sends his platoon there to retrieve them, well aware that the Coalition are after the relics as well, finding an NSDF and CCA platoon when his forces arrive.
+--- 
+--- After successfully capturing the first relic, the Black Dogs pick up a distress call nearby and Cobra One is ordered to investigate. The distress call was a ruse, and Cobra One  is ambushed by a Coalition force on arrival.
+--- 
+--- After the Coalition forces have been neutralised Cobra One is returned to escort duty and escorts the Tug back to base. Moments after securing the second relic the base comes under attack from a wing of Bombers and Rocket Tanks and Cobra One is forced to defend it.
+--- 
+--- The relics retrieved reveal that Canis’ experiments had attempted to create supersoldiers by fusing Cthon flesh with biometal, and that the Stymphalian Birds were the elite fighter squadron that resulted. 
+--- 
+--- Notes
+--- Ambush force varies depending on which relic is retrieved first; CCA if west relic, NSDF if east relic.
 
 require("_printfix");
 
@@ -156,7 +182,7 @@ local function chooseA(...)
     local t = {...};
     local m = 0;
     for i, v in pairs(t) do
-        m = m + v.chance; 
+        m = m + v.chance;
     end
     local rn = math.random()*m;
     local n = 0;
@@ -323,11 +349,11 @@ statemachine.Create("delayed_spawn_formation_and_goto", {
 statemachine.Create("main_objectives", {
     { "escortRecycler.start", function (state)
         --- @cast state MainMissionStateMachineIter
-        
+ 
         -- init
         mission_data.key_objects.recy = gameobject.GetRecycler();
         mission_data.key_objects.tug = gameobject.GetGameObject(labels.relic_tug);
-        
+ 
         local formation = {" 2 ",
                            "1 1"};
         -- start
@@ -339,7 +365,7 @@ statemachine.Create("main_objectives", {
         state.attackers = {};
         objective.AddObjective(constants.objectives.escort,"WHITE");
         AudioMessage(constants.audio.intro);
-        
+ 
         -- enable loss conditions
         mission_data.mission_states:on("loseTug"):on("loseRecycler");
 
@@ -381,7 +407,7 @@ statemachine.Create("main_objectives", {
     end },
     { "reteriveRelics.state", function(state)
         --- @cast state MainMissionStateMachineIter
-        
+ 
         mission_data.key_objects.relic = {
             nsdf = gameobject.GetGameObject("relic_nsdf"),
             cca  = gameobject.GetGameObject("relic_cca"),
@@ -391,7 +417,7 @@ statemachine.Create("main_objectives", {
         for _, v in pairs(spawnInFormation2({"1 3"}, ("nsdf_attack"), relic_data.nsdf.vehicles, 2, 15)) do
             v:Goto("nsdf_attack");
         end
-        
+ 
         --Spawn attack @ nsdf_base
         for _, v in pairs(spawnInFormation2({"1 1","6 6"}, "nsdf_path", relic_data.nsdf.vehicles, 2, 15)) do
             local def_seq = statemachine.Start("nsdf_base_attack", nil, { v = v });
@@ -424,7 +450,7 @@ statemachine.Create("main_objectives", {
         --};
         --state.distressCountdown = 5;
         objective.AddObjective(constants.objectives.relics, "WHITE", 16);
-        
+ 
         local nsdf_attack = statemachine.Start("relic_wave_spawner", nil, { key = "nsdf", noExtraWait = ranC == 1,  waveInterval = 140 });
         local cca_attack  = statemachine.Start("relic_wave_spawner", nil, { key = "cca" , noExtraWait = ranC == 0 , waveInterval = 140 });
         local nsdf_tug = statemachine.Start("relic_tug_spawner", nil, { key = "nsdf", noExtraWait = ranC == 1,  bufferTime = 500, otf = constants.objectives.nsdf_tug });
@@ -447,18 +473,18 @@ statemachine.Create("main_objectives", {
     end },
     { "reteriveRelics.update", function(state)
         --- @cast state MainMissionStateMachineIter
-        
+ 
         for _, relic_datum in pairs(relic_data) do
             local relic_object = mission_data.key_objects.relic[relic_datum.name];
             if relic_object == nil then error("relic_object is nil"); end
-            
+ 
             local relic_task = relic_datum.relic_name;
 
             local f = relic_datum.name;
-            
+ 
             --- Pickup Task
             local pickup_relic_task = relic_datum.pickup_name; -- was ptask
-            
+ 
             --Check which base the relics are in if any at all
             local bdog = relic_object:GetDistance("bdog_base") < 100;
             local cca  = relic_object:GetDistance("cca_base" ) < 100;
@@ -471,10 +497,10 @@ statemachine.Create("main_objectives", {
                     if not tug_carrying or not tug_carrying:IsValid() then
                         -- a tug is not carrying the relic but it is in the bdog base
                         mission_data.fucking_garbage[relic_task] = "succeeded"
-                        
+ 
                         --- @todo array access via string is a bit hairy but it works
                         objective.UpdateObjective(constants.objectives[("%s_tug"):format(relic_datum.name)], "GREEN");
-                        
+ 
                         if not mission_data.audio_played[constants.audio.relic_secured_1] then
                             AudioMessage(constants.audio.relic_secured_1);
                             mission_data.audio_played[constants.audio.relic_secured_1] = true;
@@ -501,7 +527,7 @@ statemachine.Create("main_objectives", {
                 elseif tug_carrying and tug_carrying:GetTeamNum() == 2 then
                     mission_data.fucking_garbage[pickup_relic_task] = "failed"
                     --Fail task, reset if player manages to retake it
-                    
+ 
                     --Paint the enemy tug carrying the relic
                     tug_carrying:SetObjectiveOn()
                     --Unpaint the relic
@@ -513,7 +539,7 @@ statemachine.Create("main_objectives", {
                 end
             elseif tug_carrying and mission_data.fucking_garbage[pickup_relic_task] ~= "running" and not tug_carrying:IsValid() then
                 mission_data.fucking_garbage[pickup_relic_task] = "running"
-                
+ 
                 --Unpain the tug carrying the relic
                 tug_carrying:SetObjectiveOff();
                 --Pain the relic
@@ -522,7 +548,7 @@ statemachine.Create("main_objectives", {
                 relic_object:SetTeamNum(0);
             end
         end
-        
+ 
         if not mission_data.fucking_garbage.distress and
           (mission_data.fucking_garbage["relic_nsdf_pickup"] == "succeeded"
         or mission_data.fucking_garbage["relic_cca_pickup"] == "succeeded"
@@ -559,7 +585,7 @@ statemachine.Create("main_objectives", {
                 end
             end
         end
-        
+ 
         if mission_data.fucking_garbage.distress == "succeeded"
         and mission_data.fucking_garbage["relic_nsdf"] == "succeeded"
         and mission_data.fucking_garbage["relic_cca"] == "succeeded" then
@@ -768,7 +794,7 @@ statemachine.Create("relic_tug_spawner", {
                 local def_seq = statemachine.Start("relic_tug_escort_orders", nil, { v = v, tug = tug, key = state.key });
                 table.insert(mission_data.sub_machines, def_seq);
             end
-            
+ 
             --Create Attack
             for _,v in pairs(spawnInFormation2({"1 1"},("%s_path"):format(state.key), relic_data[state.key].vehicles, 2, 15)) do
                 --local def_seq = mission.TaskManager:sequencer(v);

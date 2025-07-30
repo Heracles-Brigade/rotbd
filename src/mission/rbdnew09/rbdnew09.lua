@@ -1,3 +1,32 @@
+--- Rise of the Black Dogs
+---
+--- [7] Pirates of the Frozen Sea
+--- Original Mission:
+--- [9] Capture the Armory
+---
+--- World: Europa (Jupiter II), Jupiter (Sol V)
+--- Map Data: NEW (is this a new map or an old stock one?)
+---
+--- Authors:
+--- * ?
+--- * John "Nielk1" Klein
+---
+--- High Level Objectives
+--- Secure armory
+--- 
+--- Events
+--- The Black Dogs relocated to Europa to find the area around the base swarming with Coalition units on high-alert due to nearby Fury activity. With a full frontal assault impossible, Shaw inserts Cobra One at the head of an attack wing to sneak through the canyons and capture the base with as little combat as possible.
+--- 
+--- Cobra One is given the choice to carefully time a direct route through the patrols in the canyons or take a more winding path that results in lower risk of confrontation but slower progress, running the risk of encountering more Furies later.
+--- 
+--- The attack wing arrives at the base to discover that it is not built around a single relic as expected, but is in fact build within a much larger Hadean research and development site. Without the option of stealing the relic Cobra One is forced to secure the site against all nearby enemy units.
+--- 
+--- Further investigation of the site reveals that it was the primary site of the Stymphalian Birds project, and the technology found here should exponentially advance the combat capability of Black Dog units. With the relic trail complete the Black Dogs pack up to return to the main base on the moon.
+--- 
+--- Notes
+--- Fury units to be Isis Vanguard fliers.
+--- Fury attacks come in waves; allows player to choose to attack during or between waves.
+
 require("_printfix");
 
 print("\27[34m----START MISSION----\27[0m");
@@ -253,7 +282,7 @@ end
 statemachine.Create("main_objectives", {
     { "captureRelic.init", function(state)
         --- @cast state MainObjectives09_state
-        
+ 
         -- init
         mission_data.key_objects.apc = gameobject.GetGameObject("apc");
         mission_data.key_objects.recy = gameobject.GetGameObject("recycler");
@@ -458,7 +487,7 @@ statemachine.Create("main_objectives", {
                         --s:queue3("FindTarget","relic_site");
                         local machine = statemachine.Start("nsdf_attack_relic_site", nil, { v = v2, alt = "relic_site" });
                         table.insert(mission_data.sub_machines, machine);
-                        
+ 
                         table.insert(state.units_to_kill, v2);
                     end
                     state.extra_waves[i] = nil;
@@ -652,7 +681,7 @@ local function setUpPatrols()
     patrol_r:defineRoutes("l_comm",{
         p_comm_c3 = "l_c3"
     });
-    
+ 
     patrol_r:defineRoutes("l_c1",{
         p_c1_c2 = "l_c2",
         p_c1_sw = "l_sw"
@@ -662,7 +691,7 @@ local function setUpPatrols()
         p_c2_c3 = "l_c3",
         p_c2_north = "l_north"
     });
-    
+ 
     patrol_r:defineRoutes("l_c3",{
         p_c3_comm = "l_comm",
         p_c3_c1 = "l_c1"

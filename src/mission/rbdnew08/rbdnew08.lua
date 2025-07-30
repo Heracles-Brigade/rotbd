@@ -1,3 +1,29 @@
+--- Rise of the Black Dogs
+---
+--- [6] The Silencers
+--- Original Mission:
+--- [8] The Silencers
+---
+--- World: Titan (Saturn VI), Saturn (Sol VI)
+--- Map Data: NEW (is this a new map or an old stock one?)
+---
+--- Authors:
+--- * ?
+--- * John "Nielk1" Klein
+---
+--- High Level Objectives
+--- Shut down communications array
+--- 
+--- Events
+--- Having collected multiple relics drawing a connection to Canis and the armory that the NSDF scientists had been studying, Shaw now wants to locate and capture the armory. Seeing an opportunity to kill two birds with one stone he orders Cobra One and Private Grigg on a mission to Titan, the central hub of Coalition communications, to both disrupt NSDF-CCA coordination and determine the location of the armory.
+--- 
+--- Whilst Cobra One makes a dash around the perimeter of the base, leading a small strike force to take down the base’s comm towers, Private Grigg sneaks by the panicking defenses and raids the base’s headquarters for information. After both teams have succeeded in their objectives, they rendezvous and escape before the Coalition have time to organize a proper response.
+--- 
+--- The information retrieved by Private Grigg reveals that the Coalition has relocated the armory to a base in a Europan canyon system.
+--- 
+--- Notes
+--- Big base to be placed in middle of map, player is to avoid this
+
 require("_printfix");
 
 print("\27[34m----START MISSION----\27[0m");
@@ -76,7 +102,7 @@ local mission_data = {
 local constants = {
     audio = {
         intro = "rbd0801.wav",
-        
+ 
         --(Grigg’s updates, interspersed throughout)
         grigg_updates = {"rbdnew0820.wav", "rbdnew0821.wav", "rbdnew0822.wav"},
 
@@ -280,7 +306,7 @@ statemachine.Create("main_objectives", {
         HideCockpitTimer();
         objective.UpdateObjective(constants.objectives.rbd0801, "GREEN");
         --mission.AudioManager:Stop(self.grigg_id);
-        
+ 
         mission_data.mission_states
             --:off("grigg")
             --:off("grigg_dead")
@@ -353,7 +379,7 @@ statemachine.Create("grigg", {
             --s:queue2("Goto","grigg_in");
             --s:queue2("Dropoff",pp[#pp]);
             --self.grigg_spawned = true;
-            
+ 
             --local griggAudioSequence = mission.AudioSequence();
             --griggAudioSequence:queueAudio(constants.audio.grigg_updates[1], 55 + math.random(10));
             --griggAudioSequence:queueAudio(constants.audio.grigg_updates[2], 20 + math.random(20));

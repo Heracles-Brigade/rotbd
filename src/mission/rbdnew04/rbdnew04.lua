@@ -1,8 +1,52 @@
--- Battlezone: Rise of the Black Dogs Redux, Mission 3 "The Mammoth Project" recoded by Vemahk and Seqan based off GBD's 1:1 script
-
--- for some reason the backup objective of going to the fake after driving the real mammoth didn't work, look into why
--- flash bang and explosion of the fake happened late
-
+--- Rise of the Black Dogs
+---
+--- [3] The Mammoth Project
+--- Original Mission:
+--- [4] The Mammoth Project
+---
+--- World: Mars (Sol IV)
+--- Map Data: NEW (is this a new map or an old stock one?)
+---
+--- Authors:
+--- * Vemahk
+--- * Seqan
+--- * GBD (original 1:1 port)
+--- * John "Nielk1" Klein
+---
+--- High Level Objectives
+--- * Explore Mars base site
+--- * Uncover information on Mammoth
+---
+--- Events
+---
+--- The CCA’s discovery of Cobra One’s infiltration caused more pressing problems than simply forcing them
+--- to retreat, as the development of the Mammoth has been relocated. Fortunately the Black Dogs are able to
+--- intercept a transmission indicating that the new development site is in the caldera of a large volcano
+--- nearby and the strength of the CCA forces nearby seems to support this, so the Black Dogs are redeployed
+--- almost immediately to attack the site and steal the prototype.
+---
+--- True to expectations, a Mammoth is indeed found in the caldera - along with a large attack wing. Cobra One
+--- is able to dispatch the CCA forces but discovers on approaching the Mammoth that its signature does not match
+--- the technical data recovered from the original research site. Shaw realises it is a trap and orders Cobra
+--- One to evacuate moments before the decoy Mammoth explodes.
+---
+--- A set of radar readings detected to the south-west lead Shaw to suggest Cobra One investigate there and
+--- there he finds a large CCA base has been built around the real Mammoth prototype. After neutralising the
+--- base’s defenses, Cobra One is able to commandeer the Mammoth.
+---
+--- With the schematics and prototype in-hand the Black Dogs begin work to reproduce the tank in hope of
+--- deploying it against the CCA in the near future. Analysis of notes from its construction indicate that
+--- the Mammoth technology is built on is derived from a Hadean craft called a Stymphalian Bird. Included is
+--- a list of coordinates where the Coalition has been hoping to find one, but so far they’ve turned up empty.
+--- The Black Dogs resolve to use the list to find one before the Coalition.
+--- 
+--- Notes
+--- Standard CCA sniper rifle for this mission.
+--- Mammoth self-destruct comes with audio cue - beeping and/or voiceover
+--- 
+--- Issues
+--- for some reason the backup objective of going to the fake after driving the real mammoth didn't work, look into why
+--- flash bang and explosion of the fake happened late
 
 require("_printfix");
 
@@ -142,7 +186,7 @@ local mission_data = {
 	UpdateObjectives = false,
 
 	StartDone = false, -- Some things don't work in the actual "Start" function.
-	Nav1Reached = false, -- Are we at nav1 yet? 
+	Nav1Reached = false, -- Are we at nav1 yet?
 	DecoyTriggered = false, -- It's a Trap!
 	TrapEscaped = false, -- Whew, close one!
 	PlansChange = false, -- Shaw is a dick
@@ -358,7 +402,7 @@ statemachine.Create("main_objectives", {
 		state:next();
 	end },
 	statemachine.SleepSeconds(4),
-	function (state) 
+	function (state)
 		--	Blow up da mammoth
 		MakeExplosion("xbmbxpl", mission_data.MammothDecoy:GetHandle());
 		mission_data.MammothDecoy:Damage(90000);

@@ -139,6 +139,16 @@ end
 --- @field lose4 string
 --- @field lose5 string
 
+--- @class RBD03_Constants_Labels
+--- @field mammoth string
+--- @field hangar string
+--- @field supply string
+--- @field tug string
+--- @field control string
+--- @field radar string[] -- Radar towers, 3 of them
+--- @field nav string[]
+--- @field patrol string[][]
+
 --- @class RBD03_Constants_Objectives
 --- @field Detection string
 --- @field Hanger string
@@ -160,6 +170,7 @@ end
 
 --- @class RBD03_Constants
 --- @field audio RBD03_Constants_Audio
+--- @field labels RBD03_Constants_Labels
 --- @field objectives RBD03_Constants_Objectives
 --- @field debriefing RBD03_Constants_Debriefing
 local constants = {
@@ -181,6 +192,20 @@ local constants = {
 		lose3 = "rbdnew0303L.wav", --Detected, loser
 		lose4 = "rbdnew0304L.wav", --Evidently you can't aim Day Wreckers
 		lose5 = "rbdnew0305L.wav" --Why didn't you make a Day Wrecker?
+	},
+	labels = {
+		mammoth = "mammoth",
+		hangar = "hangar",
+		supply = "supply",
+		tug = "tug",
+		control = "control",
+		radar = { "radar1", "radar2", "radar3" },
+		nav = { "nav1", "nav2", "nav3", "nav4", "nav5" },
+		patrol = {
+			{ "patrol1_1", "patrol1_2", "patrol1_3", "patrol1_4", "patrol1_5", "patrol1_6" },
+			{ "patrol2_1", "patrol2_2", "patrol2_3", "patrol2_4", "patrol2_5", "patrol2_6", "patrol2_7", "patrol2_8", "patrol2_9", "patrol2_10" },
+			{ "patrol3_1", "patrol3_2", "patrol3_3", "patrol3_4", "patrol3_5", "patrol3_6", "patrol3_7", "patrol3_8", "patrol3_9" }
+		},
 	},
 	objectives = {
 		Detection = "rbdnew0300.otf",
@@ -382,18 +407,18 @@ statemachine.Create("mammoth_shield", function (state)
 statemachine.Create("main_objectives", {
 	{ "start", function (state)
 		ColorFade(1.1, 0.4, 0, 0, 0);
-		mission_data.key_objects.Mammoth = gameobject.GetGameObject("mammoth");
+		mission_data.key_objects.Mammoth = gameobject.GetGameObject(constants.labels.mammoth);
 		mission_data.key_objects.Mammoth:SetIndependence(0); -- Mammoth shouldn't respond or do anything in this mission.
-		mission_data.key_objects.Hangar = gameobject.GetGameObject("hangar");
-		mission_data.key_objects.Supply = gameobject.GetGameObject("supply");
-		mission_data.key_objects.Tug = gameobject.GetGameObject("tug");
+		mission_data.key_objects.Hangar = gameobject.GetGameObject(constants.labels.hangar);
+		mission_data.key_objects.Supply = gameobject.GetGameObject(constants.labels.supply);
+		mission_data.key_objects.Tug = gameobject.GetGameObject(constants.labels.tug);
 		mission_data.key_objects.Tug:RemovePilot();
-		mission_data.key_objects.ControlTower = gameobject.GetGameObject("control");
+		mission_data.key_objects.ControlTower = gameobject.GetGameObject(constants.labels.control);
 		SetMaxScrap(2,10000);
 		mission_data.key_objects.Player:SetPerceivedTeam(2); -- Make sure player isn't detected right away.
 		
 		for i = 1, 5 do
-			local navtmp = gameobject.GetGameObject("nav"..i); -- Harvests the current nav's coordinates then deletes it. The saved coordinates are used later to respawn the nav when it is needed.
+			local navtmp = gameobject.GetGameObject(constants.labels.nav[i]); -- Harvests the current nav's coordinates then deletes it. The saved coordinates are used later to respawn the nav when it is needed.
 			if navtmp then
 				mission_data.NavCoord[i] = navtmp:GetPosition();
 				navtmp:RemoveObject();
@@ -401,13 +426,13 @@ statemachine.Create("main_objectives", {
 		end
 		
 		for i = 1, 6 do
-			gameobject.GetGameObject("patrol1_" .. i):Patrol("patrol_1", 1);
+			gameobject.GetGameObject(constants.labels.patrol[1][i]):Patrol("patrol_1", 1);
 		end
 		for i = 1, 10 do
-			gameobject.GetGameObject("patrol2_" .. i):Patrol("patrol_2", 1);
+			gameobject.GetGameObject(constants.labels.patrol[2][i]):Patrol("patrol_2", 1);
 		end
 		for i = 1, 9 do
-			gameobject.GetGameObject("patrol3_" .. i):Patrol("patrol_3", 1)
+			gameobject.GetGameObject(constants.labels.patrol[3][i]):Patrol("patrol_3", 1);
 		end
 		
 		state:next();
@@ -715,9 +740,9 @@ stateset.Create("mission")
 			state:off(name); -- turn this check off
 		end
 	end)
-	:Add("detection_check_radar_tower_1", stateset.WrapStateMachine("detection_check_radar_tower", nil, { label = "radar1" }))
-	:Add("detection_check_radar_tower_2", stateset.WrapStateMachine("detection_check_radar_tower", nil, { label = "radar2" }))
-	:Add("detection_check_radar_tower_3", stateset.WrapStateMachine("detection_check_radar_tower", nil, { label = "radar3" }))
+	:Add("detection_check_radar_tower_1", stateset.WrapStateMachine("detection_check_radar_tower", nil, { label = constants.labels.radar[1] }))
+	:Add("detection_check_radar_tower_2", stateset.WrapStateMachine("detection_check_radar_tower", nil, { label = constants.labels.radar[2] }))
+	:Add("detection_check_radar_tower_3", stateset.WrapStateMachine("detection_check_radar_tower", nil, { label = constants.labels.radar[3] }))
 	:Add("hanger_still_alive", function (state, name)
 		if not mission_data.key_objects.Hangar:IsAlive() then
 			FailMission(GetTime()+5.0, constants.debriefing.rbdnew03l3); -- hangar destroyed
@@ -727,7 +752,7 @@ stateset.Create("mission")
 	end)
 	:Add("mammoth_shield", stateset.WrapStateMachine("mammoth_shield"))
 	:Add("mammoth_destroyed", function (state, name)
-		if not mission_data.key_objects.Mammoth:IsAlive() then 
+		if not mission_data.key_objects.Mammoth:IsAlive() then
 			AudioMessage(constants.audio.lose1);
 			FailMission(GetTime()+5.0, constants.debriefing.rbdnew03l1); -- mammoth destroyed
 			--UpdateObjectives();

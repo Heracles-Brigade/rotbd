@@ -1,3 +1,35 @@
+--- Rise of the Black Dogs
+---
+--- [8] Prepare to Evacuate
+--- Original Mission:
+--- [10] Prepare to Evacuate
+---
+--- World: Luna (Earth I), Earth (Sol III)
+--- Map Data: NEW (is this a new map or an old stock one?)
+---
+--- Authors:
+--- * ?
+--- * John "Nielk1" Klein
+---
+--- High Level Objectives
+--- Gather enough resources to escape the moon
+--- 
+--- Events
+--- With the Black Dog Mammoth nearly ready and the Stymphalian Birds’ weapon technologies already producing results, the Black Dogs now need to move quickly to escape the Coalition and return to safety on Earth. The amount of Black Dog equipment on the moon is too great for the Jackson to perform a pickup fast enough, so a Launch Pad must be constructed to get the Black Dogs off the moon in time to escape the pursuing Coalition forces.
+--- 
+--- Further compounding the problem is a Coalition blockade already beginning to form between the Black Dogs and their destination. Shaw plans to use the Jackson to break the blockade with a direct assault, opening a gap for the rest of the Black Dogs to make it through.
+--- 
+--- Cobra One is deployed to the lunar surface to oversee the construction of the launch pad, which is already underway, and defence of the Black Dog base. They are forced to fight off several waves of NSDF and CCA forces, and as the launch pad is completed a wave of Furies appears from the west to defend the transports against them while the evacuation begins.
+--- 
+--- The Black Dogs make it off the moon successfully, and Shaw’s run on the blockade opens a gap for them to pass through, but they realise too late that Shaw only broke the first line. A carrier stationed behind the bulk of the blockade opens fire on the Jackson and it barely escapes; the Black Dogs’ transports are not so lucky, and are taken into custody.
+--- 
+--- Notes
+--- Player’s tank is armed with an experimental "not-RAVE-gun"
+--- Black Dog Mammoth already under construction at mission start
+--- Mammoth occupies offensive slot, can be piloted if desired
+--- Fully formed and defended bases present; NSDF in south-east, CCA in south-west
+--- Constructor outside player’s control already ordered to build launch pad, progress slow
+
 require("_printfix");
 
 print("\27[34m----START MISSION----\27[0m");
@@ -291,7 +323,7 @@ statemachine.Create("main_objectives", {
     end },
     { "build_launchpad.order_to_build.update", function(state)
         --- @cast state MainObjectives10_state
-        
+ 
         local const = gameobject.GetConstructor();
         if not const then error("Constructor not found") end
         local d1 = GetPosition("launchpad");
@@ -545,7 +577,7 @@ statemachine.Create("getToBase_EastWave", {
     end },
     { "Attack", function (state)
         --- @cast state getToBase_EastWave_state
-        
+ 
         if not state.index then
             state.index = 1;
         end
