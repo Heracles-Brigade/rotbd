@@ -389,6 +389,10 @@ statemachine.Create("scrap_field_filler", {
 --- @field first boolean DoWhile simulating bool
 statemachine.Create("mammoth_shield", function (state)
 		--- @cast state mammoth_shield_state
+		if not mission_data.key_objects.Player then
+			-- Player object is not available so abort the state logic.
+			return;
+		end
 		keepOutside(mission_data.key_objects.Player, mission_data.key_objects.Mammoth);
 		if state:SecondsHavePassed(3.5, true, true) then
 			MakeExplosion("sdome", mission_data.key_objects.Mammoth:GetHandle());
@@ -692,6 +696,10 @@ statemachine.Create("detection_check_radar_tower", {
 	end },
 	{ "check", function (state)
 		--- @cast state detection_check_radar_tower_state
+		if not mission_data.key_objects.Player then
+			-- Player object is not available so abort the state logic.
+			return;
+		end
 		if state.object:IsAlive() then
 			if mission_data.key_objects.Player:GetDistance(state.object) < 100.0 then
 				AudioMessage(constants.audio.commwarn);
@@ -706,6 +714,10 @@ statemachine.Create("detection_check_radar_tower", {
 	end },
 	{ "too_close", function (state)
 		--- @cast state detection_check_radar_tower_state
+		if not mission_data.key_objects.Player then
+			-- Player object is not available so abort the state logic.
+			return;
+		end
 		if mission_data.key_objects.Player:GetDistance(state.object) > 100.0 then
 			AudioMessage(constants.audio.commclear);
 			state:SecondsHavePassed();
