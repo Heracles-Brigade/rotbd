@@ -19,7 +19,7 @@ del ".\dist\*" /Q
 REM Define the exclude filter
 
 REM Define allowed extensions (space-separated, include dot)
-set "ALLOWED_EXT=.bzn .hg2 .lua .mat .trn .otf .wav .dds .png .material .geo .mesh .skeleton .sdf .vdf .odf .inf .des .ini .sta .cfg .txdi"
+set "ALLOWED_EXT=.bzn .hg2 .lua .mat .trn .otf .wav .dds .png .material .geo .mesh .skeleton .sdf .vdf .odf .inf .des .ini .sta .cfg .wtx"
 
 REM Need
 REM .bzn .hg2 .lua .mat .trn
@@ -29,7 +29,7 @@ REM .geo .mesh .skeleton .sdf .vdf
 REM .odf .inf .des .ini .sta
 
 REM Temporary
-REM .txdi
+REM .wtx
 
 REM BZ1 Only
 REM .hgt .lgt .map

@@ -104,14 +104,14 @@ end
 --- @param filename string
 --- @return AudioMessage
 function AudioMessage(filename)
-    local fileExists = UseItem(filename) and true or false;
-    if fileExists then
-        lastAudio = Original.AudioMessage(filename);
-        return lastAudio;
+    local fileExists = UseItem(filename)
+    if fileExists ~= nil then
+        lastAudio = Original.AudioMessage(filename)
+        return lastAudio
     end
-    local txdi = string.gsub(filename, "%.wav$", ".txdi");
+    local txdi = string.gsub(string.lower(filename), "%.wav$", ".wtx");
     local content = UseItem(txdi);
-    if content then
+    if content ~= nil then
         local cleanContent = string.gsub(content, "PARENT diag%.voices\r?\n", "")
         cleanContent = string.gsub(cleanContent, "START\r?\n", "")
 
