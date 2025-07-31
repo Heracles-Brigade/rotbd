@@ -6,7 +6,7 @@
 --- [2] Preparations
 ---
 --- World: Luna (Earth I), Earth (Sol III)
---- Map Data: Ported n64 Original (check if original portal HGT/MAT or if it matched a PC map)
+--- Map Data: Ported n64 Original
 ---
 --- Authors:
 --- * Rise of the Black Dogs Team
@@ -32,6 +32,7 @@
 ---
 --- Issues and Possible Changes
 --- * The tapped communications could allow for interspersed interceptions and information. Consider this.
+--- * The BDog Communication Tower and Barracks are currently the TRO models, look at making sure Shaw's are the NSDF based ones
 --- * The objectives give navs by index even when they are named. There's a few options to deal with this:
 ---   * Correct the indexes (or give no index if out of range) for the objectives every update by checking the nav objects.
 ---   * Have the nav manager be very agressive and prevent any custom navs
@@ -99,6 +100,7 @@ tracker.setFilterClass("turrettank"); -- track turrettanks
 --- @field nav_solar1 string -- Name of the solar array 1 nav
 --- @field nav_solar2 string -- Name of the solar array 2 nav
 --- @field nav1 string -- Name of the navpoint 1
+--- @field cca_base string -- Name of the CCA base nav
 
 --- @class RBD01_Constants_Objectives
 --- @field bdmisn211 string -- Investigate Command Tower
@@ -129,7 +131,7 @@ tracker.setFilterClass("turrettank"); -- track turrettanks
 --- @field names RBD01_Constants_Names
 --- @field objectives RBD01_Constants_Objectives
 --- @field debriefing RBD01_Constants_Debriefing
---- @field blast_tower_warn_distance number
+--- @field blast_tower_warn_distance number -- distance within which to warn player about blast towers
 local constants = {
     audio = {
         intro = "rbd0101.wav",
@@ -160,6 +162,7 @@ local constants = {
         nav_solar1 = "Solar Array 1",
         nav_solar2 = "Solar Array 2",
         nav1 = "Navpoint 1",
+        cca_base = "CCA Base",
     },
     objectives = {
         bdmisn211 = "bdmisn211.otf",
@@ -236,9 +239,6 @@ local mission_data = {
 local function IsEasyDifficulty()
     return false;
 end
-
--- Terse Aliases
-local C = color.ColorLabel;
 
 --- Returns true of all of the handles given are dead
 --- areAnyAlive = not areAllDead
@@ -403,7 +403,7 @@ statemachine.Create("main_objectives", {
         mission_data.key_objects.nav1:SetMaxHealth(0);
         mission_data.key_objects.nav1:SetObjectiveName(constants.names.nav1);
         mission_data.key_objects.nav1:SetObjectiveOn();
-        objective.AddObjective(constants.objectives.bdmisn211, C.White);
+        objective.AddObjective(constants.objectives.bdmisn211, "WHITE");
         state:next();
     end },
     { "check_command_passfail", function (state)
@@ -414,7 +414,7 @@ statemachine.Create("main_objectives", {
             mission_data.mission_states:on("base_guntower_warn");
             AudioMessage(constants.audio.inspect);
             mission_data.key_objects.nav1:SetObjectiveOff();
-            objective.UpdateObjective(constants.objectives.bdmisn211, C.Green);
+            objective.UpdateObjective(constants.objectives.bdmisn211, "GREEN");
             state:next();
         end
     end },
@@ -424,13 +424,13 @@ statemachine.Create("main_objectives", {
         mission_data.key_objects.nav_solar1:SetMaxHealth(0);
         mission_data.key_objects.nav_solar1:SetObjectiveName(constants.names.nav_solar1);
         mission_data.key_objects.nav_solar1:SetObjectiveOn();
-        objective.AddObjective(constants.objectives.bdmisn212, C.White);
+        objective.AddObjective(constants.objectives.bdmisn212, "WHITE");
         state:next();
     end },
    { "destory_solar1_pass", function (state)
         --- @cast state RBD01_MissionState
         if(checkDead(mission_data.key_objects.solarfarm1)) then
-            objective.UpdateObjective(constants.objectives.bdmisn212, C.Green);
+            objective.UpdateObjective(constants.objectives.bdmisn212, "GREEN");
 			AudioMessage(constants.audio.power1);
             state:next();
         end
@@ -440,16 +440,16 @@ statemachine.Create("main_objectives", {
         mission_data.key_objects.nav_solar1:SetObjectiveOff();
         mission_data.key_objects.nav_solar2 = navmanager.BuildImportantNav(nil, 1, "nav_path", 2);
         mission_data.key_objects.nav_solar2:SetMaxHealth(0);
-        mission_data.key_objects.nav_solar2:SetObjectiveName("Solar Array 2");
+        mission_data.key_objects.nav_solar2:SetObjectiveName(constants.names.nav_solar2);
         mission_data.key_objects.nav_solar2:SetObjectiveOn();
-        objective.AddObjective(constants.objectives.bdmisn213, C.White);
+        objective.AddObjective(constants.objectives.bdmisn213, "WHITE");
         state:next();
     end },
     { "destory_solar2_pass", function (state)
         --- @cast state RBD01_MissionState
         if(checkDead(mission_data.key_objects.solarfarm2)) then
             mission_data.key_objects.nav_solar2:SetObjectiveOff();
-            objective.UpdateObjective(constants.objectives.bdmisn213, C.Green);
+            objective.UpdateObjective(constants.objectives.bdmisn213, "GREEN");
             state:next();
         end
     end },
@@ -463,13 +463,13 @@ statemachine.Create("main_objectives", {
     { "destroy_comm_start", function (state)
         mission_data.nav_research = navmanager.BuildImportantNav(nil, 1, "nav_path", 3);
         mission_data.nav_research:SetMaxHealth(0);
-        mission_data.nav_research:SetObjectiveName("Research Facility");
+        mission_data.nav_research:SetObjectiveName(constants.names.nav_research);
         mission_data.nav_research:SetObjectiveOn();
 
         mission_data.key_objects.commtower:SetObjectiveOn();
- 
-        objective.AddObjective(constants.objectives.bdmisn214, C.White);
-        objective.AddObjective(constants.objectives.bdmisn215, C.White);
+
+        objective.AddObjective(constants.objectives.bdmisn214, "WHITE");
+        objective.AddObjective(constants.objectives.bdmisn215, "WHITE");
         camera.CameraReady();
 
         local tug = gameobject.BuildObject("avhaul", 2, "spawn_tug");
@@ -512,8 +512,8 @@ statemachine.Create("main_objectives", {
     { "destroy_obj", function (state)
         if not mission_data.key_objects.commtower:IsAlive() then
 
-            objective.UpdateObjective(constants.objectives.bdmisn214, C.Green);
-            objective.UpdateObjective(constants.objectives.bdmisn215, C.Green);
+            objective.UpdateObjective(constants.objectives.bdmisn214, "GREEN");
+            objective.UpdateObjective(constants.objectives.bdmisn215, "GREEN");
             --SucceedMission(GetTime()+5,constants.debriefing.bdmisn21wn);
             --Start 22 - Preparations
             --mission.Objective:Start("intermediate");
@@ -539,7 +539,7 @@ statemachine.Create("main_objectives", {
         --Only show if area is not cleared
         if enemiesInRange(270, mission_data.nav_research) then
             state.research_enemies_still_exist = true;
-            objective.AddObjective(constants.objectives.bdmisn311, C.White);
+            objective.AddObjective(constants.objectives.bdmisn311, "WHITE");
     --      else --Removed due to redundancy
     --          objective.AddObjective(constants.objectives.bdmisn311b,"yellow"); -- this alternate text says the recycler is coming without warning about extra stuff
         end
@@ -549,7 +549,7 @@ statemachine.Create("main_objectives", {
     function (state)
         --- @cast state RBD01_MissionState
         if state.research_enemies_still_exist then
-            objective.UpdateObjective(constants.objectives.bdmisn311, C.Green);
+            objective.UpdateObjective(constants.objectives.bdmisn311, "GREEN");
             -- if we use the alternate text we have to turn it green here
         end
         AudioMessage(constants.audio.recycler);
@@ -606,7 +606,7 @@ statemachine.Create("main_objectives", {
         --global.mission_states:on("toofarfrom_recy");
     end,
     { "deploy_recycler", function (state)
-        objective.AddObjective(constants.objectives.bdmisn2201,C.White);
+        objective.AddObjective(constants.objectives.bdmisn2201,"WHITE");
         state:next();
     end },
     function (state)
@@ -615,7 +615,7 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        objective.UpdateObjective(constants.objectives.bdmisn2201, C.Green);
+        objective.UpdateObjective(constants.objectives.bdmisn2201, "GREEN");
         objective.ClearObjectives();
  
         if IsEasyDifficulty() then
@@ -629,7 +629,7 @@ statemachine.Create("main_objectives", {
     -- START tutorial zone
     { "make_scavs", function (state)
         mission_data.nav_research:SetObjectiveOff();
-        objective.AddObjective(constants.objectives.bdmisn2202,C.White);
+        objective.AddObjective(constants.objectives.bdmisn2202,"WHITE");
         state:next();
     end },
     function (state)
@@ -639,11 +639,11 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        objective.UpdateObjective(constants.objectives.bdmisn2202, C.Green);
+        objective.UpdateObjective(constants.objectives.bdmisn2202, "GREEN");
         state:next();
     end,
     { "get_scrap", function (state)
-        objective.AddObjective(constants.objectives.bdmisn2203,C.White);
+        objective.AddObjective(constants.objectives.bdmisn2203,"WHITE");
         createWave("svtank",{"spawn_w1"},"west_path");
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path");
         state:next();
@@ -658,7 +658,7 @@ statemachine.Create("main_objectives", {
         state:next();
     end,
     { "make_factory", function (state)
-        objective.AddObjective(constants.objectives.bdmisn2204,C.White);
+        objective.AddObjective(constants.objectives.bdmisn2204,"WHITE");
         state:next();
     end },
     function (state)
@@ -667,13 +667,13 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        objective.UpdateObjective(constants.objectives.bdmisn2204, C.Green);
+        objective.UpdateObjective(constants.objectives.bdmisn2204, "GREEN");
         state:next();
     end,
     -- END tutorial zone
 
     { "make_comm", function (state)
-        objective.AddObjective(constants.objectives.bdmisn2209,C.White);
+        objective.AddObjective(constants.objectives.bdmisn2209,"WHITE");
         createWave("svtank",{"spawn_w1"},"west_path");
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path");
         state:next();
@@ -684,13 +684,13 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        objective.UpdateObjective(constants.objectives.bdmisn2209, C.Green);
+        objective.UpdateObjective(constants.objectives.bdmisn2209, "GREEN");
         state:switch("destroy_soviet");
     end,
  
     -- SKIPPED STATES?
     { "make_offensive", function (state)
-        objective.AddObjective(constants.objectives.bdmisn2205,C.White);
+        objective.AddObjective(constants.objectives.bdmisn2205,"WHITE");
         createWave("svtank",{"spawn_w1"},"west_path");
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path");
         state:next()
@@ -702,11 +702,11 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        objective.UpdateObjective(constants.objectives.bdmisn2205, C.Green);
+        objective.UpdateObjective(constants.objectives.bdmisn2205, "GREEN");
         state:next();
     end,
     { "make_defensive", function (state)
-        objective.AddObjective(constants.objectives.bdmisn2206,C.White);
+        objective.AddObjective(constants.objectives.bdmisn2206,"WHITE");
         createWave("svtank",{"spawn_w1"},"west_path");
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path"); -- Original Script did nothing with these 2. Possibly sent to guard Scavs instead? -GBD
         createWave("svscav",{"spawn_w2","spawn_w3"});
@@ -718,7 +718,7 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        objective.UpdateObjective(constants.objectives.bdmisn2206, C.Green);
+        objective.UpdateObjective(constants.objectives.bdmisn2206, "GREEN");
         state:next();
     end,
     -- /SKIPPED STATES?
@@ -730,10 +730,10 @@ statemachine.Create("main_objectives", {
         local nav = navmanager.BuildImportantNav(nil, 1, "nav_path", 4);
         if not nav then error("Failed to create nav for CCA base attack."); end
         nav:SetMaxHealth(0);
-        nav:SetObjectiveName("CCA Base");
+        nav:SetObjectiveName(constants.names.cca_base);
         AudioMessage(constants.audio.attack);
         state:next();
-		objective.AddObjective(constants.objectives.bdmisn2207, C.White);
+		objective.AddObjective(constants.objectives.bdmisn2207, "WHITE");
     end },
     statemachine.SleepSeconds(45),
     function (state) -- this one might have been broken before
@@ -756,9 +756,9 @@ statemachine.Create("main_objectives", {
         local badRec = gameobject.GetRecycler(2);
 		if badRec and badRec:IsAlive() then
 			badRec:SetObjectiveOff();
-            objective.UpdateObjective(constants.objectives.bdmisn2207, C.Yellow); -- base destruction on hold
+            objective.UpdateObjective(constants.objectives.bdmisn2207, "YELLOW"); -- base destruction on hold
         else
-            objective.UpdateObjective(constants.objectives.bdmisn2207, C.Green); -- base already destroyed
+            objective.UpdateObjective(constants.objectives.bdmisn2207, "GREEN"); -- base already destroyed
 		end
 
 		--mission.Objective:Start('nsdf_attack');
@@ -767,7 +767,7 @@ statemachine.Create("main_objectives", {
     { "nsdf_attack", function (state)
         --- @cast state RBD01_MissionState
         AudioMessage(constants.audio.nsdf);
-        objective.AddObjective(constants.objectives.bdmisn2208, C.White);
+        objective.AddObjective(constants.objectives.bdmisn2208, "WHITE");
         local a,b,camTarget = createWave("avwalk",{"spawn_avwalk1","spawn_avwalk2","spawn_avwalk3"},"nsdf_path");
         local c,e,g = createWave("avtank",{"spawn_avtank1","spawn_avtank2","spawn_avtank3"},"nsdf_path");
         local d,h,i = createWave("avtank",{"spawn_w1","spawn_w2","spawn_w3"},"west_path");
@@ -786,19 +786,19 @@ statemachine.Create("main_objectives", {
         if state:SecondsHavePassed(10) or camera.CameraCancelled() or camera.CameraPath("camera_nsdf", 1000, 1500, state.camTarget) then
             state:SecondsHavePassed(); -- clear timer if we got here without it being cleared
             camera.CameraFinish();
-            objective.UpdateObjective(constants.objectives.bdmisn2208, C.White);
+            objective.UpdateObjective(constants.objectives.bdmisn2208, "WHITE");
             state:next();
         end
     end,
     function (state)
         --- @cast state RBD01_MissionState
         if areAllDead(state.targets, 2) then
-            objective.UpdateObjective(constants.objectives.bdmisn2208, C.Green);
+            objective.UpdateObjective(constants.objectives.bdmisn2208, "GREEN");
 
             local badRec = gameobject.GetRecycler(2);
 			if badRec and badRec:IsAlive() then
 				badRec:SetObjectiveOn();
-                objective.UpdateObjective(constants.objectives.bdmisn2207, C.White);
+                objective.UpdateObjective(constants.objectives.bdmisn2207, "WHITE");
 			end
 
             state:next();
@@ -807,7 +807,7 @@ statemachine.Create("main_objectives", {
     function (state)
         local badRec = gameobject.GetRecycler(2);
         if not badRec or not badRec:IsAlive() then
-            objective.UpdateObjective(constants.objectives.bdmisn2207, C.Green);
+            objective.UpdateObjective(constants.objectives.bdmisn2207, "GREEN");
             state:next();
         end
     end,

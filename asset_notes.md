@@ -7,6 +7,10 @@
 "Universal mission files" should not be altered because they are used by both the crude port and redux.
 Any customizations should be done with a new file.
 
+### Confirmed Mission Tags
+> Mission tags in square brackets should be confirmed and after they are confirmed they can be listed here:
+* 
+
 ### Sub-Paths
 > Note, some file descriptions in sub-path might apply to files in `dev`, but most are for files in `src`.
 * `asset_overrides` Replacements for stock assets
@@ -132,6 +136,7 @@ Any customizations should be done with a new file.
             * `bdmisn22l2.des` You allowed your recycler to be destroyed.
             * `bdmisn22wn.des` Excellent work. We have a base on the moon.
         * `objectives`
+            * `bdmisn311.otf` [rbdnew01]
             * `bdmisn2201.otf` [rbdnew01]
             * `bdmisn2202.otf` [rbdnew01]
             * `bdmisn2203.otf` [rbdnew01]
@@ -208,7 +213,7 @@ Any customizations should be done with a new file.
             * `rbd1003.otf` [rbdnew10]
     * `rbdnew01`
         * `debriefing`
-            * `rbdnew01l1.des` Command Tower Destroyed, not defended
+            * `rbdnew01l1.des` [rbdnew01] Command Tower Destroyed, not defended
             * `rbdnew01l2.des` [rbdnew01] You allowed your recycler to be destroyed.
             * `rbdnew01w.des` [rbdnew01] Well done, new closing
     * `rbdnew03`
