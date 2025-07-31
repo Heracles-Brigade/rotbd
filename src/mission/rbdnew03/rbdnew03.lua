@@ -28,7 +28,7 @@
 --- of his men to redeploy to Mars to put a stop to the project.
 --- 
 --- With the information on the project's location vague and their numbers limited the Black Dogs have little
---- choice but to deploy a single soldier to infiltrate the area and locate the site of the project’s
+--- choice but to deploy a single soldier to infiltrate the area and locate the site of the project's
 --- development. Cobra One is deployed in a stolen CCA IEVA suit to spy on the operation.
 --- 
 --- Cobra One's progress is hindered by a number of satellite towers around the area; by approaching these

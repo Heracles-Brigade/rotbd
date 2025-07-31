@@ -115,6 +115,8 @@ function AudioMessage(filename)
         local cleanContent = string.gsub(content, "PARENT diag%.voices\r?\n", "")
         cleanContent = string.gsub(cleanContent, "START\r?\n", "")
 
+        cleanContent = string.gsub(cleanContent, ";$", "")
+
         -- Extract and sum all numbers between brackets
         local deadAirTime = 0
         cleanContent = string.gsub(cleanContent, "%[(%d+)%]", function(num)

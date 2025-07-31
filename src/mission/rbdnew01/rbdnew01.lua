@@ -64,7 +64,6 @@
 --- Look into Black Dog recycler's build list to determine if it's correct
 --- Look at NSDF reinforcement spawns for correct location and makeup, currently Sasquatches trip over hover-units too in the cutscene
 --- There are various ways to crash the mission when losing, such as player death. - might be fixed
---- The current factory build list includes a scav... and its order will give people a stroke due to muscle memory.
 --- Establish a base at Nav 4 is an odd objective, since the nav, while in slot 4 if you didn't make other navs, is not called "Nav 4".
 
 local logger = require("_logger");
@@ -99,6 +98,122 @@ tracker.setFilterOdf("bvtank"); -- track bvtanks
 tracker.setFilterOdf("bvhraz"); -- track bvhraz
 tracker.setFilterClass("turrettank"); -- track turrettanks
 
+--- @class RBD01_Constants_Audio
+--- @field intro string -- "need to tap comms to find scientists"
+--- @field lost_command_tower string -- "we lost soviet communications, what the hell? (failure)"
+--- @field early_base_approach string -- "those guntowers will kill you, take out power first"
+--- @field inspect string -- "found them, destroy solars to cripple facility"
+--- @field power1 string -- "power fluctuations, take out the rest"
+--- @field power2 string -- "power down, oh no the NSDF are helping the CCA!"
+--- @field recycler string -- "sending you a recycler"
+--- @field lost_recycler string -- "soviets destroyed recycler (failure)"
+--- @field attack string -- "CCA trying to create forward base at command tower"
+--- @field nsdf string -- "major attack force incoming! destroy defactors!"
+--- @field win string -- "good job"
+
+--- @class RBD01_Constants_Labels
+--- @field solarfarm1 string[]
+--- @field solarfarm2 string[]
+--- @field command_tower string
+--- @field patrol_units string[] -- Patrol units in the research base
+--- @field relic string -- Relic in the research base
+--- @field commtower string -- Comm tower in the research base
+--- @field cafe string -- Cafeteria in the research base
+--- @field sb_towers string[] -- Soviet Blast Towers in the research base
+
+--- @class RBD01_Constants_Names
+--- @field cafe string -- Name of the research facility
+--- @field nav_research string -- Name of the research facility nav
+--- @field nav_solar1 string -- Name of the solar array 1 nav
+--- @field nav_solar2 string -- Name of the solar array 2 nav
+--- @field nav1 string -- Name of the navpoint 1
+
+--- @class RBD01_Constants_Objectives
+--- @field bdmisn211 string -- Investigate Command Tower
+--- @field bdmisn212 string -- Destroy Solar Array 1
+--- @field bdmisn213 string -- Destroy Solar Array 2
+--- @field bdmisn214 string -- Destroy American units
+--- @field bdmisn215 string -- Destroy Research Facility (but we don't it's unkillable)
+--- @field bdmisn311 string -- Clear area of enemies, recycler is coming
+--- @field bdmisn2201 string -- Establish a base at Nav 4
+--- @field bdmisn2202 string -- Build 2 Scavengers
+--- @field bdmisn2203 string -- Harvest at least 20 scrap
+--- @field bdmisn2204 string -- Build a Factory.
+--- @field bdmisn2205 string -- Build an attack force of at least 3 tanks and a bomber
+--- @field bdmisn2206 string -- build a base defense of at least 3 turrets
+--- @field bdmisn2207 string -- Destroy the soviet base at Nav 1
+--- @field bdmisn2208 string -- Destroy incoming attackers
+--- @field bdmisn2209 string -- Build a Comm Tower
+
+--- @class RBD01_Constants_Debriefing
+--- @field loss_killed_command_tower string -- Command Tower destroyed (by player)
+--- @field loss_command_tower_died string -- Command Tower destroyed (player didn't defend)
+--- @field loss_recycler_destroyed string -- You allowed your recycler to be destroyed.
+--- @field win string -- We have a foothold on the moon now
+
+--- @class RBD01_Constants
+--- @field audio RBD01_Constants_Audio
+--- @field labels RBD01_Constants_Labels
+--- @field names RBD01_Constants_Names
+--- @field objectives RBD01_Constants_Objectives
+--- @field debriefing RBD01_Constants_Debriefing
+--- @field blast_tower_warn_distance number
+local constants = {
+    audio = {
+        intro = "rbd0101.wav",
+        lost_command_tower = "rbd0101l.wav",
+        early_base_approach = "rbd0101w.wav",
+        inspect = "rbd0102.wav",
+        power1 = "rbd0103.wav",
+        power2 = "rbd0104.wav",
+        recycler = "rbd0105.wav",
+        lost_recycler = "rbd0102l.wav",
+        attack = "rbd0106.wav",
+        nsdf = "rbd0107.wav",
+        win = "rbd0108.wav"
+    },
+    labels = {
+        solarfarm1 = { "sbspow1_powerplant", "sbspow2_powerplant", "sbspow3_powerplant", "sbspow4_powerplant" },
+        solarfarm2 = { "sbspow7_powerplant", "sbspow8_powerplant", "sbspow5_powerplant", "sbspow6_powerplant" },
+        command_tower = "sbhqcp0_i76building",
+        commtower = "sbcomm1_commtower",
+        patrol_units = { "svfigh4_wingman", "svfigh5_wingman" },
+        relic = "obdata3_artifact",
+        cafe = "sbcafe1_i76building",
+        sb_towers = { "sbtower1", "sbtower2", "sbtower3", "sbtower4", "sbtower5", "sbtower6" },
+    },
+    names = {
+        cafe = "Research Facility",
+        nav_research = "Research Facility",
+        nav_solar1 = "Solar Array 1",
+        nav_solar2 = "Solar Array 2",
+        nav1 = "Navpoint 1",
+    },
+    objectives = {
+        bdmisn211 = "bdmisn211.otf",
+        bdmisn212 = "bdmisn212.otf",
+        bdmisn213 = "bdmisn213.otf",
+        bdmisn214 = "bdmisn214.otf",
+        bdmisn215 = "bdmisn215.otf",
+        bdmisn311 = "bdmisn311.otf",
+        bdmisn2201 = "bdmisn2201.otf",
+        bdmisn2202 = "bdmisn2202.otf",
+        bdmisn2203 = "bdmisn2203.otf",
+        bdmisn2204 = "bdmisn2204.otf",
+        bdmisn2205 = "bdmisn2205.otf",
+        bdmisn2206 = "bdmisn2206.otf",
+        bdmisn2207 = "bdmisn2207.otf",
+        bdmisn2208 = "bdmisn2208.otf",
+        bdmisn2209 = "bdmisn2209.otf",
+    },
+    debriefing = {
+        loss_killed_command_tower = "bdmisn21ls.des",
+        loss_command_tower_died = "rbdnew01l1.des",
+        loss_recycler_destroyed = "rbdnew01l2.des",
+        win = "rbdnew01w.des",
+    },
+    blast_tower_warn_distance = 300,
+};
 
 --- @class RBD01_MissionData_KeyObjects
 --- @field nav1 GameObject? -- Nav: Navpoint 1
@@ -112,28 +227,46 @@ tracker.setFilterClass("turrettank"); -- track turrettanks
 --- @field patrol_units GameObject[] -- research base patrol units
 --- @field solarfarm1 GameObject[] -- Solar Array 1
 --- @field solarfarm2 GameObject[] -- Solar Array 2
+--- @field sb_turr_1 GameObject? -- SB Tower 1
+--- @field sb_turr_2 GameObject? -- SB Tower 2
+--- @field sb_towers GameObject[] -- Soviet Blast Towers of base
 
 --- @class RBD01_MissionData
 --- @field key_objects RBD01_MissionData_KeyObjects
+--- @field protect_command_tower boolean -- do "failed to protect" instead of "why did you kill?"
+--- @field forward_rec_already_dead boolean -- Forward Recycler already dead so focus user on GTs
 local mission_data = {
     key_objects = {
-        nav1 = nil, -- Navpoint 1
-        nav_solar1 = nil, -- Solar Array 1
-        nav_solar2 = nil, -- Solar Array 2
-        nav_research = nil, -- Research Facility
-        command_tower = nil, -- Command Tower
-        commtower = nil, -- Comm Tower
-        relic = nil, -- Relic
-        cafe = nil, -- Cafeteria (used for camera paths)
-        patrol_units = {}, -- Patrol units, used for camera paths
+        nav1 = nil,
+        nav_solar1 = nil,
+        nav_solar2 = nil,
+        nav_research = nil,
+        command_tower = nil,
+        commtower = nil,
+        relic = nil,
+        cafe = nil,
+        patrol_units = {},
  
-        solarfarm1 = {}, -- Solar Array 1
-        solarfarm2 = {}, -- Solar Array 2
+        solarfarm1 = {},
+        solarfarm2 = {},
 
-        sb_turr_1 = nil, -- SB Tower 1
-        sb_turr_2 = nil, -- SB Tower 2
+        sb_turr_1 = nil,
+        sb_turr_2 = nil,
+
+        sb_towers = {},
     },
+    protect_command_tower = false,
+    forward_rec_already_dead = false,
 };
+
+--- Dummy function that, if it somehow returned true, would cause the tutorial like build sequence
+--- @return boolean
+local function IsEasyDifficulty()
+    return false;
+end
+
+-- Terse Aliases
+local C = color.ColorLabel;
 
 --- Returns true of all of the handles given are dead
 --- areAnyAlive = not areAllDead
@@ -148,116 +281,6 @@ local function areAllDead(handles, team)
     end
     return true;
 end
-
---- @class RBD01_Constants_Audio
---- @field intro string
---- @field inspect string
---- @field power1 string
---- @field power2 string
---- @field recycler string
---- @field attack string
---- @field nsdf string
---- @field win string
-
---- @class RBD01_Constants_Labels
---- @field solarfarm1 string[]
---- @field solarfarm2 string[]
---- @field command_tower string
---- @field patrol_units string[] -- Patrol units in the research base
---- @field relic string -- Relic in the research base
---- @field commtower string -- Comm tower in the research base
---- @field cafe string -- Cafeteria in the research base
-
---- @class RBD01_Constants_Names
---- @field cafe string -- Name of the research facility
---- @field nav_research string -- Name of the research facility nav
---- @field nav_solar1 string -- Name of the solar array 1 nav
---- @field nav_solar2 string -- Name of the solar array 2 nav
---- @field nav1 string -- Name of the navpoint 1
-
---- @class RBD01_Constants_Objectives
---- @field bdmisn211 string
---- @field bdmisn212 string
---- @field bdmisn213 string
---- @field bdmisn214 string
---- @field bdmisn215 string
---- @field bdmisn311 string
---- @field bdmisn2201 string
---- @field bdmisn2202 string
---- @field bdmisn2203 string
---- @field bdmisn2204 string
---- @field bdmisn2205 string
---- @field bdmisn2206 string
---- @field bdmisn2207 string
---- @field bdmisn2208 string
---- @field bdmisn2209 string
-
---- @class RBD01_Constants_Debriefing
---- @field bdmisn22l2 string
---- @field bdmisn22wn string
-
---- @class RBD01_Constants
---- @field audio RBD01_Constants_Audio
---- @field labels RBD01_Constants_Labels
---- @field names RBD01_Constants_Names
---- @field objectives RBD01_Constants_Objectives
---- @field debriefing RBD01_Constants_Debriefing
-local constants = {
-    audio = {
-        intro = "rbd0101.wav",
-        inspect = "rbd0102.wav",
-        power1 = "rbd0103.wav",
-        power2 = "rbd0104.wav",
-        recycler = "rbd0105.wav",
-        attack = "rbd0106.wav",
-        nsdf = "rbd0107.wav",
-        win = "rbd0108.wav"
-    },
-    labels = {
-        solarfarm1 = { "sbspow1_powerplant", "sbspow2_powerplant", "sbspow3_powerplant", "sbspow4_powerplant" },
-        solarfarm2 = { "sbspow7_powerplant", "sbspow8_powerplant", "sbspow5_powerplant", "sbspow6_powerplant" },
-        command_tower = "sbhqcp0_i76building",
-        commtower = "sbcomm1_commtower",
-        patrol_units = { "svfigh4_wingman", "svfigh5_wingman" },
-        relic = "obdata3_artifact",
-        cafe = "sbcafe1_i76building",
-    },
-    names = {
-        cafe = "Research Facility",
-        nav_research = "Research Facility",
-        nav_solar1 = "Solar Array 1",
-        nav_solar2 = "Solar Array 2",
-        nav1 = "Navpoint 1",
-    },
-    objectives = {
-        bdmisn211 = "bdmisn211.otf", -- Investigate Command Tower
-        bdmisn212 = "bdmisn212.otf", -- Destroy Solar Array 1
-        bdmisn213 = "bdmisn213.otf", -- Destroy Solar Array 2
-        bdmisn214 = "bdmisn214.otf", -- Destroy American units
-        bdmisn215 = "bdmisn215.otf", -- Destroy Research Facility (but we don't it's unkillable)
-        bdmisn311 = "bdmisn311.otf", -- Clear area of enemies, recycler is coming
-        bdmisn2201 = "bdmisn2201.otf", -- Establish a base at Nav 4
-        bdmisn2202 = "bdmisn2202.otf", -- Build 2 Scavengers
-        bdmisn2203 = "bdmisn2203.otf", -- Harvest at least 20 scrap
-        bdmisn2204 = "bdmisn2204.otf", -- Build a Factory.
-        bdmisn2205 = "bdmisn2205.otf", -- Build an attack force of at least 3 tanks and a bomber
-        bdmisn2206 = "bdmisn2206.otf", -- build a base defense of at least 3 turrets
-        bdmisn2207 = "bdmisn2207.otf", -- Destroy the soviet base at Nav 1
-        bdmisn2208 = "bdmisn2208.otf", -- Destroy incoming attackers
-        bdmisn2209 = "bdmisn2209.otf", -- Build a Comm Tower
-    },
-    debriefing = {
-        bdmisn21ls = "bdmisn21ls.des", -- Command Tower destroyed (by player) (not used yet)
-        rbdnew01l1 = "rbdnew01l1.des", -- Command Tower destroyed (player didn't defend) (not used yet)
-        bdmisn22l2 = "bdmisn22l2.des", -- Recycler destroyed
-        rbdnew01l2 = "rbdnew01l2.des", -- Recycler destroyed (not used yet)
-        --bdmisn21wn = "bdmisn21wn.des",
-        bdmisn22wn = "bdmisn22wn.des", -- We have a foothold on the moon now
-        rbdnew01w = "rbdnew01w.des", -- much better ending debriefing (not used yet)
-    },
-};
-
-local C = color.ColorLabel;
 
 SetAIControl(2,false);
 
@@ -295,21 +318,21 @@ end
 statemachine.Create("tug_relic_convoy",
     function (state)
         --- @cast state TugRelicConvoy_state
-        if state.tug:GetCurrentCommand() == AiCommand["NONE"] then
+        if state.tug:GetCurrentCommand() == AiCommand.NONE then
             state.tug:Pickup(state.relic);
             state:next();
         end
     end,
     function (state)
         --- @cast state TugRelicConvoy_state
-        if state.tug:GetCurrentCommand() == AiCommand["NONE"] then
+        if state.tug:GetCurrentCommand() == AiCommand.NONE then
             state.tug:Goto("leave_path");
             state:next();
         end
     end,
     function (state)
         --- @cast state TugRelicConvoy_state
-        if state.tug:GetCurrentCommand() == AiCommand["NONE"] then
+        if state.tug:GetCurrentCommand() == AiCommand.NONE then
             state.apc:RemoveObject();
             state.relic:RemoveObject();
             state:next();
@@ -322,6 +345,47 @@ statemachine.Create("delayed_spawn",
         createWave("svfigh", {"spawn_n1","spawn_n2"}, "north_path");
         createWave("svtank", {"spawn_n3"},            "north_path");
         state:next();
+    end);
+
+--- @class message_delayed_event_state : StateMachineIter
+--- @field message AudioMessage
+--- @
+statemachine.Create("lose_recy",
+    function (state)
+        --- @cast state message_delayed_event_state
+        if not gameobject.GetRecycler(1):IsAlive() then
+            state.message = AudioMessage(constants.audio.lost_recycler);
+            state:next();
+        end
+    end,
+    function (state)
+        --- @cast state message_delayed_event_state
+        if IsAudioMessageDone(state.message) then
+            FailMission(GetTime() + 5, constants.debriefing.loss_recycler_destroyed);
+            state:next();
+        end
+    end);
+
+statemachine.Create("lose_command_tower",
+    function (state)
+        --- @cast state message_delayed_event_state
+        if mission_data.key_objects.command_tower then
+            if not mission_data.key_objects.command_tower:IsAlive() then
+                AudioMessage(constants.audio.lost_command_tower);
+                state:next();
+            end
+        end
+    end,
+    function (state)
+        --- @cast state message_delayed_event_state
+        if IsAudioMessageDone(state.message) then
+            if mission_data.protect_command_tower then
+                FailMission(GetTime() + 5, constants.debriefing.loss_command_tower_died);
+            else
+                FailMission(GetTime() + 5, constants.debriefing.loss_killed_command_tower);
+            end
+            state:next();
+        end
     end);
 
 local function checkDead(objects)
@@ -362,13 +426,15 @@ statemachine.Create("main_objectives", {
         --- @cast state RBD01_MissionState
         local player = gameobject.GetPlayer();
         if player and player:GetDistance(mission_data.key_objects.command_tower) < 50.0 then
+            mission_data.protect_command_tower = true;
+            mission_data.mission_states:on("base_guntower_warn");
             AudioMessage(constants.audio.inspect);
             mission_data.key_objects.nav1:SetObjectiveOff();
             objective.UpdateObjective(constants.objectives.bdmisn211, C.Green);
             state:next();
         --elseif(not IsAlive(mission_data.key_objects.command)) then
         --    objective.UpdateObjective(constants.objectives.bdmisn211, C.Red);
-        --    FailMission(GetTime() + 5,constants.debriefing.bdmisn21ls);
+        --    FailMission(GetTime() + 5,constants.debriefing.loss_killed_command_tower);
         --    state:switch("end");
         end
     end },
@@ -409,7 +475,9 @@ statemachine.Create("main_objectives", {
     end },
     { "destroy_solar_postgap", statemachine.SleepSeconds(3, "destroy_solar_success") },
     { "destroy_solar_success", function (state)
+        mission_data.mission_states:off("base_guntower_warn");
         AudioMessage(constants.audio.power2);
+        -- shut down blast guntowers
         state:next();
     end },
     { "destroy_comm_start", function (state)
@@ -556,7 +624,7 @@ statemachine.Create("main_objectives", {
         --global.mission_states:on("toofarfrom_recy");
     end,
     { "deploy_recycler", function (state)
-        objective.AddObjective(constants.objectives.bdmisn2201,"WHITE");
+        objective.AddObjective(constants.objectives.bdmisn2201,C.White);
         state:next();
     end },
     function (state)
@@ -568,12 +636,18 @@ statemachine.Create("main_objectives", {
         objective.UpdateObjective(constants.objectives.bdmisn2201, C.Green);
         objective.ClearObjectives();
  
-        state:next();
+        if IsEasyDifficulty() then
+            state:next();
+        else
+            state:switch("make_comm");
+        end
         mission_data.mission_states:on("delayed_spawn");
     end,
+
+    -- START tutorial zone
     { "make_scavs", function (state)
         mission_data.nav_research:SetObjectiveOff();
-        objective.AddObjective(constants.objectives.bdmisn2202,"WHITE");
+        objective.AddObjective(constants.objectives.bdmisn2202,C.White);
         state:next();
     end },
     function (state)
@@ -587,7 +661,7 @@ statemachine.Create("main_objectives", {
         state:next();
     end,
     { "get_scrap", function (state)
-        objective.AddObjective(constants.objectives.bdmisn2203,"WHITE");
+        objective.AddObjective(constants.objectives.bdmisn2203,C.White);
         createWave("svtank",{"spawn_w1"},"west_path");
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path");
         state:next();
@@ -602,7 +676,7 @@ statemachine.Create("main_objectives", {
         state:next();
     end,
     { "make_factory", function (state)
-        objective.AddObjective(constants.objectives.bdmisn2204,"WHITE");
+        objective.AddObjective(constants.objectives.bdmisn2204,C.White);
         state:next();
     end },
     function (state)
@@ -614,8 +688,10 @@ statemachine.Create("main_objectives", {
         objective.UpdateObjective(constants.objectives.bdmisn2204, C.Green);
         state:next();
     end,
+    -- END tutorial zone
+
     { "make_comm", function (state)
-        objective.AddObjective(constants.objectives.bdmisn2209,"WHITE");
+        objective.AddObjective(constants.objectives.bdmisn2209,C.White);
         createWave("svtank",{"spawn_w1"},"west_path");
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path");
         state:next();
@@ -632,7 +708,7 @@ statemachine.Create("main_objectives", {
  
     -- SKIPPED STATES?
     { "make_offensive", function (state)
-        objective.AddObjective(constants.objectives.bdmisn2205,"WHITE");
+        objective.AddObjective(constants.objectives.bdmisn2205,C.White);
         createWave("svtank",{"spawn_w1"},"west_path");
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path");
         state:next()
@@ -648,7 +724,7 @@ statemachine.Create("main_objectives", {
         state:next();
     end,
     { "make_defensive", function (state)
-        objective.AddObjective(constants.objectives.bdmisn2206,"WHITE");
+        objective.AddObjective(constants.objectives.bdmisn2206,C.White);
         createWave("svtank",{"spawn_w1"},"west_path");
         createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path"); -- Original Script did nothing with these 2. Possibly sent to guard Scavs instead? -GBD
         createWave("svscav",{"spawn_w2","spawn_w3"});
@@ -675,19 +751,32 @@ statemachine.Create("main_objectives", {
         nav:SetObjectiveName("CCA Base");
         AudioMessage(constants.audio.attack);
         state:next();
-        -- @todo seems objective text is missing here, though maybe the audio handles it?
+		objective.AddObjective(constants.objectives.bdmisn2207, C.White);
     end },
     statemachine.SleepSeconds(45),
     function (state) -- this one might have been broken before
         if not (mission_data.sb_turr_1:IsAlive() or mission_data.sb_turr_2:IsAlive()) then
             state:next();
+        elseif not mission_data.forward_rec_already_dead then
+            local badRec = gameobject.GetRecycler(2);
+            if not badRec or not badRec:IsAlive() then
+                if mission_data.sb_turr_1:IsAlive() then
+                    mission_data.sb_turr_1:SetObjectiveOn();
+                end
+                if mission_data.sb_turr_2:IsAlive() then
+                    mission_data.sb_turr_2:SetObjectiveOn();
+                end
+                mission_data.forward_rec_already_dead = true;
+            end
         end
     end,
     function (state)
-		--UpdateObjective(constants.objectives.bdmisn2207, C.Green);
-				
-		if gameobject.GetRecycler(2):IsAlive() then
-			gameobject.GetRecycler(2):SetObjectiveOff(); --- @todo had a nil error here
+        local badRec = gameobject.GetRecycler(2);
+		if badRec and badRec:IsAlive() then
+			badRec:SetObjectiveOff();
+            objective.UpdateObjective(constants.objectives.bdmisn2207, C.Yellow); -- base destruction on hold
+        else
+            objective.UpdateObjective(constants.objectives.bdmisn2207, C.Green); -- base already destroyed
 		end
 
 		--mission.Objective:Start('nsdf_attack');
@@ -695,9 +784,8 @@ statemachine.Create("main_objectives", {
     end,
     { "nsdf_attack", function (state)
         --- @cast state RBD01_MissionState
-        -- @todo the cutscene shows walkers acting like pingpong balls and tanks acting like paddles, might need an adjustment to spawn location
         AudioMessage(constants.audio.nsdf);
-        objective.AddObjective(constants.objectives.bdmisn2208,"WHITE");
+        objective.AddObjective(constants.objectives.bdmisn2208, C.White);
         local a,b,camTarget = createWave("avwalk",{"spawn_avwalk1","spawn_avwalk2","spawn_avwalk3"},"nsdf_path");
         local c,e,g = createWave("avtank",{"spawn_avtank1","spawn_avtank2","spawn_avtank3"},"nsdf_path");
         local d,h,i = createWave("avtank",{"spawn_w1","spawn_w2","spawn_w3"},"west_path");
@@ -705,11 +793,8 @@ statemachine.Create("main_objectives", {
         state.camTarget = camTarget;
         state.targets = {a,b,c,d,e,f,g,h,i,camTarget,j};
         camera.CameraReady();
-        for i,v in pairs(state.targets) do
+        for _,v in pairs(state.targets) do
             v:SetObjectiveOn();
-        end
-        if not gameobject.GetRecycler(2):IsAlive() then
-            objective.UpdateObjective(constants.objectives.bdmisn2208, C.Green); -- this is odd, this code isn't running anymore right?
         end
         state:next();
         return statemachine.FastResult();
@@ -732,22 +817,27 @@ statemachine.Create("main_objectives", {
     function (state)
         --- @cast state RBD01_MissionState
         if areAllDead(state.targets, 2) then
-			if gameobject.GetRecycler(2):IsAlive() then
-				gameobject.GetRecycler(2):SetObjectiveOn(); --- @todo failed here
-			end
             objective.UpdateObjective(constants.objectives.bdmisn2208, C.Green);
+
+            local badRec = gameobject.GetRecycler(2);
+			if badRec and badRec:IsAlive() then
+				badRec:SetObjectiveOn();
+                objective.UpdateObjective(constants.objectives.bdmisn2207, C.White);
+			end
+
             state:next();
         end
     end,
     function (state)
-        if not gameobject.GetRecycler(2):IsAlive() then
+        local badRec = gameobject.GetRecycler(2);
+        if not badRec or not badRec:IsAlive() then
             objective.UpdateObjective(constants.objectives.bdmisn2207, C.Green);
             state:next();
         end
     end,
     function (state)
         AudioMessage(constants.audio.win);
-        SucceedMission(GetTime() + 10, constants.debriefing.bdmisn22wn);
+        SucceedMission(GetTime() + 10, constants.debriefing.win);
         state:next();
     end
 });
@@ -774,23 +864,22 @@ stateset.Create("mission")
             state:off("destoryNSDF");
         end
     end)
-
-    -- this state never runs?
-    --:Add("toofarfrom_recy", function (state)
-    --    if(gameobject.GetPlayer():IsAlive()) then
-    --        if gameobject.GetRecycler(1):IsAlive() and gameobject.GetPlayer():GetDistance(gameobject.GetRecycler(1) or SetVector()) > 700.0 then
-    --            print(state.alive);
-    --            FailMission(GetTime() + 5, constants.debriefing.bdmisn22l1);
-    --            state:off("toofarfrom_recy");
-    --        end
-    --    end
-    --end)
  
-    -- Lose conditions by GBD. No idea if i did this right, mission doesn't update otfs, or goto a next thing, it runs throughout the mission. (distance check until ordered to attack CCA base, and recy loss throughout entire mission.)
-    :Add("lose_recy", function (state)
-        if not gameobject.GetRecycler(1):IsAlive() then
-            FailMission(GetTime() + 5, constants.debriefing.bdmisn22l2);
-            state:off("lose_recy");
+    :Add("lose_recy", stateset.WrapStateMachine("lose_recy"))
+
+    :Add("lose_command_tower", stateset.WrapStateMachine("lose_command_tower"))
+
+    :Add("base_guntower_warn", function (state)
+        local player = gameobject.GetPlayer();
+        if not player or not player:IsAlive() then
+            return;
+        end
+        for _, tower in pairs(mission_data.key_objects.sb_towers) do
+            if tower and tower:IsAlive() and tower:GetDistance(player) < constants.blast_tower_warn_distance then
+                AudioMessage(constants.audio.early_base_approach);
+                state:off("base_guntower_warn");
+                break;
+            end
         end
 	end)
 
@@ -801,6 +890,15 @@ stateset.Create("mission")
 hook.Add("Start", "Mission:Start", function ()
     -- Command tower to tap for communications
     mission_data.key_objects.command_tower = gameobject.GetGameObject(constants.labels.command_tower);
+
+    for _, label in pairs(constants.labels.sb_towers) do
+        local obj = gameobject.GetGameObject(label);
+        if obj then
+            table.insert(mission_data.key_objects.sb_towers, obj);
+        else
+            print("Warning: Soviet Blast Tower object " .. label .. " not found.");
+        end
+    end
 
     for _, label in pairs(constants.labels.solarfarm1) do
         local obj = gameobject.GetGameObject(label);
@@ -842,7 +940,9 @@ hook.Add("Start", "Mission:Start", function ()
         end
     end
 
-    mission_data.mission_states = stateset.Start("mission"):on("main_objectives");
+    mission_data.mission_states = stateset.Start("mission")
+        :on("main_objectives")
+        :on("lose_command_tower");
 end);
 
 hook.Add("Update", "Mission:Update", function (dtime, ttime)

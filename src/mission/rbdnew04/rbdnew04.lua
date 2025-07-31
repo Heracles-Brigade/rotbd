@@ -19,7 +19,7 @@
 ---
 --- Events
 ---
---- The CCA’s discovery of Cobra One’s infiltration caused more pressing problems than simply forcing them
+--- The CCA's discovery of Cobra One's infiltration caused more pressing problems than simply forcing them
 --- to retreat, as the development of the Mammoth has been relocated. Fortunately the Black Dogs are able to
 --- intercept a transmission indicating that the new development site is in the caldera of a large volcano
 --- nearby and the strength of the CCA forces nearby seems to support this, so the Black Dogs are redeployed
@@ -32,12 +32,12 @@
 ---
 --- A set of radar readings detected to the south-west lead Shaw to suggest Cobra One investigate there and
 --- there he finds a large CCA base has been built around the real Mammoth prototype. After neutralising the
---- base’s defenses, Cobra One is able to commandeer the Mammoth.
+--- base's defenses, Cobra One is able to commandeer the Mammoth.
 ---
 --- With the schematics and prototype in-hand the Black Dogs begin work to reproduce the tank in hope of
 --- deploying it against the CCA in the near future. Analysis of notes from its construction indicate that
 --- the Mammoth technology is built on is derived from a Hadean craft called a Stymphalian Bird. Included is
---- a list of coordinates where the Coalition has been hoping to find one, but so far they’ve turned up empty.
+--- a list of coordinates where the Coalition has been hoping to find one, but so far they've turned up empty.
 --- The Black Dogs resolve to use the list to find one before the Coalition.
 --- 
 --- Notes

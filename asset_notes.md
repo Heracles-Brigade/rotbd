@@ -37,7 +37,7 @@ Any customizations should be done with a new file.
             * `abstorsp.*` [rbdnew09]
     * `bdog`
         * `bvapc`
-            * `bvapc26.odf` [rbdnew15]
+            * `bvapc26.odf` [rbdnew05]
             * `bvapc09.odf` [rbdnew09]
         * `bvmtnk` Goliath
             * `bdm*.geo` *core*
@@ -45,8 +45,8 @@ Any customizations should be done with a new file.
             * `bvmtnk30` [rbdnew10]
         * `bvrecy`
             * `bvrecy22.odf` [rbdnew01]
-            * `bvrecx.odf` [rbdnew15]
-            * `bvrecz.odf` [rbdnew15]
+            * `bvrecx.odf` [rbdnew05]
+            * `bvrecz.odf` [rbdnew05]
             * `bvrecy7.odf` [rbdnew07]
             * `bvrecy30.odf` [rbdnew10]
         * `bvmuf`
@@ -54,7 +54,7 @@ Any customizations should be done with a new file.
             * `bvmuf7.odf` [rbdnew07]
             * `bvmuf30.odf` [rbdnew10]
         * `bvslf`
-            * `bvslfz.odf` [rbdnew15]
+            * `bvslfz.odf` [rbdnew05]
             * `bvslf30.odf` [rbdnew10]
         * `bvcnst`
             * `bvcnst22.odf` [rbdnew01] (matches stock even though it shouldn't?)
@@ -72,8 +72,8 @@ Any customizations should be done with a new file.
             * `svmtnkd.*` Decoy Mammoth (only difference is a pilotName field, why?) [rbdnew04]
             * `mammoth.lua` old mammoth script, needs rewrite if used
         * `sbspow`
-            * `sbspowg.*` [rbdnew01]
-            * `sbspow09.*` [rbdnew09]
+            * `sbspowg.*` 1500 meter range [rbdnew01]
+            * `sbspow09.*` 1900 meter range [rbdnew09]
         * `sbtowe`
             * `sbtowerb` Blast Gun Tower [rbdnew01]
         * `sbhang`
@@ -118,8 +118,8 @@ Any customizations should be done with a new file.
 * `mission`
     * `rbd01` Universal mission files
         * `debriefing`
-            * `bdmisn21ls.des` [rbdnew01]
-            * `bdmisn21wn.des`
+            * `bdmisn21ls.des` [rbdnew01] Your orders were to investigate the Command Tower, not destroy it!
+            * `bdmisn21wn.des` Well done soldier. Stopped weapon research.
         * `objectives`
             * `bdmisn211.otf` [rbdnew01]
             * `bdmisn212.otf` [rbdnew01]
@@ -128,9 +128,9 @@ Any customizations should be done with a new file.
             * `bdmisn215.otf` [rbdnew01]
     * `rbd02` Universal mission files
         * `debriefing`
-            * `bdmisn22l1.des`
-            * `bdmisn22l2.des` [rbdnew01]
-            * `bdmisn22wn.des` [rbdnew01]
+            * `bdmisn22l1.des` You strayed too far from your base.
+            * `bdmisn22l2.des` You allowed your recycler to be destroyed.
+            * `bdmisn22wn.des` Excellent work. We have a base on the moon.
         * `objectives`
             * `bdmisn2201.otf` [rbdnew01]
             * `bdmisn2202.otf` [rbdnew01]
@@ -146,13 +146,13 @@ Any customizations should be done with a new file.
         * `objectives`
     * `rbd06` Universal mission files
         * `debriefing`
-            * `bdmisn26l1.des` [rbdnew15]
-            * `bdmisn26l2.des` [rbdnew15]
-            * `bdmisn26wn.des` [rbdnew15]
+            * `bdmisn26l1.des` [rbdnew05]
+            * `bdmisn26l2.des` [rbdnew05]
+            * `bdmisn26wn.des` [rbdnew05]
         * `objectives`
-            * `bdmisn2601.otf` [rbdnew15]
-            * `bdmisn2602.otf` [rbdnew15]
-            * `bdmisn2603.otf` [rbdnew15]
+            * `bdmisn2601.otf` [rbdnew05]
+            * `bdmisn2602.otf` [rbdnew05]
+            * `bdmisn2603.otf` [rbdnew05]
     * `rbd07` Universal mission files
         * `debriefing`
             * `rbd07l02.des` [rbdnew07]
@@ -208,9 +208,9 @@ Any customizations should be done with a new file.
             * `rbd1003.otf` [rbdnew10]
     * `rbdnew01`
         * `debriefing`
-            * `rbdnew01l1.des` (for some reason these aren't used yet)
-            * `rbdnew01l2.des` (for some reason these aren't used yet)
-            * `rbdnew01w.des` (for some reason these aren't used yet)
+            * `rbdnew01l1.des` Command Tower Destroyed, not defended
+            * `rbdnew01l2.des` [rbdnew01] You allowed your recycler to be destroyed.
+            * `rbdnew01w.des` [rbdnew01] Well done, new closing
     * `rbdnew03`
         * `debriefing`
             * `rbdnew03l1.des` [rbdnew03]
@@ -242,22 +242,22 @@ Any customizations should be done with a new file.
             * `rbdnew0406.otf` [rbdnew04]
     * `rbdnew05`
         * `debriefing`
-            * `rbdnew15l1.des` [rbdnew15]
-            * `rbdnew15l2.des` [rbdnew15]
-            * `rbdnew15l3.des` [rbdnew15]
-            * `rbdnew15l4.des` [rbdnew15]
-            * `rbdnew15w.des` [rbdnew15]
+            * `rbdnew15l1.des` [rbdnew05]
+            * `rbdnew15l2.des` [rbdnew05]
+            * `rbdnew15l3.des` [rbdnew05]
+            * `rbdnew15l4.des` [rbdnew05]
+            * `rbdnew15w.des` [rbdnew05]
         * `objectives`
-            * `rbd0521.otf` [rbdnew15]
-            * `rbd0522.otf` [rbdnew15]
-            * `rbd0523.otf` [rbdnew15]
-            * `rbd0524.otf` [rbdnew15]
-            * `rbd0525.otf` [rbdnew15]
-            * `rbd0530.otf` [rbdnew15]
-            * `rbd0531.otf` [rbdnew15]
-            * `rbd0532.otf` [rbdnew15]
-            * `rbd0533.otf` [rbdnew15]
-            * `rbd0534.otf` [rbdnew15]
+            * `rbd0521.otf` [rbdnew05]
+            * `rbd0522.otf` [rbdnew05]
+            * `rbd0523.otf` [rbdnew05]
+            * `rbd0524.otf` [rbdnew05]
+            * `rbd0525.otf` [rbdnew05]
+            * `rbd0530.otf` [rbdnew05]
+            * `rbd0531.otf` [rbdnew05]
+            * `rbd0532.otf` [rbdnew05]
+            * `rbd0533.otf` [rbdnew05]
+            * `rbd0534.otf` [rbdnew05]
     * `rbdnew07`
     * `rbdnew08`
     * `rbdnew09`

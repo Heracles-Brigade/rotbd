@@ -15,13 +15,13 @@
 --- Retrieve and defend Io relics
 --- 
 --- Events
---- The relic retrieved from Venus points to a project the Hadean scientist Canis had headed called the Stymphalian Birds, fusing Cthon flesh with Biometal to create supersoldiers. Believing there to be relics on Io further connected to Canis’ research, Shaw sends his platoon there to retrieve them, well aware that the Coalition are after the relics as well, finding an NSDF and CCA platoon when his forces arrive.
+--- The relic retrieved from Venus points to a project the Hadean scientist Canis had headed called the Stymphalian Birds, fusing Cthon flesh with Biometal to create supersoldiers. Believing there to be relics on Io further connected to Canis' research, Shaw sends his platoon there to retrieve them, well aware that the Coalition are after the relics as well, finding an NSDF and CCA platoon when his forces arrive.
 --- 
 --- After successfully capturing the first relic, the Black Dogs pick up a distress call nearby and Cobra One is ordered to investigate. The distress call was a ruse, and Cobra One  is ambushed by a Coalition force on arrival.
 --- 
 --- After the Coalition forces have been neutralised Cobra One is returned to escort duty and escorts the Tug back to base. Moments after securing the second relic the base comes under attack from a wing of Bombers and Rocket Tanks and Cobra One is forced to defend it.
 --- 
---- The relics retrieved reveal that Canis’ experiments had attempted to create supersoldiers by fusing Cthon flesh with biometal, and that the Stymphalian Birds were the elite fighter squadron that resulted. 
+--- The relics retrieved reveal that Canis' experiments had attempted to create supersoldiers by fusing Cthon flesh with biometal, and that the Stymphalian Birds were the elite fighter squadron that resulted. 
 --- 
 --- Notes
 --- Ambush force varies depending on which relic is retrieved first; CCA if west relic, NSDF if east relic.
