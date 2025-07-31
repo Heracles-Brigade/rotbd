@@ -88,25 +88,25 @@ navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToG
 --tracker.setFilterClass("turrettank"); -- track turrettanks
 
 --- @class RBD03_Constants_Audio
---- @field intro string
---- @field commwarn string
---- @field commclear string
---- @field inspect string
---- @field tug string
---- @field first_a string
---- @field dayw string
---- @field second_a string
---- @field transint string
---- @field backinrange string
---- @field flee string
---- @field hurry string
---- @field win string
---- @field lose1 string
---- @field lose2 string
---- @field lose3 string
---- @field lose4 string
+--- @field intro string -- Welcome to Mars
+--- @field commwarn string -- Careful, Cobra One. Keep an eye on those towers.
+--- @field commclear string -- Hurry up, Cobra One!
+--- @field inspect string -- Got it! According to this, the Mammoth should be...
+--- @field tug string -- Nice! You should be able to get close enough now.
+--- @field first_a string -- Bomb the shield control
+--- @field dayw string -- Nice job, sir! You're clear to get through to the Mammoth now.
+--- @field second_a string -- We're picking up your signal, hang around for a bit.
+--- @field transint string -- Out of range
+--- @field backinrange string -- Back in range
+--- @field flee string -- They detected your transmission, run!
+--- @field hurry string -- Hurry up, Cobra One!
+--- @field win string -- Good job, Lieutenant. Let's get you out of there.
+--- @field lose1 string -- Mammoth Destroyed/sniped (entire base just scrambled)
+--- @field lose2 string --Failed to extract on time
+----- @field lose3 string --Detected, loser (no exist)
+--- @field lose4 string -- Evidently you can't aim Day Wreckers
+--- @field detected_kill_them string -- They're on to you, Lieutenant! Take them out and let's pray they haven't gotten the word out yet!
 --- @field lose5 string
---- @field rbdnew0303W string
 
 --- @class RBD03_Constants_Names
 --- @field ExtractionPoint string
@@ -134,12 +134,12 @@ navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToG
 --- @field Extract string
 
 --- @class RBD03_Constants_Debriefing
---- @field rbdnew03l1 string
---- @field rbdnew03l2 string
---- @field rbdnew03l3 string
---- @field rbdnew03l4 string
---- @field rbdnew03l5 string
---- @field rbdnew03wn string
+--- @field rbdnew03l1 string -- Mammoth destroyed before transmission complete
+--- @field rbdnew03l2 string -- Failed to make it to the pickup zone
+--- @field rbdnew03l3 string -- Hanger destroyed
+--- @field rbdnew03l4 string -- Cover blown
+--- @field rbdnew03l5 string -- Wrecker missed
+--- @field rbdnew03wn string -- Success
 
 --- @class RBD03_Constants
 --- @field audio RBD03_Constants_Audio
@@ -151,24 +151,24 @@ navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToG
 --- @field hurry_threshold number -- time to trigger the "hurry" audio message
 local constants = {
 	audio = {
-		intro = "rbdnew0301.wav", -- Welcome to Mars
-		commwarn = "rbdnew0301W.wav", -- Careful, Cobra One. Keep an eye on those towers.
+		intro = "rbdnew0301.wav",
+		commwarn = "rbdnew0301W.wav",
 		commclear = "rbdnew0302W.wav",
-		inspect = "rbdnew0302.wav", -- Got it! According to this, the Mammoth should be...
-		tug = "rbdnew0303.wav", -- Nice! You should be able to get close enough now.
-		first_a = "rbdnew0304.wav", -- Bomb the shield control
-		dayw = "rbdnew0305.wav", -- Nice job, sir! You're clear to get through to the Mammoth now.
-		second_a = "rbdnew0306.wav", -- We're picking up your signal, hang around for a bit.
-		transint = "rbdnew0306A.wav", -- Out of range
-		backinrange = "rbdnew0306B.wav", -- Back in range
-		flee = "rbdnew0307.wav", -- They detected your transmission, run!
-		hurry = "rbdnew0302W.wav", -- Hurry up, Cobra One!
-		win = "rbdnew0308.wav", -- Good job, Lieutenant. Let's get you out of there.
-		lose1 = "rbdnew0301L.wav", -- Mammoth Destroyed/sniped (entire base just scrambled)
-		lose4 = "rbdnew0304L.wav", -- Evidently you can't aim Day Wreckers
-		lose2 = "rbdnew0302L.wav", --Failed to extract on time (no exist)
-		lose3 = "rbdnew0303L.wav", --Detected, loser (no exist)
-		rbdnew0303W = "rbdnew0303W.wav", -- They're on to you, Lieutenant! Take them out and let's pray they haven't gotten the word out yet!
+		inspect = "rbdnew0302.wav",
+		tug = "rbdnew0303.wav",
+		first_a = "rbdnew0304.wav",
+		dayw = "rbdnew0305.wav",
+		second_a = "rbdnew0306.wav",
+		transint = "rbdnew0306A.wav",
+		backinrange = "rbdnew0306B.wav",
+		flee = "rbdnew0307.wav",
+		hurry = "rbdnew0302W.wav",
+		win = "rbdnew0308.wav",
+		lose1 = "rbdnew0301L.wav",
+		lose2 = "rbdnew0302L.wav",
+		--lose3 = "rbdnew0303L.wav",
+		lose4 = "rbdnew0304L.wav",
+		detected_kill_them = "rbdnew0303W.wav",
 
 		-- unused
 		lose5 = "rbdnew0305L.wav", --Why didn't you make a Day Wrecker?
@@ -342,7 +342,7 @@ end);
 
 
 local function FailByDetection()
-	AudioMessage(constants.audio.lose3);
+	--AudioMessage(constants.audio.lose3);
 	FailMission(GetTime() + 5.0, constants.debriefing.rbdnew03l4); -- cover blown
 	objective.UpdateObjective(constants.objectives.Detection, "RED");
 end
@@ -786,7 +786,8 @@ statemachine.Create("detection_check_perceived_team", {
 
 			if HaveAngry then
 				-- if we have angry bees, we need to check them
-				AudioMessage(constants.audio.rbdnew0303W);
+				AudioMessage(constants.audio.detected_kill_them);
+				objective.UpdateObjective(constants.objectives.Detection, "YELLOW");
 				state:next(); -- begin the attempt to save yourself
 			else
 				-- if we don't have angry bees, we can just return
@@ -825,6 +826,7 @@ statemachine.Create("detection_check_perceived_team", {
 			end
 			if not theyBeAngry then
 				state:SecondsHavePassed(); -- reset the timer
+				objective.UpdateObjective(constants.objectives.Detection, "WHITE");
 				state:switch("start"); -- no more angry bees, we can return to perceived team 2
 				player:SetPerceivedTeam(2);
 				return;
