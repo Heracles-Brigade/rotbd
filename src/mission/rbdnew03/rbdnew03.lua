@@ -99,12 +99,18 @@ navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToG
 --- @field transint string
 --- @field backinrange string
 --- @field flee string
+--- @field hurry string
 --- @field win string
 --- @field lose1 string
 --- @field lose2 string
 --- @field lose3 string
 --- @field lose4 string
 --- @field lose5 string
+--- @field rbdnew0303W string
+
+--- @class RBD03_Constants_Names
+--- @field ExtractionPoint string
+--- @field Mammoth string
 
 --- @class RBD03_Constants_Labels
 --- @field mammoth string
@@ -156,18 +162,16 @@ local constants = {
 		transint = "rbdnew0306A.wav", -- Out of range
 		backinrange = "rbdnew0306B.wav", -- Back in range
 		flee = "rbdnew0307.wav", -- They detected your transmission, run!
-		hurry = "rbdnew0302W.txdi", -- Hurry up, Cobra One!
+		hurry = "rbdnew0302W.wav", -- Hurry up, Cobra One!
 		win = "rbdnew0308.wav", -- Good job, Lieutenant. Let's get you out of there.
 		lose1 = "rbdnew0301L.wav", -- Mammoth Destroyed/sniped (entire base just scrambled)
 		lose4 = "rbdnew0304L.wav", -- Evidently you can't aim Day Wreckers
 		lose2 = "rbdnew0302L.wav", --Failed to extract on time (no exist)
 		lose3 = "rbdnew0303L.wav", --Detected, loser (no exist)
+		rbdnew0303W = "rbdnew0303W.wav", -- They're on to you, Lieutenant! Take them out and let's pray they haven't gotten the word out yet!
 
 		-- unused
 		lose5 = "rbdnew0305L.wav", --Why didn't you make a Day Wrecker?
-
-		-- unused unless we find a way to make the the player able to escape detection by sniping
-		rbdnew0303W = "rbdnew0303W.txdi", -- They're on to you, Lieutenant! Take them out and let's pray they haven't gotten the word out yet!
 	},
 	labels = {
 		mammoth = "mammoth",
@@ -208,8 +212,12 @@ local constants = {
 	},
 	runaway_timer = { 120, 30, 10 },
 	hurry_threshold = 30,
+	sniper_range = 1000, -- used to look at candidates for being shot by player
+	detection_range_player = 100, -- if anyone is within this distance of the player they detect when they attack
+	detection_range_target = 100, -- if anyone is within this distance of the shot unit they detect when they attack
+	detection_range_time = 1, -- units of time that the shot had to be within to count, to omit old hits
+	detection_timeout = 10, -- time in seconds you have to save yourself from detection
 }
-
 
 --- @class MissionData03_KeyObjects
 --- @field Player GameObject? The player object.
@@ -389,6 +397,7 @@ statemachine.Create("mammoth_shield", function (state)
 
 --- @class main_objectives03_state : StateMachineIter
 --- @field shield_up boolean? Camera mammoth shield activation debounce, temporary
+--- @field did_hurry boolean? Did we play the hurry audio message?
 statemachine.Create("main_objectives", {
 	{ "start", function (state)
 		ColorFade(1.1, 0.4, 0, 0, 0);
@@ -644,6 +653,8 @@ statemachine.Create("main_objectives", {
 		state:next();
 	end },
 	{ "run_away", function (state)
+		--- @cast state main_objectives03_state
+		
 		if mission_data.key_objects.ObjectiveNav:GetObjectiveName() == constants.names.ExtractionPoint and mission_data.key_objects.Player and mission_data.key_objects.Player:GetDistance(mission_data.key_objects.ObjectiveNav) < 50.0 then
 			AudioMessage(constants.audio.win);
 			SucceedMission(GetTime()+5.0, constants.debriefing.rbdnew03wn); -- mission complete
@@ -715,20 +726,117 @@ statemachine.Create("detection_check_radar_tower", {
 	end }		
 });
 
+--- @class detection_check_perceived_team_state : StateMachineIter
+--- @field AngryBees table<GameObject, boolean> A table of angry bees (non-ally units that saw the player lose perceived team).
+
+--- @todo a hop-out triggers this too, so I question if that should be seen as odd behavior or not
+statemachine.Create("detection_check_perceived_team", {
+	{ "start", function (state)
+		--- @cast state detection_check_perceived_team_state
+		local player = mission_data.key_objects.Player;
+		if player and player:GetPerceivedTeam() == 1 then
+			-- find everyone who saw that
+			print("Detection check: looking for angry bees");
+
+			state.AngryBees = {};
+			local time = GetTime();
+			local foundTarget = false;
+			
+			-- Scan the area around the player for potential targets
+			-- If they are not allies note them
+			-- If they are not allies and they were shot by the player recently note them and search around them for other targets
+			for candidate in gameobject.ObjectsInRange(constants.sniper_range, player) do
+				if candidate then
+					if candidate:GetTeamNum() ~= 0 and not candidate:IsAlly(player) then
+						if not foundTarget and candidate:GetWhoShotMe() == player and candidate:GetLastEnemyShot() + constants.detection_range_time > time then
+							-- we shot this guy recently, so he is angry
+							if candidate:IsCraft() or candidate:IsPerson() then
+								state.AngryBees[candidate] = true;
+							end
+							foundTarget = true;
+							for sub_candidate in gameobject.ObjectsInRange(constants.detection_range_target, candidate) do
+								-- these guys saw he wa shot, so they are angry too
+								if sub_candidate then
+									if sub_candidate:GetTeamNum() ~= 0 and not sub_candidate:IsAlly(player) then
+										if sub_candidate:IsCraft() or sub_candidate:IsPerson() then
+											state.AngryBees[sub_candidate] = true;
+										end
+									end
+								end
+							end
+						elseif candidate:GetDistance(player) < constants.detection_range_player then
+							-- this guy saw us shooting so even he's angry!
+							if candidate:IsCraft() or candidate:IsPerson() then
+								state.AngryBees[candidate] = true;
+							end
+						end
+					end
+				end
+			end
+
+			local HaveAngry = false;
+			for angry, _ in pairs(state.AngryBees) do
+				if angry then
+					if angry:IsAliveAndPilot() then
+						angry:SetObjectiveOn();
+						HaveAngry = true;
+					end
+				end
+			end
+
+			if HaveAngry then
+				-- if we have angry bees, we need to check them
+				AudioMessage(constants.audio.rbdnew0303W);
+				state:next(); -- begin the attempt to save yourself
+			else
+				-- if we don't have angry bees, we can just return
+				player:SetPerceivedTeam(2);
+				return;
+			end
+			-- if only dead people saw it, return perceived team to 2
+		end
+	end },
+	{ "check", function (state)
+		--- @cast state detection_check_perceived_team_state
+		local player = mission_data.key_objects.Player;
+		if state:SecondsHavePassed(constants.detection_timeout) then
+			state:SecondsHavePassed(); -- reset the timer
+			FailByDetection();
+			state:next();
+			return statemachine.AbortResult(); -- I think this is implied by being in a nil state but, whatever
+		end
+		if player then
+			local theyBeAngry = false;
+			local shotMe = player:GetWhoShotMe();
+			if shotMe then
+				state.AngryBees[shotMe] = true; -- if we were shot by someone, they are angry too
+			end
+			for angry, _ in pairs(state.AngryBees) do
+				if angry then
+					if angry:IsAliveAndPilot() and not angry:IsAlly(player) then
+						-- bee still angry
+						theyBeAngry = true;
+						--break; -- can't break since we're removing objectives on calm bees
+						angry:SetObjectiveOn(); -- maybe they can become re-angry?
+					else
+						angry:SetObjectiveOff();
+					end
+				end
+			end
+			if not theyBeAngry then
+				state:SecondsHavePassed(); -- reset the timer
+				state:switch("start"); -- no more angry bees, we can return to perceived team 2
+				player:SetPerceivedTeam(2);
+				return;
+			end
+		end
+	end }
+});
+
 stateset.Create("mission")
 	:Add("main_objectives", stateset.WrapStateMachine("main_objectives"))
 	:Add("scrap_field_filler_1", stateset.WrapStateMachine("scrap_field_filler", nil, { path = "scrpfld1" }))
-	:Add("detection_check_perceived_team", function(state, name)
-		if mission_data.key_objects.Player and mission_data.key_objects.Player:GetPerceivedTeam() == 1 then
-			--UpdateObjectives();
-			-- this is a failure state
-			-- Show Failed No-Detect Objective
-			-- Trigger Game Over
-			FailByDetection();
-			
-			state:off(name); -- turn this check off
-		end
-	end)
+	:Add("detection_check_perceived_team", stateset.WrapStateMachine("detection_check_perceived_team"))
 	:Add("detection_check_radar_tower_1", stateset.WrapStateMachine("detection_check_radar_tower", nil, { label = constants.labels.radar[1] }))
 	:Add("detection_check_radar_tower_2", stateset.WrapStateMachine("detection_check_radar_tower", nil, { label = constants.labels.radar[2] }))
 	:Add("detection_check_radar_tower_3", stateset.WrapStateMachine("detection_check_radar_tower", nil, { label = constants.labels.radar[3] }))
