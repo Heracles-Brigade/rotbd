@@ -18,52 +18,20 @@
 --- * Set up base of operations
 --- 
 --- Events
---- During the events of Total Destruction a group of NSDF researchers on the moon are captured by
---- the CCA. The Liberty and Freedom are already at Titan (Saturn VI) and travel to join them from
---- Europa (Jupiter II) will take the Justice, the Black Dog's carrier, through the inner solar system.
---- The Black Dog platoon under Commander Cameron Shaw deploys on the destroyer Jackson as the Justice
---- approaches Earth.
+--- During the events of Total Destruction a group of NSDF researchers on the moon are captured by the CCA. The Liberty and Freedom are already at Titan (Saturn VI) and travel to join them from Europa (Jupiter II) will take the Justice, the Black Dog's carrier, through the inner solar system. The Black Dog platoon under Commander Cameron Shaw deploys on the destroyer Jackson as the Justice approaches Earth.
 --- 
---- Shaw's platoon deploy and infiltrate the base, using a CCA command tower to listen in on Soviet
---- communications and determine the scientists' precise location. After locating the base Cobra One
---- is ordered to destroy the solar farms that power it to weaken its defences before the Black Dog
---- wing launches its attack.
+--- Shaw's platoon deploy and infiltrate the base, using a CCA command tower to listen in on Soviet communications and determine the scientists' precise location. After locating the base Cobra One is ordered to destroy the solar farms that power it to weaken its defences before the Black Dog wing launches its attack.
 --- 
---- Before they can move on the base a wing of American forces arrive and extract both the scientists
---- and the relic they were working on. Telling his men that these forces must be Communist defectors
---- Shaw orders his men to give chase, but the wing escapes despite their efforts. The Black Dogs clear
---- the CCA forces out and capture the outpost.
+--- Before they can move on the base a wing of American forces arrive and extract both the scientists and the relic they were working on. Telling his men that these forces must be Communist defectors Shaw orders his men to give chase, but the wing escapes despite their efforts. The Black Dogs clear the CCA forces out and capture the outpost.
 --- 
---- Following the loss of the original objective due to interference by defectors Shaw declares that the
---- Black Dogs are no longer able to trust the American forces in the area and orders the construction of
---- a new command base so they can investigate the abandoned research building and coordinate their forces
---- without relying on the potentially compromised NSDF infrastructure in the area. A recycler is delivered
---- to Cobra One for deployment at the site of the Soviet research outpost and he is instructed to build
---- a Satellite Tower to facilitate ship-to-shore communications. Shaw also warns of incoming forces from
---- the other Soviet outposts nearby.
+--- Following the loss of the original objective due to interference by defectors Shaw declares that the Black Dogs are no longer able to trust the American forces in the area and orders the construction of a new command base so they can investigate the abandoned research building and coordinate their forces without relying on the potentially compromised NSDF infrastructure in the area. A recycler is delivered to Cobra One for deployment at the site of the Soviet research outpost and he is instructed to build a Satellite Tower to facilitate ship-to-shore communications. Shaw also warns of incoming forces from the other Soviet outposts nearby.
 --- 
---- This base comes under assault by a CCA platoon which establishes itself to the north-west. When Cobra
---- One moves to attack a nearby CCA base and destroys its gun towers a group of American reinforcements
---- are deployed to stop them but the Black Dogs are able to destroy these as well.
+--- This base comes under assault by a CCA platoon which establishes itself to the north-west. When Cobra One moves to attack a nearby CCA base and destroys its gun towers a group of American reinforcements are deployed to stop them but the Black Dogs are able to destroy these as well.
 --- 
---- Following the mission Shaw is able to use the connection to CCA communications to listen in on
---- communication between the CCA and the NSDF scientists. He concludes that, having been indoctrinated
---- to the communist cause, the Scientists were working with the CCA voluntarily on weapons research
---- using an ancient Cthonian armory. Evidence found within the research building itself indicate that
---- developments made were being passed to Mars to be put into practice. Cobra One and his forces are
---- deployed to investigate.
----
---- Notes
---- The Command Tower should be mission critical for the duration of the mission.
---- CCA research base uses Blast Cannon equipt Gun Towers.
---- Relic is Hadean, using new hbdata object that is an obdata edited to look like an hocrys.
+--- Following the mission Shaw is able to use the connection to CCA communications to listen in on communication between the CCA and the NSDF scientists. He concludes that, having been indoctrinated to the communist cause, the Scientists were working with the CCA voluntarily on weapons research using an ancient Cthonian armory. Evidence found within the research building itself indicate that developments made were being passed to Mars to be put into practice. Cobra One and his forces are deployed to investigate.
 ---
 --- Issues (Remove these are they are fixed and move relevent information into Notes)
 --- Should the tapped communications be used to hint during the mission at various infomation?
---- Second part of the mission feels like a tutorial beacuse it guides you through making scavs and other pointless elements
---- Look into Black Dog recycler's build list to determine if it's correct
---- Look at NSDF reinforcement spawns for correct location and makeup, currently Sasquatches trip over hover-units too in the cutscene
---- There are various ways to crash the mission when losing, such as player death. - might be fixed
 --- Establish a base at Nav 4 is an odd objective, since the nav, while in slot 4 if you didn't make other navs, is not called "Nav 4".
 
 local logger = require("_logger");
@@ -297,8 +265,17 @@ end
 local function createWave(odf, path_list, follow)
     local ret = {};
     print("Spawning:" .. odf);
-    for i,v in pairs(path_list) do
-        local h = gameobject.BuildObject(odf, 2, v);
+    local followStart = GetPosition(follow);
+    followStart.y = 0;
+    for _,v in pairs(path_list) do
+        --local h = gameobject.BuildObject(odf, 2, v);
+
+        -- spawn looking toward the follow point
+        local spawnPoint = GetPosition(v);
+        spawnPoint.y = 0;
+        local direction = followStart - spawnPoint;
+        local h = gameobject.BuildObject(odf, 2, BuildDirectionalMatrix(spawnPoint, direction));
+
         if h and follow then
             h:Goto(follow);
         end
@@ -521,6 +498,7 @@ statemachine.Create("main_objectives", {
 
         state:next();
     end },
+    -- could add a sleep here to smooth it out if needed, but it seems it's not needed
     { "convoy_cin", function (state)
         if camera.CameraCancelled() or camera.CameraPath("convoy_cin", 2000, 2000, mission_data.key_objects.cafe) then
             camera.CameraFinish();

@@ -93,7 +93,7 @@ Any customizations should be done with a new file.
         * `hbcore` Relic: Hadean Data Core (Tuggable)
         * `hbgate` Relic: Hadean Gateway
         * `hblaba` Relic: Hadean Labs A
-        * `hbdata` Relic: (Tuggable) [rbdnew01]
+        * `hbdata` Relic: (Tuggable) (Hadean Armory, any model will do) [rbdnew01]
     * `other`
         * `apcamr`
             * `apcmri` Unkillable (why? we can do this with script)
