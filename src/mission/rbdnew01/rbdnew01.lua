@@ -541,6 +541,7 @@ statemachine.Create("main_objectives", {
             state:next();
         end
     end },
+    --statemachine.SleepSeconds(5), -- give a few seconds to apreciate success
     function (state)
         --- @cast state RBD01_MissionState
         objective.ClearObjectives();
@@ -803,15 +804,9 @@ statemachine.Create("main_objectives", {
         if state:SecondsHavePassed(10) or camera.CameraCancelled() or camera.CameraPath("camera_nsdf", 1000, 1500, state.camTarget) then
             state:SecondsHavePassed(); -- clear timer if we got here without it being cleared
             camera.CameraFinish();
+            objective.UpdateObjective(constants.objectives.bdmisn2208, C.White);
             state:next();
         end
-    end,
-    function (state)
-		if gameobject.GetRecycler(2):IsAlive() then
-			gameobject.GetRecycler(2):SetObjectiveOn();
-		end
-        objective.UpdateObjective(constants.objectives.bdmisn2208, C.Green);
-        state:next();
     end,
     function (state)
         --- @cast state RBD01_MissionState
@@ -835,9 +830,17 @@ statemachine.Create("main_objectives", {
         end
     end,
     function (state)
-        AudioMessage(constants.audio.win);
-        SucceedMission(GetTime() + 10, constants.debriefing.win);
+        --- @cast state RBD01_MissionState
+        state.win_audio = AudioMessage(constants.audio.win);
         state:next();
+    end,
+    function (state)
+        --- @cast state RBD01_MissionState
+        if not state.win_audio or IsAudioMessageDone(state.win_audio) then
+            -- Wait for the audio to finish before proceeding
+            SucceedMission(GetTime() + 5, constants.debriefing.win);
+            state:next();
+        end
     end
 });
 
@@ -994,6 +997,7 @@ end);
 
 --- @class RBD01_MissionState : StateMachineIter
 --- @field recy GameObject?
+--- @field win_audio AudioMessage?
 --- \@field nav1 GameObject?
 --- \@field command GameObject?
 --- \@field nav_solar1 GameObject?
