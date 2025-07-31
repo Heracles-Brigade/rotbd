@@ -6,7 +6,7 @@
 --- [2] Preparations
 ---
 --- World: Luna (Earth I), Earth (Sol III)
---- Map Data: Ported n64 Original
+--- Map Data: Ported n64 Original (check if original portal HGT/MAT or if it matched a PC map)
 ---
 --- Authors:
 --- * Rise of the Black Dogs Team
