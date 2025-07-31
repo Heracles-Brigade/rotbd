@@ -30,9 +30,13 @@
 --- 
 --- Following the mission Shaw is able to use the connection to CCA communications to listen in on communication between the CCA and the NSDF scientists. He concludes that, having been indoctrinated to the communist cause, the Scientists were working with the CCA voluntarily on weapons research using an ancient Cthonian armory. Evidence found within the research building itself indicate that developments made were being passed to Mars to be put into practice. Cobra One and his forces are deployed to investigate.
 ---
---- Issues (Remove these are they are fixed and move relevent information into Notes)
---- Should the tapped communications be used to hint during the mission at various infomation?
---- Establish a base at Nav 4 is an odd objective, since the nav, while in slot 4 if you didn't make other navs, is not called "Nav 4".
+--- Issues and Possible Changes
+--- * The tapped communications could allow for interspersed interceptions and information. Consider this.
+--- * The objectives give navs by index even when they are named. There's a few options to deal with this:
+---   * Correct the indexes (or give no index if out of range) for the objectives every update by checking the nav objects.
+---   * Have the nav manager be very agressive and prevent any custom navs
+---   * Have the nav slots reserved somehow with dummies
+---   * Shift the navs around with the nav manager (not possible with current released patch version)
 
 local logger = require("_logger");
 
