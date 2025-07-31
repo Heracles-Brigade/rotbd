@@ -1,16 +1,15 @@
-PARENT diag.voices
-START
-NTRG: So your [125] escapade on the moon led you to the Mammoth Project [100] correct [210] 
-Why was Shaw so interested in that[200];
-CBRA: Baker figured out pretty quickly that the whole thing was a weapons project [100] 
-We are not idiots [50] we all knew what it would be used for [75] 
-Who it would be used against [100] 
-Why do you think Shaw had so much interest in it [175][200];
-NTRG: He was afraid the Mammoth would be used against America[200];
-CBRA:	Of course he was [110] A Soviet super-tank with armour six inches thick and 
-firepower double anything we could come up with [100] Damn right he was afraid of it [50] We all were[200];
-NTRG: And he not once suggested the USA had anything to do with the project [80] That it might have been a
-collaborative effort[200];
-CBRA: That is ridiculous [50] If Command knew anything about it they would have 
-told us well before we went in on the moon [100] Hell [50] 
-if it was anything to do with them we would never have been deployed at all[200];
+MCHL: So your... "escapade" on the moon led you to the Mammoth Project, correct? Why was Shaw so interested in that?
+
+RBTS: Baker figured out pretty quickly that the whole thing was a weapons project. We're not idiots; we all knew what it'd be used for. Who it'd be used against. Why do you think Shaw had so much interest in it?
+
+MCHL: (WITH IMPATIENCE) I need your answer for the record, Lieutenant.
+
+RBTS: He was afraid it'd be used against us, of course. A Soviet super-tank with armour six inches thick and firepower double anything we could come up with? Damn right he was afraid of it. We all were.
+
+MCHL: And was there anything unusual about the project? Anything that suggested it might not have merely been a Soviet superweapon programme?
+
+RBTS: (SARCASTICALLY) It had thicker armour than anything our boys have ever dreamed of and an armament that would put an entire platoon to shame, if that's what you mean - and I'm told it was based on some pretty serious alien tech but that aside, yeah, it seemed pretty normal.
+
+MCHL: (IRRITATED) That's enough, Lieutenant. Now the information that led you to Mars - that was from a series of research notes, yes? What can you tell me about their contents?
+
+RBTS: I never actually saw or handled the notes myself, I'm not technical enough for that sort of thing. That's Baker's department. All I know is that the notes were something to do with the weapons technology the Soviets were developing on the moon. That technology was going to Mars - and that meant we had to follow it.

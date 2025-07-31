@@ -5,7 +5,7 @@
 --- [3] Exploratory
 ---
 --- World: Mars (Sol IV)
---- Map Data: NEW (does not match any stock map in wiki gallery)
+--- Map Data: Deus Ex Ceteri
 ---
 --- Authors:
 --- * Herp McDerperson
@@ -35,16 +35,22 @@
 --- 
 --- The stolen data will allow the Black Dogs to construct a Mammoth of their own once they have acquired the prototype.
 ---
+--- Issues
+--- * Right now when you are detected you lose the mission immediately.
+---   * Desired: If you kill the other unit or remove its pilot in time, you don't lose.
+---     * Side Effect: Bringing this invalid unit too close to the mammoth should lose.
+--- * The docs say the player should have a normal rifile, they have one with 50 shots.
+---   * N64 verison has a high power rifile, but that is as a BDog pilot.
+---     * N64 mission was "sneak, kill, sneak, kill" while ours is "sneak, sneak, sneak"
+---   * N64 rifile can kill in 3 like 3 shots, so we tried a rocket weapon but it flopped.
+---   * If we fix the detection issue, should we drop it back down to 3 shots?
+---
 --- Notes
---- Standard CCA sniper rifle for this mission. (not currently?)
 --- Satellite towers do not detect player for 30s within 100m, or two minutes within 200m. (not currently, clear up how this should work exactly?)
 --- Player receives burst of Russian speech if they are detected by a Satellite Tower (not currently?)
 --- Several tugs and APCs travelling between the Mammoth site and various outposts around the map
---- Stolen tug to be empty prior to player's arrival (no pilot? yeah that's how it is)
---- Off-map armory to be used to bomb the shield generator control tower (it's actually on-map, but out of the area you would play)
 ---
 --- Issues (Remove these are they are fixed and move relevent information into Notes)
---- Treatment says "Cydonia" but we're not using that map anymore are we? Hadley needs to comment
 --- The detection by the satellite towers is really slow, consider changes to this process to either be shorter or involve a "noticed" concept
 --- The range on the first objective to investigate the mammoth has been reduced so it no longer trips while the mamoth is still outside of vis-range, but this still feels wrong.  Maybe the tug should need to actually approach the mammoth to see the shield and/or need to tug materials to the base to justify its presence?
 --- For some reason they player has 100 sniper shots.  This doesn't make sense, especially since using it will lose the mission.
@@ -65,7 +71,7 @@ local stateset = require("_stateset");
 --local tracker = require("_tracker");
 local navmanager = require("_navmanager");
 local objective = require("_objective");
-local utility = require("_utility");
+--local utility = require("_utility");
 local color = require("_color");
 local camera = require("_camera");
 
@@ -80,23 +86,6 @@ navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToG
 --tracker.setFilterOdf("bvtank"); -- track bvtanks
 --tracker.setFilterOdf("bvhraz"); -- track bvhraz
 --tracker.setFilterClass("turrettank"); -- track turrettanks
-
-
-
-
-
-
-
-
-
-
-
-
-local function choose(...)
-    local t = {...};
-    local rn = math.random(#t);
-    return t[rn];
-end
 
 --- @class RBD03_Constants_Audio
 --- @field intro string
@@ -149,27 +138,36 @@ end
 --- @class RBD03_Constants
 --- @field audio RBD03_Constants_Audio
 --- @field labels RBD03_Constants_Labels
+--- @field names RBD03_Constants_Names
 --- @field objectives RBD03_Constants_Objectives
 --- @field debriefing RBD03_Constants_Debriefing
+--- @field runaway_timer number[] -- time, yellow, red
+--- @field hurry_threshold number -- time to trigger the "hurry" audio message
 local constants = {
 	audio = {
-		intro = "rbdnew0301.wav",
-		commwarn = "rbdnew0301W.wav",
+		intro = "rbdnew0301.wav", -- Welcome to Mars
+		commwarn = "rbdnew0301W.wav", -- Careful, Cobra One. Keep an eye on those towers.
 		commclear = "rbdnew0302W.wav",
-		inspect = "rbdnew0302.wav",
-		tug = "rbdnew0303.wav",
-		first_a = "rbdnew0304.wav",
-		dayw = "rbdnew0305.wav",
-		second_a = "rbdnew0306.wav",
-		transint = "",
-		backinrange = "",
-		flee = "rbdnew0307.wav",
-		win = "rbdnew0308.wav",
-		lose1 = "rbdnew0301L.wav", --Mammoth Destroyed/sniped
-		lose2 = "rbdnew0302L.wav", --Failed to extract on time
-		lose3 = "rbdnew0303L.wav", --Detected, loser
-		lose4 = "rbdnew0304L.wav", --Evidently you can't aim Day Wreckers
-		lose5 = "rbdnew0305L.wav" --Why didn't you make a Day Wrecker?
+		inspect = "rbdnew0302.wav", -- Got it! According to this, the Mammoth should be...
+		tug = "rbdnew0303.wav", -- Nice! You should be able to get close enough now.
+		first_a = "rbdnew0304.wav", -- Bomb the shield control
+		dayw = "rbdnew0305.wav", -- Nice job, sir! You're clear to get through to the Mammoth now.
+		second_a = "rbdnew0306.wav", -- We're picking up your signal, hang around for a bit.
+		transint = "rbdnew0306A.wav", -- Out of range
+		backinrange = "rbdnew0306B.wav", -- Back in range
+		flee = "rbdnew0307.wav", -- They detected your transmission, run!
+		hurry = "rbdnew0302W.txdi", -- Hurry up, Cobra One!
+		win = "rbdnew0308.wav", -- Good job, Lieutenant. Let's get you out of there.
+		lose1 = "rbdnew0301L.wav", -- Mammoth Destroyed/sniped (entire base just scrambled)
+		lose4 = "rbdnew0304L.wav", -- Evidently you can't aim Day Wreckers
+		lose2 = "rbdnew0302L.wav", --Failed to extract on time (no exist)
+		lose3 = "rbdnew0303L.wav", --Detected, loser (no exist)
+
+		-- unused
+		lose5 = "rbdnew0305L.wav", --Why didn't you make a Day Wrecker?
+
+		-- unused unless we find a way to make the the player able to escape detection by sniping
+		rbdnew0303W = "rbdnew0303W.txdi", -- They're on to you, Lieutenant! Take them out and let's pray they haven't gotten the word out yet!
 	},
 	labels = {
 		mammoth = "mammoth",
@@ -184,6 +182,10 @@ local constants = {
 			{ "patrol2_1", "patrol2_2", "patrol2_3", "patrol2_4", "patrol2_5", "patrol2_6", "patrol2_7", "patrol2_8", "patrol2_9", "patrol2_10" },
 			{ "patrol3_1", "patrol3_2", "patrol3_3", "patrol3_4", "patrol3_5", "patrol3_6", "patrol3_7", "patrol3_8", "patrol3_9" }
 		},
+	},
+	names = {
+		ExtractionPoint = "Extraction Point",
+		Mammoth = "Mammoth",
 	},
 	objectives = {
 		Detection = "rbdnew0300.otf",
@@ -203,7 +205,9 @@ local constants = {
 		rbdnew03l4 = "rbdnew03l4.des",
 		rbdnew03l5 = "rbdnew03l5.des",
 		rbdnew03wn = "rbdnew03wn.des"
-	}
+	},
+	runaway_timer = { 120, 30, 10 },
+	hurry_threshold = 30,
 }
 
 
@@ -237,19 +241,22 @@ local mission_data = { --Sets mission flow and progression. Booleans and values 
 
 	MammothReachedBefore = false,
 
--- Handles; values will be assigned during mission setup and play
-NavCoord = { }
+	-- Handles; values will be assigned during mission setup and play
+	NavCoord = {}
 }
 
-
-
+local function choose(...)
+    local t = {...};
+    local rn = math.random(#t);
+    return t[rn];
+end
 
 local function SpawnNav(num) -- Spawns the Nth Nav point.
 	local nav = navmanager.BuildImportantNav("apcamr", 1, mission_data.NavCoord[num]); -- Make the nav from the harvested coordinates.
 	if not nav then error("Nav "..num.." failed to spawn!"); end -- If the nav fails to spawn, throw an error.
 	nav:SetObjectiveName("Nav "..num); -- Set its name
 	if num == 5 then
-		nav:SetObjectiveName("Extraction Point"); -- If it's the 5th nav, change its name. This is the name it checks for for the Win Condition; if you change this, change the win condition script as well.
+		nav:SetObjectiveName(constants.names.ExtractionPoint); -- If it's the 5th nav, change its name. This is the name it checks for for the Win Condition; if you change this, change the win condition script as well.
 	end
 	nav:SetMaxHealth(0); -- Can't go boom-boom. I accidentally destroyed Nav 3 with the DW before this.
 	
@@ -327,7 +334,7 @@ end);
 
 
 local function FailByDetection()
-	AudioMessage(constants.audio.lose4);
+	AudioMessage(constants.audio.lose3);
 	FailMission(GetTime() + 5.0, constants.debriefing.rbdnew03l4); -- cover blown
 	objective.UpdateObjective(constants.objectives.Detection, "RED");
 end
@@ -572,7 +579,7 @@ statemachine.Create("main_objectives", {
 				AudioMessage(constants.audio.dayw);
 				mission_data.key_objects.ObjectiveNav:SetObjectiveOff();
 				mission_data.key_objects.Mammoth:SetObjectiveOn();
-				mission_data.key_objects.Mammoth:SetObjectiveName("Mammoth");
+				mission_data.key_objects.Mammoth:SetObjectiveName(constants.names.Mammoth);
 				SpawnArmy();
 				state:next();
 				objective.AddObjective(constants.objectives.Mammoth2, "WHITE");
@@ -621,7 +628,7 @@ statemachine.Create("main_objectives", {
 	end },
 	{ "mammoth_scan_finished", function (state)
         AudioMessage(constants.audio.flee);
-        StartCockpitTimer(120, 30, 10);
+        StartCockpitTimer(unpack(constants.runaway_timer));
 		mission_data.key_objects.Mammoth:SetObjectiveOff();
 --		BuildObject("bvapc", 3, GetPositionNear(GetPosition(GetHandle("nav5"))));
         SpawnNav(5);
@@ -637,7 +644,7 @@ statemachine.Create("main_objectives", {
 		state:next();
 	end },
 	{ "run_away", function (state)
-		if mission_data.key_objects.ObjectiveNav:GetObjectiveName() == "Extraction Point" and mission_data.key_objects.Player and mission_data.key_objects.Player:GetDistance(mission_data.key_objects.ObjectiveNav) < 50.0 then
+		if mission_data.key_objects.ObjectiveNav:GetObjectiveName() == constants.names.ExtractionPoint and mission_data.key_objects.Player and mission_data.key_objects.Player:GetDistance(mission_data.key_objects.ObjectiveNav) < 50.0 then
 			AudioMessage(constants.audio.win);
 			SucceedMission(GetTime()+5.0, constants.debriefing.rbdnew03wn); -- mission complete
 			objective.UpdateObjective(constants.objectives.Extract, "GREEN");
@@ -648,6 +655,10 @@ statemachine.Create("main_objectives", {
 			FailMission(GetTime() + 5.0, constants.debriefing.rbdnew03l2); -- time expired
 			--UpdateObjectives();
 			state:next();
+		elseif not state.did_hurry and GetCockpitTimer() < constants.hurry_threshold then
+			-- if we haven't hurried yet, hurry up!
+			AudioMessage(constants.audio.hurry);
+			state.did_hurry = true;
 		end
 	end }
 });
