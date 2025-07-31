@@ -180,7 +180,7 @@ local constants = {
         patrol_units = { "svfigh4_wingman", "svfigh5_wingman" },
         relic = "obdata3_artifact",
         cafe = "sbcafe1_i76building",
-        sb_towers = { "sbtower1", "sbtower2", "sbtower3", "sbtower4", "sbtower5", "sbtower6" },
+        sb_towers = { "sbtowerb1", "sbtowerb2", "sbtowerb3", "sbtowerb4", "sbtowerb5", "sbtowerb6" },
     },
     names = {
         cafe = "Research Facility",
@@ -353,14 +353,15 @@ statemachine.Create("delayed_spawn",
 statemachine.Create("lose_recy",
     function (state)
         --- @cast state message_delayed_event_state
-        if not gameobject.GetRecycler(1):IsAlive() then
+        local recycler = gameobject.GetRecycler(1);
+        if not recycler or not recycler:IsAlive() then
             state.message = AudioMessage(constants.audio.lost_recycler);
             state:next();
         end
     end,
     function (state)
         --- @cast state message_delayed_event_state
-        if IsAudioMessageDone(state.message) then
+        if not state.message or IsAudioMessageDone(state.message) then
             FailMission(GetTime() + 5, constants.debriefing.loss_recycler_destroyed);
             state:next();
         end
@@ -370,15 +371,17 @@ statemachine.Create("lose_command_tower",
     function (state)
         --- @cast state message_delayed_event_state
         if mission_data.key_objects.command_tower then
-            if not mission_data.key_objects.command_tower:IsAlive() then
-                AudioMessage(constants.audio.lost_command_tower);
+            if not mission_data.key_objects.command_tower or not mission_data.key_objects.command_tower:IsAlive() then
+                if mission_data.protect_command_tower then
+                    state.message = AudioMessage(constants.audio.lost_command_tower);
+                end
                 state:next();
             end
         end
     end,
     function (state)
         --- @cast state message_delayed_event_state
-        if IsAudioMessageDone(state.message) then
+        if not state.message or IsAudioMessageDone(state.message) then
             if mission_data.protect_command_tower then
                 FailMission(GetTime() + 5, constants.debriefing.loss_command_tower_died);
             else
@@ -432,10 +435,6 @@ statemachine.Create("main_objectives", {
             mission_data.key_objects.nav1:SetObjectiveOff();
             objective.UpdateObjective(constants.objectives.bdmisn211, C.Green);
             state:next();
-        --elseif(not IsAlive(mission_data.key_objects.command)) then
-        --    objective.UpdateObjective(constants.objectives.bdmisn211, C.Red);
-        --    FailMission(GetTime() + 5,constants.debriefing.loss_killed_command_tower);
-        --    state:switch("end");
         end
     end },
     { "destory_solar1_obj", function (state)
@@ -450,7 +449,7 @@ statemachine.Create("main_objectives", {
    { "destory_solar1_pass", function (state)
         --- @cast state RBD01_MissionState
         if(checkDead(mission_data.key_objects.solarfarm1)) then
-            objective.UpdateObjective(constants.objectives.bdmisn212, color.Green);
+            objective.UpdateObjective(constants.objectives.bdmisn212, C.Green);
 			AudioMessage(constants.audio.power1);
             state:next();
         end
@@ -462,14 +461,14 @@ statemachine.Create("main_objectives", {
         mission_data.key_objects.nav_solar2:SetMaxHealth(0);
         mission_data.key_objects.nav_solar2:SetObjectiveName("Solar Array 2");
         mission_data.key_objects.nav_solar2:SetObjectiveOn();
-        objective.AddObjective(constants.objectives.bdmisn213, color.White);
+        objective.AddObjective(constants.objectives.bdmisn213, C.White);
         state:next();
     end },
     { "destory_solar2_pass", function (state)
         --- @cast state RBD01_MissionState
         if(checkDead(mission_data.key_objects.solarfarm2)) then
             mission_data.key_objects.nav_solar2:SetObjectiveOff();
-            objective.UpdateObjective(constants.objectives.bdmisn213, color.Green);
+            objective.UpdateObjective(constants.objectives.bdmisn213, C.Green);
             state:next();
         end
     end },

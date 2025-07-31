@@ -127,6 +127,12 @@ function AudioMessage(filename)
             end
             return "";
         end)
+
+        -- remove paranthesis
+        cleanContent = string.gsub(cleanContent, "%(([^)]+])%)", function(num)
+            return "";
+        end)
+
         -- Collapse multiple spaces to a single space
         while string.find(cleanContent, "  ") do
             cleanContent = string.gsub(cleanContent, "  ", " ")
