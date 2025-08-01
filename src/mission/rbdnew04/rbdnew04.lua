@@ -19,34 +19,16 @@
 ---
 --- Events
 ---
---- The CCA's discovery of Cobra One's infiltration caused more pressing problems than simply forcing them
---- to retreat, as the development of the Mammoth has been relocated. Fortunately the Black Dogs are able to
---- intercept a transmission indicating that the new development site is in the caldera of a large volcano
---- nearby and the strength of the CCA forces nearby seems to support this, so the Black Dogs are redeployed
---- almost immediately to attack the site and steal the prototype.
+--- The CCA's discovery of Cobra One's infiltration caused more pressing problems than simply forcing them to retreat, as the development of the Mammoth has been relocated. Fortunately the Black Dogs are able to intercept a transmission indicating that the new development site is in the caldera of a large volcano nearby and the strength of the CCA forces nearby seems to support this, so the Black Dogs are redeployed almost immediately to attack the site and steal the prototype.
 ---
---- True to expectations, a Mammoth is indeed found in the caldera - along with a large attack wing. Cobra One
---- is able to dispatch the CCA forces but discovers on approaching the Mammoth that its signature does not match
---- the technical data recovered from the original research site. Shaw realises it is a trap and orders Cobra
---- One to evacuate moments before the decoy Mammoth explodes.
+--- True to expectations, a Mammoth is indeed found in the caldera - along with a large attack wing. Cobra One is able to dispatch the CCA forces but discovers on approaching the Mammoth that its signature does not match the technical data recovered from the original research site. Shaw realises it is a trap and orders Cobra One to evacuate moments before the decoy Mammoth explodes.
 ---
---- A set of radar readings detected to the south-west lead Shaw to suggest Cobra One investigate there and
---- there he finds a large CCA base has been built around the real Mammoth prototype. After neutralising the
---- base's defenses, Cobra One is able to commandeer the Mammoth.
+--- A set of radar readings detected to the south-west lead Shaw to suggest Cobra One investigate there and there he finds a large CCA base has been built around the real Mammoth prototype. After neutralising the base's defenses, Cobra One is able to commandeer the Mammoth.
 ---
---- With the schematics and prototype in-hand the Black Dogs begin work to reproduce the tank in hope of
---- deploying it against the CCA in the near future. Analysis of notes from its construction indicate that
---- the Mammoth technology is built on is derived from a Hadean craft called a Stymphalian Bird. Included is
---- a list of coordinates where the Coalition has been hoping to find one, but so far they've turned up empty.
---- The Black Dogs resolve to use the list to find one before the Coalition.
---- 
---- Notes
---- Standard CCA sniper rifle for this mission.
---- Mammoth self-destruct comes with audio cue - beeping and/or voiceover
+--- With the schematics and prototype in-hand the Black Dogs begin work to reproduce the tank in hope of deploying it against the CCA in the near future. Analysis of notes from its construction indicate that the Mammoth technology is built on is derived from a Hadean craft called a Stymphalian Bird. Included is a list of coordinates where the Coalition has been hoping to find one, but so far they've turned up empty. The Black Dogs resolve to use the list to find one before the Coalition.
 --- 
 --- Issues
---- for some reason the backup objective of going to the fake after driving the real mammoth didn't work, look into why
---- flash bang and explosion of the fake happened late
+--- * Decoy sequence might need to be expanded into more states/vox to run smoothly with timing
 
 local logger = require("_logger");
 
@@ -77,31 +59,29 @@ navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToG
 --tracker.setFilterOdf("bvhraz"); -- track bvhraz
 --tracker.setFilterClass("turrettank"); -- track turrettanks
 
-
-
-
 --- @class RBD04_Constants_Audio
---- @field intro string
---- @field itsatrap string
---- @field freedom string
---- @field planschange string
---- @field gtfo string
---- @field bypass string
---- @field wasatrap string
---- @field wantitback string
---- @field homefree string
+--- @field intro string -- intro
+--- @field itsatrap string -- found trap and it went off (might need to cut this in half)
+--- @field freedom string -- escaped the trap (destroyed the ambush)
+--- @field planschange string -- steal the mammoth instead
+--- @field gtfo string -- in the mammoth
+--- @field destroyed string -- mammoth destroyed
+--- @field bypass string -- alternate form of "in the mammoth" where we bypassed decoy
+--- @field wasatrap string -- that's the fake, you know this, stop it
+--- @field wantitback string -- almost to dustoff
+--- @field homefree string -- Good job, son. Let’s get out of here
 
 --- @class RBD04_Constants_Objectives
---- @field recon string
---- @field escape string
---- @field findit string
---- @field extraction string
---- @field mine string
---- @field rbdnew0405 string
+--- @field recon string -- Investigate Nav 1.
+--- @field escape string -- Escape the trap.
+--- @field findit string -- Find and capture the real Mammoth Tank.
+--- @field extraction string -- Escape to the Pickup Zone.
+--- @field destroyed string -- You allowed the Mammoth to be destroyed!
+--- @field defeat_pursuers string -- Defeat your pursuers
 
 --- @class RBD04_Constants_Debriefing
---- @field rbdnew04l1 string
---- @field rbdnew04wn string
+--- @field rbdnew04l1 string -- Shaw bigmad
+--- @field rbdnew04wn string - Success
 
 --- @class RBD04_Constants
 --- @field audio RBD04_Constants_Audio
@@ -114,6 +94,7 @@ local constants = {
 		freedom = "rbdnew0403.wav",
 		planschange = "rbdnew0404.wav",
 		gtfo = "rbdnew0405.wav",
+		destroyed = "rbdnew0405L.wav",
 		bypass = "rbdnew04a1.wav",
 		wasatrap = "rbdnew04a2.wav",
 		wantitback = "rbdnew0406.wav",
@@ -124,8 +105,8 @@ local constants = {
 		escape = "rbdnew0402.otf",
 		findit = "rbdnew0403.otf",
 		extraction = "rbdnew0404.otf",
-		mine = "rbdnew0406.otf",
-		rbdnew0405 = "rbdnew0405.otf",
+		destroyed = "rbdnew0405.otf",
+		defeat_pursuers = "rbdnew0406.otf",
 	},
 	debriefing = {
 		rbdnew04l1 = "rbdnew04l1.des",
@@ -295,6 +276,8 @@ statemachine.Create("scrap_field_filler", {
 	end }
 });
 
+--- @class MammothDestroyedState : StateSetRunner
+--- @field fail_audio AudioMessage? Audio message handle for the failure audio.
 
 stateset.Create("mission")
 	:Add("main_objectives", stateset.WrapStateMachine("main_objectives"))
@@ -304,15 +287,24 @@ stateset.Create("mission")
 	:Add("scrap_field_filler_4", stateset.WrapStateMachine("scrap_field_filler", nil, { path = "scrpfld14" }))
 	:Add("scrap_field_filler_5", stateset.WrapStateMachine("scrap_field_filler", nil, { path = "scrpfld15" }))
 	:Add("mammoth_destroyed", function (state)
+		--- @cast state MammothDestroyedState
 		-- Lose Conditions
-		if not mission_data.Mammoth:IsValid() then -- YA BLEW UP THE MAMMOTH YA GOOF
-			FailMission(GetTime()+5.0, constants.debriefing.rbdnew04l1);
+		if mission_data.MammothDead then
+			if state.fail_audio and IsAudioMessageDone(state.fail_audio) then
+				FailMission(GetTime()+5.0, constants.debriefing.rbdnew04l1);
+				state.fail_audio = nil;
+				state:off("mammoth_destroyed");
+			end
+		elseif not mission_data.Mammoth:IsValid() then -- YA BLEW UP THE MAMMOTH YA GOOF
 			mission_data.MammothDead = true;
 			mission_data.MissionOver = true;
 
 			-- ITS DEAD! NOOOOO! NEW Fail objective. -GBD
 			objective.ClearObjectives();
-			objective.AddObjective(constants.objectives.rbdnew0405, "RED");
+			objective.AddObjective(constants.objectives.destroyed, "RED");
+
+			-- Play the audio message for Mammoth destroyed
+			state.fail_audio = AudioMessage(constants.audio.destroyed);
 		end
 	end)
 	:Add("extra_find_decoy_after_real", function (state)
@@ -479,7 +471,7 @@ statemachine.Create("main_objectives", {
 			mission_data.Aud1 = AudioMessage(constants.audio.wantitback);
 			mission_data.WantItBack = true;
 			--UpdateObjectives();
-			objective.AddObjective(constants.objectives.mine, "WHITE");
+			objective.AddObjective(constants.objectives.defeat_pursuers, "WHITE");
 			state:next();
 		end
 	end },
@@ -487,7 +479,7 @@ statemachine.Create("main_objectives", {
 		if areAllDead(mission_data.RecoverySquad, 2) and mission_data.Player == mission_data.Mammoth then
 			mission_data.RecoveryBeaten = true;
 			--UpdateObjectives();
-			objective.UpdateObjective(constants.objectives.mine, "GREEN");
+			objective.UpdateObjective(constants.objectives.defeat_pursuers, "GREEN");
 			state:next();
 		end
 	end },
