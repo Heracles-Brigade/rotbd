@@ -5,7 +5,7 @@
 --- [4] The Mammoth Project
 ---
 --- World: Mars (Sol IV)
---- Map Data: NEW (is this a new map or an old stock one?)
+--- Map Data: Deus Ex Ceteri
 ---
 --- Authors:
 --- * Vemahk
