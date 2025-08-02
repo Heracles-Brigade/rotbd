@@ -69,7 +69,7 @@ navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToG
 --- @field bypass string -- alternate form of "in the mammoth" where we bypassed decoy
 --- @field wasatrap string -- that's the fake, you know this, stop it
 --- @field wantitback string -- almost to dustoff
---- @field homefree string -- Good job, son. Let’s get out of here
+--- @field homefree string -- Good job, son. Let's get out of here
 
 --- @class RBD04_Constants_Objectives
 --- @field recon string -- Investigate Nav 1.
