@@ -30,10 +30,14 @@
 --- Leaving relic too early results in mission failure
 --- 
 --- Issues
+--- * Objective stuck after destroying relic, check if fixed
+--- * Constructor is given to player but not able to be ordered (factory was already destroyed in my test)
+--- * Constructor can't build lpower, only spower, might need to swawp it (fixed autobuilder by type override)
+--- * Rec can't make factory or constructor, is this intended?
+--- * Stop all allies from attacking the mammoth once you are told it won't work, do a scan to gather than and stop them if they have such an order
+--- * The attack force aimed at you when you shoot the soviet comm must be killed to advance the mission
+---   * This is odd as they might come too slow, should probably look at objectifying them or killing them if you move too far away from them
 --- relic doesn't go enemy right away when voiceover starts, meaning it takes a while before you shoot at it
---- consider making all friendly units that are attacking the mammoth, STOP ATTACKING THE MAMMOTH, once it is shown to be impossible to damage
---- Constructor is not given to player when they go to base, why?
---- recycler cannot make constructor or factory, why?
 --- why does the armory have a DW that cost 200, why not remove it?
 --- In playtest camera somehow targeted non-existing object, despite code that says to point at each alive in sequence.
 --- in a playtest, a light tank failed to attack an Lpower becaused it was being swarmed by its own allies following it, add timer to auto destroy everything is an emergency backup
@@ -157,24 +161,9 @@ local constants = {
     }
 };
 
-
-
-
-
-
-
---local minit = require("minit")
-
 --- @class MissionData05
 --- @field patrol_r PatrolEngine?
 local mission_data = {};
-
---local orig15setup = require("orig15p");
---local core = require("bz_core");
---local OOP = require("oop");
---local buildAi = require("buildAi");
---local bzRoutine = require("bz_routine");
---local bzObjects = require("bz_objects");
 
 --- @param handle GameObject
 --- @param odf string
@@ -731,6 +720,7 @@ statemachine.Create("main_objectives", {
         if mission_data.daywrecker and Length(mission_data.daywrecker:GetPosition() - mission_data.relic:GetPosition()) < 100 then
             objective.RemoveObjective(constants.objectives.UplinkConnecting);
             objective.RemoveObjective(constants.objectives.UplinkTransmitting);
+            objective.RemoveObjective(constants.objectives.DefendRelic);
             objective.AddObjective(constants.objectives.UplinkRunNuke,"GREEN");
             AudioMessage(constants.audio.done_d);
             mission_data.mission_states:off("relic_leave_too_early_fail");
@@ -807,7 +797,8 @@ statemachine.Create("main_objectives", {
     end },
     { "destorySovietComm.update.spawnDef", function(self)
         -- when you attack the com tower, spawn defenders
-        if mission_data.scomm:GetWhoShotMe() ~= nil then
+        -- if the tower is gone, force advance
+        if not mission_data.scomm or not mission_data.scomm:IsAlive() or mission_data.scomm:GetWhoShotMe() ~= nil then
             mission_data.spawnDef = true;
             mission_data.ktargets = {
                 gameobject.BuildObject("svfigh", 2, "defense_spawn"),
@@ -822,14 +813,14 @@ statemachine.Create("main_objectives", {
         end
     end },
     { "destorySovietComm.update.scc", function(self)
-        if not mission_data.scomm:IsAlive() then
+        if not mission_data.scomm or not mission_data.scomm:IsAlive() then
             objective.UpdateObjective(constants.objectives.rbdnew3502,"GREEN");
             mission_data.scc = true;
             self:next();
         end
     end },
     { "destorySovietComm.update.scc.finish", statemachine.SleepSeconds(30, nil, function(state)
-        --- @todo lack of feedback here is kinda strange
+        --- @todo lack of feedback here is kinda strange, you don't know you need to kill the people attacking you
         return checkDead(mission_data.ktargets or {});
     end )},
     { "baseDestroyCin.initstart", function(self)
@@ -865,20 +856,9 @@ statemachine.Create("main_objectives", {
         self:next();
     end },
     { "baseDestroyCin.update", function(self)
-        for i,v in pairs(mission_data.attackers) do
-            local task = v:GetCurrentCommand() ~= AiCommand.NONE;
-            --[[if(not task) then
-                for i2,v2 in pairs(mission_data.targets) do
-                    if( i<=(i2*3) and (not task) ) then
-                        local t = gameobject.GetGameObject(v2);
-                        if(IsAlive(t)) then
-                            Attack(v,t);
-                            task = true;
-                        end
-                    end
-                end
-            end--]]
-            if(not task) then
+        -- redirect all attacks to the base
+        for _,v in pairs(mission_data.attackers) do
+            if v and v:IsValid() and v:GetCurrentCommand() == AiCommand.NONE then
                 v:Goto("bdog_base");
             end
         end
@@ -892,39 +872,39 @@ statemachine.Create("main_objectives", {
         self:next();
         return statemachine.FastResult(); -- trigger next state immediately
     end },
-    function (self)
-        if mission_data.attackers[3]:IsAlive() then
-            camera.CameraObject(mission_data.attackers[3],0,1000,-3000,mission_data.attackers[3]);
+    { "base_destruction_camera_focus3", function (self)
+        if mission_data.attackers[3] and mission_data.attackers[3]:IsAlive() then
+            camera.CameraObject(mission_data.attackers[3], 0, 10, -30, mission_data.attackers[3]);
         else
             mission_data.camstage = mission_data.camstage + 1;
             self:next();
         end
-    end,
-    function (self)
-        if mission_data.attackers[8]:IsAlive() then
-            camera.CameraObject(mission_data.attackers[8],0,1000,-3000,mission_data.attackers[8]);
+    end  },
+    { "base_destruction_camera_focus8", function (self)
+        if mission_data.attackers[8] and mission_data.attackers[8]:IsAlive() then
+            camera.CameraObject(mission_data.attackers[8], 0, 10, -30, mission_data.attackers[8]);
         else
             mission_data.camstage = mission_data.camstage + 1;
             self:next();
         end
-    end,
-    function (self)
-        if mission_data.attackers[12]:IsAlive() then
-            camera.CameraObject(mission_data.attackers[12],0,1000,-3000,mission_data.attackers[12]);
+    end },
+    { "base_destruction_camera_focus12", function (self)
+        if mission_data.attackers[12] and mission_data.attackers[12]:IsAlive() then
+            camera.CameraObject(mission_data.attackers[12], 0, 10, -30, mission_data.attackers[12]);
         else
             mission_data.camstage = mission_data.camstage + 1;
             self:next();
         end
-    end,
-    function (self)
-        if mission_data.attackers[9]:IsAlive() then
-            camera.CameraPath("25cin_pan1",5000,200,mission_data.attackers[9]);
+    end },
+    { "base_destruction_camera_focus9", function (self)
+        if mission_data.attackers[9] and mission_data.attackers[9]:IsAlive() then
+            camera.CameraPath("25cin_pan1", 50, 2, mission_data.attackers[9]);
         else
             mission_data.camstage = mission_data.camstage + 1;
             camera.CameraFinish();
             self:next();
         end
-    end,
+    end },
     function (self, dtime)
         for v in gameobject.ObjectsInRange(500,"bdog_base") do
             if(gameobject.GetPlayer() ~= v) then

@@ -391,7 +391,7 @@ statemachine.Create("main_objectives", {
         return statemachine.FastResult();
     end },
     { "opening_cin", function (state)
-        if state:SecondsHavePassed(20) or camera.CameraCancelled() or camera.CameraPath("opening_cin", 2000, 1000, mission_data.key_objects.cafe) then
+        if state:SecondsHavePassed(20) or camera.CameraCancelled() or camera.CameraPath("opening_cin", 20, 10, mission_data.key_objects.cafe) then
             state:SecondsHavePassed(); -- clear timer if we got here without it being cleared
             camera.CameraFinish();
             state:next();
@@ -504,7 +504,7 @@ statemachine.Create("main_objectives", {
     end },
     -- could add a sleep here to smooth it out if needed, but it seems it's not needed
     { "convoy_cin", function (state)
-        if camera.CameraCancelled() or camera.CameraPath("convoy_cin", 2000, 2000, mission_data.key_objects.cafe) then
+        if camera.CameraCancelled() or camera.CameraPath("convoy_cin", 20, 20, mission_data.key_objects.cafe) then
             camera.CameraFinish();
             state:next();
         end
@@ -783,7 +783,7 @@ statemachine.Create("main_objectives", {
     end },
     function (state)
         --- @cast state RBD01_MissionState
-        if state:SecondsHavePassed(10) or camera.CameraCancelled() or camera.CameraPath("camera_nsdf", 1000, 1500, state.camTarget) then
+        if state:SecondsHavePassed(10) or camera.CameraCancelled() or camera.CameraPath("camera_nsdf", 10, 15, state.camTarget) then
             state:SecondsHavePassed(); -- clear timer if we got here without it being cleared
             camera.CameraFinish();
             objective.UpdateObjective(constants.objectives.bdmisn2208, "WHITE");

@@ -448,14 +448,14 @@ statemachine.Create("main_objectives", {
 	end },
 	{ "cinematic", function (state)
 		--Opening Cinematic. Show off Deus Ex's wondrous creation!
-		if camera.CameraCancelled() or camera.CameraPathPathFollow("pan_path", 1000, 300, "pan_target_path") then
+		if camera.CameraCancelled() or camera.CameraPathPathFollow("pan_path", 10, 3, "pan_target_path") then
 			state:next();
 			return statemachine.FastResult();
 		end
 	end },
 	{ "cinematic2", function (state)
 		--Opening Cinematic. Show off Deus Ex's wondrous creation!
-		if camera.CameraCancelled() or camera.CameraPathPathFollow("pan2_path", 500, 300, "pan2_target_path", 0, 200) then
+		if camera.CameraCancelled() or camera.CameraPathPathFollow("pan2_path", 5, 3, "pan2_target_path", 0, 2) then
 			state:next();
 			return statemachine.FastResult();
 		end
@@ -465,7 +465,7 @@ statemachine.Create("main_objectives", {
 		
 		--Opening Cinematic. Show off Deus Ex's wondrous creation!
 		--if camera.CameraPath("camera_path", 1000, 2000, mission_data.key_objects.Mammoth) or camera.CameraCancelled() then
-		if camera.CameraCancelled() or camera.CameraPathPathFollow("pan3_path", 1500, 400, "pan3_target_path", 0, 200) then
+		if camera.CameraCancelled() or camera.CameraPathPathFollow("pan3_path", 15, 4, "pan3_target_path", 0, 2) then
 			camera.CameraFinish();
 			SpawnNav(1);
 			state:next();
