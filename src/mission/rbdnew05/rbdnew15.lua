@@ -6,7 +6,7 @@
 --- [6] Evacuate Venus
 ---
 --- World: Venus (Sol II)
---- Map Data: NEW (is this a new map or an old stock one?)
+--- Map Data: Deus Ex Ceteri
 ---
 --- Authors:
 --- * ?
@@ -59,6 +59,7 @@ local color = require("_color");
 local producer = require("_producer");
 local patrol = require("_patrol");
 local camera = require("_camera");
+local paramdb = require("_paramdb");
 
 -- Fill navlist gaps with important navs
 navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToGap);
@@ -72,9 +73,6 @@ navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToG
 --tracker.setFilterOdf("bvhraz"); -- track bvhraz
 --tracker.setFilterClass("turrettank"); -- track turrettanks
 
-
-
-
 --- @class RBD05_Constants_Audio
 --- @field intro string
 --- @field inspect string
@@ -84,6 +82,9 @@ navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToG
 --- @field apc_spawn string
 --- @field pickup_done string
 --- @field win string
+
+--- @class RBD05_Constants_Labels
+--- @field geysers string[]
 
 --- @class RBD05_Constants_Objectives
 --- @field Rendezvous string
@@ -105,31 +106,30 @@ navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToG
 
 --- @class RBD05_Constants_Debriefing
 --- @field CommandTowerDestroyed string
---- @field RelicDestroyedEarly string
+--- @field RelicAbandoned string
 --- @field KilledRescueMen string
 --- @field ApcLost string
---- @field Success5 string
---- @field Missing1 string
+--- @field Success string
 --- @field Missing2 string
---- @field ApcLost2 string
---- @field SurvivingForcesKilled string
---- @field EvacSuccess6 string
 
 --- @class RBD05_Constants
 --- @field audio RBD05_Constants_Audio
+--- @field labels RBD05_Constants_Labels
 --- @field objectives RBD05_Constants_Objectives
 --- @field debriefing RBD05_Constants_Debriefing
 local constants = {
     audio = {
-        intro = "rbd0501.wav",
-        inspect = "rbd0502.wav",
-        destroy_f = "rbd0503.wav",
-        done_d = "rbd0504.wav",
-        back_to_base = "rbd0505.wav",
-
-        apc_spawn = "rbd0506.wav",
-        pickup_done = "rbd0507.wav",
-        win = "rbd0508.wav"
+        intro = "rbd0501.wav", -- Intro
+        inspect = "rbd0502.wav", -- Inspecting Relic
+        destroy_f = "rbd0503.wav", -- Relic Won't Die
+        done_d = "rbd0504.wav", -- Done, get back to base!
+        back_to_base = "rbd0505.wav", -- Back at base
+        apc_spawn = "rbd0506.wav", -- Base being overrun, APCs spawned
+        pickup_done = "rbd0507.wav", -- Pickup done, escort the APCs to alt dustoff
+        win = "rbd0508.wav" -- Good work, mission complete
+    },
+    labels = {
+        geysers = { "eggeizr10_geyser", "eggeizr11_geyser", "eggeizr12_geyser" },
     },
     objectives = {
         Rendezvous = "rbd0521.otf",
@@ -151,15 +151,11 @@ local constants = {
     },
     debriefing = {
         CommandTowerDestroyed = "rbdnew15l1.des",
-        RelicDestroyedEarly = "rbdnew15l2.des",
-        KilledRescueMen = "rbdnew15l3.des",
-        ApcLost = "rbdnew15l4.des",
-        Success5 = "rbdnew15w.des",
-        Missing1 = nil, -- left the area of the relic before time
-        Missing2 = nil, -- relic not destroyed by DW (this should be coded to be force to happen, even if the DW is destroyed so this should become impossible)
-        ApcLost2 = "bdmisn26l1.des",
-        SurvivingForcesKilled = "bdmisn26l2.des",
-        EvacSuccess6 = "bdmisn26wn.des",
+        RelicAbandoned = "rbdnew15l2.des",
+        KilledRescueMen = "rbdnew15l3.des", -- "bdmisn26l2.des"
+        ApcLost = "rbdnew15l4.des", -- "bdmisn26l1.des"
+        Success = "rbdnew15w.des", -- "bdmisn26wn.des"
+        Missing2 = nil -- relic not destroyed by DW (this should be coded to be force to happen, even if the DW is destroyed so this should become impossible)
     }
 };
 
@@ -171,15 +167,9 @@ local constants = {
 
 --local minit = require("minit")
 
---- @class MissionData05_Pwers
---- @field h GameObject
---- @field t TeamNum
-
 --- @class MissionData05
---- @field pwers MissionData05_Pwers[]
 --- @field patrol_r PatrolEngine?
 local mission_data = {};
-mission_data.pwers = {};
 
 --local orig15setup = require("orig15p");
 --local core = require("bz_core");
@@ -521,15 +511,15 @@ statemachine.Create("main_objectives", {
         --ProducerAi:queueJob(ProductionJob("bvcnst",3));
         producer.QueueJob("bvcnst", 3);
         --ProducerAi:queueJobs(ProductionJob:createMultiple(2,"bvscav",3));
-        producer.QueueJob("bvscav",  3);
-        producer.QueueJob("bvscav",  3);
+        producer.QueueJob("bvscav", 3);
+        producer.QueueJob("bvscav", 3);
         --ProducerAi:queueJob(ProductionJob("bvslfz",3));
-        producer.QueueJob("bvslfz", 3);
+        producer.QueueJob("bvslfz", 3, nil, nil, { name = "_doneProducer", location = constants.labels.geysers[2] });
         --ProducerAi:queueJob(ProductionJob("bvmuf",3));
-        producer.QueueJob("bvmuf", 3);
+        producer.QueueJob("bvmuf", 3, nil, nil, { name = "_doneProducer", location = constants.labels.geysers[3] });
  
         --mission_data.relic_camera_id = ProducerAi:queueJobs(ProductionJob("apcamr",3,"relic_site"));
-        producer.QueueJob("apcamr", 3, "relic_site", nil, { name = "relic_camera" });
+        producer.QueueJob("apcamr2", 3, "relic_site", TeamSlot.ARMORY, { name = "relic_camera" });
 
         --Tell AI to build patrol units, 3 tanks and 3 fighters
         --local tankJobs = {ProductionJob:createMultiple(3,"bvtank",3)};
@@ -543,15 +533,31 @@ statemachine.Create("main_objectives", {
         producer.QueueJob("bvraz", 3, nil, nil, { name = "patrolProd" });
  
         --Tell AI to build some guntowers for defence and a commtower
-        --- @todo reorder these so they make more sense
-        for i,v in utility.IteratePath("make_bblpow") do
-        --    ProducerAi:queueJob(ProductionJob("bblpow",3,v),0);
-            producer.QueueJob("bblpow", 3, v);
+        -- build in this order:
+        -- 1. Power A 
+        -- 2. Tower A1
+        -- 3. Tower A2
+        -- 4. Power B
+        -- 5. Tower B1
+        -- 6. Tower B2
+        -- 7. Power C
+        -- 8. comm
+
+        local countPow = GetPathPointCount("make_bblpow");
+        local countTow = GetPathPointCount("make_bbtowe");
+        local loopCount = math.max(countPow, math.ceil(countTow / 2));
+        for i = 1, loopCount do
+            if i <= countPow then
+                producer.QueueJob("bblpow", 3, {"make_bblpow", i-1}, TeamSlot.CONSTRUCT);
+            end
+            if i*2 <= countTow then
+                producer.QueueJob("bbtowe", 3, {"make_bbtowe", (i-1)*2});
+            end
+            if i*2+1 <= countTow then
+                producer.QueueJob("bbtowe", 3, {"make_bbtowe", (i-1)*2+1});
+            end
         end
-        for i,v in utility.IteratePath("make_bbtowe") do
-        --    ProducerAi:queueJob(ProductionJob("bbtowe",3,v),1);
-            producer.QueueJob("bbtowe", 3, v);
-        end
+
         --ProducerAi:queueJob(ProductionJob("bbcomm",3,"make_bbcomm"));
         producer.QueueJob("bbcomm", 3, "make_bbcomm");
         --local turretJobs = {};
@@ -733,6 +739,7 @@ statemachine.Create("main_objectives", {
             objective.AddObjective(constants.objectives.UplinkRunNuke,"GREEN");
             AudioMessage(constants.audio.done_d);
             mission_data.mission_states:off("relic_leave_too_early_fail");
+            mission_data.mission_states:off("RelicSiteNavReplacer");
             self:next();
         end
     end },
@@ -812,7 +819,7 @@ statemachine.Create("main_objectives", {
     end },
     { "destorySovietComm.update.spawnDef", function(self)
         -- when you attack the com tower, spawn defenders
-        if GetWhoShotMe(mission_data.scomm:GetHandle()) ~= nil then
+        if mission_data.scomm:GetWhoShotMe() ~= nil then
             mission_data.spawnDef = true;
             mission_data.ktargets = {
                 gameobject.BuildObject("svfigh", 2, "defense_spawn"),
@@ -991,7 +998,7 @@ statemachine.Create("main_objectives", {
         if(checkAnyDead(mission_data.apcs)) then
             --self:fail();
             objective.UpdateObjective(constants.objectives.bdmisn2504,"RED");
-            FailMission(GetTime()+5.0,constants.debriefing.ApcLost2);
+            FailMission(GetTime()+5.0,constants.debriefing.ApcLost);
             self:switch(nil);
             return;
         end
@@ -1031,7 +1038,7 @@ statemachine.Create("main_objectives", {
     { "pickupSurvivors.update", function(self)
         if(checkAnyDead(mission_data.apcs)) then
             --self:fail(1);
-            FailMission(GetTime()+5.0,constants.debriefing.ApcLost2);
+            FailMission(GetTime()+5.0,constants.debriefing.ApcLost);
             self:switch(nil);
             return;
         end
@@ -1048,13 +1055,13 @@ statemachine.Create("main_objectives", {
     { "pickupSurvivors.update.pilots", function(self)
         if(checkAnyDead(mission_data.apcs)) then
             --self:fail(1);
-            FailMission(GetTime()+5.0,constants.debriefing.ApcLost2);
+            FailMission(GetTime()+5.0,constants.debriefing.ApcLost);
             self:switch(nil);
             return;
         end
         if(checkAnyDead(mission_data.pilots)) then
             --self:fail(2);
-            FailMission(GetTime()+5.0,constants.debriefing.SurvivingForcesKilled);
+            FailMission(GetTime()+5.0,constants.debriefing.KilledRescueMen);
             self:switch(nil);
             return;
         end
@@ -1071,13 +1078,13 @@ statemachine.Create("main_objectives", {
     { "pickupSurvivors.update.pilots2", function(self)
         if(checkAnyDead(mission_data.apcs)) then
             --self:fail(1);
-            FailMission(GetTime()+5.0,constants.debriefing.ApcLost2);
+            FailMission(GetTime()+5.0,constants.debriefing.ApcLost);
             self:switch(nil);
             return;
         end
         if(checkAnyDead(mission_data.pilots)) then
             --self:fail(2);
-            FailMission(GetTime()+5.0,constants.debriefing.SurvivingForcesKilled);
+            FailMission(GetTime()+5.0,constants.debriefing.KilledRescueMen);
             self:switch(nil);
             return;
         end
@@ -1128,7 +1135,7 @@ statemachine.Create("main_objectives", {
         if(checkAnyDead(mission_data.apcs)) then
             --self:fail();
             objective.UpdateObjective(constants.objectives.EscortAPCsToEvac,"RED");
-            FailMission(GetTime()+5.0,constants.debriefing.ApcLost2);
+            FailMission(GetTime()+5.0,constants.debriefing.ApcLost);
             self:switch(nil);
         end
         if(mission_data.apcs[1]:IsWithin(mission_data.nav,100) and mission_data.apcs[2]:IsWithin(mission_data.nav,100)) then
@@ -1136,7 +1143,7 @@ statemachine.Create("main_objectives", {
             objective.UpdateObjective(constants.objectives.SendAPCsToEvac,"GREEN");
             objective.UpdateObjective(constants.objectives.EscortAPCsToEvac,"GREEN");
             AudioMessage(constants.audio.win);
-            SucceedMission(GetTime()+5.0, constants.debriefing.EvacSuccess6);
+            SucceedMission(GetTime()+5.0, constants.debriefing.Success);
             self:switch(nil);
         end
     end
@@ -1158,12 +1165,19 @@ stateset.Create("mission")
     --        state:off(name, true);
     --    end
     --end)
+    :Add("RelicSiteNavReplacer", function(state)
+        if not mission_data.camera_handle or mission_data.camera_handle:IsValid() then
+            return;
+        end
+        producer.QueueJob("apcamr2", 3, "relic_site", TeamSlot.ARMORY, { name = "relic_camera" });
+        state:off("RelicSiteNavReplacer");
+    end)
     :Add("relic_leave_too_early_fail", function(state, name)
         if gameobject.GetPlayer():IsAlive() and gameobject.GetPlayer():GetDistance("relic_site") > 200 then
             objective.RemoveObjective(constants.objectives.UplinkConnecting);
             objective.RemoveObjective(constants.objectives.UplinkTransmitting);
             objective.AddObjective(constants.objectives.UplinkRetry,"RED");
-            FailMission(GetTime()+5.0,constants.debriefing.Missing1);
+            FailMission(GetTime()+5.0,constants.debriefing.RelicAbandoned);
             state:off("main_objectives", true); -- turn off main machine, we lost
             state:off(name, true); -- turn off this machine too
         end
@@ -1178,16 +1192,16 @@ hook.Add("Producer:BuildComplete", "Mission:ProducerBuildComplete", function (ob
     --- @cast producer GameObject
     --- @cast data any
 
-    logger.print(logger.LogLevel.DEBUG, nil, "Producer:BuildComplete", object:GetOdf(), producer:GetOdf(), data and table.show(data));
+    --logger.print(logger.LogLevel.DEBUG, nil, "Producer:BuildComplete", object:GetOdf(), producer:GetOdf(), data and table.show(data));
 
     if data and data.name then
         if data.name == "relic_camera" then
-            -- @todo auto queue remaking this?
             object:SetObjectiveName("Relic Site");
             mission_data.camera_handle = object;
             if mission_data.camera_keep_teamed then
                 object:SetTeamNum(1);
             end
+            mission_data.mission_states:on("RelicSiteNavReplacer");
         end
         if data.name == "patrolProd" then
             --self:call("_forEachPatrolUnit",...);
@@ -1201,6 +1215,12 @@ hook.Add("Producer:BuildComplete", "Mission:ProducerBuildComplete", function (ob
         if data.name == "_forEachProduced1" then
             object:SetTeamNum(1);
             mission_data.wait_for_units = mission_data.wait_for_units + 1;
+        end
+        if data.name == "_doneProducer" then
+            local geyser = gameobject.GetGameObject(data.location);
+            if geyser then
+            object:Goto(geyser);
+            end
         end
     end
 end);
@@ -1236,15 +1256,6 @@ end);
 
 
 hook.Add("Update", "Mission:Update", function (dtime, ttime)
-    --core:update(dtime);
-    --mission:Update(dtime);
-    for i,v in pairs(mission_data.pwers) do
-        if v.h:GetCurrentCommand() == AiCommand.GO then
-            v.h:SetTeamNum(v.t);
-            mission_data.pwers[i] = nil;
-        end
-    end
-
     if mission_data.sub_machines then
         -- call update on all items and remove them if they return false
         for i = #mission_data.sub_machines, 1, -1 do
@@ -1262,8 +1273,6 @@ hook.Add("Update", "Mission:Update", function (dtime, ttime)
     mission_data.mission_states:run(dtime);
 end);
 
-
-
 hook.Add("CreateObject", "Mission:CreateObject", function (object)
     --- @cast object GameObject
     if mission_data.detect_daywrecker and not mission_data.daywrecker and object:GetOdf() == "apwrckz" then
@@ -1272,15 +1281,6 @@ hook.Add("CreateObject", "Mission:CreateObject", function (object)
         mission_data.daywrecker = object
         mission_data.detect_daywrecker = nil;
     end
-
-    --core:onCreateObject(handle);
-    --mission:CreateObject(handle);
-    local l = object:GetClassLabel();
-    if(IsIn(l,{"ammopack","repairkit","daywrecker","wpnpower","camerapod"})) then
-        table.insert(mission_data.pwers,{h=object,t=object:GetTeamNum()});
-        object:SetTeamNum(1);
-    end
-
 end);
 
 --function AddObject(handle)

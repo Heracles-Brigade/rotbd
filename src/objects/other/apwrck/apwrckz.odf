@@ -7,6 +7,7 @@ maxHealth = 300
 maxAmmo = 0
 unitName = "Day Wrecker"
 aiName = "PowerUpProcess"
+aiName2 = "PowerUpProcess"
 
 [DayWreckerClass]
 damageConcussion = 2000000
