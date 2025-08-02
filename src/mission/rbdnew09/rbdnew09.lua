@@ -430,7 +430,7 @@ statemachine.Create("main_objectives", {
             --if v.task_sequencer then
             --    v.task_sequencer:switch(nil); -- switch the existing machine to a nil state so it gets cleaned up by our collects that cleans up stopped machines
             --end
-            mission_data.patrol:removeGameObject(v);
+            mission_data.patrol:RemoveGameObject(v);
 
             local machine = statemachine.Start("nsdf_attack_relic_site", nil, { v = v, alt = "relic_site" });
             table.insert(mission_data.sub_machines, machine);
@@ -673,42 +673,42 @@ local function setUpPatrols()
     local patrol_r = patrol.new();
 
     --what are our `checkpoint` locations?
-    patrol_r:registerLocations({"l_comm","l_c1","l_c2","l_c3","l_solar","l_north","l_west","l_sw"});
+    patrol_r:RegisterLocations({"l_comm","l_c1","l_c2","l_c3","l_solar","l_north","l_west","l_sw"});
 
-    patrol_r:defineRoutes("l_comm",{
+    patrol_r:DefineRoutes("l_comm",{
         p_comm_c3 = "l_c3"
     });
  
-    patrol_r:defineRoutes("l_c1",{
+    patrol_r:DefineRoutes("l_c1",{
         p_c1_c2 = "l_c2",
         p_c1_sw = "l_sw"
     });
 
-    patrol_r:defineRoutes("l_c2",{
+    patrol_r:DefineRoutes("l_c2",{
         p_c2_c3 = "l_c3",
         p_c2_north = "l_north"
     });
  
-    patrol_r:defineRoutes("l_c3",{
+    patrol_r:DefineRoutes("l_c3",{
         p_c3_comm = "l_comm",
         p_c3_c1 = "l_c1"
     });
 
-    patrol_r:defineRoutes("l_solar",{
+    patrol_r:DefineRoutes("l_solar",{
         p_solar_c3 = "l_c3"
     });
 
-    patrol_r:defineRoutes("l_north",{
+    patrol_r:DefineRoutes("l_north",{
         p_north_west = "l_west",
         p_north_solar = "l_solar",
         p_north_comm = "l_comm"
     });
 
-    patrol_r:defineRoutes("l_west",{
+    patrol_r:DefineRoutes("l_west",{
         p_west_c2 = "l_c2"
     });
 
-    patrol_r:defineRoutes("l_sw",{
+    patrol_r:DefineRoutes("l_sw",{
         p_sw_c1 = "l_c1"
     });
     --return patrol_rid, patrol_r;
@@ -738,12 +738,12 @@ hook.Add("Start", "Mission:Start", function ()
                 --local s = mission.TaskManager:sequencer(v2);
                 v2:Follow(lead);
                 --s:queue3("AddToPatrolTask",p_id);
-                mission_data.patrol:addGameObject(v2);
+                mission_data.patrol:AddGameObject(v2);
 
                 --v2.task_sequencer = s;
             end
         end
-        mission_data.patrol:addGameObject(lead);
+        mission_data.patrol:AddGameObject(lead);
     end
     local i = 1;
     local h;

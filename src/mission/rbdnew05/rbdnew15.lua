@@ -110,7 +110,6 @@ navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToG
 --- @field KilledRescueMen string
 --- @field ApcLost string
 --- @field Success string
---- @field Missing2 string
 
 --- @class RBD05_Constants
 --- @field audio RBD05_Constants_Audio
@@ -154,8 +153,7 @@ local constants = {
         RelicAbandoned = "rbdnew15l2.des",
         KilledRescueMen = "rbdnew15l3.des", -- "bdmisn26l2.des"
         ApcLost = "rbdnew15l4.des", -- "bdmisn26l1.des"
-        Success = "rbdnew15w.des", -- "bdmisn26wn.des"
-        Missing2 = nil -- relic not destroyed by DW (this should be coded to be force to happen, even if the DW is destroyed so this should become impossible)
+        Success = "rbdnew15w.des" -- "bdmisn26wn.des"
     }
 };
 
@@ -419,7 +417,7 @@ statemachine.Create("cca_attack_base",
 statemachine.Create("defendRelic.cca_attack_base", {
     function (self)
         --local patrol = bzRoutine.routineManager:getRoutine(mission_data.patrol_id);
-        for i,v in pairs(mission_data.patrol_r:getGameObjects()) do
+        for i,v in pairs(mission_data.patrol_r:GetGameObjects()) do
             --local s = mission.TaskManager:sequencer(v);
             --s:queue2("Goto","front_line");
             --s:queue2("Defend");
@@ -482,23 +480,23 @@ statemachine.Create("main_objectives", {
         --local patrol_rid, patrol_r = bzRoutine.routineManager:startRoutine("PatrolRoutine", nil, true);
         mission_data.patrol_r = patrol.new();
         --what are our `checkpoint` locations?
-        mission_data.patrol_r:registerLocations({"l_command","l_center","l_north","l_front"});
+        mission_data.patrol_r:RegisterLocations({"l_command","l_center","l_north","l_front"});
         --l_command connects to l_center via p_command_center path
-        mission_data.patrol_r:defineRoutes("l_command",{
+        mission_data.patrol_r:DefineRoutes("l_command",{
             p_command_center = "l_center"
         });
         --l_center connects to both l_front and l_north via p_center_front and p_center_north
-        mission_data.patrol_r:defineRoutes("l_center",{
+        mission_data.patrol_r:DefineRoutes("l_center",{
             p_center_front = "l_front",
             p_center_north = "l_north"
         });
         --l_front connects to l_command via either p_front_command or p_front_patrol_command
-        mission_data.patrol_r:defineRoutes("l_front",{
+        mission_data.patrol_r:DefineRoutes("l_front",{
             p_front_command = "l_command",
             p_front_patrol_command = "l_command"
         });
         --l_north only connects to l_center via p_north_center, slightly redundant, but there in case more paths are added
-        mission_data.patrol_r:defineRoutes("l_north",{
+        mission_data.patrol_r:DefineRoutes("l_north",{
             p_north_center = "l_center"
         });
         --set patrol_id
@@ -665,10 +663,7 @@ statemachine.Create("main_objectives", {
             local machine = statemachine.Start("cca_relic_attack", nil, { v = v, relic = mission_data.relic });
             table.insert(mission_data.sub_machines, machine);
         end
-
-
         mission_data.msg_inspect =  AudioMessage(constants.audio.inspect);
-
         self:next();
     end },
     function (self)
@@ -744,25 +739,18 @@ statemachine.Create("main_objectives", {
         end
     end },
     { function(self)
-        --- @todo this might need an extra delay giving time for the relic to be destroyed by the daywrecker's explosion
         if mission_data.daywrecker and not mission_data.daywrecker:IsValid() then
-            -- wait till the daywrecker is dead but the var is valid (probably don't need the valid var check)
-            if not mission_data.relic:IsValid() then
-                -- if relic is dead, we are done
-                --self:taskSucceed("nuke");
-                objective.ClearObjectives();
-                --mission.Objective:Start("rtbAssumeControl");
-                self:next();
-            else
-                -- relic is still alive, we failed (but how, isn't this automatic?)
-                --self:taskFail("nuke");
-                objective.UpdateObjective(constants.objectives.DefendRelic,"RED");
-                FailMission(GetTime()+5.0,constants.debriefing.Missing2);
-                self:switch(nil);
+            if mission_data.relic and mission_data.relic:IsValid() then
+                -- wrecker does most damage by impact so in theory this could happen in a very strange situation
+                mission_data.relic:Damage(mission_data.relic:GetMaxHealth() + 1000);
             end
+            self:next();
         end
     end },
     { "rtbAssumeControl", function(self)
+        if mission_data.relic and mission_data.relic:IsValid() then
+            mission_data.relic:RemoveObject(); -- how the hell are you still here, go away!
+        end
         objective.AddObjective(constants.objectives.ReturnToBase);
         self:next();
     end },
@@ -1207,7 +1195,7 @@ hook.Add("Producer:BuildComplete", "Mission:ProducerBuildComplete", function (ob
             --self:call("_forEachPatrolUnit",...);
             --For each unit produced in order to patrol the base, add them to the patrol routine
             --local mission_data.patrol_r = bzRoutine.routineManager:getRoutine(mission_data.patrol_id);
-            mission_data.patrol_r:addGameObject(object);
+            mission_data.patrol_r:AddGameObject(object);
         end
         if data.name == "_doneTurret" then
             object:Goto(data.location);
