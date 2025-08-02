@@ -101,6 +101,7 @@ Any customizations should be done with a new file.
     * `other`
         * `apcamr`
             * `apcmri` Unkillable (why? we can do this with script)
+            * `apcamr2` Normal `apcamr` but with AiName2 so it falls properly pre-2.2.315
         * `apwrck`
             * `apwrckz` 200 cost 2000000 damage
         * `sdome`
