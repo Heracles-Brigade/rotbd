@@ -82,14 +82,14 @@ local constants = {
         },
 
         tower = {
-            "rbd0802.wav", -- after tower 1 is down -- Okay Cobra One, I’m going in!
+            "rbd0802.wav", -- after tower 1 is down -- Okay Cobra One, I'm going in!
             "rbd0803.wav", -- after tower 2 is down -- One to go
         },
         --going_in = "rbd0804.wav", replaced by rbd0802.wav
-        evacuate = "rbd0805.wav", -- Data retrieved! I’m outta here!
-        timer_out = "rbd0806.wav", -- Cobra One, where are you? We’re nearly out of time!
-        timer_out_loss = "rbd0802L.wav", -- That’s it, we’re too late. There’s no way we’re getting that data now.
-        one_minute = "rbd0807.wav", -- Don’t worry about the countdown, Cobra One, just hit that last tower!
+        evacuate = "rbd0805.wav", -- Data retrieved! I'm outta here!
+        timer_out = "rbd0806.wav", -- Cobra One, where are you? We're nearly out of time!
+        timer_out_loss = "rbd0802L.wav", -- That's it, we're too late. There's no way we're getting that data now.
+        one_minute = "rbd0807.wav", -- Don't worry about the countdown, Cobra One, just hit that last tower!
         too_close_loss = "rbd0801L.wav", -- Shaw abandons Cobra One 'cause he got too close to the base
 
         -- missing vox?  need to play it at end
