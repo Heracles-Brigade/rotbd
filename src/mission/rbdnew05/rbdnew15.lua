@@ -37,11 +37,10 @@
 --- * Stop all allies from attacking the mammoth once you are told it won't work, do a scan to gather than and stop them if they have such an order
 --- * The attack force aimed at you when you shoot the soviet comm must be killed to advance the mission
 ---   * This is odd as they might come too slow, should probably look at objectifying them or killing them if you move too far away from them
+--- * Consider swapping the cafeteria and barracks for black dog ones (NSDF style)
+--- * Camera sequence needs timing adjustments
 --- relic doesn't go enemy right away when voiceover starts, meaning it takes a while before you shoot at it
 --- why does the armory have a DW that cost 200, why not remove it?
---- In playtest camera somehow targeted non-existing object, despite code that says to point at each alive in sequence.
---- in a playtest, a light tank failed to attack an Lpower becaused it was being swarmed by its own allies following it, add timer to auto destroy everything is an emergency backup
---- Camera sequence only advances when the targets of the sequence die, when the player removes all combat units from the base due to knowing it's going to be destroyed, the attacker doesn't die, and thus the mission softlocks in a camera sequence.
 
 local logger = require("_logger");
 
@@ -835,7 +834,6 @@ statemachine.Create("main_objectives", {
         -- start
         --Spawns attackers in a formation
         mission_data.cam = false;
-        mission_data.camstage = 0;
         mission_data.t1 = 7;
         mission_data.stageTimers = {
             15,
@@ -844,7 +842,9 @@ statemachine.Create("main_objectives", {
             10
         };
         mission_data.minwait = mission_data.t1 + 15 + 10 + 10 + 6 + 10;
-        mission_data.waitleft = mission_data.minwait;
+        mission_data.waitleft = mission_data.minwait; -- time before the attack camera can be skipped
+        mission_data.maxwait = mission_data.minwait + 30; -- time before the attack camera finishes (not counting last section that has its own countdown)
+        mission_data.attacker_refocus = 5; -- seconds before refocusing on a new attacker
         mission_data.attackers = spawnInFormation2({
             "1 2 3 2 3 2 1",
             "1 3 1 3 1 3 1",
@@ -867,40 +867,70 @@ statemachine.Create("main_objectives", {
     statemachine.SleepSeconds(7),
     { "base_destruction_camera_start", function (self)
         camera.CameraReady();
-        mission_data.camstage = 1;
-        self:SecondsHavePassed(mission_data.minwait); -- start counting internally
+        --self:SecondsHavePassed(mission_data.minwait); -- start counting internally
+        self.EndTimeMinimum = GetTime() + mission_data.minwait;
+        self.EndTimeMaximum = GetTime() + mission_data.maxwait;
         self:next();
+        self.WatchTarget = mission_data.attackers[3];
         return statemachine.FastResult(); -- trigger next state immediately
     end },
-    { "base_destruction_camera_focus3", function (self)
-        if mission_data.attackers[3] and mission_data.attackers[3]:IsAlive() then
-            camera.CameraObject(mission_data.attackers[3], 0, 10, -30, mission_data.attackers[3]);
-        else
-            mission_data.camstage = mission_data.camstage + 1;
+
+    { "base_destruction_camera_focus_start", function (self)
+        if not self.WatchTarget or not self.WatchTarget:IsAlive() then
+            self.WatchTarget = nil
+            local rec = gameobject.GetRecycler(1);
+            for _, obj in pairs(mission_data.attackers) do
+                if obj and obj:IsAlive() then
+                    if not self.WatchTarget then
+                        self.WatchTarget = obj;
+                    elseif rec then
+                        if self.WatchTarget:GetDistance(rec) > obj:GetDistance(rec) then
+                            self.WatchTarget = obj;
+                        end
+                    elseif self.WatchTarget:GetHealth() > obj:GetHealth() then
+                        self.WatchTarget = obj;
+                    end
+                end
+            end
+        end
+        if self.WatchTarget then
             self:next();
+        else
+            self:switch("base_destruction_camera_finish");
+        end
+        return statemachine.FastResult(); -- trigger next state immediately
+    end  },
+    { "base_destruction_camera_focus", function (self)
+        if camera.CameraCancelled() and self.EndTimeMinimum < GetTime() then
+            self:SecondsHavePassed(); -- reset internal timer
+            self:switch("base_destruction_camera_finish");
+            return;
+        end
+        if self:SecondsHavePassed(mission_data.attacker_refocus) then
+            self:SecondsHavePassed(); -- reset internal timer
+            self:switch("base_destruction_camera_focus_start");
+            self.WatchTarget = nil; -- reset watch target since we're doing a target swap by timeout
+            return;
+        end
+        if self.EndTimeMaximum < GetTime() then
+            self:SecondsHavePassed(); -- reset internal timer
+            self:switch("base_destruction_camera_finish");
+            return;
+        end
+        if camera.CameraObject(self.WatchTarget, 0, 10, -30, self.WatchTarget) then
+            self:SecondsHavePassed(); -- reset internal timer
+            self:next();
+            return;
         end
     end  },
-    { "base_destruction_camera_focus8", function (self)
-        if mission_data.attackers[8] and mission_data.attackers[8]:IsAlive() then
-            camera.CameraObject(mission_data.attackers[8], 0, 10, -30, mission_data.attackers[8]);
-        else
-            mission_data.camstage = mission_data.camstage + 1;
-            self:next();
-        end
-    end },
-    { "base_destruction_camera_focus12", function (self)
-        if mission_data.attackers[12] and mission_data.attackers[12]:IsAlive() then
-            camera.CameraObject(mission_data.attackers[12], 0, 10, -30, mission_data.attackers[12]);
-        else
-            mission_data.camstage = mission_data.camstage + 1;
-            self:next();
-        end
-    end },
-    { "base_destruction_camera_focus9", function (self)
-        if mission_data.attackers[9] and mission_data.attackers[9]:IsAlive() then
-            camera.CameraPath("25cin_pan1", 50, 2, mission_data.attackers[9]);
-        else
-            mission_data.camstage = mission_data.camstage + 1;
+    { "base_destruction_camera_focus_linger", statemachine.SleepSeconds(2.5, "base_destruction_camera_focus_start") },
+    
+    { "base_destruction_camera_finish", function (self)
+        if camera.CameraPathPath("25cin_pan1", 50, 2, "bdog_base")
+        or (camera.CameraCancelled() and self.EndTimeMinimum < GetTime())
+        or self:SecondsHavePassed(5) then
+        --or self.EndTimeMaximum < GetTime() then
+            self:SecondsHavePassed(); -- reset internal timer
             camera.CameraFinish();
             self:next();
         end
