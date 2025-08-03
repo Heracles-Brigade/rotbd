@@ -1,15 +1,17 @@
-PARENT diag.voices
-START
-NTRG: After Europa you went to the moon. [300] Why? [100] What was the plan? [250];
-CBRA: Honestly [50] I don not know if Shaw had one at this point [100] By then Grigg [50] Baker and I all knew he was a traitor
-    and we were all looking for a way out that did not land us in the brig or in front of the firing squad [250];
-NTRG: Did you find one? [250];
-CBRA: We were desperate. We could not come up with anything [100] no access to ship-to-ship comms meant no way
-    to hail the fleet [50] putting the word out risked Shaw turning on us and turning on Shaw ourselves risked
-    everybody else [100] We figured our best option was to go with the plan to get to Earth [25] then make contact with
-    Director Webb and ask him to help us [250];
-NTRG: How did you plan to get through the blockade? [250];
-CBRA: Shaw and a skeleton crew were going to take the Jackson and storm the blockade [50] try to break through
-    and make a gap for us [125] We follow [25] and make it to Earth [250];
-NTRG: Except it did not work [100];
-CBRA: No, it did not;
+MICHAELSON:	After Europa you went to the moon. (CONFUSED) Why? What was the plan?
+
+ROBERTS:	We were surrounded by traitors - if we put a call out on NSDF frequencies, we'd have no way of knowing who was going to be on the other end. With everything that had happened, we had to report back - Earth was the only place we knew we'd be able to do that.
+
+MICHAELSON:	How did you plan to break through the blockade?
+
+ROBERTS:	Shaw and a skeleton crew were going to take the Jackson and storm the blockade, try to break through and make a gap for us. We follow, and make it to Earth.
+
+MICHAELSON:	See Lieutenant, this is where I have a problem. I don't think it was ever Shaw's plan to make it back to Earth. I think Shaw knew exactly what was going on and was saying whatever he could to keep you in line.
+
+ROBERTS:	(CONFUSED BUT WITH VENOM) What the hell are you talking about?
+
+MICHAELSON:	(PATIENTLY) The American men you've been fighting weren't traitors at all, Lieutenant. The CCA issued a Formal surrender three weeks ago, before you even arrived on the moon. Your Commanding Officer knew this, and he pressed on anyway. He was issued an immediate order to stand down and he ignored it. Now, maybe you never knew. Maybe that's why you've been so adamant these past few days - maybe that's why Baker and Grigg and all the rest of your men have told us exactly the same far-fetched story about entire platoons of traitors. No, for you to tell that story with this much conviction? You believe it, don't you.
+
+ROBERTS:	(WITH HATRED) You’re lying.
+
+MICHAELSON:	(SMUGLY) Go through it again, Lieutenant. Before our next session, run through it in your head. And this time, ask yourself if it really is the way you were told.
