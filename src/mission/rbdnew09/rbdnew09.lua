@@ -93,7 +93,7 @@ local constants = {
         -- SHAW: Cobra One, take those out. It should make bypassing the Soviet guntowers a bit less hairy for you.
 
         -- (Optional objective "Capture Supply Outpost" triggered)
-        -- BAKR: Woah woah woah, hold up, those are NSDF Hangars and Depots… Cobra One get closer, I might be able to switch their access codes through your computer. I'm sure your wingmen would appreciate some patching up.
+        -- BAKR: Woah woah woah, hold up, those are NSDF Hangars and Depots... Cobra One get closer, I might be able to switch their access codes through your computer. I'm sure your wingmen would appreciate some patching up.
 
         -- (After securing the base)
         -- SHAW: Good job. Cobra One, get that base back up and running. Baker, see if you can get inside.
