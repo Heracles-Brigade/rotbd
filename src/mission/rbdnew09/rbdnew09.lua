@@ -5,7 +5,7 @@
 --- [9] Capture the Armory
 ---
 --- World: Europa (Jupiter II), Jupiter (Sol V)
---- Map Data: NEW (is this a new map or an old stock one?)
+--- Map Data: Deus Ex Ceteri
 ---
 --- Authors:
 --- * ?
@@ -46,23 +46,6 @@ local color = require("_color");
 local producer = require("_producer");
 local patrol = require("_patrol");
 
---- @class MissionData09_KeyObjects
---- @field apc GameObject?
---- @field recy GameObject?
---- @field patrol_units GameObject[]
-
---- @class MissionData09
---- @field mission_states StateSetRunner
---- @field key_objects MissionData09_KeyObjects
---- @field sub_machines StateMachineIter[]
---- @field failed_destroy_comm boolean?
-local mission_data = {
-    key_objects = {
-        patrol_units = {},
-    },
-    sub_machines = {},
-};
-
 --- @class RBD09_Constants_Audio
 --- @field intro string
 --- @field found string
@@ -89,27 +72,75 @@ local mission_data = {
 --- @field debriefing RBD09_Constants_Debriefing
 local constants = {
     audio = {
-        intro = "rbd0901.wav",
-        found = "rbd0902.wav",
-        clear = "rbd0903.wav",
+        intro = "rbd0901.wav", -- intro
+        -- side objective here?
+        found = "rbd0902.wav", -- Approaching Base -- Good work, Cobra One. The base should be just up ahead.
+        clear = "rbd0903.wav", -- Arrive at Base -- Oh, this place is huge... clear the base and take the Recycler.
         warn1 = "rbd0901W.wav",
-        win = "rbd091wn.wav"
+        win = "rbd091wn.wav" -- Good job, Lieutenant. Looks like you're in the clear.
+
+        -- (Optional objective "Destroy Comm Tower" triggered)
+        -- SHAW: Damnit, they know we're here now. Cobra One you have a brief window to locate and destroy their comm tower before they can call for reinforcements.
+
+        -- (Optional objective "Destroy Comm Tower" failed)
+        -- SHAW: Well looks like you're too late to destroy their comm tower, the transmission just went out. Just capture the armory and get ready for a helluva fight.
+
+        -- (Optional objective "Destroy Comm Tower" success)
+        -- SHAW: That'll shut them up.
+
+        -- (Optional objective "Destroy Solar Powers" triggered)
+        -- BAKR: Sir, it looks like Cobra One has found the generators powering the base defences.
+        -- SHAW: Cobra One, take those out. It should make bypassing the Soviet guntowers a bit less hairy for you.
+
+        -- (Optional objective "Capture Supply Outpost" triggered)
+        -- BAKR: Woah woah woah, hold up, those are NSDF Hangars and Depots… Cobra One get closer, I might be able to switch their access codes through your computer. I'm sure your wingmen would appreciate some patching up.
+
+        -- (After securing the base)
+        -- SHAW: Good job. Cobra One, get that base back up and running. Baker, see if you can get inside.
+        -- BAKR: Yessir.
+        -- GRIG: Radar contact, closing fast! What the hell is that?
+
+        -- (Final, massive Vanguard wave)
+        -- SHAW: More of ‘em coming, boys, you're in for a fight!
+
+        -- (Immediately before the wave "turns off")
+        -- GRIG: There's too many of them! We can't-
+
+        -- (The Vanguard turn neutral and wander off)
+        -- GRIG: Wait, what... Ha! They're giving up! Baker must have found a way to turn them off!
     },
     objectives = {
-        findRelic = "rbd0901.otf",
-        secureSite = "rbd0902.otf",
-        captureRecycler = "rbd0902b.otf",
-        rbd0903 = "rbd0903.otf",
-        rbd0904 = "rbd0904.otf",
-        rbd0905 = "rbd0905.otf",
-        rbd0906 = "rbd0906.otf",
+        findRelic = "rbd0901.otf", -- Locate the opposition base  somewhere to the south-west. Use the APC to capture any recycler that might be there.
+        secureSite = "rbd0902.otf", -- Secure the relic site.
+        captureRecycler = "rbd0902b.otf", -- Bring the APC close to the recycler to capture it.
+        rbd0903 = "rbd0903.otf", -- Set up a base and defend it against opposition forces.
+        rbd0904 = "rbd0904.otf", -- Good work! You've captured a supply depot.
+        rbd0905 = "rbd0905.otf", -- They're going to notice that their patroling units are missing, go take out that comm before they can warn the rest.
+        rbd0906 = "rbd0906.otf", -- You were too late, but we have no time to lose. Continue with the main objective.
     },
     debriefing = {
-        apc = "rbd09l01.des",
-        rbd09wn = "rbd09wn.des"
+        apc = "rbd09l01.des", -- You lost the APC.
+        --tug = "rbd09l02.des", -- You lost the Tug.
+        rbd09wn = "rbd09wn.des" -- success
     }
 };
 
+--- @class MissionData09_KeyObjects
+--- @field apc GameObject?
+--- @field recy GameObject?
+--- @field patrol_units GameObject[]
+
+--- @class MissionData09
+--- @field mission_states StateSetRunner
+--- @field key_objects MissionData09_KeyObjects
+--- @field sub_machines StateMachineIter[]
+--- @field failed_destroy_comm boolean?
+local mission_data = {
+    key_objects = {
+        patrol_units = {},
+    },
+    sub_machines = {},
+};
 
 --- @param handle GameObject
 --- @param odf string
