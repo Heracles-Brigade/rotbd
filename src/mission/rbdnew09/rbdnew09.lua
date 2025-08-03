@@ -76,36 +76,41 @@ local constants = {
         -- side objective here?
         found = "rbd0902.wav", -- Approaching Base -- Good work, Cobra One. The base should be just up ahead.
         clear = "rbd0903.wav", -- Arrive at Base -- Oh, this place is huge... clear the base and take the Recycler.
-        warn1 = "rbd0901W.wav",
+        warn1 = "rbd0901W.wav", -- (Destroy Comm Tower) -- Damnit, they know we're here now.
         win = "rbd091wn.wav" -- Good job, Lieutenant. Looks like you're in the clear.
 
-        -- (Optional objective "Destroy Comm Tower" triggered)
-        -- SHAW: Damnit, they know we're here now. Cobra One you have a brief window to locate and destroy their comm tower before they can call for reinforcements.
-
+        -- rbd0901L
         -- (Optional objective "Destroy Comm Tower" failed)
         -- SHAW: Well looks like you're too late to destroy their comm tower, the transmission just went out. Just capture the armory and get ready for a helluva fight.
 
+        -- rbd0901S
         -- (Optional objective "Destroy Comm Tower" success)
         -- SHAW: That'll shut them up.
 
+        -- rbd0902W
         -- (Optional objective "Destroy Solar Powers" triggered)
         -- BAKR: Sir, it looks like Cobra One has found the generators powering the base defences.
         -- SHAW: Cobra One, take those out. It should make bypassing the Soviet guntowers a bit less hairy for you.
 
+        -- rbd0903W
         -- (Optional objective "Capture Supply Outpost" triggered)
         -- BAKR: Woah woah woah, hold up, those are NSDF Hangars and Depots... Cobra One get closer, I might be able to switch their access codes through your computer. I'm sure your wingmen would appreciate some patching up.
 
+        -- rbd0904
         -- (After securing the base)
         -- SHAW: Good job. Cobra One, get that base back up and running. Baker, see if you can get inside.
         -- BAKR: Yessir.
         -- GRIG: Radar contact, closing fast! What the hell is that?
 
+        -- rbd0905
         -- (Final, massive Vanguard wave)
         -- SHAW: More of ‘em coming, boys, you're in for a fight!
 
+        -- rbd0906
         -- (Immediately before the wave "turns off")
         -- GRIG: There's too many of them! We can't-
 
+        -- rbd0907
         -- (The Vanguard turn neutral and wander off)
         -- GRIG: Wait, what... Ha! They're giving up! Baker must have found a way to turn them off!
     },

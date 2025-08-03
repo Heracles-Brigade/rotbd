@@ -5,7 +5,7 @@
 --- [10] Prepare to Evacuate
 ---
 --- World: Luna (Earth I), Earth (Sol III)
---- Map Data: NEW (is this a new map or an old stock one?)
+--- Map Data: Deus Ex Ceteri
 ---
 --- Authors:
 --- * ?
@@ -53,23 +53,24 @@ local waves = require("_waves");
 require("_table_show");
 
 --- @class RBD10_Constants_Audio
---- @field intro string
---- @field furies string
---- @field evacuate string
---- @field shaw string
+--- @field intro string -- intro
+--- @field furies string -- I'm picking up Vanguard units approaching from the east, sir!
+--- @field evacuate string -- The dropship is ready!
+--- @field shaw string -- We're ready, sir! Transports loaded, engines hot!
+--- @field cutscene string  -- not yet used
 
 --- @class RBD10_Constants_Objectives
---- @field rbd1001 string
---- @field rbd1002 string
---- @field rbd1003 string
+--- @field rbd1001 string -- Order the constructor to the construction site when you are ready.
+--- @field rbd1002 string -- Defend the constructor while the dropship is built!
+--- @field rbd1003 string -- Escort the transports to the dropship.
 
 --- @class RBD10_Constants_Debriefing
---- @field lpad string
---- @field const string
---- @field transports string
---- @field recycler string
---- @field factory string
---- @field rbd10w01 string
+--- @field lpad string -- Without that dropship, we're stuck here. There's no way we'll have the time to build a new one.
+--- @field const string -- Without that constructor, we can't build the dropship. We're stuck here.
+--- @field transports string -- You allowed a transport to be destroyed.
+--- @field recycler string -- You allowed your recycler to be destroyed.
+--- @field factory string -- You allowed our last factory to be destroyed.
+--- @field rbd10w01 string -- Success
 
 --- @class RBD10_Constants
 --- @field audio RBD10_Constants_Audio
@@ -80,20 +81,34 @@ local constants = {
         intro = "rbd1001.wav",
         furies = "rbd1002.wav",
         evacuate = "rbd1003.wav",
-        shaw = "rbd1004.wav"
+        shaw = "rbd1004.wav",
+        cutscene = "rbd1005.wav", -- not yet used
+
+        -- (As the Factory deploys)
+        -- BAKR: Incoming, Cobra One! Clear the geyser!
+        -- GRIG: Yeehaw!
+
+        -- (Factory lands)
+        -- BAKR: Sorry for the rough landing, Corporal - get out there and give ‘em hell!
+        -- GRIG: Uh... Baker? Isn't this thing supposed to be a bit bigger?
+        -- BAKR: Bigger? It barely fits in the Factory as it is! Go on, man!
+
+        -- (Lines to be while Grigg is in combat - use ODF)
+        -- GRIG: Got ‘em!
+        -- GRIG: One down!
     },
     objectives = {
-        rbd1001 = "rbd1001.otf",
-        rbd1002 = "rbd1002.otf",
-        rbd1003 = "rbd1003.otf"
+        rbd1001 = "rbd1001.otf", -- Order the constructor to the construction site when you are ready.
+        rbd1002 = "rbd1002.otf", -- Defend the constructor while the dropship is built!
+        rbd1003 = "rbd1003.otf" -- Escort the transports to the dropship.
     },
     debriefing = {
-        lpad = "rbd10l01.des",
-        const = "rbd10l02.des",
-        transports = "rbd10l04.des",
-        recycler = "rbd10l03.des",
-        factory = "rbd10l04.des",
-        rbd10w01 = "rbd10w01.des"
+        lpad = "rbd10l01.des", -- Without that dropship, we're stuck here. There's no way we'll have the time to build a new one.
+        const = "rbd10l02.des", -- Without that constructor, we can't build the dropship. We're stuck here.
+        transports = "rbd10l04.des", -- You allowed a transport to be destroyed.
+        recycler = "rbd10l03.des", -- You allowed your recycler to be destroyed.
+        factory = "rbd10l04.des", -- You allowed our last factory to be destroyed.
+        rbd10w01 = "rbd10w01.des" -- Success
     }
 };
 
