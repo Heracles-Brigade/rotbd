@@ -459,6 +459,11 @@ statemachine.Create("secondWave",
         return statemachine.AbortResult();
     end);
 
+--- @class MainObjectivesState : StateMachineIter
+--- @field EndTimeMinimum number
+--- @field EndTimeMaximum number
+--- @field WatchTarget GameObject?
+
 --First objective, go to base, get unit and investigate relic site
 statemachine.Create("main_objectives", {
     { "start", function(self)
@@ -866,6 +871,7 @@ statemachine.Create("main_objectives", {
     end },
     statemachine.SleepSeconds(7),
     { "base_destruction_camera_start", function (self)
+        --- @cast self MainObjectivesState
         camera.CameraReady();
         --self:SecondsHavePassed(mission_data.minwait); -- start counting internally
         self.EndTimeMinimum = GetTime() + mission_data.minwait;
@@ -876,6 +882,7 @@ statemachine.Create("main_objectives", {
     end },
 
     { "base_destruction_camera_focus_start", function (self)
+        --- @cast self MainObjectivesState
         if not self.WatchTarget or not self.WatchTarget:IsAlive() then
             self.WatchTarget = nil
             local rec = gameobject.GetRecycler(1);
@@ -901,6 +908,7 @@ statemachine.Create("main_objectives", {
         return statemachine.FastResult(); -- trigger next state immediately
     end  },
     { "base_destruction_camera_focus", function (self)
+        --- @cast self MainObjectivesState
         if camera.CameraCancelled() and self.EndTimeMinimum < GetTime() then
             self:SecondsHavePassed(); -- reset internal timer
             self:switch("base_destruction_camera_finish");
@@ -926,6 +934,7 @@ statemachine.Create("main_objectives", {
     { "base_destruction_camera_focus_linger", statemachine.SleepSeconds(2.5, "base_destruction_camera_focus_start") },
     
     { "base_destruction_camera_finish", function (self)
+        --- @cast self MainObjectivesState
         if camera.CameraPathPath("25cin_pan1", 50, 2, "bdog_base")
         or (camera.CameraCancelled() and self.EndTimeMinimum < GetTime())
         or self:SecondsHavePassed(5) then

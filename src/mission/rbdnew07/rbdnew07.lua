@@ -5,7 +5,7 @@
 --- [7] Retrieve Relics
 ---
 --- World: Io (Jupiter I), Jupiter (Sol V)
---- Map Data: NEW (is this a new map or an old stock one?)
+--- Map Data: Deus Ex Ceteri
 ---
 --- Authors:
 --- * ?
@@ -44,6 +44,73 @@ local utility = require("_utility");
 local color = require("_color");
 local producer = require("_producer");
 local patrol = require("_patrol");
+
+--- @class RBD07_Constants_Audio
+--- @field intro string -- Get those relics!
+--- @field surrender string -- Harley tells us to surrender
+--- @field relic string -- What the hell is that thing?
+--- @field relic_secured_1 string -- Good work, one down one to go
+--- @field distress string -- our scouting party sent a distress signal
+--- @field trap string -- It's a trap! They're trying to divert you away from the relic
+--- @field win string -- Good work, Baker investigate the doodads
+--- @field tug_loss string -- You just lost the tug
+--- @field enemy_tug string -- Enemy forces heading for the other relic, sir!
+--- @field attack_wave string -- Attack wave, coming at the base!
+--- @field enemy_got_relic string -- The enemy has picked up one of the relics! Stop t
+--- @field enemy_captured_relic string -- The enemy has just captured one of the relics
+
+--- @class RBD07_Constants_Objectives
+--- @field escort string -- Escort your recycler to a geyser site 
+--- @field relics string -- There are two relics on Io, capture them both
+--- @field nsdf_distress string -- We have just received a distress signal to the west
+--- @field cca_distress string -- We have just received a distress signal to the east
+--- @field nsdf_tug string -- The NSDF are making a play for the Relic to the west, stop th
+--- @field cca_tug string -- The CCA are making a play for the Relic to the east, stop them!
+
+--- @class RBD07_Constants_Debriefing
+--- @field loseRecycler string -- You allowed your Recycler to be destroyed.
+--- @field loseTug string -- You allowed your tug to be destroyed.
+--- @field relic_nsdf_loss string -- You have allowed the enemy to capture one of the relics.
+--- @field relic_cca_loss string -- You have allowed the enemy to capture one of the relics.
+--- @field win string -- Win, Baker investigated
+--- @field relic_destroyed string -- One of the relics was destroyed!
+
+--- @class RBD07_Constants
+--- @field audio RBD07_Constants_Audio
+--- @field objectives RBD07_Constants_Objectives
+--- @field debriefing RBD07_Constants_Debriefing
+local constants = {
+    audio = {
+        intro = "rbd0701.wav",
+        surrender = "rbd0702.wav",
+        relic = "rbd0703.wav",
+        relic_secured_1 = "rbd0704.wav",
+        distress = "rbd0705.wav",
+        trap = "rbd0706.wav",
+        win = "rbd07wn.wav",
+        tug_loss = "rbd0701L.wav",
+        enemy_tug = "rbd0701W.wav",
+        attack_wave = "rbd0702W.wav",
+        enemy_got_relic = "rbd0703W.wav",
+        enemy_captured_relic = "rbd0702L.wav"
+    },
+    objectives = {
+        escort = "rbd0701.otf",
+        relics = "rbd07ob1.otf",
+        nsdf_distress = "rbd0703.otf",
+        cca_distress = "rbd0704.otf",
+        nsdf_tug = "rbd0705.otf",
+        cca_tug = "rbd0706.otf"
+    },
+    debriefing = {
+        loseRecycler = "rbd07los.des",
+        loseTug = "rbd07l04.des",
+        relic_nsdf_loss = "rbd07l02.des",
+        relic_cca_loss = "rbd07l02.des",
+        win = "rbd07win.des",
+        relic_destroyed = "rbd07l03.des"
+    }
+};
 
 --- @class MissionData07_KeyObjects
 --- @field recy GameObject?
@@ -230,73 +297,6 @@ local function areAllDead(handles, team)
     end
     return true;
 end
-
---- @class RBD07_Constants_Audio
---- @field intro string
---- @field surrender string
---- @field relic string
---- @field relic_secured_1 string
---- @field distress string
---- @field trap string
---- @field win string
---- @field tug_loss string
---- @field enemy_tug string
---- @field attack_wave string
---- @field enemy_got_relic string
---- @field enemy_captured_relic string
-
---- @class RBD07_Constants_Objectives
---- @field escort string
---- @field relics string
---- @field nsdf_distress string
---- @field cca_distress string
---- @field nsdf_tug string
---- @field cca_tug string
-
---- @class RBD07_Constants_Debriefing
---- @field loseRecycler string
---- @field loseTug string
---- @field relic_nsdf_loss string
---- @field relic_cca_loss string
---- @field win string
---- @field relic_destroyed string
-
---- @class RBD07_Constants
---- @field audio RBD07_Constants_Audio
---- @field objectives RBD07_Constants_Objectives
---- @field debriefing RBD07_Constants_Debriefing
-local constants = {
-    audio = {
-        intro = "rbd0701.wav",
-        surrender = "rbd0702.wav",
-        relic = "rbd0703.wav",
-        relic_secured_1 = "rbd0704.wav",
-        distress = "rbd0705.wav",
-        trap = "rbd0706.wav",
-        win = "rbd07wn.wav",
-        tug_loss = "rbd0701L.wav",
-        enemy_tug = "rbd0701W.wav",
-        attack_wave = "rbd0702W.wav",
-        enemy_got_relic = "rbd0703W.wav",
-        enemy_captured_relic = "rbd0702L.wav"
-    },
-    objectives = {
-        escort = "rbd0701.otf",
-        relics = "rbd07ob1.otf",
-        nsdf_distress = "rbd0703.otf",
-        cca_distress = "rbd0704.otf",
-        nsdf_tug = "rbd0705.otf",
-        cca_tug = "rbd0706.otf"
-    },
-    debriefing = {
-        loseRecycler = "rbd07los.des",
-        loseTug = "rbd07l04.des",
-        relic_nsdf_loss = "rbd07l02.des",
-        relic_cca_loss = "rbd07l02.des",
-        win = "rbd07win.des",
-        relic_destroyed = "rbd07l03.des"
-    }
-};
 
 
 --[[
