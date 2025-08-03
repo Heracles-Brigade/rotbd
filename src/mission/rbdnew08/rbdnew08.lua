@@ -5,7 +5,7 @@
 --- [8] The Silencers
 ---
 --- World: Titan (Saturn VI), Saturn (Sol VI)
---- Map Data: NEW (is this a new map or an old stock one?)
+--- Map Data: Deus Ex Ceteri
 ---
 --- Authors:
 --- * ?
@@ -44,31 +44,6 @@ local producer = require("_producer");
 local patrol = require("_patrol");
 local camera = require("_camera");
 
---- @class MissionData08_KeyObjects
---- @field comms GameObject[]
---- @field powers GameObject[]
---- @field grigg GameObject?
-
---- @class MissionData08
---- @field mission_states StateSetRunner
---- @field key_objects MissionData08_KeyObjects
---- @field sub_machines StateMachineIter[]
---- @field timerOut boolean didn't destroy all towers in time but did enough to progress mission
---- @field prior_dead integer?
---- @field grigg_start_evac boolean used to push grigg out of a held state
---- @field grigg_audio_waits number[]
-local mission_data = {
-    key_objects = {
-        comms = {},
-        powers = {},
-    },
-    sub_machines = {},
-    timerOut = false,
-    prior_dead = nil,
-    grigg_start_evac = false,
-    grigg_audio_waits = { 60, 30, 30},
-};
-
 --- @class RBD08_Constants_Audio
 --- @field intro string
 --- @field grigg_updates string[]
@@ -97,34 +72,69 @@ local mission_data = {
 --- @field debriefing RBD08_Constants_Debriefing
 local constants = {
     audio = {
-        intro = "rbd0801.wav",
+        intro = "rbd0801.wav", -- intro audio message
  
         --(Grigg's updates, interspersed throughout)
-        grigg_updates = {"rbdnew0820.wav", "rbdnew0821.wav", "rbdnew0822.wav"},
+        grigg_updates = {
+            "rbdnew0820.wav", -- WOW huge relics!
+            "rbdnew0821.wav", -- I got papers but nothin' else~
+            "rbdnew0822.wav" -- Got it!
+        },
 
         tower = {
-            "rbd0802.wav", -- after tower 1 is down
-            "rbd0803.wav", -- after tower 2 is down
+            "rbd0802.wav", -- after tower 1 is down -- Okay Cobra One, I’m going in!
+            "rbd0803.wav", -- after tower 2 is down -- One to go
         },
         --going_in = "rbd0804.wav", replaced by rbd0802.wav
-        evacuate = "rbd0805.wav",
-        timer_out = "rbd0806.wav",
-        timer_out_loss = "rbd0802L.wav",
-        one_minute = "rbd0807.wav",
-        too_close_loss = "rbd0801L.wav",
+        evacuate = "rbd0805.wav", -- Data retrieved! I’m outta here!
+        timer_out = "rbd0806.wav", -- Cobra One, where are you? We’re nearly out of time!
+        timer_out_loss = "rbd0802L.wav", -- That’s it, we’re too late. There’s no way we’re getting that data now.
+        one_minute = "rbd0807.wav", -- Don’t worry about the countdown, Cobra One, just hit that last tower!
+        too_close_loss = "rbd0801L.wav", -- Shaw abandons Cobra One 'cause he got too close to the base
+
+        -- missing vox?  need to play it at end
+        rbd0808 = "rbd0808.wav", -- good work
     },
     objectives = {
-        rbd0801 = "rbd0801.otf",
-        rbd0803 = "rbd0803.otf",
-        rbd0804 = "rbd0804.otf",
+        rbd0801 = "rbd0801.otf", -- Destroy perimeter comm towers.
+        --rbd0801i = "rbd0801i.otf", -- Transmission commencing...
+        --rbd0802 = "rbd0802.otf", -- Engage perimeter forces.
+        --rbd0802i = "rbd0802i.otf", -- Transmission complete.
+        rbd0803 = "rbd0803.otf", -- Rendezvous with Private Griggs at the Pickup Zone.
+        rbd0804 = "rbd0804.otf", -- Do not engage the enemy base!
     },
     debriefing = {
-        rbd08l01 = "rbd08l01.des",
-        rbd08l02 = "rbd08l02.des",
-        rbd08l05 = "rbd08l05.des",
-        rbd08w01 = "rbd08w01.des",
-        rbd08w02 = "rbd08w02.des",
+        rbd08l01 = "rbd08l01.des", -- Too close to base (lore dump hints)
+        rbd08l02 = "rbd08l02.des", -- More than 1 com tower left at timeout (no file, requesting text?)
+        rbd08l05 = "rbd08l05.des", -- Private Grigg was killed. (not in script docs)
+        rbd08w01 = "rbd08w01.des", -- Win
+        rbd08w02 = "rbd08w02.des", -- Win but time out (extra lore hints!)
     }
+};
+
+--- @class MissionData08_KeyObjects
+--- @field comms GameObject[]
+--- @field powers GameObject[]
+--- @field grigg GameObject?
+
+--- @class MissionData08
+--- @field mission_states StateSetRunner
+--- @field key_objects MissionData08_KeyObjects
+--- @field sub_machines StateMachineIter[]
+--- @field timerOut boolean didn't destroy all towers in time but did enough to progress mission
+--- @field prior_dead integer?
+--- @field grigg_start_evac boolean used to push grigg out of a held state
+--- @field grigg_audio_waits number[]
+local mission_data = {
+    key_objects = {
+        comms = {},
+        powers = {},
+    },
+    sub_machines = {},
+    timerOut = false,
+    prior_dead = nil,
+    grigg_start_evac = false,
+    grigg_audio_waits = { 60, 30, 30},
 };
 
 local function countDead(handles, team)
