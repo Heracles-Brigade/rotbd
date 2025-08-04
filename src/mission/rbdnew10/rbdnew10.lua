@@ -155,58 +155,76 @@ TODO:
 
 
 
---- @param formation string[]
---- @param location Vector
---- @param dir Vector
---- @param units string[]
---- @param team TeamNum
---- @param seperation integer?
+--- Spawns units in a specified formation at a location, facing a direction.
+--- @param formation string[]  -- Array of strings, each string is a row, numbers are unit indices in 'units'
+--- @param location Vector     -- Center position of the formation
+--- @param dir Vector          -- Direction the formation faces (forward)
+--- @param units string[]      -- List of unit ODFs, indexed by number in formation
+--- @param team TeamNum        -- Team to assign units to
+--- @param seperation integer  -- Distance between units (optional, default 10)
 --- @return GameObject[] units
 --- @return GameObject|nil leader
-local function spawnInFormation(formation,location,dir,units,team,seperation)
-    if(seperation == nil) then
-        seperation = 10;
-    end
-    local tempH = {};
-    local lead;
-    local directionVec = Normalize(SetVector(dir.x,0,dir.z));
-    local formationAlign = Normalize(SetVector(-dir.z,0,dir.x));
-    for i2, v2 in ipairs(formation) do
-        local length = v2:len();
-        local i3 = 1;
-        for c in v2:gmatch(".") do
-        local n = tonumber(c);
-        if(n) then
-            local x = (i3-(length/2))*seperation;
-            local z = i2*seperation*2;
-            local pos = x*formationAlign + -z*directionVec + location;
-            local h = gameobject.BuildObject(units[n],team,pos);
-            if not h then error("Failed to build object " .. units[n] .. " at " .. tostring(pos)) end
-            local t = BuildDirectionalMatrix(h:GetPosition(),directionVec);
-            h:SetTransform(t);
-            if(not lead) then
-                lead = h;
+local function spawnInFormation(formation, location, dir, units, team, seperation)
+    seperation = seperation or 10
+
+    local spawnedUnits = {};
+    local leadUnit = nil;
+
+    -- Calculate normalized forward and right vectors for the formation
+    local forward = Normalize(SetVector(dir.x, 0, dir.z));
+    local right = Normalize(SetVector(-dir.z, 0, dir.x));
+
+    for rowIndex, row in ipairs(formation) do
+        local rowLength = row:len();
+        local colIndex = 1;
+
+        -- Iterate over each character in the row string
+        for char in row:gmatch(".") do
+            local unitIdx = tonumber(char);
+            if unitIdx then
+                -- Calculate position offset for this unit
+                -- X: left/right offset, centered on row
+                -- Z: forward offset, each row is further forward
+                local xOffset = (colIndex - (rowLength / 2)) * seperation;
+                local zOffset = rowIndex * seperation * 2;
+                
+                -- Final position = location + (right * xOffset) - (forward * zOffset)
+                local pos = xOffset * right + -zOffset * forward + location;
+
+                -- Spawn the unit
+                local h = gameobject.BuildObject(units[unitIdx], team, pos);
+                if not h then error("Failed to build object " .. units[unitIdx] .. " at " .. tostring(pos)) end
+
+                -- Set the unit's facing direction
+                local t = BuildDirectionalMatrix(h:GetPosition(), forward);
+                h:SetTransform(t);
+
+                -- First unit spawned becomes the 'lead'
+                if not leadUnit then
+                    leadUnit = h;
+                end
+
+                table.insert(spawnedUnits, h);
             end
-            table.insert(tempH,h);
-        end
-        i3 = i3+1;
+            colIndex = colIndex+1;
         end
     end
-    return tempH, lead;
+
+    return spawnedUnits, leadUnit;
 end
 
---- @param formation string[]
---- @param location string
---- @param units string[]
---- @param team TeamNum
---- @param seperation integer?
-local function spawnInFormation2(formation,location,units,team,seperation)
-    local pos = GetPosition(location,0);
+--- @param formation string[]  -- Array of strings, each string is a row, numbers are unit indices in 'units'
+--- @param location string     -- Center position of the formation
+--- @param units string[]      -- List of unit ODFs, indexed by number in formation
+--- @param team TeamNum        -- Team to assign units to
+--- @param seperation integer  -- Distance between units (optional, default 10)
+local function spawnInFormation2(formation, location, units, team, seperation)
+    local pos = GetPosition(location, 0);
     if not pos then error("Failed to get position of " .. location) end
-    local pos2 = GetPosition(location,1);
+    local pos2 = GetPosition(location, 1);
     if not pos2 then error("Failed to get position of " .. location) end
     local dir = pos2 - pos;
-    return spawnInFormation(formation,pos,dir,units,team,seperation);
+    return spawnInFormation(formation, pos, dir, units, team, seperation);
 end
 
 local function joinTables(...)
@@ -887,4 +905,6 @@ function(g)
     mission_data = g;
 end);
 
+print("\27[34m----END MISSION----\27[0m");
+--- @todo remove dev cheats and modules
 require("_audio_dev");

@@ -233,15 +233,6 @@ local function SpawnBaker()
 	gameobject.BuildObject("bvtank", 3, GetPositionNear(bakerspawn)):Defend2(mission_data.Baker, 1);
 end
 
-
-
-
-
---- @class scrap_field_filler_state_04 : StateMachineIter
---- @field path string Path to the scrap field.
---- @field scrap_objects GameObject[] Table of scrap objects in the field.
---- @field scrap_options string[] Table of scrap odf options to choose from.
-
 statemachine.Create("scrap_field_filler", {
 	{ "start", function (state)
 		--- @cast state scrap_field_filler_state_04
@@ -275,9 +266,6 @@ statemachine.Create("scrap_field_filler", {
 		end
 	end }
 });
-
---- @class MammothDestroyedState : StateSetRunner
---- @field fail_audio AudioMessage? Audio message handle for the failure audio.
 
 stateset.Create("mission")
 	:Add("main_objectives", stateset.WrapStateMachine("main_objectives"))
@@ -509,4 +497,14 @@ function(g)
     mission_data = g;
 end);
 
+print("\27[34m----END MISSION----\27[0m");
+--- @todo remove dev cheats and modules
 require("_audio_dev");
+
+--- @class scrap_field_filler_state_04 : StateMachineIter
+--- @field path string Path to the scrap field.
+--- @field scrap_objects GameObject[] Table of scrap objects in the field.
+--- @field scrap_options string[] Table of scrap odf options to choose from.
+
+--- @class MammothDestroyedState : StateSetRunner
+--- @field fail_audio AudioMessage? Audio message handle for the failure audio.

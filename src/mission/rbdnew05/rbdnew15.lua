@@ -77,42 +77,42 @@ navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToG
 --tracker.setFilterClass("turrettank"); -- track turrettanks
 
 --- @class RBD05_Constants_Audio
---- @field intro string
---- @field inspect string
---- @field destroy_f string
---- @field done_d string
---- @field back_to_base string
---- @field apc_spawn string
---- @field pickup_done string
---- @field win string
+--- @field intro string -- Intro
+--- @field inspect string -- Inspecting Relic
+--- @field destroy_f string -- Relic Won't Die
+--- @field done_d string -- Done, get back to base!
+--- @field back_to_base string -- Back at base
+--- @field apc_spawn string -- Base being overrun, APCs spawned
+--- @field pickup_done string -- Pickup done, escort the APCs to alt dustoff
+--- @field win string -- Good work, mission complete
 
 --- @class RBD05_Constants_Labels
 --- @field geysers string[]
 
 --- @class RBD05_Constants_Objectives
---- @field Rendezvous string
---- @field WaitForUnits string
---- @field InvestigateRelic string
---- @field DestroyRelic string
---- @field DefendRelic string
---- @field UplinkConnecting string
---- @field UplinkTransmitting string
---- @field ReturnToBase string
---- @field UplinkRetry string
---- @field UplinkRunNuke string
---- @field EscordAPCsToBase string
---- @field SendAPCsToEvac string
---- @field EscortAPCsToEvac string
---- @field bdmisn2504 string
---- @field rbdnew3502 string
---- @field rbdnew3503 string
+--- @field Rendezvous string -- Rendezvous with Shaw's base
+--- @field WaitForUnits string -- Wait for units to be produced.
+--- @field InvestigateRelic string -- Investigate relic site. Use <I> to inspect any relic you find.
+--- @field DestroyRelic string -- Destroy the relic!
+--- @field DefendRelic string -- Defend the site against any CCA forces. Do not leave the site!
+--- @field UplinkConnecting string -- Uplink connecting...
+--- @field UplinkTransmitting string -- Connection established! Data transmitting...
+--- @field ReturnToBase string -- Return to base!
+--- @field UplinkRetry string -- Uplink disconnected. Transmision aborted!
+--- @field UplinkRunNuke string -- Transmision complete! Get out of there before it blows!
+--- @field EscortAPCsToBase string -- Escort the APC's to the Black Dog command outpost.
+--- @field SendAPCsToEvac string -- Send the APC's to the evacuation Rendezvous Point.
+--- @field EscortAPCsToEvac string -- Escort and protect the APC's on route to their destination.
+--- @field bdmisn2504 string -- Meet up with the two transports.
+--- @field rbdnew3502 string -- Destroy the Soviet communications tower, located to the North.
+--- @field rbdnew3503 string -- Escort the APC's to the NSDF outpost, to rescue the surviving NSDF personel.
 
 --- @class RBD05_Constants_Debriefing
---- @field CommandTowerDestroyed string
---- @field RelicAbandoned string
---- @field KilledRescueMen string
---- @field ApcLost string
---- @field Success string
+--- @field CommandTowerDestroyed string -- Our Command Tower has been destroyed.
+--- @field RelicAbandoned string -- You abandoned the relic without completing the examination.
+--- @field KilledRescueMen string -- You idiot, those were the men you were ordered to rescue!
+--- @field ApcLost string -- The attacking forces have destroyed one of your APCs.
+--- @field Success string -- Success
 
 --- @class RBD05_Constants
 --- @field audio RBD05_Constants_Audio
@@ -121,14 +121,14 @@ navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToG
 --- @field debriefing RBD05_Constants_Debriefing
 local constants = {
     audio = {
-        intro = "rbd0501.wav", -- Intro
-        inspect = "rbd0502.wav", -- Inspecting Relic
-        destroy_f = "rbd0503.wav", -- Relic Won't Die
-        done_d = "rbd0504.wav", -- Done, get back to base!
-        back_to_base = "rbd0505.wav", -- Back at base
-        apc_spawn = "rbd0506.wav", -- Base being overrun, APCs spawned
-        pickup_done = "rbd0507.wav", -- Pickup done, escort the APCs to alt dustoff
-        win = "rbd0508.wav" -- Good work, mission complete
+        intro = "rbd0501.wav",
+        inspect = "rbd0502.wav",
+        destroy_f = "rbd0503.wav",
+        done_d = "rbd0504.wav",
+        back_to_base = "rbd0505.wav",
+        apc_spawn = "rbd0506.wav",
+        pickup_done = "rbd0507.wav",
+        win = "rbd0508.wav"
     },
     labels = {
         geysers = { "eggeizr10_geyser", "eggeizr11_geyser", "eggeizr12_geyser" },
@@ -144,7 +144,7 @@ local constants = {
         ReturnToBase = "rbd0532.otf",
         UplinkRetry = "rbd0533.otf",
         UplinkRunNuke = "rbd0534.otf",
-        EscordAPCsToBase = "bdmisn2601.otf",
+        EscortAPCsToBase = "bdmisn2601.otf",
         SendAPCsToEvac = "bdmisn2602.otf",
         EscortAPCsToEvac = "bdmisn2603.otf",
         bdmisn2504 = "bdmisn2504.otf",
@@ -156,7 +156,7 @@ local constants = {
         RelicAbandoned = "rbdnew15l2.des",
         KilledRescueMen = "rbdnew15l3.des", -- "bdmisn26l2.des"
         ApcLost = "rbdnew15l4.des", -- "bdmisn26l1.des"
-        Success = "rbdnew15w.des" -- "bdmisn26wn.des"
+        Success = "rbdnew15w.des"  -- "bdmisn26wn.des"
     }
 };
 
@@ -221,16 +221,6 @@ local function copyObject(handle,odf,kill)
     --RemoveObject(handle);
 end
 
-
-local IsIn = function(a,inB)
-    for i,v in pairs(inB) do
-        if(a == v) then
-            return true;
-        end
-    end
-    return false;
-end
-
 --- @param handles GameObject[]
 --- @return boolean
 local function checkDead(handles)
@@ -260,7 +250,6 @@ local function spawnAtPath(odf,team,path)
     return handles;
 end
 
-
 local function checkAnyDead(handles)
     for i,v in pairs(handles) do
         if(not v:IsAlive()) then
@@ -270,76 +259,81 @@ local function checkAnyDead(handles)
     return false;
 end
 
+--- Spawns units in a specified formation at a location, facing a direction.
+--- @param formation string[]  -- Array of strings, each string is a row, numbers are unit indices in 'units'
+--- @param location Vector     -- Center position of the formation
+--- @param dir Vector          -- Direction the formation faces (forward)
+--- @param units string[]      -- List of unit ODFs, indexed by number in formation
+--- @param team TeamNum        -- Team to assign units to
+--- @param seperation integer  -- Distance between units (optional, default 10)
+--- @return GameObject[] units
+--- @return GameObject|nil leader
+local function spawnInFormation(formation, location, dir, units, team, seperation)
+    seperation = seperation or 10
 
+    local spawnedUnits = {};
+    local leadUnit = nil;
 
+    -- Calculate normalized forward and right vectors for the formation
+    local forward = Normalize(SetVector(dir.x, 0, dir.z));
+    local right = Normalize(SetVector(-dir.z, 0, dir.x));
 
+    for rowIndex, row in ipairs(formation) do
+        local rowLength = row:len();
+        local colIndex = 1;
 
+        -- Iterate over each character in the row string
+        for char in row:gmatch(".") do
+            local unitIdx = tonumber(char);
+            if unitIdx then
+                -- Calculate position offset for this unit
+                -- X: left/right offset, centered on row
+                -- Z: forward offset, each row is further forward
+                local xOffset = (colIndex - (rowLength / 2)) * seperation;
+                local zOffset = rowIndex * seperation * 2;
+                
+                -- Final position = location + (right * xOffset) - (forward * zOffset)
+                local pos = xOffset * right + -zOffset * forward + location;
 
+                -- Spawn the unit
+                local h = gameobject.BuildObject(units[unitIdx], team, pos);
+                if not h then error("Failed to build object " .. units[unitIdx] .. " at " .. tostring(pos)) end
 
---- @param formation string[]
---- @param location Vector
---- @param dir Vector
---- @param units string[]
---- @param team TeamNum
---- @param seperation integer
-local function spawnInFormation(formation,location,dir,units,team,seperation)
-    if(seperation == nil) then
-        seperation = 10;
-    end
-    local tempH = {};
-    local lead;
-    local directionVec = Normalize(SetVector(dir.x,0,dir.z));
-    local formationAlign = Normalize(SetVector(-dir.z,0,dir.x));
-    for i2, v2 in ipairs(formation) do
-        local length = v2:len();
-        local i3 = 1;
-        for c in v2:gmatch(".") do
-        local n = tonumber(c);
-        if(n) then
-            local x = (i3-(length/2))*seperation;
-            local z = i2*seperation*2;
-            local pos = x*formationAlign + -z*directionVec + location;
-            local h = gameobject.BuildObject(units[n],team,pos);
-            if not h then error("Failed to build object " .. units[n] .. " at " .. tostring(pos)) end
-            local t = BuildDirectionalMatrix(h:GetPosition(),directionVec);
-            h:SetTransform(t);
-            if(not lead) then
-                lead = h;
+                -- Set the unit's facing direction
+                local t = BuildDirectionalMatrix(h:GetPosition(), forward);
+                h:SetTransform(t);
+
+                -- First unit spawned becomes the 'lead'
+                if not leadUnit then
+                    leadUnit = h;
+                end
+
+                table.insert(spawnedUnits, h);
             end
-            table.insert(tempH,h);
-        end
-        i3 = i3+1;
+            colIndex = colIndex+1;
         end
     end
-    return tempH, lead;
+
+    return spawnedUnits, leadUnit;
 end
 
---- @param formation string[]
---- @param location string
---- @param units string[]
---- @param team TeamNum
---- @param seperation integer
-local function spawnInFormation2(formation,location,units,team,seperation)
-    local pos = GetPosition(location,0);
+--- @param formation string[]  -- Array of strings, each string is a row, numbers are unit indices in 'units'
+--- @param location string     -- Center position of the formation
+--- @param units string[]      -- List of unit ODFs, indexed by number in formation
+--- @param team TeamNum        -- Team to assign units to
+--- @param seperation integer  -- Distance between units (optional, default 10)
+local function spawnInFormation2(formation, location, units, team, seperation)
+    local pos = GetPosition(location, 0);
     if not pos then error("Failed to get position of " .. location) end
-    local pos2 = GetPosition(location,1);
+    local pos2 = GetPosition(location, 1);
     if not pos2 then error("Failed to get position of " .. location) end
     local dir = pos2 - pos;
-    return spawnInFormation(formation,pos,dir,units,team,seperation);
+    return spawnInFormation(formation, pos, dir, units, team, seperation);
 end
 
---local ProducerAi = buildAi.ProducerAi;
---local ProductionJob = buildAi.ProductionJob;
---local PatrolController = require("patrolc");
---local mission = require('cmisnlib');
+SetAIControl(2, false);
+SetAIControl(3, false);
 
-SetAIControl(2,false);
-SetAIControl(3,false);
-
-
---- @class CCA_Relic_Attack_state : StateMachineIter
---- @field v GameObject
---- @field relic GameObject
 statemachine.Create("cca_relic_attack",
     function (state)
         --- @cast state CCA_Relic_Attack_state
@@ -401,48 +395,40 @@ statemachine.Create("cca_attack_base",
         return statemachine.AbortResult();
     end);
 
-
+--- This machine takes all existing attackers from the patrol engine and hands them to a "cca_attack_base" machine.
 statemachine.Create("defendRelic.cca_attack_base", {
     function (self)
-        --local patrol = bzRoutine.routineManager:getRoutine(mission_data.patrol_id);
-        for i,v in pairs(mission_data.patrol_r:GetGameObjects()) do
-            --local s = mission.TaskManager:sequencer(v);
-            --s:queue2("Goto","front_line");
-            --s:queue2("Defend");
- 
+        for _, v in pairs(mission_data.patrol_r:GetGameObjects()) do
             local machine = statemachine.Start("cca_attack_base", nil, { v = v });
             table.insert(mission_data.sub_machines, machine);
         end
-        --bzRoutine.routineManager:killRoutine(mission_data.patrol_id);
-        mission_data.patrol_r = nil; -- once we add reference tracking there will be no more references
-        mission_data.attack_timers = {30,15};
+        mission_data.patrol_r = nil; -- don't need the patrol engine anymore
         mission_data.attack_waves = {
-            {loc = "base_attack1",formation={"4 4 4","1 1"}},
-            {loc = "base_attack2",formation={"2 2","1 1"}}
+            { timer = 30, loc = "base_attack1", formation = {"4 4 4", "1 1"} },
+            { timer = 15, loc = "base_attack2", formation = {"2 2", "1 1"} }
         };
-        mission_data.attack_timer = nil;
+        mission_data.attack_wave_idx = 1;
         self:next();
     end,
-    function (self, dtime)
-        if(mission_data.attack_timer == nil) then
-            if(#mission_data.attack_timers <= 0) then
-                --self:taskSucceed("cca_attack_base");
-                self:switch(nil);
-            else
-                mission_data.attack_timer = table.remove(mission_data.attack_timers,1);
-            end
+    { "spawn", function (self)
+        if self:SecondsHavePassed(mission_data.attack_waves[mission_data.attack_wave_idx].timer) then
+            self:SecondsHavePassed();
+            self:next();
         end
-        if(mission_data.attack_timer ~= nil) then
-            mission_data.attack_timer = mission_data.attack_timer - dtime;
-            if(mission_data.attack_timer <= 0) then
-                --spawn an attack wave
-                local wave = table.remove(mission_data.attack_waves,1);
-                for i,v in pairs(spawnInFormation2(wave.formation,wave.loc,{"svfigh","svtank","svrckt","svhraz","svltnk"},2,15)) do
-                    v:Goto(wave.loc);
-                end
-                mission_data.attack_timer = nil;
-            end
+    end },
+    function (self)
+        --spawn an attack wave
+        local wave = table.remove(mission_data.attack_waves,1);
+        for i,v in pairs(spawnInFormation2(wave.formation,wave.loc,{"svfigh","svtank","svrckt","svhraz","svltnk"},2,15)) do
+            v:Goto(wave.loc);
         end
+        mission_data.attack_wave_idx = mission_data.attack_wave_idx + 1;
+        if #mission_data.attack_waves < mission_data.attack_wave_idx then
+            -- no more waves, end the machine
+            self:next();
+            return statemachine.AbortResult();
+        end
+        self:switch("spawn");
     end
 });
 
@@ -458,11 +444,6 @@ statemachine.Create("secondWave",
         state:next();
         return statemachine.AbortResult();
     end);
-
---- @class MainObjectivesState : StateMachineIter
---- @field EndTimeMinimum number
---- @field EndTimeMaximum number
---- @field WatchTarget GameObject?
 
 --First objective, go to base, get unit and investigate relic site
 statemachine.Create("main_objectives", {
@@ -672,7 +653,6 @@ statemachine.Create("main_objectives", {
     { "defendRelic.destroy_relic.update", function(self)
         if mission_data.relic:GetMaxHealth() - mission_data.relic:GetCurHealth() >= 1000 then
             mission_data.destroy_audio = AudioMessage(constants.audio.destroy_f);
-            -- @todo start a side-machine for "defendRelic.cca_attack_base"
             local machine = statemachine.Start("defendRelic.cca_attack_base");
             table.insert(mission_data.sub_machines, machine);
             self:next();
@@ -1232,32 +1212,27 @@ hook.Add("Producer:BuildComplete", "Mission:ProducerBuildComplete", function (ob
     end
 end);
 
-
-
-
 hook.Add("Start", "Mission:Start", function ()
     --core:onStart();
-    SetPilot(1,5);
-    SetScrap(1,8);
-    Ally(1,3);
+    SetPilot(1, 5);
+    SetScrap(1, 8);
+    Ally(1,3 );
     gameobject.GetGameObject("abbarr2_barracks"):SetMaxHealth(0);
     gameobject.GetGameObject("abbarr3_barracks"):SetMaxHealth(0);
     gameobject.GetGameObject("abcafe3_i76building"):SetMaxHealth(0);
-    SetMaxScrap(3,5000);
-    SetScrap(3,2000);
-    SetMaxPilot(3,5000);
-    SetPilot(3,1000);
+    SetMaxScrap(3, 5000);
+    SetScrap(3, 2000);
+    SetMaxPilot(3, 5000);
+    SetPilot(3, 1000);
     local h = gameobject.GetGameObject("relic_1");
     if not h then error("relic_1 not found") end
     h:SetMaxHealth(900000);
     h:SetCurHealth(900000);
-    --intro:start();
     for i = 1, 13 do
         gameobject.GetGameObject("patrol_" .. i):Patrol("patrol_path");
     end
-    --ConstructorAi:addFromPath("make_bblpow",3,"bblpow");
 
-      mission_data.mission_states = stateset.Start("mission")
+    mission_data.mission_states = stateset.Start("mission")
         :on("main_objectives");
 end);
 
@@ -1267,7 +1242,7 @@ hook.Add("Update", "Mission:Update", function (dtime, ttime)
         -- call update on all items and remove them if they return false
         for i = #mission_data.sub_machines, 1, -1 do
             local v = mission_data.sub_machines[i];
-            if(v) then
+            if v then
                 local success = v:run(dtime);
                 --- @cast success StateMachineIterWrappedResult
                 if not success or (statemachine.isstatemachineiterwrappedresult(success) and success.Abort) then
@@ -1309,4 +1284,15 @@ function(g)
     mission_data = g;
 end);
 
+print("\27[34m----END MISSION----\27[0m");
+--- @todo remove dev cheats and modules
 require("_audio_dev");
+
+--- @class CCA_Relic_Attack_state : StateMachineIter
+--- @field v GameObject
+--- @field relic GameObject
+
+--- @class MainObjectivesState : StateMachineIter
+--- @field EndTimeMinimum number
+--- @field EndTimeMaximum number
+--- @field WatchTarget GameObject?

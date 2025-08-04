@@ -332,7 +332,6 @@ local function keepOutside(h1,h2) -- This is the shield function for the Mammoth
 	end
 end
 
-
 hook.Add("CreateObject", "Mission:CreateObject", function (object)
 	--- @cast object GameObject
 	if not mission_data.key_objects.Wrecker and object:GetClassLabel() == "daywrecker" then
@@ -340,17 +339,12 @@ hook.Add("CreateObject", "Mission:CreateObject", function (object)
 	end
 end);
 
-
 local function FailByDetection()
 	--AudioMessage(constants.audio.lose3);
 	FailMission(GetTime() + 5.0, constants.debriefing.rbdnew03l4); -- cover blown
 	objective.UpdateObjective(constants.objectives.Detection, "RED");
 end
 
---- @class scrap_field_filler_state_03 : StateMachineIter
---- @field path string Path to the scrap field.
---- @field scrap_objects GameObject[] Table of scrap objects in the field.
---- @field scrap_options string[] Table of scrap odf options to choose from.
 statemachine.Create("scrap_field_filler", {
 	{ "start", function (state)
 		--- @cast state scrap_field_filler_state_03
@@ -385,8 +379,6 @@ statemachine.Create("scrap_field_filler", {
 	end }
 });
 
---- @class mammoth_shield_state : StateMachineIter
---- @field first boolean DoWhile simulating bool
 statemachine.Create("mammoth_shield", function (state)
 		--- @cast state mammoth_shield_state
 		if not mission_data.key_objects.Player then
@@ -399,9 +391,6 @@ statemachine.Create("mammoth_shield", function (state)
 		end
 	end);
 
---- @class main_objectives03_state : StateMachineIter
---- @field shield_up boolean? Camera mammoth shield activation debounce, temporary
---- @field did_hurry boolean? Did we play the hurry audio message?
 statemachine.Create("main_objectives", {
 	{ "start", function (state)
 		ColorFade(1.1, 0.4, 0, 0, 0);
@@ -678,10 +667,6 @@ statemachine.Create("main_objectives", {
 	end }
 });
 
---- @class detection_check_radar_tower_state : StateMachineIter
---- @field label string
---- @field object GameObject?
-
 statemachine.Create("detection_check_radar_tower", {
 	{ "start", function (state)
 		--- @cast state detection_check_radar_tower_state
@@ -737,9 +722,6 @@ statemachine.Create("detection_check_radar_tower", {
 		end
 	end }		
 });
-
---- @class detection_check_perceived_team_state : StateMachineIter
---- @field AngryBees table<GameObject, boolean> A table of angry bees (non-ally units that saw the player lose perceived team).
 
 --- @todo a hop-out triggers this too, so I question if that should be seen as odd behavior or not
 statemachine.Create("detection_check_perceived_team", {
@@ -890,5 +872,24 @@ function(g)
 end);
 
 print("\27[34m----END MISSION----\27[0m");
-
+--- @todo remove dev cheats and modules
 require("_audio_dev");
+
+--- @class main_objectives03_state : StateMachineIter
+--- @field shield_up boolean? Camera mammoth shield activation debounce, temporary
+--- @field did_hurry boolean? Did we play the hurry audio message?
+
+--- @class scrap_field_filler_state_03 : StateMachineIter
+--- @field path string Path to the scrap field.
+--- @field scrap_objects GameObject[] Table of scrap objects in the field.
+--- @field scrap_options string[] Table of scrap odf options to choose from.
+
+--- @class mammoth_shield_state : StateMachineIter
+--- @field first boolean DoWhile simulating bool
+
+--- @class detection_check_radar_tower_state : StateMachineIter
+--- @field label string
+--- @field object GameObject?
+
+--- @class detection_check_perceived_team_state : StateMachineIter
+--- @field AngryBees table<GameObject, boolean> A table of angry bees (non-ally units that saw the player lose perceived team).

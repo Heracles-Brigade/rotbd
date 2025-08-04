@@ -85,9 +85,9 @@ tracker.setFilterClass("turrettank"); -- track turrettanks
 --- @field win string -- "good job"
 
 --- @class RBD01_Constants_Labels
---- @field solarfarm1 string[]
---- @field solarfarm2 string[]
---- @field command_tower string
+--- @field solarfarm1 string[] -- Solar farm 1
+--- @field solarfarm2 string[] -- Solar farm 2
+--- @field command_tower string -- Command tower to tap for communications
 --- @field patrol_units string[] -- Patrol units in the research base
 --- @field relic string -- Relic in the research base
 --- @field commtower string -- Comm tower in the research base
@@ -131,7 +131,7 @@ tracker.setFilterClass("turrettank"); -- track turrettanks
 --- @field names RBD01_Constants_Names
 --- @field objectives RBD01_Constants_Objectives
 --- @field debriefing RBD01_Constants_Debriefing
---- @field blast_tower_warn_distance number -- distance within which to warn player about blast towers
+--- @field blast_tower_warn_distance number -- distance within which to warn player about blast towers if they are still powered
 local constants = {
     audio = {
         intro = "rbd0101.wav",
@@ -288,13 +288,6 @@ local function createWave(odf, path_list, follow)
     return unpack(ret);
 end
 
--- Define all objectives
-
---- @class TugRelicConvoy_state : StateMachineIter
---- @field tug GameObject
---- @field apc GameObject
---- @field relic GameObject
-
 -- does this work properly if the tug gets sniped? Oh, it's not snipable
 statemachine.Create("tug_relic_convoy",
     function (state)
@@ -323,14 +316,11 @@ statemachine.Create("tug_relic_convoy",
 statemachine.Create("delayed_spawn",
     statemachine.SleepSeconds(120),
     function (state)
-        createWave("svfigh", {"spawn_n1","spawn_n2"}, "north_path");
-        createWave("svtank", {"spawn_n3"},            "north_path");
+        createWave("svfigh", {"spawn_n1", "spawn_n2"}, "north_path");
+        createWave("svtank", {"spawn_n3"},             "north_path");
         state:next();
     end);
 
---- @class message_delayed_event_state : StateMachineIter
---- @field message AudioMessage
---- @
 statemachine.Create("lose_recy",
     function (state)
         --- @cast state message_delayed_event_state
@@ -516,10 +506,6 @@ statemachine.Create("main_objectives", {
             objective.UpdateObjective(constants.objectives.bdmisn215, "GREEN");
             --SucceedMission(GetTime()+5,constants.debriefing.bdmisn21wn);
             --Start 22 - Preparations
-            --mission.Objective:Start("intermediate");
-            --globals.intermediate = statemachine.Start("intermediate", { enemiesAtStart = false });
- 
-
             state:next();
         end
     end },
@@ -532,9 +518,9 @@ statemachine.Create("main_objectives", {
         mission_data.key_objects.nav_solar1:RemoveObject();
         mission_data.key_objects.nav_solar2:RemoveObject();
 
-        -- @todo We might want to re-order the navs here, but we might not, need to talk thorugh it
-        -- @todo If we do, moving the nav is hard unless we have SetTeamSlot access.
-        -- @todo Consider remaking the nav here to ensure it's at the top?
+        --- @todo We might want to re-order the navs here, but we might not, need to talk thorugh it
+        --- @todo If we do, moving the nav is hard unless we have SetTeamSlot access.
+        --- @todo Consider remaking the nav here to ensure it's at the top?
 
         --Only show if area is not cleared
         if enemiesInRange(270, mission_data.nav_research) then
@@ -707,9 +693,9 @@ statemachine.Create("main_objectives", {
     end,
     { "make_defensive", function (state)
         objective.AddObjective(constants.objectives.bdmisn2206,"WHITE");
-        createWave("svtank",{"spawn_w1"},"west_path");
-        createWave("svfigh",{"spawn_w4","spawn_w5"},"west_path"); -- Original Script did nothing with these 2. Possibly sent to guard Scavs instead? -GBD
-        createWave("svscav",{"spawn_w2","spawn_w3"});
+        createWave("svtank", {"spawn_w1"},             "west_path");
+        createWave("svfigh", {"spawn_w4", "spawn_w5"}, "west_path"); -- Original Script did nothing with these 2. Possibly sent to guard Scavs instead? -GBD
+        createWave("svscav", {"spawn_w2", "spawn_w3"});
         state:next();
     end },
     function (state)
@@ -724,8 +710,8 @@ statemachine.Create("main_objectives", {
     -- /SKIPPED STATES?
 
     { "destroy_soviet", function (state)
-        createWave("svfigh",{"spawn_e1","spawn_e2"},"east_path");
-        createWave("svtank",{"spawn_e3"},"east_path");
+        createWave("svfigh", {"spawn_e1", "spawn_e2"}, "east_path");
+        createWave("svtank", {"spawn_e3"},             "east_path");
         -- we never care about this nav again so we don't bother tracking it
         local nav = navmanager.BuildImportantNav(nil, 1, "nav_path", 4);
         if not nav then error("Failed to create nav for CCA base attack."); end
@@ -768,10 +754,10 @@ statemachine.Create("main_objectives", {
         --- @cast state RBD01_MissionState
         AudioMessage(constants.audio.nsdf);
         objective.AddObjective(constants.objectives.bdmisn2208, "WHITE");
-        local a,b,camTarget = createWave("avwalk",{"spawn_avwalk1","spawn_avwalk2","spawn_avwalk3"},"nsdf_path");
-        local c,e,g = createWave("avtank",{"spawn_avtank1","spawn_avtank2","spawn_avtank3"},"nsdf_path");
-        local d,h,i = createWave("avtank",{"spawn_w1","spawn_w2","spawn_w3"},"west_path");
-        local f,j = createWave("svtank",{"spawn_n4","spawn_n5"},"north_path");
+        local a,b,camTarget = createWave("avwalk", {"spawn_avwalk1", "spawn_avwalk2", "spawn_avwalk3"}, "nsdf_path");
+        local c,e,g         = createWave("avtank", {"spawn_avtank1", "spawn_avtank2", "spawn_avtank3"}, "nsdf_path");
+        local d,h,i         = createWave("avtank", {"spawn_w1", "spawn_w2", "spawn_w3"},                "west_path");
+        local f,j           = createWave("svtank", {"spawn_n4", "spawn_n5"},                            "north_path");
         state.camTarget = camTarget;
         state.targets = {a,b,c,d,e,f,g,h,i,camTarget,j};
         camera.CameraReady();
@@ -841,7 +827,7 @@ stateset.Create("mission")
             -- Send the reinforcements to Nav 4.
             local nav4Pos = mission_data.nav_research:GetPosition();
             if not nav4Pos then error("Failed to get position of nav4."); end
-            for i,v in pairs(reinforcements) do
+            for _, v in pairs(reinforcements) do
                 v:Goto(nav4Pos);
             end
             print("Spawning reinforcements");
@@ -962,6 +948,8 @@ function(g)
     mission_data = g;
 end);
 
+print("\27[34m----END MISSION----\27[0m");
+--- @todo remove dev cheats and modules
 require("_audio_dev");
 require("_cheat_bzrave")
 require("_cheat_bzskip");
@@ -975,18 +963,17 @@ hook.Add("Cheat", "Mission:Cheat", function (cheat)
     end
 end);
 
-
-
 --- @class RBD01_MissionState : StateMachineIter
 --- @field recy GameObject?
 --- @field win_audio AudioMessage?
---- \@field nav1 GameObject?
---- \@field command GameObject?
---- \@field nav_solar1 GameObject?
---- \@field nav_solar2 GameObject?
---- \@field handles GameObject[]?
---- \@field target_l1 string[]
---- \@field target_l2 string[]
 --- @field research_enemies_still_exist boolean?
 --- @field targets GameObject[]?
 --- @field camTarget GameObject?
+
+--- @class TugRelicConvoy_state : StateMachineIter
+--- @field tug GameObject
+--- @field apc GameObject
+--- @field relic GameObject
+
+--- @class message_delayed_event_state : StateMachineIter
+--- @field message AudioMessage

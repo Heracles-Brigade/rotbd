@@ -656,4 +656,6 @@ function(g)
     mission_data = g;
 end);
 
+print("\27[34m----END MISSION----\27[0m");
+--- @todo remove dev cheats and modules
 require("_audio_dev");
