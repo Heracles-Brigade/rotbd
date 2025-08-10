@@ -50,6 +50,8 @@ local producer = require("_producer");
 local patrol = require("_patrol");
 local paramdb = require("_paramdb");
 local waves = require("_waves");
+local paths = require("_paths");
+local waves = require("_waves");
 require("_table_show");
 
 --- @class RBD10_Constants_Audio
@@ -155,78 +157,6 @@ TODO:
 
 
 
---- Spawns units in a specified formation at a location, facing a direction.
---- @param formation string[]  -- Array of strings, each string is a row, numbers are unit indices in 'units'
---- @param location Vector     -- Center position of the formation
---- @param dir Vector          -- Direction the formation faces (forward)
---- @param units string[]      -- List of unit ODFs, indexed by number in formation
---- @param team TeamNum        -- Team to assign units to
---- @param seperation integer  -- Distance between units (optional, default 10)
---- @return GameObject[] units
---- @return GameObject|nil leader
-local function spawnInFormation(formation, location, dir, units, team, seperation)
-    seperation = seperation or 10
-
-    local spawnedUnits = {};
-    local leadUnit = nil;
-
-    -- Calculate normalized forward and right vectors for the formation
-    local forward = Normalize(SetVector(dir.x, 0, dir.z));
-    local right = Normalize(SetVector(-dir.z, 0, dir.x));
-
-    for rowIndex, row in ipairs(formation) do
-        local rowLength = row:len();
-        local colIndex = 1;
-
-        -- Iterate over each character in the row string
-        for char in row:gmatch(".") do
-            local unitIdx = tonumber(char);
-            if unitIdx then
-                -- Calculate position offset for this unit
-                -- X: left/right offset, centered on row
-                -- Z: forward offset, each row is further forward
-                local xOffset = (colIndex - (rowLength / 2)) * seperation;
-                local zOffset = rowIndex * seperation * 2;
-                
-                -- Final position = location + (right * xOffset) - (forward * zOffset)
-                local pos = xOffset * right + -zOffset * forward + location;
-
-                -- Spawn the unit
-                local h = gameobject.BuildObject(units[unitIdx], team, pos);
-                if not h then error("Failed to build object " .. units[unitIdx] .. " at " .. tostring(pos)) end
-
-                -- Set the unit's facing direction
-                local t = BuildDirectionalMatrix(h:GetPosition(), forward);
-                h:SetTransform(t);
-
-                -- First unit spawned becomes the 'lead'
-                if not leadUnit then
-                    leadUnit = h;
-                end
-
-                table.insert(spawnedUnits, h);
-            end
-            colIndex = colIndex+1;
-        end
-    end
-
-    return spawnedUnits, leadUnit;
-end
-
---- @param formation string[]  -- Array of strings, each string is a row, numbers are unit indices in 'units'
---- @param location string     -- Center position of the formation
---- @param units string[]      -- List of unit ODFs, indexed by number in formation
---- @param team TeamNum        -- Team to assign units to
---- @param seperation integer  -- Distance between units (optional, default 10)
-local function spawnInFormation2(formation, location, units, team, seperation)
-    local pos = GetPosition(location, 0);
-    if not pos then error("Failed to get position of " .. location) end
-    local pos2 = GetPosition(location, 1);
-    if not pos2 then error("Failed to get position of " .. location) end
-    local dir = pos2 - pos;
-    return spawnInFormation(formation, pos, dir, units, team, seperation);
-end
-
 local function joinTables(...)
     local n = {};
     for i, v in ipairs({...}) do
@@ -236,13 +166,6 @@ local function joinTables(...)
     end
     return n;
   end
-
-local function choose(...)
-    local t = {...};
-    local rn = math.random(#t);
-    return t[rn];
-end
-
 
 --- @class MissionData10_KeyObjects
 --- @field lpad GameObject?
@@ -282,7 +205,7 @@ statemachine.Create("main_objectives", {
     { "getToBase.start", function(state)
         --- @cast state MainObjectives10_state
         --Spawn two fighters attacking each silo in sequence
-        for i, v in ipairs(spawnInFormation2({"1 1"}, "east_wave", {"avfigh"}, 2)) do
+        for i, v in ipairs(waves.SpawnInFormation({"1 1"}, "east_wave", nil, {"avfigh"}, 2)) do
             --local s = mission.TaskManager:sequencer(v);
             --for i2=1, 3 do
             --    s:queue2("Attack",GetHandle(("silo%d"):format(i2)));
@@ -304,7 +227,7 @@ statemachine.Create("main_objectives", {
     { "getToBase.update", function(state)
         --- @cast state MainObjectives10_state
         --local pp = GetPathPoints("bdog_base");
-        local pp = utility.IteratorToArray(utility.IteratePath("bdog_base"));
+        local pp = utility.IteratorToArray(paths.IteratePath("bdog_base"));
         pp[1].y = 0;
         pp[2].y = 0;
         if gameobject.GetPlayer():GetDistance(pp[1]) < Length(pp[2]-pp[1]) then
@@ -360,7 +283,7 @@ statemachine.Create("main_objectives", {
         --logger.print(logger.LogLevel.DEBUG, nil, "Constructor command", ctask);
         if not state.building and const:GetDistance("launchpad") < 100 and ctask == AiCommand["NONE"] then
             --local pp = GetPathPoints("launchpad");
-            local pp = utility.IteratorToArray(utility.IteratePath("launchpad"));
+            local pp = utility.IteratorToArray(paths.IteratePath("launchpad"));
             local t = BuildDirectionalMatrix(pp[1], pp[2] - pp[1]);
             state.building = true;
             mission_data.key_objects.const = const;
@@ -463,7 +386,7 @@ statemachine.Create("main_objectives", {
     { "escort_transports.start", function(state)
         --Make furies target transports
         for i, v in pairs(mission_data.key_objects.furies) do
-            v:Attack(choose(unpack(mission_data.key_objects.transports)));
+            v:Attack(utility.ChooseOne(unpack(mission_data.key_objects.transports)));
         end
         objective.AddObjective(constants.objectives.rbd1003);
         for i, v in ipairs(mission_data.key_objects.transports) do

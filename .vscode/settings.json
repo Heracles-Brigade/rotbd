@@ -20,5 +20,6 @@
     ],
     "Lua.workspace.ignoreDir": [
         "deps/BZ98R-Advanced-Lua_API/dev/preprocessor.lua",
+        "deps/BZ98R-Advanced-Lua_API/baked/_fix.lua",
     ]
 }

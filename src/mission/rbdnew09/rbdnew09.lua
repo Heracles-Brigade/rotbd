@@ -45,6 +45,8 @@ local utility = require("_utility");
 local color = require("_color");
 local producer = require("_producer");
 local patrol = require("_patrol");
+local paths = require("_paths");
+local waves = require("_waves");
 
 --- @class RBD09_Constants_Audio
 --- @field intro string
@@ -204,79 +206,6 @@ local function copyObject(handle,odf,kill)
     --RemoveObject(handle);
 end
 
---- Spawns units in a specified formation at a location, facing a direction.
---- @param formation string[]  -- Array of strings, each string is a row, numbers are unit indices in 'units'
---- @param location Vector     -- Center position of the formation
---- @param dir Vector          -- Direction the formation faces (forward)
---- @param units string[]      -- List of unit ODFs, indexed by number in formation
---- @param team TeamNum        -- Team to assign units to
---- @param seperation integer  -- Distance between units (optional, default 10)
---- @return GameObject[] units
---- @return GameObject|nil leader
-local function spawnInFormation(formation, location, dir, units, team, seperation)
-    seperation = seperation or 10
-
-    local spawnedUnits = {};
-    local leadUnit = nil;
-
-    -- Calculate normalized forward and right vectors for the formation
-    local forward = Normalize(SetVector(dir.x, 0, dir.z));
-    local right = Normalize(SetVector(-dir.z, 0, dir.x));
-
-    for rowIndex, row in ipairs(formation) do
-        local rowLength = row:len();
-        local colIndex = 1;
-
-        -- Iterate over each character in the row string
-        for char in row:gmatch(".") do
-            local unitIdx = tonumber(char);
-            if unitIdx then
-                -- Calculate position offset for this unit
-                -- X: left/right offset, centered on row
-                -- Z: forward offset, each row is further forward
-                local xOffset = (colIndex - (rowLength / 2)) * seperation;
-                local zOffset = rowIndex * seperation * 2;
-                
-                -- Final position = location + (right * xOffset) - (forward * zOffset)
-                local pos = xOffset * right + -zOffset * forward + location;
-
-                -- Spawn the unit
-                local h = gameobject.BuildObject(units[unitIdx], team, pos);
-                if not h then error("Failed to build object " .. units[unitIdx] .. " at " .. tostring(pos)) end
-
-                -- Set the unit's facing direction
-                local t = BuildDirectionalMatrix(h:GetPosition(), forward);
-                h:SetTransform(t);
-
-                -- First unit spawned becomes the 'lead'
-                if not leadUnit then
-                    leadUnit = h;
-                end
-
-                table.insert(spawnedUnits, h);
-            end
-            colIndex = colIndex+1;
-        end
-    end
-
-    return spawnedUnits, leadUnit;
-end
-
---- @param formation string[]  -- Array of strings, each string is a row, numbers are unit indices in 'units'
---- @param location string     -- Center position of the formation
---- @param units string[]      -- List of unit ODFs, indexed by number in formation
---- @param team TeamNum        -- Team to assign units to
---- @param seperation integer  -- Distance between units (optional, default 10)
-local function spawnInFormation2(formation, location, units, team, seperation)
-    local pos = GetPosition(location, 0);
-    if not pos then error("Failed to get position of " .. location) end
-    local pos2 = GetPosition(location, 1);
-    if not pos2 then error("Failed to get position of " .. location) end
-    local dir = pos2 - pos;
-    return spawnInFormation(formation, pos, dir, units, team, seperation);
-end
-
-
 
 --local WaveSpawner = require("wavec").WaveSpawner;
 
@@ -378,7 +307,7 @@ statemachine.Create("main_objectives", {
         --- @cast state MainObjectives09_state
         --local tMap = {};
         --local pp = GetPathPoints("relic_site");
-        local pp = utility.IteratorToArray(utility.IteratePath("relic_site"));
+        local pp = utility.IteratorToArray(paths.IteratePath("relic_site"));
         local foundPower = false;
         local foundTurret = false;
         for obj in gameobject.ObjectsInRange(Length(pp[2]-pp[1]),pp[1]) do
@@ -414,7 +343,7 @@ statemachine.Create("main_objectives", {
         --- @cast state MainObjectives09_state
         --state:taskSucceed("secureSite");
         AudioMessage(constants.audio.clear);
-        local pp = utility.IteratorToArray(utility.IteratePath("relic_site"));
+        local pp = utility.IteratorToArray(paths.IteratePath("relic_site"));
         for obj in gameobject.ObjectsInRange(Length(pp[2]-pp[1]),pp[1]) do
             if obj:IsBuilding() and obj:GetTeamNum() == 2 then
                 obj:SetTeamNum(1);
@@ -502,7 +431,7 @@ statemachine.Create("main_objectives", {
             done = false;
             local d = tonumber(i);
             if state.wave_timer >= d then
-                local wave, lead = spawnInFormation2(v, "nsdf_attack", { "avfigh","avtank","avrckt","avltnk","hvngrd" }, 2);
+                local wave, lead = waves.SpawnInFormation(v, "nsdf_attack", nil, { "avfigh","avtank","avrckt","avltnk","hvngrd" }, 2);
                 if not wave then error("Failed to spawn wave") end
                 if not lead then error("Failed to get lead") end
                 lead:Goto("nsdf_attack");
@@ -525,7 +454,7 @@ statemachine.Create("main_objectives", {
                 done = false;
                 local d = tonumber(i);
                 if state.wave_timer >= d then
-                    local wave, lead = spawnInFormation2(v,"nsdf_attack",{"avfigh","avtank","avrckt","avltnk","hvngrd"}, 2);
+                    local wave, lead = waves.SpawnInFormation(v,"nsdf_attack",nil,{"avfigh","avtank","avrckt","avltnk","hvngrd"}, 2);
                     if not wave then error("Failed to spawn wave") end
                     if not lead then error("Failed to get lead") end
                     lead:Goto("nsdf_attack");
@@ -677,7 +606,7 @@ stateset.Create("mission")
     :Add("side_objectives.destroy_comm", stateset.WrapStateMachine("side_objectives.destroy_comm"))
     :Add("side_objectives.capture_supply", function(state, name)
         local secure = true;
-        local pp = utility.IteratorToArray(utility.IteratePath("supply_site"));
+        local pp = utility.IteratorToArray(paths.IteratePath("supply_site"));
         local l = Length(pp[2] - pp[1])
         if gameobject.GetPlayer():GetDistance(pp[1]) < l then
             for obj in gameobject.ObjectsInRange(l, pp[1]) do
@@ -687,7 +616,7 @@ stateset.Create("mission")
                 end
             end
             if(secure) then
-                local pp = utility.IteratorToArray(utility.IteratePath("supply_site"));
+                local pp = utility.IteratorToArray(paths.IteratePath("supply_site"));
                 for obj in gameobject.ObjectsInRange(Length(pp[2] - pp[1]), pp[1]) do
                     if obj:IsBuilding() and obj:GetTeamNum() == 2 then
                         obj:SetTeamNum(1);
@@ -783,7 +712,7 @@ hook.Add("Start", "Mission:Start", function ()
     mission_data.patrol = setUpPatrols();
     --mission_data.key_objects.patrol_units = {};
     for i, v in pairs(patrol_form) do
-        local units, lead = spawnInFormation2(v, i, {"svfigh", "svtank", "svltnk"}, 2);
+        local units, lead = waves.SpawnInFormation(v, i, nil, {"svfigh", "svtank", "svltnk"}, 2);
         if not units then error("Failed to spawn units") end
         if not lead then error("Failed to get lead") end
         for _, v2 in pairs(units) do
@@ -806,7 +735,7 @@ hook.Add("Start", "Mission:Start", function ()
         i = i + 1;
     until not h or not h:IsValid()
 
-    local player_units, apc = spawnInFormation2({" 1 ", "2 2 2", "4  2  4"},"player_units",{"bvapc09","bvtank","bvraz","bvltnk"},1,7);
+    local player_units, apc = waves.SpawnInFormation({" 1 ", "2 2 2", "4  2  4"},"player_units",nil,{"bvapc09","bvtank","bvraz","bvltnk"},1,7);
     if not apc then error("Failed to get APC") end
     apc:SetLabel("apc");
     --captureRelic:start(p_id,patrol_units);

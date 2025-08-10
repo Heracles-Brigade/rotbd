@@ -187,12 +187,6 @@ local function areAllDead(handles, team)
     return true;
 end
 
-local function choose(...)
-    local t = {...};
-    local rn = math.random(#t);
-    return t[rn];
-end
-
 local function SpawnNav(num)
 	local nav = navmanager.BuildImportantNav("apcamr", 1, mission_data.NavCoords[num]);
 	mission_data.Nav[num] = nav;
@@ -260,7 +254,7 @@ statemachine.Create("scrap_field_filler", {
 		if pos then
 			for i, scrap in ipairs(state.scrap_objects) do -- consider making this a slow-loop that checks 1 per turn
 				if not scrap or not scrap:IsValid() then
-					state.scrap_objects[i] = gameobject.BuildObject(choose(table.unpack(state.scrap_options)), 0, GetPositionNear(pos, 1, 35));
+					state.scrap_objects[i] = gameobject.BuildObject(utility.ChooseOne(table.unpack(state.scrap_options)), 0, GetPositionNear(pos, 1, 35));
 				end
 			end
 		end

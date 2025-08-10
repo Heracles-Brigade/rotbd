@@ -71,7 +71,7 @@ local stateset = require("_stateset");
 --local tracker = require("_tracker");
 local navmanager = require("_navmanager");
 local objective = require("_objective");
---local utility = require("_utility");
+local utility = require("_utility");
 local color = require("_color");
 local camera = require("_camera");
 
@@ -253,12 +253,6 @@ local mission_data = { --Sets mission flow and progression. Booleans and values 
 	NavCoord = {}
 }
 
-local function choose(...)
-    local t = {...};
-    local rn = math.random(#t);
-    return t[rn];
-end
-
 local function SpawnNav(num) -- Spawns the Nth Nav point.
 	local nav = navmanager.BuildImportantNav("apcamr", 1, mission_data.NavCoord[num]); -- Make the nav from the harvested coordinates.
 	if not nav then error("Nav "..num.." failed to spawn!"); end -- If the nav fails to spawn, throw an error.
@@ -372,7 +366,7 @@ statemachine.Create("scrap_field_filler", {
 		if pos then
 			for i, scrap in ipairs(state.scrap_objects) do -- consider making this a slow-loop that checks 1 per turn
 				if not scrap or not scrap:IsValid() then
-					state.scrap_objects[i] = gameobject.BuildObject(choose(table.unpack(state.scrap_options)), 0, GetPositionNear(pos, 1, 35));
+					state.scrap_objects[i] = gameobject.BuildObject(utility.ChooseOne(table.unpack(state.scrap_options)), 0, GetPositionNear(pos, 1, 35));
 				end
 			end
 		end

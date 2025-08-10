@@ -44,6 +44,7 @@ local utility = require("_utility");
 local color = require("_color");
 local producer = require("_producer");
 local patrol = require("_patrol");
+local waves = require("_waves");
 
 --- @class RBD07_Constants_Audio
 --- @field intro string -- Get those relics!
@@ -182,101 +183,6 @@ local labels = {
 
 
 
-
---- Spawns units in a specified formation at a location, facing a direction.
---- @param formation string[]  -- Array of strings, each string is a row, numbers are unit indices in 'units'
---- @param location Vector     -- Center position of the formation
---- @param dir Vector          -- Direction the formation faces (forward)
---- @param units string[]      -- List of unit ODFs, indexed by number in formation
---- @param team TeamNum        -- Team to assign units to
---- @param seperation integer  -- Distance between units (optional, default 10)
---- @return GameObject[] units
---- @return GameObject|nil leader
-local function spawnInFormation(formation, location, dir, units, team, seperation)
-    seperation = seperation or 10
-
-    local spawnedUnits = {};
-    local leadUnit = nil;
-
-    -- Calculate normalized forward and right vectors for the formation
-    local forward = Normalize(SetVector(dir.x, 0, dir.z));
-    local right = Normalize(SetVector(-dir.z, 0, dir.x));
-
-    for rowIndex, row in ipairs(formation) do
-        local rowLength = row:len();
-        local colIndex = 1;
-
-        -- Iterate over each character in the row string
-        for char in row:gmatch(".") do
-            local unitIdx = tonumber(char);
-            if unitIdx then
-                -- Calculate position offset for this unit
-                -- X: left/right offset, centered on row
-                -- Z: forward offset, each row is further forward
-                local xOffset = (colIndex - (rowLength / 2)) * seperation;
-                local zOffset = rowIndex * seperation * 2;
-                
-                -- Final position = location + (right * xOffset) - (forward * zOffset)
-                local pos = xOffset * right + -zOffset * forward + location;
-
-                -- Spawn the unit
-                local h = gameobject.BuildObject(units[unitIdx], team, pos);
-                if not h then error("Failed to build object " .. units[unitIdx] .. " at " .. tostring(pos)) end
-
-                -- Set the unit's facing direction
-                local t = BuildDirectionalMatrix(h:GetPosition(), forward);
-                h:SetTransform(t);
-
-                -- First unit spawned becomes the 'lead'
-                if not leadUnit then
-                    leadUnit = h;
-                end
-
-                table.insert(spawnedUnits, h);
-            end
-            colIndex = colIndex+1;
-        end
-    end
-
-    return spawnedUnits, leadUnit;
-end
-
---- @param formation string[]  -- Array of strings, each string is a row, numbers are unit indices in 'units'
---- @param location string     -- Center position of the formation
---- @param units string[]      -- List of unit ODFs, indexed by number in formation
---- @param team TeamNum        -- Team to assign units to
---- @param seperation integer  -- Distance between units (optional, default 10)
-local function spawnInFormation2(formation, location, units, team, seperation)
-    local pos = GetPosition(location, 0);
-    if not pos then error("Failed to get position of " .. location) end
-    local pos2 = GetPosition(location, 1);
-    if not pos2 then error("Failed to get position of " .. location) end
-    local dir = pos2 - pos;
-    return spawnInFormation(formation, pos, dir, units, team, seperation);
-end
-
-local function choose(...)
-    local t = {...};
-    local rn = math.random(#t);
-    return t[rn];
-end
-
-local function chooseA(...)
-    local t = {...};
-    local m = 0;
-    for i, v in pairs(t) do
-        m = m + v.chance;
-    end
-    local rn = math.random()*m;
-    local n = 0;
-    for i, v in ipairs(t) do
-        if (v.chance+n) > rn then
-        return v.item;
-        end
-        n = n + v.chance;
-    end
-end
-
 --- @todo this likely isn't needed
 --"Warming" up the RNG
 for i=1, math.random(100,1000) do
@@ -345,7 +251,7 @@ statemachine.Create("delayed_spawn_formation_and_goto", {
     function(state)
         --- @cast state AttackWaveStateMachineIter
         local units = {};
-        for _, unit in pairs(spawnInFormation2(state.formation, state.spawn, state.odfs, state.team, state.seperation)) do
+        for _, unit in pairs(waves.SpawnInFormation(state.formation, state.spawn, nil, state.odfs, state.team, state.seperation)) do
             unit:Goto(state.dest);
             table.insert(units, unit);
         end
@@ -430,18 +336,18 @@ statemachine.Create("main_objectives", {
         };
 
         --Spawn attack @ nsdf_attack
-        for _, v in pairs(spawnInFormation2({"1 3"}, ("nsdf_attack"), relic_data.nsdf.vehicles, 2, 15)) do
+        for _, v in pairs(waves.SpawnInFormation({"1 3"}, ("nsdf_attack"), nil, relic_data.nsdf.vehicles, 2, 15)) do
             v:Goto("nsdf_attack");
         end
  
         --Spawn attack @ nsdf_base
-        for _, v in pairs(spawnInFormation2({"1 1","6 6"}, "nsdf_path", relic_data.nsdf.vehicles, 2, 15)) do
+        for _, v in pairs(waves.SpawnInFormation({"1 1","6 6"}, "nsdf_path", nil, relic_data.nsdf.vehicles, 2, 15)) do
             local def_seq = statemachine.Start("nsdf_base_attack", nil, { v = v });
             mission_data.sub_machines = mission_data.sub_machines or {};
             table.insert(mission_data.sub_machines, def_seq);
         end
 
-        for _, v in pairs(spawnInFormation2({" 1 ","5 5"}, "cca_attack", relic_data.cca.vehicles, 2, 15)) do
+        for _, v in pairs(waves.SpawnInFormation({" 1 ","5 5"}, "cca_attack", nil, relic_data.cca.vehicles, 2, 15)) do
             v:Goto("cca_attack");
         end
 
@@ -596,7 +502,7 @@ statemachine.Create("main_objectives", {
                 --Spawn wave4 or wave5
                 --Spawn two bombers
                 local datum = relic_data[faction];
-                for _, v in pairs(spawnInFormation2({"6 6"}, datum.wave, datum.vehicles, 2, 15)) do
+                for _, v in pairs(waves.SpawnInFormation({"6 6"}, datum.wave, nil, datum.vehicles, 2, 15)) do
                     v:Goto(("%s_path"):format(datum.wave));
                 end
             end
@@ -802,7 +708,7 @@ statemachine.Create("relic_tug_spawner", {
             table.insert(mission_data.sub_machines, tug_sequencer);
 
             --Create escort
-            for _,v in pairs(spawnInFormation2({"2 2"}, s, relic_data[state.key].vehicles, 2, 15)) do
+            for _,v in pairs(waves.SpawnInFormation({"2 2"}, s, nil, relic_data[state.key].vehicles, 2, 15)) do
                 --local def_seq = mission.TaskManager:sequencer(v);
                 --def_seq:queue2("Defend2",tug);
                 ----If tug dies, attack the players base
@@ -812,7 +718,7 @@ statemachine.Create("relic_tug_spawner", {
             end
  
             --Create Attack
-            for _,v in pairs(spawnInFormation2({"1 1"},("%s_path"):format(state.key), relic_data[state.key].vehicles, 2, 15)) do
+            for _,v in pairs(waves.SpawnInFormation({"1 1"}, ("%s_path"):format(state.key), nil, relic_data[state.key].vehicles, 2, 15)) do
                 --local def_seq = mission.TaskManager:sequencer(v);
                 ----Goto relic site
                 --def_seq:queue2("Goto",("%s_path"):format(f));
@@ -847,13 +753,13 @@ statemachine.Create("relic_wave_spawner", {
         if state:SecondsHavePassed(mission_data.waveinterval) then -- can't use lap mode due to needing to change the delay
             mission_data.waveinterval = mission_data.waveinterval + mission_data.waveinterval * 0.05; -- push the next wave out further
 
-            local wave = chooseA(
+            local wave = utility.ChooseOneWeighted(
                 { item = { " 2 ", "1 1" }, chance = 10 }, -- tank, two fighters
                 { item = { " 2 ", "3 5" }, chance =  9 }, -- tank, one rkct tank and one light tank
                 { item = { " 2 ", " 6 " }, chance =  4 }  -- tank and two bombers
             );
 
-            local units, lead = spawnInFormation2(wave, ("%s_path"):format(state.key), relic_data[state.key].vehicles, 2, 15);
+            local units, lead = waves.SpawnInFormation(wave, ("%s_path"):format(state.key), nil, relic_data[state.key].vehicles, 2, 15);
             mission_data.sub_machines = mission_data.sub_machines or {};
             for _, v in pairs(units) do
                 local machine = statemachine.Start("relic_wave_orders", nil, { v = v, key = state.key, leader = lead });
@@ -990,7 +896,7 @@ statemachine.Create("distress", {
         local d_att = relic_data[mission_data.distress_faction].vehicles;
         if(gameobject.GetPlayer():GetDistance(dpath) < 100) then
             --It is a trap, spawn ambush
-            for _,v in pairs(spawnInFormation2({"1 2 3 1"}, apath, d_att, 2, 15)) do
+            for _,v in pairs(waves.SpawnInFormation({"1 2 3 1"}, apath, nil, d_att, 2, 15)) do
                 local tm = statemachine.Start("distress_ambush_orders", nil, { v = v });
                 mission_data.sub_machines = mission_data.sub_machines or {};
                 table.insert(mission_data.sub_machines, tm);

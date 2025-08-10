@@ -63,6 +63,8 @@ local producer = require("_producer");
 local patrol = require("_patrol");
 local camera = require("_camera");
 local paramdb = require("_paramdb");
+local paths = require("_paths");
+local waves = require("_waves");
 
 -- Fill navlist gaps with important navs
 navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToGap);
@@ -259,78 +261,6 @@ local function checkAnyDead(handles)
     return false;
 end
 
---- Spawns units in a specified formation at a location, facing a direction.
---- @param formation string[]  -- Array of strings, each string is a row, numbers are unit indices in 'units'
---- @param location Vector     -- Center position of the formation
---- @param dir Vector          -- Direction the formation faces (forward)
---- @param units string[]      -- List of unit ODFs, indexed by number in formation
---- @param team TeamNum        -- Team to assign units to
---- @param seperation integer  -- Distance between units (optional, default 10)
---- @return GameObject[] units
---- @return GameObject|nil leader
-local function spawnInFormation(formation, location, dir, units, team, seperation)
-    seperation = seperation or 10
-
-    local spawnedUnits = {};
-    local leadUnit = nil;
-
-    -- Calculate normalized forward and right vectors for the formation
-    local forward = Normalize(SetVector(dir.x, 0, dir.z));
-    local right = Normalize(SetVector(-dir.z, 0, dir.x));
-
-    for rowIndex, row in ipairs(formation) do
-        local rowLength = row:len();
-        local colIndex = 1;
-
-        -- Iterate over each character in the row string
-        for char in row:gmatch(".") do
-            local unitIdx = tonumber(char);
-            if unitIdx then
-                -- Calculate position offset for this unit
-                -- X: left/right offset, centered on row
-                -- Z: forward offset, each row is further forward
-                local xOffset = (colIndex - (rowLength / 2)) * seperation;
-                local zOffset = rowIndex * seperation * 2;
-                
-                -- Final position = location + (right * xOffset) - (forward * zOffset)
-                local pos = xOffset * right + -zOffset * forward + location;
-
-                -- Spawn the unit
-                local h = gameobject.BuildObject(units[unitIdx], team, pos);
-                if not h then error("Failed to build object " .. units[unitIdx] .. " at " .. tostring(pos)) end
-
-                -- Set the unit's facing direction
-                local t = BuildDirectionalMatrix(h:GetPosition(), forward);
-                h:SetTransform(t);
-
-                -- First unit spawned becomes the 'lead'
-                if not leadUnit then
-                    leadUnit = h;
-                end
-
-                table.insert(spawnedUnits, h);
-            end
-            colIndex = colIndex+1;
-        end
-    end
-
-    return spawnedUnits, leadUnit;
-end
-
---- @param formation string[]  -- Array of strings, each string is a row, numbers are unit indices in 'units'
---- @param location string     -- Center position of the formation
---- @param units string[]      -- List of unit ODFs, indexed by number in formation
---- @param team TeamNum        -- Team to assign units to
---- @param seperation integer  -- Distance between units (optional, default 10)
-local function spawnInFormation2(formation, location, units, team, seperation)
-    local pos = GetPosition(location, 0);
-    if not pos then error("Failed to get position of " .. location) end
-    local pos2 = GetPosition(location, 1);
-    if not pos2 then error("Failed to get position of " .. location) end
-    local dir = pos2 - pos;
-    return spawnInFormation(formation, pos, dir, units, team, seperation);
-end
-
 SetAIControl(2, false);
 SetAIControl(3, false);
 
@@ -419,7 +349,7 @@ statemachine.Create("defendRelic.cca_attack_base", {
     function (self)
         --spawn an attack wave
         local wave = table.remove(mission_data.attack_waves,1);
-        for i,v in pairs(spawnInFormation2(wave.formation,wave.loc,{"svfigh","svtank","svrckt","svhraz","svltnk"},2,15)) do
+        for i,v in pairs(waves.SpawnInFormation(wave.formation, wave.loc, nil, {"svfigh","svtank","svrckt","svhraz","svltnk"}, 2, 15)) do
             v:Goto(wave.loc);
         end
         mission_data.attack_wave_idx = mission_data.attack_wave_idx + 1;
@@ -534,7 +464,7 @@ statemachine.Create("main_objectives", {
         producer.QueueJob("bbcomm", 3, "make_bbcomm");
         --local turretJobs = {};
         --Tell AI to build turrets
-        for i,v in utility.IteratePath("make_turrets") do
+        for i,v in paths.IteratePath("make_turrets") do
         --    table.insert(turretJobs,ProductionJob("bvturr",3,v,1));
             producer.QueueJob("bvturr", 3, nil, nil, { name = "_doneTurret", location = v });
         end
@@ -623,10 +553,10 @@ statemachine.Create("main_objectives", {
         --self:startTask("destroy_relic");
 
         --First CCA attack
-        local units, lead = spawnInFormation2({"   1   ","1   2 2", "3   3  "},"relic_light",{"svtank","svltnk","svfigh"},2,15);
+        local units, lead = waves.SpawnInFormation({"   1   ", "1   2 2", "3   3  "}, "relic_light", nil, {"svtank", "svltnk", "svfigh"}, 2, 15);
         mission_data.sub_machines = {};
-        for i, v in pairs(units) do
-            if(v ~= lead) then
+        for _, v in pairs(units) do
+            if lead ~= nil and v ~= lead then
                 v:Defend2(lead);
             end
             --local s = mission.TaskManager:sequencer(v);
@@ -670,9 +600,9 @@ statemachine.Create("main_objectives", {
         mission_data.day_id = producer.QueueJob("apwrckz",3,mission_data.relic);
         --self:call("_setUpProdListeners",mission_data.day_id,"_setDayWrecker");
         mission_data.detect_daywrecker = true;
-        local units, lead = spawnInFormation2({"   1   ","1 1 2 2", "3 3 3 3"},"cca_relic_attack",{"svtank","svrckt","svfigh"},2,15);
+        local units, lead = waves.SpawnInFormation({"   1   ", "1 1 2 2", "3 3 3 3"}, "cca_relic_attack", nil, {"svtank", "svrckt", "svfigh"}, 2, 15);
         for i, v in pairs(units) do
-            if(v ~= lead) then
+            if lead ~= nil and v ~= lead then
                 v:Defend2(lead);
             end
             --local s = mission.TaskManager:sequencer(v);
@@ -830,11 +760,11 @@ statemachine.Create("main_objectives", {
         mission_data.waitleft = mission_data.minwait; -- time before the attack camera can be skipped
         mission_data.maxwait = mission_data.minwait + 30; -- time before the attack camera finishes (not counting last section that has its own countdown)
         mission_data.attacker_refocus = 5; -- seconds before refocusing on a new attacker
-        mission_data.attackers = spawnInFormation2({
+        mission_data.attackers = waves.SpawnInFormation({
             "1 2 3 2 3 2 1",
             "1 3 1 3 1 3 1",
             "4 4 4 4 4 4 4"
-        },"base_attack1",{"svfigh","svrckt","svltnk","svhraz"},2,20);
+        },"base_attack1",nil,{"svfigh","svrckt","svltnk","svhraz"},2,20);
         for i, v in pairs(mission_data.attackers) do
             v:Goto("base_attack1");
         end
