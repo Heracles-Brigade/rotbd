@@ -521,7 +521,7 @@ statemachine.Create("avoidBase", {
 });
 
 --- @class GriggVoice08_state : StateMachineIter
---- @field audio AudioMessageHandle?
+--- @field audio AudioMessage?
 statemachine.Create("grigg_voice", {
     function(state)
         --- @cast state GriggVoice08_state

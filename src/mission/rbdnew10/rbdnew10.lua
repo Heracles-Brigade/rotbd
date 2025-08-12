@@ -49,7 +49,6 @@ local color = require("_color");
 local producer = require("_producer");
 local patrol = require("_patrol");
 local paramdb = require("_paramdb");
-local waves = require("_waves");
 local paths = require("_paths");
 local waves = require("_waves");
 require("_table_show");
@@ -269,7 +268,9 @@ statemachine.Create("main_objectives", {
         --- @cast state MainObjectives10_state
         --bzRoutine.routineManager:startRoutine("waveSpawner",{"cca","nsdf"},{"east","west","cca","nsdf"},1/70,8,0.05,light_waves);
         mission_data.wave_state = "build_launchpad";
-        waves.new("wavesStart", {"cca","nsdf"},{"east","west","cca","nsdf"},1/70,8,0.05,light_waves);
+        --- @todo stored this in a random place to preserve it
+        local r = waves.new("wavesStart", {"cca","nsdf"},{"east","west","cca","nsdf"},1/70,8,0.05,light_waves);
+        table.insert(mission_data.wave_controllers,r); -- saving this here, wasn't before, not sure if correct
         state:next();
         return statemachine.FastResult(true);
     end },
@@ -355,7 +356,8 @@ statemachine.Create("main_objectives", {
     { "defend_and_escort.build_transports", function(state)
         --function(self,launchpad,enemy_units,wave_controllers)
         --self.fury_id = bzRoutine.routineManager:startRoutine("waveSpawner",{"fury"},{"fury"},1/30,5,0.05,fury_waves);
-        waves.new("fury_spawn", {"fury"},{"fury"},1/30,5,0.05,fury_waves);
+        local r = waves.new("fury_spawn", {"fury"},{"fury"},1/30,5,0.05,fury_waves);
+        table.insert(mission_data.wave_controllers,r); -- saving this here, wasn't before, not sure if correct
         mission_data.wave_state = "defend_and_escort";
         --bzRoutine.routineManager:getRoutine(self.fury_id):onWaveSpawn():subscribe(function(...)
         --    self:call("_fury_spawn",...);
