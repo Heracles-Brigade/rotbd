@@ -375,15 +375,15 @@ end
 statemachine.Create("main_objectives", {
     { "start", function (state)
 		ColorFade(1.1, 0.4, 0, 0, 0);
-        camera.CameraReady();
+        camera.Start();
         AudioMessage(constants.audio.intro);
         state:next();
         return statemachine.FastResult();
     end },
     { "opening_cin", function (state)
-        if state:SecondsHavePassed(20) or camera.CameraCancelled() or camera.CameraPath("opening_cin", 20, 10, mission_data.key_objects.cafe) then
+        if state:SecondsHavePassed(20) or camera.Canceled() or camera.FollowPathAimObject("opening_cin", 20, 10, mission_data.key_objects.cafe) then
             state:SecondsHavePassed(); -- clear timer if we got here without it being cleared
-            camera.CameraFinish();
+            camera.End();
             state:next();
         end
     end },
@@ -460,7 +460,7 @@ statemachine.Create("main_objectives", {
 
         objective.AddObjective(constants.objectives.bdmisn214, "WHITE");
         objective.AddObjective(constants.objectives.bdmisn215, "WHITE");
-        camera.CameraReady();
+        camera.Start();
 
         local tug = gameobject.BuildObject("avhaul", 2, "spawn_tug");
         if not tug then error("Failed to create Tug."); end
@@ -494,8 +494,8 @@ statemachine.Create("main_objectives", {
     end },
     -- could add a sleep here to smooth it out if needed, but it seems it's not needed
     { "convoy_cin", function (state)
-        if camera.CameraCancelled() or camera.CameraPath("convoy_cin", 20, 20, mission_data.key_objects.cafe) then
-            camera.CameraFinish();
+        if camera.Canceled() or camera.FollowPathAimObject("convoy_cin", 20, 20, mission_data.key_objects.cafe) then
+            camera.End();
             state:next();
         end
     end },
@@ -760,7 +760,7 @@ statemachine.Create("main_objectives", {
         local f,j           = createWave("svtank", {"spawn_n4", "spawn_n5"},                            "north_path");
         state.camTarget = camTarget;
         state.targets = {a,b,c,d,e,f,g,h,i,camTarget,j};
-        camera.CameraReady();
+        camera.Start();
         for _,v in pairs(state.targets) do
             v:SetObjectiveOn();
         end
@@ -769,9 +769,9 @@ statemachine.Create("main_objectives", {
     end },
     function (state)
         --- @cast state RBD01_MissionState
-        if state:SecondsHavePassed(10) or camera.CameraCancelled() or camera.CameraPath("camera_nsdf", 10, 15, state.camTarget) then
+        if state:SecondsHavePassed(10) or camera.Canceled() or camera.FollowPathAimObject("camera_nsdf", 10, 15, state.camTarget) then
             state:SecondsHavePassed(); -- clear timer if we got here without it being cleared
-            camera.CameraFinish();
+            camera.End();
             objective.UpdateObjective(constants.objectives.bdmisn2208, "WHITE");
             state:next();
         end
@@ -952,13 +952,13 @@ print("\27[34m----END MISSION----\27[0m");
 --- @todo remove dev cheats and modules
 require("_audio_dev");
 require("_cheat_bzrave")
-require("_cheat_bzskip");
+require("_cheatcode").CreateCode("BZSKIP", "apcann.wav", 0, 0, 255);
 hook.Add("Cheat", "Mission:Cheat", function (cheat)
     if cheat == "BZSKIP" then
         local machine_state = mission_data.mission_states.StateMachines.main_objectives;
         --- @cast machine_state StateMachineIter
         machine_state:SecondsHavePassed(); -- clear timer in case we were in one
-        camera.CameraFinish(); -- protected camera exit that won't crash
+        camera.End(); -- protected camera exit that won't crash
         machine_state:next(); -- move to the next state
     end
 end);

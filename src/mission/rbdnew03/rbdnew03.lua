@@ -419,7 +419,7 @@ statemachine.Create("main_objectives", {
 		state:next();
 		
 		-- Pre-play setup complete. Time to start the shit.
-		camera.CameraReady();
+		camera.Start();
 		AudioMessage(constants.audio.intro);
 
 		mission_data.mission_states
@@ -431,14 +431,14 @@ statemachine.Create("main_objectives", {
 	end },
 	{ "cinematic", function (state)
 		--Opening Cinematic. Show off Deus Ex's wondrous creation!
-		if camera.CameraCancelled() or camera.CameraPathPathFollow("pan_path", 10, 3, "pan_target_path") then
+		if camera.Canceled() or camera.FollowPathAimFollowPath("pan_path", 10, 3, "pan_target_path") then
 			state:next();
 			return statemachine.FastResult();
 		end
 	end },
 	{ "cinematic2", function (state)
 		--Opening Cinematic. Show off Deus Ex's wondrous creation!
-		if camera.CameraCancelled() or camera.CameraPathPathFollow("pan2_path", 5, 3, "pan2_target_path", 0, 2) then
+		if camera.Canceled() or camera.FollowPathAimFollowPath("pan2_path", 5, 3, "pan2_target_path", 0, 2) then
 			state:next();
 			return statemachine.FastResult();
 		end
@@ -447,9 +447,9 @@ statemachine.Create("main_objectives", {
 		--- @cast state main_objectives03_state
 		
 		--Opening Cinematic. Show off Deus Ex's wondrous creation!
-		--if camera.CameraPath("camera_path", 1000, 2000, mission_data.key_objects.Mammoth) or camera.CameraCancelled() then
-		if camera.CameraCancelled() or camera.CameraPathPathFollow("pan3_path", 15, 4, "pan3_target_path", 0, 2) then
-			camera.CameraFinish();
+		--if camera.FollowPathAimObject("camera_path", 1000, 2000, mission_data.key_objects.Mammoth) or camera.Canceled() then
+		if camera.Canceled() or camera.FollowPathAimFollowPath("pan3_path", 15, 4, "pan3_target_path", 0, 2) then
+			camera.End();
 			SpawnNav(1);
 			state:next();
 
@@ -466,7 +466,7 @@ statemachine.Create("main_objectives", {
 			state.shield_up = nil;
 			return;
 		end
-		local cam_pos = camera.GetCameraPosition();
+		local cam_pos = camera.GetPosition();
 
 		-- turn the shield on once the camera exits the shield area
 		if not state.shield_up and mission_data.key_objects.Mammoth:GetDistance(cam_pos) > 40 then

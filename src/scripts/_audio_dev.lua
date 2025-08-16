@@ -150,7 +150,7 @@ function AudioMessage(filename)
             content = cleanContent,
             time = length,
             end_time = world_ttime + length,
-            camera = camera.InCamera(),
+            camera = camera.Active(),
         }
         PlayFakeAudioMessage(lastAudio)
         --- @cast lastAudio AudioMessage
@@ -196,7 +196,7 @@ hook.Add("Update", "FakeAudioMessage.Update", function(dtime, ttime)
                 objective.RemoveObjective(msg.wav);
                 --messages[msg.wav] = nil;
             else
-                if camera.InCamera() then
+                if camera.Active() then
                     msg.camera = true;
                     msg.end_time = msg.end_time + dtime; -- bump the end time if the camera is active
                 end

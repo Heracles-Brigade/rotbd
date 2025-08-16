@@ -782,7 +782,7 @@ statemachine.Create("main_objectives", {
     statemachine.SleepSeconds(7),
     { "base_destruction_camera_start", function (self)
         --- @cast self MainObjectivesState
-        camera.CameraReady();
+        camera.Start();
         --self:SecondsHavePassed(mission_data.minwait); -- start counting internally
         self.EndTimeMinimum = GetTime() + mission_data.minwait;
         self.EndTimeMaximum = GetTime() + mission_data.maxwait;
@@ -819,7 +819,7 @@ statemachine.Create("main_objectives", {
     end  },
     { "base_destruction_camera_focus", function (self)
         --- @cast self MainObjectivesState
-        if camera.CameraCancelled() and self.EndTimeMinimum < GetTime() then
+        if camera.Canceled() and self.EndTimeMinimum < GetTime() then
             self:SecondsHavePassed(); -- reset internal timer
             self:switch("base_destruction_camera_finish");
             return;
@@ -835,7 +835,7 @@ statemachine.Create("main_objectives", {
             self:switch("base_destruction_camera_finish");
             return;
         end
-        if camera.CameraObject(self.WatchTarget, 0, 10, -30, self.WatchTarget) then
+        if camera.FollowObjectAimObject(self.WatchTarget, 0, 10, -30, self.WatchTarget) then
             self:SecondsHavePassed(); -- reset internal timer
             self:next();
             return;
@@ -845,12 +845,12 @@ statemachine.Create("main_objectives", {
     
     { "base_destruction_camera_finish", function (self)
         --- @cast self MainObjectivesState
-        if camera.CameraPathPath("25cin_pan1", 50, 2, "bdog_base")
-        or (camera.CameraCancelled() and self.EndTimeMinimum < GetTime())
+        if camera.FollowPathAimPath("25cin_pan1", 50, 2, "bdog_base")
+        or (camera.Canceled() and self.EndTimeMinimum < GetTime())
         or self:SecondsHavePassed(5) then
         --or self.EndTimeMaximum < GetTime() then
             self:SecondsHavePassed(); -- reset internal timer
-            camera.CameraFinish();
+            camera.End();
             self:next();
         end
     end },

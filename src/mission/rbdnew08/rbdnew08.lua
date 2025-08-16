@@ -176,7 +176,7 @@ statemachine.Create("main_objectives", {
         end
 
         SetPilot(2,4);
-        camera.CameraReady();
+        camera.Start();
         --self:startTask("focus_comm1");
         --self:startTask("build_howiz");
         AudioMessage(constants.audio.intro);
@@ -194,45 +194,45 @@ statemachine.Create("main_objectives", {
     end },
     { "intoCinematic.focus_comm1", function(state)
         --- @cast state MainObjectives08_state
-        if camera.CameraCancelled() then
+        if camera.Canceled() then
             state:switch("intoCinematic.end");
             return statemachine.FastResult();
         end
-        if camera.CameraPath("pan_1", 1500, 1000, mission_data.comms[1]) then
+        if camera.FollowPathAimObject("pan_1", 1500, 1000, mission_data.comms[1]) then
             state:next();
         end
     end },
     { "intoCinematic.focus_comm2", function(state)
         --- @cast state MainObjectives08_state
-        if camera.CameraCancelled() then
+        if camera.Canceled() then
             state:switch("intoCinematic.end");
             return statemachine.FastResult();
         end
-        if camera.CameraPath("pan_2", 1500, 1000, mission_data.comms[2]) then
+        if camera.FollowPathAimObject("pan_2", 1500, 1000, mission_data.comms[2]) then
             state:next();
         end
     end },
     { "intoCinematic.focus_comm3", function(state)
         --- @cast state MainObjectives08_state
-        if camera.CameraCancelled() then
+        if camera.Canceled() then
             state:switch("intoCinematic.end");
             return statemachine.FastResult();
         end
-        if camera.CameraPath("pan_3", 1500, 1000, mission_data.comms[3]) then
+        if camera.FollowPathAimObject("pan_3", 1500, 1000, mission_data.comms[3]) then
             state:next();
         end
     end },
     { "intoCinematic.focus_base", function(state)
         --- @cast state MainObjectives08_state
         local target = gameobject.GetGameObject("ubtart0_i76building");
-        if camera.CameraCancelled() or not target or camera.CameraPath("pan_4", 500, 2000, target) then
+        if camera.Canceled() or not target or camera.FollowPathAimObject("pan_4", 500, 2000, target) then
             state:next();
             return statemachine.FastResult();
         end
     end },
     { "intoCinematic.end", function(state)
         --- @cast state MainObjectives08_state
-        camera.CameraFinish();
+        camera.End();
         --mission.Objective:Start("misison"); -- destroyComms
         state:next();
         return statemachine.FastResult();
