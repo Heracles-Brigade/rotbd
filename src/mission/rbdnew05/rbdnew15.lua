@@ -164,7 +164,9 @@ local constants = {
 
 --- @class MissionData05
 --- @field patrol_r PatrolEngine?
-local mission_data = {};
+local mission_data = {
+    general_machines = {},
+};
 
 --- @param handle GameObject
 --- @param odf string
@@ -1074,8 +1076,10 @@ statemachine.Create("main_objectives", {
 --    end
 --end
 
+mission_data.general_machines.main_objectives = statemachine.Start("main_objectives");
+
 stateset.Create("mission")
-    :Add("main_objectives", stateset.WrapStateMachine("main_objectives"))
+    :Add("main_objectives", stateset.WrapStateMachine(mission_data.general_machines.main_objectives))
     --:Add("pickupSurvivors.apc_watch", function(state, name)
     --    if(checkAnyDead(mission_data.apcs)) then
     --        FailMission(GetTime()+5.0,constants.debriefing.ApcLost2);
@@ -1165,7 +1169,6 @@ hook.Add("Start", "Mission:Start", function ()
     mission_data.mission_states = stateset.Start("mission")
         :on("main_objectives");
 end);
-
 
 hook.Add("Update", "Mission:Update", function (dtime, ttime)
     if mission_data.sub_machines then

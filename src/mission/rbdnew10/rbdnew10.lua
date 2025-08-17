@@ -189,6 +189,8 @@ local mission_data = {
     attacker_machines = {},
     wave_controllers = {},
     transport_count = 0,
+    
+    general_machines = {},
 };
 
 
@@ -622,8 +624,12 @@ statemachine.Create("wave_orders", {
 });
 --]]
 
+mission_data.general_machines.main_objectives = statemachine.Start("main_objectives");
+mission_data.general_machines.factory_spawn = statemachine.Start("factory_spawn");
+mission_data.general_machines.wave_spawner = statemachine.Start("wave_spawner");
+
 stateset.Create("mission")
-    :Add("main_objectives", stateset.WrapStateMachine("main_objectives"))
+    :Add("main_objectives", stateset.WrapStateMachine(mission_data.general_machines.main_objectives))
     :Add("protectRecycler", function(state, name)
         local playerRecycler = gameobject.GetRecycler();
         if not playerRecycler or not playerRecycler:IsAlive() then
@@ -646,8 +652,8 @@ stateset.Create("mission")
             state:off(name, true);
         end
     end)
-    :Add("factory_spawn", stateset.WrapStateMachine("factory_spawn"))
-    :Add("wave_spawner",  stateset.WrapStateMachine("wave_spawner"))
+    :Add("factory_spawn", stateset.WrapStateMachine(mission_data.general_machines.factory_spawn))
+    :Add("wave_spawner",  stateset.WrapStateMachine(mission_data.general_machines.wave_spawner))
     :Add("transports_alive", function(state, name)
 
         for i, v in pairs(mission_data.key_objects.transports) do

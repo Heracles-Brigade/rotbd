@@ -147,6 +147,8 @@ local mission_data = {
         patrol_units = {},
     },
     sub_machines = {},
+    
+    general_machines = {},
 };
 
 --- @param handle GameObject
@@ -597,13 +599,15 @@ statemachine.Create("nsdf_attack_relic_site", {
 
 
 
+mission_data.general_machines.main_objectives = statemachine.Start("main_objectives");
+mission_data.general_machines.side_objectives_destroy_comm = statemachine.Start("side_objectives.destroy_comm");
 
 
 
 
 stateset.Create("mission")
-    :Add("main_objectives", stateset.WrapStateMachine("main_objectives"))
-    :Add("side_objectives.destroy_comm", stateset.WrapStateMachine("side_objectives.destroy_comm"))
+    :Add("main_objectives", stateset.WrapStateMachine(mission_data.general_machines.main_objectives))
+    :Add("side_objectives.destroy_comm", stateset.WrapStateMachine(mission_data.general_machines.side_objectives_destroy_comm))
     :Add("side_objectives.capture_supply", function(state, name)
         local secure = true;
         local pp = utility.IteratorToArray(paths.IteratePath("supply_site"));

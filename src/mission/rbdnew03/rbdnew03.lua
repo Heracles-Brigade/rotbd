@@ -250,7 +250,9 @@ local mission_data = { --Sets mission flow and progression. Booleans and values 
 	MammothReachedBefore = false,
 
 	-- Handles; values will be assigned during mission setup and play
-	NavCoord = {}
+	NavCoord = {},
+
+    general_machines = {},
 }
 
 local function SpawnNav(num) -- Spawns the Nth Nav point.
@@ -823,13 +825,21 @@ statemachine.Create("detection_check_perceived_team", {
 	end }
 });
 
+mission_data.general_machines.main_objectives = statemachine.Start("main_objectives");
+mission_data.general_machines.scrap_field_filler = statemachine.Start("scrap_field_filler", nil, { path = "scrpfld1" });
+mission_data.general_machines.detection_check_perceived_team = statemachine.Start("detection_check_perceived_team");
+mission_data.general_machines.detection_check_radar_tower_1 = statemachine.Start("detection_check_radar_tower_1", nil, { label = constants.labels.radar[1] });
+mission_data.general_machines.detection_check_radar_tower_2 = statemachine.Start("detection_check_radar_tower_2", nil, { label = constants.labels.radar[2] });
+mission_data.general_machines.detection_check_radar_tower_3 = statemachine.Start("detection_check_radar_tower_3", nil, { label = constants.labels.radar[3] });
+mission_data.general_machines.mammoth_shield = statemachine.Start("mammoth_shield", nil, { first = true });
+
 stateset.Create("mission")
-	:Add("main_objectives", stateset.WrapStateMachine("main_objectives"))
-	:Add("scrap_field_filler_1", stateset.WrapStateMachine("scrap_field_filler", nil, { path = "scrpfld1" }))
-	:Add("detection_check_perceived_team", stateset.WrapStateMachine("detection_check_perceived_team"))
-	:Add("detection_check_radar_tower_1", stateset.WrapStateMachine("detection_check_radar_tower", nil, { label = constants.labels.radar[1] }))
-	:Add("detection_check_radar_tower_2", stateset.WrapStateMachine("detection_check_radar_tower", nil, { label = constants.labels.radar[2] }))
-	:Add("detection_check_radar_tower_3", stateset.WrapStateMachine("detection_check_radar_tower", nil, { label = constants.labels.radar[3] }))
+	:Add("main_objectives", stateset.WrapStateMachine(mission_data.general_machines.main_objectives))
+	:Add("scrap_field_filler_1", stateset.WrapStateMachine(mission_data.general_machines.scrap_field_filler))
+	:Add("detection_check_perceived_team", stateset.WrapStateMachine(mission_data.general_machines.detection_check_perceived_team))
+	:Add("detection_check_radar_tower_1", stateset.WrapStateMachine(mission_data.general_machines.detection_check_radar_tower_1))
+	:Add("detection_check_radar_tower_2", stateset.WrapStateMachine(mission_data.general_machines.detection_check_radar_tower_2))
+	:Add("detection_check_radar_tower_3", stateset.WrapStateMachine(mission_data.general_machines.detection_check_radar_tower_3))
 	:Add("hanger_still_alive", function (state, name)
 		if not mission_data.key_objects.Hangar:IsAlive() then
 			FailMission(GetTime()+5.0, constants.debriefing.rbdnew03l3); -- hangar destroyed
@@ -837,7 +847,7 @@ stateset.Create("mission")
 			--UpdateObjectives();
 		end
 	end)
-	:Add("mammoth_shield", stateset.WrapStateMachine("mammoth_shield"))
+	:Add("mammoth_shield", stateset.WrapStateMachine(mission_data.general_machines.mammoth_shield))
 	:Add("mammoth_destroyed", function (state, name)
 		if not mission_data.key_objects.Mammoth:IsAlive() then
 			AudioMessage(constants.audio.lose1);

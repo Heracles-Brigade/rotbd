@@ -171,7 +171,9 @@ local mission_data = {
 	-- Ints
 	Aud1 = 0,
 	DecoyTime = 0,
-	FlashTime = 0
+	FlashTime = 0,
+
+    general_machines = {},
 }
 
 
@@ -260,54 +262,6 @@ statemachine.Create("scrap_field_filler", {
 		end
 	end }
 });
-
-stateset.Create("mission")
-	:Add("main_objectives", stateset.WrapStateMachine("main_objectives"))
-	:Add("scrap_field_filler_1", stateset.WrapStateMachine("scrap_field_filler", nil, { path = "scrpfld11" }))
-	:Add("scrap_field_filler_2", stateset.WrapStateMachine("scrap_field_filler", nil, { path = "scrpfld12" }))
-	:Add("scrap_field_filler_3", stateset.WrapStateMachine("scrap_field_filler", nil, { path = "scrpfld13" }))
-	:Add("scrap_field_filler_4", stateset.WrapStateMachine("scrap_field_filler", nil, { path = "scrpfld14" }))
-	:Add("scrap_field_filler_5", stateset.WrapStateMachine("scrap_field_filler", nil, { path = "scrpfld15" }))
-	:Add("mammoth_destroyed", function (state)
-		--- @cast state MammothDestroyedState
-		-- Lose Conditions
-		if mission_data.MammothDead then
-			if state.fail_audio and IsAudioMessageDone(state.fail_audio) then
-				FailMission(GetTime()+5.0, constants.debriefing.rbdnew04l1);
-				state.fail_audio = nil;
-				state:off("mammoth_destroyed");
-			end
-		elseif not mission_data.Mammoth:IsValid() then -- YA BLEW UP THE MAMMOTH YA GOOF
-			mission_data.MammothDead = true;
-			mission_data.MissionOver = true;
-
-			-- ITS DEAD! NOOOOO! NEW Fail objective. -GBD
-			objective.ClearObjectives();
-			objective.AddObjective(constants.objectives.destroyed, "RED");
-
-			-- Play the audio message for Mammoth destroyed
-			state.fail_audio = AudioMessage(constants.audio.destroyed);
-		end
-	end)
-	:Add("extra_find_decoy_after_real", function (state)
-		-- DecoyTriggered (Player enters real Mammoth)
-		if mission_data.Player:IsWithin(mission_data.MammothDecoy, 100.0) --[[and mission_data.Player == mission_data.Mammoth--]] then
-			mission_data.Aud1 = AudioMessage(constants.audio.wasatrap);
-			mission_data.DecoyTriggered = true;
-			state:off("extra_find_decoy_after_real");
-		end
-	end);
-
-hook.Add("Start", "Mission:Start", function ()
-    mission_data.mission_states = stateset.Start("mission")
-		:on("scrap_field_filler_1")
-		:on("scrap_field_filler_2")
-		:on("scrap_field_filler_3")
-		:on("scrap_field_filler_4")
-		:on("scrap_field_filler_5")
-		:on("main_objectives")
-		:on("mammoth_destroyed");
-end);
 
 statemachine.Create("main_objectives", {
 	{ "start", function (state)
@@ -477,6 +431,61 @@ statemachine.Create("main_objectives", {
 		end
 	end }
 });
+
+mission_data.general_machines.main_objectives = statemachine.Start("main_objectives");
+mission_data.general_machines.scrap_field_filler_1 = statemachine.Start("scrap_field_filler", nil, { path = "scrpfld11" });
+mission_data.general_machines.scrap_field_filler_2 = statemachine.Start("scrap_field_filler", nil, { path = "scrpfld12" });
+mission_data.general_machines.scrap_field_filler_3 = statemachine.Start("scrap_field_filler", nil, { path = "scrpfld13" });
+mission_data.general_machines.scrap_field_filler_4 = statemachine.Start("scrap_field_filler", nil, { path = "scrpfld14" });
+mission_data.general_machines.scrap_field_filler_5 = statemachine.Start("scrap_field_filler", nil, { path = "scrpfld15" });
+
+stateset.Create("mission")
+	:Add("main_objectives", stateset.WrapStateMachine(mission_data.general_machines.main_objectives))
+	:Add("scrap_field_filler_1", stateset.WrapStateMachine(mission_data.general_machines.scrap_field_filler_1))
+	:Add("scrap_field_filler_2", stateset.WrapStateMachine(mission_data.general_machines.scrap_field_filler_2))
+	:Add("scrap_field_filler_3", stateset.WrapStateMachine(mission_data.general_machines.scrap_field_filler_3))
+	:Add("scrap_field_filler_4", stateset.WrapStateMachine(mission_data.general_machines.scrap_field_filler_4))
+	:Add("scrap_field_filler_5", stateset.WrapStateMachine(mission_data.general_machines.scrap_field_filler_5))
+	:Add("mammoth_destroyed", function (state)
+		--- @cast state MammothDestroyedState
+		-- Lose Conditions
+		if mission_data.MammothDead then
+			if state.fail_audio and IsAudioMessageDone(state.fail_audio) then
+				FailMission(GetTime()+5.0, constants.debriefing.rbdnew04l1);
+				state.fail_audio = nil;
+				state:off("mammoth_destroyed");
+			end
+		elseif not mission_data.Mammoth:IsValid() then -- YA BLEW UP THE MAMMOTH YA GOOF
+			mission_data.MammothDead = true;
+			mission_data.MissionOver = true;
+
+			-- ITS DEAD! NOOOOO! NEW Fail objective. -GBD
+			objective.ClearObjectives();
+			objective.AddObjective(constants.objectives.destroyed, "RED");
+
+			-- Play the audio message for Mammoth destroyed
+			state.fail_audio = AudioMessage(constants.audio.destroyed);
+		end
+	end)
+	:Add("extra_find_decoy_after_real", function (state)
+		-- DecoyTriggered (Player enters real Mammoth)
+		if mission_data.Player:IsWithin(mission_data.MammothDecoy, 100.0) --[[and mission_data.Player == mission_data.Mammoth--]] then
+			mission_data.Aud1 = AudioMessage(constants.audio.wasatrap);
+			mission_data.DecoyTriggered = true;
+			state:off("extra_find_decoy_after_real");
+		end
+	end);
+
+hook.Add("Start", "Mission:Start", function ()
+    mission_data.mission_states = stateset.Start("mission")
+		:on("scrap_field_filler_1")
+		:on("scrap_field_filler_2")
+		:on("scrap_field_filler_3")
+		:on("scrap_field_filler_4")
+		:on("scrap_field_filler_5")
+		:on("main_objectives")
+		:on("mammoth_destroyed");
+end);
 
 hook.Add("Update", "Mission:Update", function (dtime, ttime)
 	mission_data.Player = gameobject.GetPlayer();
