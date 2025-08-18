@@ -172,8 +172,6 @@ local mission_data = {
 	Aud1 = 0,
 	DecoyTime = 0,
 	FlashTime = 0,
-
-    general_machines = {},
 }
 
 
@@ -432,20 +430,13 @@ statemachine.Create("main_objectives", {
 	end }
 });
 
-mission_data.general_machines.main_objectives = statemachine.Start("main_objectives");
-mission_data.general_machines.scrap_field_filler_1 = statemachine.Start("scrap_field_filler", nil, { path = "scrpfld11" });
-mission_data.general_machines.scrap_field_filler_2 = statemachine.Start("scrap_field_filler", nil, { path = "scrpfld12" });
-mission_data.general_machines.scrap_field_filler_3 = statemachine.Start("scrap_field_filler", nil, { path = "scrpfld13" });
-mission_data.general_machines.scrap_field_filler_4 = statemachine.Start("scrap_field_filler", nil, { path = "scrpfld14" });
-mission_data.general_machines.scrap_field_filler_5 = statemachine.Start("scrap_field_filler", nil, { path = "scrpfld15" });
-
 stateset.Create("mission")
-	:Add("main_objectives", stateset.WrapStateMachine(mission_data.general_machines.main_objectives))
-	:Add("scrap_field_filler_1", stateset.WrapStateMachine(mission_data.general_machines.scrap_field_filler_1))
-	:Add("scrap_field_filler_2", stateset.WrapStateMachine(mission_data.general_machines.scrap_field_filler_2))
-	:Add("scrap_field_filler_3", stateset.WrapStateMachine(mission_data.general_machines.scrap_field_filler_3))
-	:Add("scrap_field_filler_4", stateset.WrapStateMachine(mission_data.general_machines.scrap_field_filler_4))
-	:Add("scrap_field_filler_5", stateset.WrapStateMachine(mission_data.general_machines.scrap_field_filler_5))
+	:Add("main_objectives", stateset.WrapStateMachine("main_objectives"))
+	:Add("scrap_field_filler_1", stateset.WrapStateMachine("scrap_field_filler", nil, { path = "scrpfld11" }))
+	:Add("scrap_field_filler_2", stateset.WrapStateMachine("scrap_field_filler", nil, { path = "scrpfld12" }))
+	:Add("scrap_field_filler_3", stateset.WrapStateMachine("scrap_field_filler", nil, { path = "scrpfld13" }))
+	:Add("scrap_field_filler_4", stateset.WrapStateMachine("scrap_field_filler", nil, { path = "scrpfld14" }))
+	:Add("scrap_field_filler_5", stateset.WrapStateMachine("scrap_field_filler", nil, { path = "scrpfld15" }))
 	:Add("mammoth_destroyed", function (state)
 		--- @cast state MammothDestroyedState
 		-- Lose Conditions

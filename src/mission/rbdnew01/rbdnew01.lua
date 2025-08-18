@@ -233,8 +233,6 @@ local mission_data = {
     },
     protect_command_tower = false,
     forward_rec_already_dead = false,
-
-    general_machines = {},
 };
 
 --- Dummy function that, if it somehow returned true, would cause the tutorial like build sequence
@@ -477,13 +475,13 @@ statemachine.Create("main_objectives", {
         apc:Follow(tug);
 
         -- attach values to the StateMachineIter so it can use them
-        if not mission_data.general_machines.tug_relic_convoy then
+        if not mission_data.mission_states.machines.tug_relic_convoy then
             -- this table will be converted into a StateMachineIter when it first runs
-            mission_data.general_machines.tug_relic_convoy = {};
+            mission_data.mission_states.machines.tug_relic_convoy = {};
         end
-        mission_data.general_machines.tug_relic_convoy.tug = tug;
-        mission_data.general_machines.tug_relic_convoy.apc = apc;
-        mission_data.general_machines.tug_relic_convoy.relic = mission_data.key_objects.relic;
+        mission_data.mission_states.machines.tug_relic_convoy.tug = tug;
+        mission_data.mission_states.machines.tug_relic_convoy.apc = apc;
+        mission_data.mission_states.machines.tug_relic_convoy.relic = mission_data.key_objects.relic;
         mission_data.mission_states:on("tug_relic_convoy");
 
         --Pickup(tug,globals.relic); -- this seems redundant
@@ -814,14 +812,8 @@ statemachine.Create("main_objectives", {
     end
 });
 
-mission_data.general_machines.main_objectives = statemachine.Start("main_objectives");
-mission_data.general_machines.lose_recy = statemachine.Start("lose_recy");
-mission_data.general_machines.lose_command_tower = statemachine.Start("lose_command_tower");
-mission_data.general_machines.delayed_spawn = statemachine.Start("delayed_spawn");
-mission_data.general_machines.tug_relic_convoy = statemachine.Start("tug_relic_convoy");
-
 stateset.Create("mission")
-    :Add("main_objectives", stateset.WrapStateMachine(mission_data.general_machines.main_objectives))
+    :Add("main_objectives", stateset.WrapStateMachine("main_objectives"))
     :Add("destoryNSDF", function (state)
         if( checkDead(mission_data.key_objects.patrol_units) ) then
             local reinforcements = {
@@ -841,8 +833,8 @@ stateset.Create("mission")
             state:off("destoryNSDF");
         end
     end)
-    :Add("lose_recy", stateset.WrapStateMachine(mission_data.general_machines.lose_recy))
-    :Add("lose_command_tower", stateset.WrapStateMachine(mission_data.general_machines.lose_command_tower))
+    :Add("lose_recy", stateset.WrapStateMachine("lose_recy"))
+    :Add("lose_command_tower", stateset.WrapStateMachine("lose_command_tower"))
     :Add("base_guntower_warn", function (state)
         local player = gameobject.GetPlayer();
         if not player or not player:IsAlive() then
@@ -856,8 +848,8 @@ stateset.Create("mission")
             end
         end
 	end)
-    :Add("delayed_spawn", stateset.WrapStateMachine(mission_data.general_machines.delayed_spawn))
-    :Add("tug_relic_convoy", stateset.WrapStateMachine(mission_data.general_machines.tug_relic_convoy));
+    :Add("delayed_spawn", stateset.WrapStateMachine("delayed_spawn"))
+    :Add("tug_relic_convoy", stateset.WrapStateMachine("tug_relic_convoy"));
 
 hook.Add("Start", "Mission:Start", function ()
     -- Command tower to tap for communications
@@ -957,7 +949,7 @@ require("_cheat_bzrave")
 require("_cheatcode").CreateCode("BZSKIP", "apcann.wav", 0, 0, 255);
 hook.Add("Cheat", "Mission:Cheat", function (cheat)
     if cheat == "BZSKIP" then
-        local machine_state = mission_data.general_machines.main_objectives;
+        local machine_state = mission_data.mission_states.machines.main_objectives;
         --- @cast machine_state StateMachineIter
         machine_state:SecondsHavePassed(); -- clear timer in case we were in one
         camera.End(); -- protected camera exit that won't crash

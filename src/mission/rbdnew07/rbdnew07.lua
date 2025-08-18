@@ -130,8 +130,6 @@ local mission_data = {
     sub_machines = {},
     audio_played = {},
     waveinterval = 140,
-
-    general_machines = {},
 };
 
 --- @class RelicData
@@ -847,11 +845,8 @@ statemachine.Create("distress_ambush_orders", {
     end }
 });
 
-mission_data.general_machines.main_objectives = statemachine.Start("main_objectives");
-mission_data.general_machines.distress = statemachine.Start("distress");
-
 stateset.Create("mission")
-    :Add("main_objectives", stateset.WrapStateMachine(mission_data.general_machines.main_objectives))
+    :Add("main_objectives", stateset.WrapStateMachine("main_objectives"))
 
     :Add("loseTug", function (state)
         if not mission_data.key_objects.tug:IsAlive() then
@@ -876,7 +871,7 @@ stateset.Create("mission")
         end
     end)
 
-    :Add("distress", stateset.WrapStateMachine(mission_data.general_machines.distress))
+    :Add("distress", stateset.WrapStateMachine("distress"))
 
 statemachine.Create("distress", {
     function (state)

@@ -135,8 +135,6 @@ local mission_data = {
     prior_dead = nil,
     grigg_start_evac = false,
     grigg_audio_waits = { 60, 30, 30},
-    
-    general_machines = {},
 };
 
 local function countDead(handles, team)
@@ -562,16 +560,11 @@ statemachine.Create("grigg_voice", {
     end,
 })
 
-mission_data.general_machines.main_objectives = statemachine.Start("main_objectives");
-mission_data.general_machines.avoidBase = statemachine.Start("avoidBase");
-mission_data.general_machines.grigg = statemachine.Start("grigg");
-mission_data.general_machines.grigg_voice = statemachine.Start("grigg_voice");
-
 stateset.Create("mission")
-    :Add("main_objectives", stateset.WrapStateMachine(mission_data.general_machines.main_objectives))
-    :Add("avoidBase", stateset.WrapStateMachine(mission_data.general_machines.avoidBase))
-    :Add("grigg", stateset.WrapStateMachine(mission_data.general_machines.grigg))
-    :Add("grigg_voice", stateset.WrapStateMachine(mission_data.general_machines.grigg_voice))
+    :Add("main_objectives", stateset.WrapStateMachine("main_objectives"))
+    :Add("avoidBase", stateset.WrapStateMachine("avoidBase"))
+    :Add("grigg", stateset.WrapStateMachine("grigg"))
+    :Add("grigg_voice", stateset.WrapStateMachine("grigg_voice"))
     :Add("grigg_dead", function(state, name)
         if not mission_data.key_objects.grigg or not mission_data.key_objects.grigg:IsAlive() then
             FailMission(GetTime()+5.0, constants.debriefing.rbd08l05);
