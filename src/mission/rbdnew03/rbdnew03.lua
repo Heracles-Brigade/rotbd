@@ -51,6 +51,7 @@
 --- Several tugs and APCs travelling between the Mammoth site and various outposts around the map
 ---
 --- Issues (Remove these are they are fixed and move relevent information into Notes)
+--- * Ensure player's pilot is correct pilot
 --- The detection by the satellite towers is really slow, consider changes to this process to either be shorter or involve a "noticed" concept
 --- The range on the first objective to investigate the mammoth has been reduced so it no longer trips while the mamoth is still outside of vis-range, but this still feels wrong.  Maybe the tug should need to actually approach the mammoth to see the shield and/or need to tug materials to the base to justify its presence?
 --- For some reason they player has 100 sniper shots.  This doesn't make sense, especially since using it will lose the mission.

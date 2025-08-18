@@ -31,6 +31,7 @@
 --- Following the mission Shaw is able to use the connection to CCA communications to listen in on communication between the CCA and the NSDF scientists. He concludes that, having been indoctrinated to the communist cause, the Scientists were working with the CCA voluntarily on weapons research using an ancient Cthonian armory. Evidence found within the research building itself indicate that developments made were being passed to Mars to be put into practice. Cobra One and his forces are deployed to investigate.
 ---
 --- Issues and Possible Changes
+--- * Ensure player's pilot is correct pilot
 --- * The tapped communications could allow for interspersed interceptions and information. Consider this.
 --- * The BDog Communication Tower and Barracks are currently the TRO models, look at making sure Shaw's are the NSDF based ones
 --- * The relic nav being in the relic is rather goofy

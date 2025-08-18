@@ -30,6 +30,7 @@
 --- Leaving relic too early results in mission failure
 --- 
 --- Issues
+--- * Ensure player's pilot is correct pilot
 --- * Objective stuck after destroying relic, check if fixed
 --- * Constructor is given to player but not able to be ordered (factory was already destroyed in my test)
 --- * Constructor can't build lpower, only spower, might need to swawp it (fixed autobuilder by type override)

@@ -26,6 +26,9 @@
 --- Notes
 --- Fury units to be Isis Vanguard fliers.
 --- Fury attacks come in waves; allows player to choose to attack during or between waves.
+--- 
+--- Issues
+--- * Ensure player's pilot is correct pilot
 
 local logger = require("_logger");
 

@@ -28,6 +28,7 @@
 --- With the schematics and prototype in-hand the Black Dogs begin work to reproduce the tank in hope of deploying it against the CCA in the near future. Analysis of notes from its construction indicate that the Mammoth technology is built on is derived from a Hadean craft called a Stymphalian Bird. Included is a list of coordinates where the Coalition has been hoping to find one, but so far they've turned up empty. The Black Dogs resolve to use the list to find one before the Coalition.
 --- 
 --- Issues
+--- * Ensure player's pilot is correct pilot
 --- * Decoy sequence might need to be expanded into more states/vox to run smoothly with timing
 
 local logger = require("_logger");

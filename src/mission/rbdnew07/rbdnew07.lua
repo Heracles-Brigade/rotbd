@@ -25,6 +25,9 @@
 --- 
 --- Notes
 --- Ambush force varies depending on which relic is retrieved first; CCA if west relic, NSDF if east relic.
+--- 
+--- Issues
+--- * Ensure player's pilot is correct pilot
 
 local logger = require("_logger");
 

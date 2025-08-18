@@ -23,6 +23,9 @@
 --- 
 --- Notes
 --- Big base to be placed in middle of map, player is to avoid this
+--- 
+--- Issues
+--- * Ensure player's pilot is correct pilot
 
 local logger = require("_logger");
 

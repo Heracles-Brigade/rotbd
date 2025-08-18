@@ -29,6 +29,9 @@
 --- Mammoth occupies offensive slot, can be piloted if desired
 --- Fully formed and defended bases present; NSDF in south-east, CCA in south-west
 --- Constructor outside player's control already ordered to build launch pad, progress slow
+--- 
+--- Issues
+--- * Ensure player's pilot is correct pilot
 
 local logger = require("_logger");
 
