@@ -77,11 +77,11 @@ require("_table_show");
 --- @field rbd10w01 string -- Success
 
 --- @class RBD10_Constants
---- @field audio RBD10_Constants_Audio
---- @field objectives RBD10_Constants_Objectives
---- @field debriefing RBD10_Constants_Debriefing
-local constants = {
-    audio = {
+--- @field AUDIO RBD10_Constants_Audio
+--- @field OBJECTIVES RBD10_Constants_Objectives
+--- @field DEBRIEFING RBD10_Constants_Debriefing
+local CONSTANTS = {
+    AUDIO = {
         intro = "rbd1001.wav",
         furies = "rbd1002.wav",
         evacuate = "rbd1003.wav",
@@ -101,12 +101,12 @@ local constants = {
         -- GRIG: Got ‘em!
         -- GRIG: One down!
     },
-    objectives = {
+    OBJECTIVES = {
         rbd1001 = "rbd1001.otf", -- Order the constructor to the construction site when you are ready.
         rbd1002 = "rbd1002.otf", -- Defend the constructor while the dropship is built!
         rbd1003 = "rbd1003.otf" -- Escort the transports to the dropship.
     },
-    debriefing = {
+    DEBRIEFING = {
         lpad = "rbd10l01.des", -- Without that dropship, we're stuck here. There's no way we'll have the time to build a new one.
         const = "rbd10l02.des", -- Without that constructor, we can't build the dropship. We're stuck here.
         transports = "rbd10l04.des", -- You allowed a transport to be destroyed.
@@ -241,8 +241,8 @@ statemachine.Create("main_objectives", {
         --- @cast state MainObjectives10_state
         --state.subscriptions = {};
 
-        AudioMessage(constants.audio.intro);
-        objective.AddObjective(constants.objectives.rbd1001);
+        AudioMessage(CONSTANTS.AUDIO.intro);
+        objective.AddObjective(CONSTANTS.OBJECTIVES.rbd1001);
         --state:startTask("order_to_build");
         state.building = false;
         state.wave_timer = 0;
@@ -301,7 +301,7 @@ statemachine.Create("main_objectives", {
             mission_data.order_to_build = true;
 
             --self:startTask("build_lpad");
-            objective.AddObjective(constants.objectives.rbd1002);
+            objective.AddObjective(CONSTANTS.OBJECTIVES.rbd1002);
             --local btime = misc.odfFile("ablpadx"):getFloat("GameObjectClass","buildTime");
             local btime = paramdb.GetBuildTime("ablpadx");
             --self.factory_timer = math.min(self.factory_timer,btime);
@@ -312,13 +312,13 @@ statemachine.Create("main_objectives", {
             --self:startTask("factory_spawn");
             mission_data.mission_states:on("wave_spawner");
             mission_data.mission_states:on("factory_spawn");
-            objective.RemoveObjective(constants.objectives.rbd1001);
+            objective.RemoveObjective(CONSTANTS.OBJECTIVES.rbd1001);
             --state:next();
             --return;
         elseif state.building and not mission_data.key_objects.const:IsAlive() then
             --state:taskFail("order_to_build");
             --self:fail("const");
-            FailMission(GetTime() + 5.0, constants.debriefing.const);
+            FailMission(GetTime() + 5.0, CONSTANTS.DEBRIEFING.const);
             state:switch(nil);
             return;
         end
@@ -326,7 +326,7 @@ statemachine.Create("main_objectives", {
 
         --if self:hasTasksSucceeded("build_lpad","order_to_build","factory_spawn") then
         if mission_data.key_objects.lpad and mission_data.order_to_build and mission_data.factory_spawn then
-            objective.UpdateObjective(constants.objectives.rbd1002, "GREEN");
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.rbd1002, "GREEN");
             --self:success();
             --mission.Objective:Start("defend_and_escort",self.lpad,OOP.copyTable(mission_data.key_objects.enemy_units),mission_data.wave_controllers);
             state:next();
@@ -354,7 +354,7 @@ statemachine.Create("main_objectives", {
         mission_data.key_objects.furies = {};
         --state:startTask("build_transports");
         state:next();
-        AudioMessage(constants.audio.evacuate);
+        AudioMessage(CONSTANTS.AUDIO.evacuate);
     end },
     { "defend_and_escort.build_transports", function(state)
         --function(self,launchpad,enemy_units,wave_controllers)
@@ -382,8 +382,8 @@ statemachine.Create("main_objectives", {
             if not gameobject.GetFactory():IsAlive() then
                 --self:taskFail("build_transports","factory");
                 --self:fail("factory");
-                objective.UpdateObjective(constants.objectives.rbd1003,"RED");
-                FailMission(GetTime()+5.0,constants.debriefing.factory);
+                objective.UpdateObjective(CONSTANTS.OBJECTIVES.rbd1003,"RED");
+                FailMission(GetTime()+5.0,CONSTANTS.DEBRIEFING.factory);
                 state:switch(nil);
             end
         end
@@ -393,7 +393,7 @@ statemachine.Create("main_objectives", {
         for i, v in pairs(mission_data.key_objects.furies) do
             v:Attack(utility.ChooseOne(unpack(mission_data.key_objects.transports)));
         end
-        objective.AddObjective(constants.objectives.rbd1003);
+        objective.AddObjective(CONSTANTS.OBJECTIVES.rbd1003);
         for i, v in ipairs(mission_data.key_objects.transports) do
             v:Goto(mission_data.key_objects.lpad);
         end
@@ -409,10 +409,10 @@ statemachine.Create("main_objectives", {
         if #mission_data.key_objects.transports <= 0 then
             mission_data.mission_states:off("transports_alive", true); -- no more transports to track
             --self:taskSucceed("escort_transports");
-            objective.UpdateObjective(constants.objectives.rbd1003,"GREEN");
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.rbd1003,"GREEN");
             --self:success();
-            AudioMessage(constants.audio.shaw);
-            SucceedMission(GetTime()+10.0,constants.debriefing.rbd10w01);
+            AudioMessage(CONSTANTS.AUDIO.shaw);
+            SucceedMission(GetTime()+10.0,CONSTANTS.DEBRIEFING.rbd10w01);
             state:switch(nil);
         end
     end },
@@ -450,7 +450,7 @@ statemachine.Create("factory_spawn", {
     end },
     { "alive_monitor", function(state)
         if not gameobject.GetFactory():IsAlive() then
-            FailMission(GetTime()+5.0,constants.debriefing.factory);
+            FailMission(GetTime()+5.0,CONSTANTS.DEBRIEFING.factory);
             state:switch(nil);
         end
     end },
@@ -630,22 +630,22 @@ stateset.Create("mission")
     :Add("protectRecycler", function(state, name)
         local playerRecycler = gameobject.GetRecycler();
         if not playerRecycler or not playerRecycler:IsAlive() then
-            FailMission(GetTime()+5.0,constants.debriefing.recycler);
+            FailMission(GetTime()+5.0,CONSTANTS.DEBRIEFING.recycler);
             state:off(name, true);
         end
     end)
     :Add("protectConstructor", function(state, name)
         local playerCons = gameobject.GetConstructor();
         if not playerCons or not playerCons:IsAlive() then
-            objective.UpdateObjective(constants.objectives.rbd1002, "RED");
-            FailMission(GetTime()+5.0,constants.debriefing.const);
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.rbd1002, "RED");
+            FailMission(GetTime()+5.0,CONSTANTS.DEBRIEFING.const);
             state:off(name, true);
         end
     end)
     :Add("protectLPad", function(state, name)
         if not mission_data.key_objects.lpad:IsAlive() then
-            objective.UpdateObjective(constants.objectives.rbd1003,"RED");
-            FailMission(GetTime()+5.0,constants.debriefing.lpad);
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.rbd1003,"RED");
+            FailMission(GetTime()+5.0,CONSTANTS.DEBRIEFING.lpad);
             state:off(name, true);
         end
     end)
@@ -655,8 +655,8 @@ stateset.Create("mission")
 
         for i, v in pairs(mission_data.key_objects.transports) do
             if not v:IsAlive() then
-                objective.UpdateObjective(constants.objectives.rbd1003,"RED");
-                FailMission(GetTime()+5.0,constants.debriefing.transports);
+                objective.UpdateObjective(CONSTANTS.OBJECTIVES.rbd1003,"RED");
+                FailMission(GetTime()+5.0,CONSTANTS.DEBRIEFING.transports);
                 state:off(name, true);
             end
         end

@@ -48,70 +48,70 @@ local patrol = require("_patrol");
 local camera = require("_camera");
 
 --- @class RBD08_Constants_Audio
---- @field intro string
---- @field grigg_updates string[]
---- @field tower string[]
---- @field evacuate string
---- @field timer_out string
---- @field timer_out_loss string
---- @field one_minute string
---- @field too_close_loss string
+--- @field INTRO string
+--- @field GRIGG_UPDATES string[]
+--- @field TOWER string[]
+--- @field EVACUATE string
+--- @field TIMER_OUT string
+--- @field TIMER_OUT_LOSS string
+--- @field ONE_MINUTE string
+--- @field TOO_CLOSE_LOSS string
 
 --- @class RBD08_Constants_Objectives
---- @field rbd0801 string
---- @field rbd0803 string
---- @field rbd0804 string
+--- @field DESTROY_COMM_TOWERS string
+--- @field RENDEZVOUS_GRIGGS string
+--- @field DO_NOT_BASE string
 
 --- @class RBD08_Constants_Debriefing
---- @field rbd08l01 string
---- @field rbd08l02 string
---- @field rbd08l05 string
---- @field rbd08w01 string
---- @field rbd08w02 string
+--- @field LOSS_TOO_CLOSE string
+--- @field LOSS_MORE_THAN_ONE_LEFT string
+--- @field LOSS_GRIGGS_KILLED string
+--- @field WIN string
+--- @field WIN_EXTRA_LORE string
 
 --- @class RBD08_Constants
---- @field audio RBD08_Constants_Audio
---- @field objectives RBD08_Constants_Objectives
---- @field debriefing RBD08_Constants_Debriefing
-local constants = {
-    audio = {
-        intro = "rbd0801.wav", -- intro audio message
+--- @field AUDIO RBD08_Constants_Audio
+--- @field OBJECTIVES RBD08_Constants_Objectives
+--- @field DEBRIEFING RBD08_Constants_Debriefing
+local CONSTANTS = {
+    AUDIO = {
+        INTRO = "rbd0801.wav", -- intro audio message
  
         --(Grigg's updates, interspersed throughout)
-        grigg_updates = {
+        GRIGG_UPDATES = {
             "rbdnew0820.wav", -- WOW huge relics!
             "rbdnew0821.wav", -- I got papers but nothin' else~
             "rbdnew0822.wav" -- Got it!
         },
 
-        tower = {
+        TOWER = {
             "rbd0802.wav", -- after tower 1 is down -- Okay Cobra One, I'm going in!
             "rbd0803.wav", -- after tower 2 is down -- One to go
         },
         --going_in = "rbd0804.wav", replaced by rbd0802.wav
-        evacuate = "rbd0805.wav", -- Data retrieved! I'm outta here!
-        timer_out = "rbd0806.wav", -- Cobra One, where are you? We're nearly out of time!
-        timer_out_loss = "rbd0802L.wav", -- That's it, we're too late. There's no way we're getting that data now.
-        one_minute = "rbd0807.wav", -- Don't worry about the countdown, Cobra One, just hit that last tower!
-        too_close_loss = "rbd0801L.wav", -- Shaw abandons Cobra One 'cause he got too close to the base
+        EVACUATE = "rbd0805.wav", -- Data retrieved! I'm outta here!
+        TIMER_OUT = "rbd0806.wav", -- Cobra One, where are you? We're nearly out of time!
+        TIMER_OUT_LOSS = "rbd0802L.wav", -- That's it, we're too late. There's no way we're getting that data now.
+        ONE_MINUTE = "rbd0807.wav", -- Don't worry about the countdown, Cobra One, just hit that last tower!
+        TOO_CLOSE_LOSS = "rbd0801L.wav", -- Shaw abandons Cobra One 'cause he got too close to the base
 
         -- missing vox?  need to play it at end
         rbd0808 = "rbd0808.wav", -- good work
     },
-    objectives = {
-        rbd0801 = "rbd0801.otf", -- Destroy perimeter comm towers.
+    OBJECTIVES = {
+        DESTROY_COMM_TOWERS = "rbd0801.otf", -- Destroy perimeter comm towers.
         --rbd0801i = "rbd0801i.otf", -- Transmission commencing...
         --rbd0802 = "rbd0802.otf", -- Engage perimeter forces.
         --rbd0802i = "rbd0802i.otf", -- Transmission complete.
-        rbd0803 = "rbd0803.otf", -- Rendezvous with Private Griggs at the Pickup Zone.
-        rbd0804 = "rbd0804.otf", -- Do not engage the enemy base!
+        RENDEZVOUS_GRIGGS = "rbd0803.otf", -- Rendezvous with Private Griggs at the Pickup Zone.
+        DO_NOT_BASE = "rbd0804.otf", -- Do not engage the enemy base!
     },
-    debriefing = {
-        rbd08l01 = "rbd08l01.des", -- Too close to base (lore dump hints)
-        rbd08l02 = "rbd08l02.des", -- More than 1 com tower left at timeout (no file, requesting text?)
-        rbd08l05 = "rbd08l05.des", -- Private Grigg was killed. (not in script docs)
-        rbd08w01 = "rbd08w01.des", -- Win
-        rbd08w02 = "rbd08w02.des", -- Win but time out (extra lore hints!)
+    DEBRIEFING = {
+        LOSS_TOO_CLOSE = "rbd08l01.des", -- Too close to base (lore dump hints)
+        LOSS_MORE_THAN_ONE_LEFT = "rbd08l02.des", -- More than 1 com tower left at timeout (no file, requesting text?)
+        LOSS_GRIGGS_KILLED = "rbd08l05.des", -- Private Grigg was killed. (not in script docs)
+        WIN = "rbd08w01.des", -- Win
+        WIN_EXTRA_LORE = "rbd08w02.des", -- Win but time out (extra lore hints!)
     }
 };
 
@@ -182,7 +182,7 @@ statemachine.Create("main_objectives", {
         camera.Start();
         --self:startTask("focus_comm1");
         --self:startTask("build_howiz");
-        AudioMessage(constants.audio.intro);
+        AudioMessage(CONSTANTS.AUDIO.INTRO);
         state:next();
         return statemachine.FastResult();
     end },
@@ -264,7 +264,7 @@ statemachine.Create("main_objectives", {
     { "destroyComms.destroyComms.start", function(state)
         --- @cast state MainObjectives08_state
         mission_data.timerOut = false;
-        objective.AddObjective(constants.objectives.rbd0801);
+        objective.AddObjective(CONSTANTS.OBJECTIVES.DESTROY_COMM_TOWERS);
         mission_data.mission_states:on("grigg");
         state:next();
         return statemachine.FastResult();
@@ -274,8 +274,8 @@ statemachine.Create("main_objectives", {
         local dead = countDead(mission_data.key_objects.powers);
         if dead ~= mission_data.prior_dead then
             state.nextAudio = state.nextAudio + 1;
-            if constants.audio.tower[state.nextAudio] then
-                AudioMessage(constants.audio.tower[state.nextAudio]);
+            if CONSTANTS.AUDIO.TOWER[state.nextAudio] then
+                AudioMessage(CONSTANTS.AUDIO.TOWER[state.nextAudio]);
             end
             mission_data.prior_dead = dead;
 
@@ -296,13 +296,13 @@ statemachine.Create("main_objectives", {
             mission_data.timerOut = true;
             if countAlive(mission_data.key_objects.powers) > 1 then
                 --self:taskFail("destroyComms");
-                objective.UpdateObjective(constants.objectives.rbd0801, "RED");
-                FailMission(GetTime()+5.0,constants.debriefing.rbd08l02);
+                objective.UpdateObjective(CONSTANTS.OBJECTIVES.DESTROY_COMM_TOWERS, "RED");
+                FailMission(GetTime()+5.0,CONSTANTS.DEBRIEFING.LOSS_MORE_THAN_ONE_LEFT);
                 state:switch(nil);
                 return;
             else -- One tower left when time runs out, player does not fail
                 -- Play audio message
-                AudioMessage(constants.audio.timer_out);
+                AudioMessage(CONSTANTS.AUDIO.TIMER_OUT);
                 --self:startTask("startEvac");
                 state:next();
                 return;
@@ -313,7 +313,7 @@ statemachine.Create("main_objectives", {
         --- @cast state MainObjectives08_state
         StopCockpitTimer();
         HideCockpitTimer();
-        objective.UpdateObjective(constants.objectives.rbd0801, "GREEN");
+        objective.UpdateObjective(CONSTANTS.OBJECTIVES.DESTROY_COMM_TOWERS, "GREEN");
         --mission.AudioManager:Stop(self.grigg_id);
  
         mission_data.mission_states
@@ -341,8 +341,8 @@ statemachine.Create("main_objectives", {
     statemachine.SleepSeconds(5),
     { "evac.evacuate.start", function(state)
         --- @cast state MainObjectives08_state
-        AudioMessage(constants.audio.evacuate);
-        objective.AddObjective(constants.objectives.rbd0803);
+        AudioMessage(CONSTANTS.AUDIO.EVACUATE);
+        objective.AddObjective(CONSTANTS.OBJECTIVES.RENDEZVOUS_GRIGGS);
 
         --local s = mission.TaskManager:sequencer(mission_data.key_objects.grigg);
         --s:clear();
@@ -362,11 +362,11 @@ statemachine.Create("main_objectives", {
     end },
     { "evac.evacuate.success", function(state)
         --- @cast state MainObjectives08_state
-        objective.UpdateObjective(constants.objectives.rbd0803,"GREEN");
+        objective.UpdateObjective(CONSTANTS.OBJECTIVES.RENDEZVOUS_GRIGGS,"GREEN");
         if(mission_data.timerOut) then
-            SucceedMission(GetTime() + 5.0, constants.debriefing.rbd08w02);
+            SucceedMission(GetTime() + 5.0, CONSTANTS.DEBRIEFING.WIN_EXTRA_LORE);
         else
-            SucceedMission(GetTime() + 5.0, constants.debriefing.rbd08w01);
+            SucceedMission(GetTime() + 5.0, CONSTANTS.DEBRIEFING.WIN);
         end
         state:switch(nil);
     end },
@@ -495,7 +495,7 @@ statemachine.Create("grigg", {
 statemachine.Create("avoidBase", {
     { "start", function(state)
         --- @cast state AvoidBase08_state
-        objective.AddObjective(constants.objectives.rbd0804);
+        objective.AddObjective(CONSTANTS.OBJECTIVES.DO_NOT_BASE);
         state.warning = false;
         state:next();
     end },
@@ -506,18 +506,18 @@ statemachine.Create("avoidBase", {
         if not state.warning and d < l then
             --self:taskFail("warning");
             state.warning = true;
-            objective.UpdateObjective(constants.objectives.rbd0804,"YELLOW");
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.DO_NOT_BASE,"YELLOW");
         elseif state.warning and d > l then
             --self:taskReset("warning");
             state.warning = false;
-            objective.UpdateObjective(constants.objectives.rbd0804,"WHITE");
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.DO_NOT_BASE,"WHITE");
         end
 
         local d2 = gameobject.GetPlayer():GetDistance("base");
         local l2 = Length(GetPosition("base",1) - GetPosition("base", 0));
         if d2 < l2 then
-            objective.UpdateObjective(constants.objectives.rbd0804,"RED");
-            FailMission(GetTime() + 5.0, constants.debriefing.rbd08l01);
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.DO_NOT_BASE,"RED");
+            FailMission(GetTime() + 5.0, CONSTANTS.DEBRIEFING.LOSS_TOO_CLOSE);
             state:switch(nil);
         end
     end }
@@ -529,7 +529,7 @@ statemachine.Create("grigg_voice", {
     function(state)
         --- @cast state GriggVoice08_state
         if state:SecondsHavePassed(mission_data.grigg_audio_waits[1]) then
-            state.audio = AudioMessage(constants.audio.grigg_updates[1]);
+            state.audio = AudioMessage(CONSTANTS.AUDIO.GRIGG_UPDATES[1]);
             state:next();
         end
     end,
@@ -543,7 +543,7 @@ statemachine.Create("grigg_voice", {
     function(state)
         --- @cast state GriggVoice08_state
         if state:SecondsHavePassed(mission_data.grigg_audio_waits[2]) then
-            state.audio = AudioMessage(constants.audio.grigg_updates[2]);
+            state.audio = AudioMessage(CONSTANTS.AUDIO.GRIGG_UPDATES[2]);
             state:next();
         end
     end,
@@ -557,7 +557,7 @@ statemachine.Create("grigg_voice", {
     function(state)
         --- @cast state GriggVoice08_state
         if state:SecondsHavePassed(mission_data.grigg_audio_waits[3]) then
-            state.audio = AudioMessage(constants.audio.grigg_updates[3]);
+            state.audio = AudioMessage(CONSTANTS.AUDIO.GRIGG_UPDATES[3]);
             state:next();
         end
     end,
@@ -570,7 +570,7 @@ stateset.Create("mission")
     :Add("grigg_voice", stateset.WrapStateMachine("grigg_voice"))
     :Add("grigg_dead", function(state, name)
         if not mission_data.key_objects.grigg or not mission_data.key_objects.grigg:IsAlive() then
-            FailMission(GetTime()+5.0, constants.debriefing.rbd08l05);
+            FailMission(GetTime()+5.0, CONSTANTS.DEBRIEFING.LOSS_GRIGGS_KILLED);
             state:off(name);
         end
     end)

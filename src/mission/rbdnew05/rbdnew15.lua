@@ -80,86 +80,86 @@ navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToG
 --tracker.setFilterClass("turrettank"); -- track turrettanks
 
 --- @class RBD05_Constants_Audio
---- @field intro string -- Intro
---- @field inspect string -- Inspecting Relic
---- @field destroy_f string -- Relic Won't Die
---- @field done_d string -- Done, get back to base!
---- @field back_to_base string -- Back at base
---- @field apc_spawn string -- Base being overrun, APCs spawned
---- @field pickup_done string -- Pickup done, escort the APCs to alt dustoff
---- @field win string -- Good work, mission complete
+--- @field INTRO string -- Intro
+--- @field INSPECT string -- Inspecting Relic
+--- @field DESTROY_F string -- Relic Won't Die
+--- @field DONE_D string -- Done, get back to base!
+--- @field BACK_TO_BASE string -- Back at base
+--- @field APC_SPAWN string -- Base being overrun, APCs spawned
+--- @field PICKUP_DONE string -- Pickup done, escort the APCs to alt dustoff
+--- @field WIN string -- Good work, mission complete
 
 --- @class RBD05_Constants_Labels
---- @field geysers string[]
+--- @field GEYSERS string[]
 
 --- @class RBD05_Constants_Objectives
---- @field Rendezvous string -- Rendezvous with Shaw's base
---- @field WaitForUnits string -- Wait for units to be produced.
---- @field InvestigateRelic string -- Investigate relic site. Use <I> to inspect any relic you find.
---- @field DestroyRelic string -- Destroy the relic!
---- @field DefendRelic string -- Defend the site against any CCA forces. Do not leave the site!
---- @field UplinkConnecting string -- Uplink connecting...
---- @field UplinkTransmitting string -- Connection established! Data transmitting...
---- @field ReturnToBase string -- Return to base!
---- @field UplinkRetry string -- Uplink disconnected. Transmision aborted!
---- @field UplinkRunNuke string -- Transmision complete! Get out of there before it blows!
---- @field EscortAPCsToBase string -- Escort the APC's to the Black Dog command outpost.
---- @field SendAPCsToEvac string -- Send the APC's to the evacuation Rendezvous Point.
---- @field EscortAPCsToEvac string -- Escort and protect the APC's on route to their destination.
---- @field bdmisn2504 string -- Meet up with the two transports.
---- @field rbdnew3502 string -- Destroy the Soviet communications tower, located to the North.
---- @field rbdnew3503 string -- Escort the APC's to the NSDF outpost, to rescue the surviving NSDF personel.
+--- @field RENDEZVOUS string -- Rendezvous with Shaw's base
+--- @field WAIT_FOR_UNITS string -- Wait for units to be produced.
+--- @field INVESTIGATE_RELIC string -- Investigate relic site. Use <I> to inspect any relic you find.
+--- @field DESTROY_RELIC string -- Destroy the relic!
+--- @field DEFEND_RELIC string -- Defend the site against any CCA forces. Do not leave the site!
+--- @field UPLINE_CONNECTING string -- Uplink connecting...
+--- @field UPLINK_TRANSMITTING string -- Connection established! Data transmitting...
+--- @field RETURN_TO_BASE string -- Return to base!
+--- @field UPLINK_RETRY string -- Uplink disconnected. Transmision aborted!
+--- @field UPLINK_RUN_NUKE string -- Transmision complete! Get out of there before it blows!
+--- @field ESCORT_APC_TO_BASE string -- Escort the APC's to the Black Dog command outpost.
+--- @field SEND_APC_TO_EVAC string -- Send the APC's to the evacuation Rendezvous Point.
+--- @field ESCORT_APC_TO_EVAC string -- Escort and protect the APC's on route to their destination.
+--- @field MEET_APCS string -- Meet up with the two transports.
+--- @field DESTROY_SOVIET_COMMS string -- Destroy the Soviet communications tower, located to the North.
+--- @field ESCORD_APC_OUTPOST string -- Escort the APC's to the NSDF outpost, to rescue the surviving NSDF personel.
 
 --- @class RBD05_Constants_Debriefing
---- @field CommandTowerDestroyed string -- Our Command Tower has been destroyed.
---- @field RelicAbandoned string -- You abandoned the relic without completing the examination.
---- @field KilledRescueMen string -- You idiot, those were the men you were ordered to rescue!
---- @field ApcLost string -- The attacking forces have destroyed one of your APCs.
---- @field Success string -- Success
+--- @field LOSS_COMMAND_TOWER_DESTROYED string -- Our Command Tower has been destroyed.
+--- @field LOSS_RELIC_ABANDONED string -- You abandoned the relic without completing the examination.
+--- @field LOSS_KILLED_RESCUED_MEN string -- You idiot, those were the men you were ordered to rescue!
+--- @field LOSS_APC_LOST string -- The attacking forces have destroyed one of your APCs.
+--- @field WIN string -- Success
 
 --- @class RBD05_Constants
---- @field audio RBD05_Constants_Audio
---- @field labels RBD05_Constants_Labels
---- @field objectives RBD05_Constants_Objectives
---- @field debriefing RBD05_Constants_Debriefing
-local constants = {
-    audio = {
-        intro = "rbd0501.wav",
-        inspect = "rbd0502.wav",
-        destroy_f = "rbd0503.wav",
-        done_d = "rbd0504.wav",
-        back_to_base = "rbd0505.wav",
-        apc_spawn = "rbd0506.wav",
-        pickup_done = "rbd0507.wav",
-        win = "rbd0508.wav"
+--- @field AUDIO RBD05_Constants_Audio
+--- @field LABELS RBD05_Constants_Labels
+--- @field OBJECTIVES RBD05_Constants_Objectives
+--- @field DEBRIEFING RBD05_Constants_Debriefing
+local CONSTANTS = {
+    AUDIO = {
+        INTRO = "rbd0501.wav",
+        INSPECT = "rbd0502.wav",
+        DESTROY_F = "rbd0503.wav",
+        DONE_D = "rbd0504.wav",
+        BACK_TO_BASE = "rbd0505.wav",
+        APC_SPAWN = "rbd0506.wav",
+        PICKUP_DONE = "rbd0507.wav",
+        WIN = "rbd0508.wav"
     },
-    labels = {
-        geysers = { "eggeizr10_geyser", "eggeizr11_geyser", "eggeizr12_geyser" },
+    LABELS = {
+        GEYSERS = { "eggeizr10_geyser", "eggeizr11_geyser", "eggeizr12_geyser" },
     },
-    objectives = {
-        Rendezvous = "rbd0521.otf",
-        WaitForUnits = "rbd0522.otf",
-        InvestigateRelic = "rbd0523.otf",
-        DestroyRelic = "rbd0524.otf",
-        DefendRelic = "rbd0525.otf",
-        UplinkConnecting = "rbd0530.otf",
-        UplinkTransmitting = "rbd0531.otf",
-        ReturnToBase = "rbd0532.otf",
-        UplinkRetry = "rbd0533.otf",
-        UplinkRunNuke = "rbd0534.otf",
-        EscortAPCsToBase = "bdmisn2601.otf",
-        SendAPCsToEvac = "bdmisn2602.otf",
-        EscortAPCsToEvac = "bdmisn2603.otf",
-        bdmisn2504 = "bdmisn2504.otf",
-        rbdnew3502 = "rbdnew3502.otf",
-        rbdnew3503 = "rbdnew3503.otf"
+    OBJECTIVES = {
+        RENDEZVOUS = "rbd0521.otf",
+        WAIT_FOR_UNITS = "rbd0522.otf",
+        INVESTIGATE_RELIC = "rbd0523.otf",
+        DESTROY_RELIC = "rbd0524.otf",
+        DEFEND_RELIC = "rbd0525.otf",
+        UPLINE_CONNECTING = "rbd0530.otf",
+        UPLINK_TRANSMITTING = "rbd0531.otf",
+        RETURN_TO_BASE = "rbd0532.otf",
+        UPLINK_RETRY = "rbd0533.otf",
+        UPLINK_RUN_NUKE = "rbd0534.otf",
+        ESCORT_APC_TO_BASE = "bdmisn2601.otf",
+        SEND_APC_TO_EVAC = "bdmisn2602.otf",
+        ESCORT_APC_TO_EVAC = "bdmisn2603.otf",
+        MEET_APCS = "bdmisn2504.otf",
+        DESTROY_SOVIET_COMMS = "rbdnew3502.otf",
+        ESCORD_APC_OUTPOST = "rbdnew3503.otf"
     },
-    debriefing = {
-        CommandTowerDestroyed = "rbdnew15l1.des",
-        RelicAbandoned = "rbdnew15l2.des",
-        KilledRescueMen = "rbdnew15l3.des", -- "bdmisn26l2.des"
-        ApcLost = "rbdnew15l4.des", -- "bdmisn26l1.des"
-        Success = "rbdnew15w.des"  -- "bdmisn26wn.des"
+    DEBRIEFING = {
+        LOSS_COMMAND_TOWER_DESTROYED = "rbdnew15l1.des",
+        LOSS_RELIC_ABANDONED = "rbdnew15l2.des",
+        LOSS_KILLED_RESCUED_MEN = "rbdnew15l3.des", -- "bdmisn26l2.des"
+        LOSS_APC_LOST = "rbdnew15l4.des", -- "bdmisn26l1.des"
+        WIN = "rbdnew15w.des"  -- "bdmisn26wn.des"
     }
 };
 
@@ -417,9 +417,9 @@ statemachine.Create("main_objectives", {
         producer.QueueJob("bvscav", 3);
         producer.QueueJob("bvscav", 3);
         --ProducerAi:queueJob(ProductionJob("bvslfz",3));
-        producer.QueueJob("bvslfz", 3, nil, nil, { name = "_doneProducer", location = constants.labels.geysers[2] });
+        producer.QueueJob("bvslfz", 3, nil, nil, { name = "_doneProducer", location = CONSTANTS.LABELS.GEYSERS[2] });
         --ProducerAi:queueJob(ProductionJob("bvmuf",3));
-        producer.QueueJob("bvmuf", 3, nil, nil, { name = "_doneProducer", location = constants.labels.geysers[3] });
+        producer.QueueJob("bvmuf", 3, nil, nil, { name = "_doneProducer", location = CONSTANTS.LABELS.GEYSERS[3] });
  
         --mission_data.relic_camera_id = ProducerAi:queueJobs(ProductionJob("apcamr",3,"relic_site"));
         producer.QueueJob("apcamr2", 3, "relic_site", TeamSlot.ARMORY, { name = "relic_camera" });
@@ -476,18 +476,18 @@ statemachine.Create("main_objectives", {
         self:next();
       end },
     { "rendezvous__start", function(self)
-        objective.AddObjective(constants.objectives.Rendezvous);
+        objective.AddObjective(CONSTANTS.OBJECTIVES.RENDEZVOUS);
         self:next();
     end },
     { "rendezvous__update", function(self)
         local rec = gameobject.GetRecycler(3);
         if rec and gameobject.GetPlayer():IsWithin(rec, 100) then
-            objective.UpdateObjective(constants.objectives.Rendezvous,"GREEN");
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.RENDEZVOUS,"GREEN");
             self:next();
         end
     end },
     { "wait_for_units__start", function(self)
-        objective.AddObjective(constants.objectives.WaitForUnits);
+        objective.AddObjective(CONSTANTS.OBJECTIVES.WAIT_FOR_UNITS);
         --Make producer create units
         --ProductionJob:createMultiple(count,odf,team)
         --Queue Production Jobs for the player
@@ -516,7 +516,7 @@ statemachine.Create("main_objectives", {
     end },
     statemachine.SleepSeconds(7),
     function(self)
-        objective.UpdateObjective(constants.objectives.WaitForUnits,"GREEN");
+        objective.UpdateObjective(CONSTANTS.OBJECTIVES.WAIT_FOR_UNITS,"GREEN");
         self:next();
     end,
     { "success", function(self)
@@ -526,9 +526,9 @@ statemachine.Create("main_objectives", {
         self:next();
     end },
     { "goto_relic__start", function(self)
-        objective.AddObjective(constants.objectives.InvestigateRelic);
+        objective.AddObjective(CONSTANTS.OBJECTIVES.INVESTIGATE_RELIC);
         mission_data.camera_handle:SetTeamNum(1);
-        AudioMessage(constants.audio.intro);
+        AudioMessage(CONSTANTS.AUDIO.INTRO);
         mission_data.camera_keep_teamed = true;
         self:next();
     end },
@@ -538,7 +538,7 @@ statemachine.Create("main_objectives", {
         end
     end },
     function(self)
-        objective.UpdateObjective(constants.objectives.InvestigateRelic,"GREEN");
+        objective.UpdateObjective(CONSTANTS.OBJECTIVES.INVESTIGATE_RELIC,"GREEN");
         self:next();
     end,
     { "defendRelic", function(self)
@@ -568,7 +568,7 @@ statemachine.Create("main_objectives", {
             local machine = statemachine.Start("cca_relic_attack", nil, { v = v, relic = mission_data.relic });
             table.insert(mission_data.sub_machines, machine);
         end
-        mission_data.msg_inspect =  AudioMessage(constants.audio.inspect);
+        mission_data.msg_inspect =  AudioMessage(CONSTANTS.AUDIO.INSPECT);
         self:next();
     end },
     function (self)
@@ -577,13 +577,13 @@ statemachine.Create("main_objectives", {
         end
     end,
     { "defendRelic.destroy_relic.start", function(self)
-        objective.AddObjective(constants.objectives.DestroyRelic);
+        objective.AddObjective(CONSTANTS.OBJECTIVES.DESTROY_RELIC);
         mission_data.relic:SetTeamNum(2);
         self:next();
     end },
     { "defendRelic.destroy_relic.update", function(self)
         if mission_data.relic:GetMaxHealth() - mission_data.relic:GetCurHealth() >= 1000 then
-            mission_data.destroy_audio = AudioMessage(constants.audio.destroy_f);
+            mission_data.destroy_audio = AudioMessage(CONSTANTS.AUDIO.DESTROY_F);
             local machine = statemachine.Start("defendRelic.cca_attack_base");
             table.insert(mission_data.sub_machines, machine);
             self:next();
@@ -591,13 +591,13 @@ statemachine.Create("main_objectives", {
     end },
     function(self)
         if not mission_data.destroy_audio or IsAudioMessageDone(mission_data.destroy_audio) then
-            objective.UpdateObjective(constants.objectives.DestroyRelic,"RED");
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.DESTROY_RELIC,"RED");
             --self:startTask("nuke");
             self:next();
         end
     end,
     { "defendRelic.nuke.start", function(self)
-        objective.AddObjective(constants.objectives.DefendRelic);
+        objective.AddObjective(CONSTANTS.OBJECTIVES.DEFEND_RELIC);
         mission_data.day_id = producer.QueueJob("apwrckz",3,mission_data.relic);
         --self:call("_setUpProdListeners",mission_data.day_id,"_setDayWrecker");
         mission_data.detect_daywrecker = true;
@@ -622,22 +622,22 @@ statemachine.Create("main_objectives", {
     end },
     { "defendRelic.nuke.update.0", statemachine.SleepSeconds(5) },
     { "defendRelic.nuke.update.0.next", function(self)
-        objective.AddObjective(constants.objectives.UplinkConnecting);
+        objective.AddObjective(CONSTANTS.OBJECTIVES.UPLINE_CONNECTING);
         self:next();
     end },
     { "defendRelic.nuke.update.1", statemachine.SleepSeconds(2) },
     { "defendRelic.nuke.update.1.next", function(self)
-        objective.RemoveObjective(constants.objectives.UplinkConnecting);
-        objective.AddObjective(constants.objectives.UplinkTransmitting);
+        objective.RemoveObjective(CONSTANTS.OBJECTIVES.UPLINE_CONNECTING);
+        objective.AddObjective(CONSTANTS.OBJECTIVES.UPLINK_TRANSMITTING);
         self:next();
     end },
     { "defendRelic.nuke.update.3", function(self)
         if mission_data.daywrecker and Length(mission_data.daywrecker:GetPosition() - mission_data.relic:GetPosition()) < 100 then
-            objective.RemoveObjective(constants.objectives.UplinkConnecting);
-            objective.RemoveObjective(constants.objectives.UplinkTransmitting);
-            objective.RemoveObjective(constants.objectives.DefendRelic);
-            objective.AddObjective(constants.objectives.UplinkRunNuke,"GREEN");
-            AudioMessage(constants.audio.done_d);
+            objective.RemoveObjective(CONSTANTS.OBJECTIVES.UPLINE_CONNECTING);
+            objective.RemoveObjective(CONSTANTS.OBJECTIVES.UPLINK_TRANSMITTING);
+            objective.RemoveObjective(CONSTANTS.OBJECTIVES.DEFEND_RELIC);
+            objective.AddObjective(CONSTANTS.OBJECTIVES.UPLINK_RUN_NUKE,"GREEN");
+            AudioMessage(CONSTANTS.AUDIO.DONE_D);
             mission_data.mission_states:off("relic_leave_too_early_fail");
             mission_data.mission_states:off("RelicSiteNavReplacer");
             self:next();
@@ -656,7 +656,7 @@ statemachine.Create("main_objectives", {
         if mission_data.relic and mission_data.relic:IsValid() then
             mission_data.relic:RemoveObject(); -- how the hell are you still here, go away!
         end
-        objective.AddObjective(constants.objectives.ReturnToBase);
+        objective.AddObjective(CONSTANTS.OBJECTIVES.RETURN_TO_BASE);
         self:next();
     end },
     { "rtbAssumeControl.update.fix_base", function(self)
@@ -687,7 +687,7 @@ statemachine.Create("main_objectives", {
     end,
     statemachine.SleepSeconds(5),
     { "rtbAssumeControl.success", function(self)
-        AudioMessage(constants.audio.back_to_base);
+        AudioMessage(CONSTANTS.AUDIO.BACK_TO_BASE);
         SetMaxScrap(1,50);
         SetScrap(1,30);
         for v in gameobject.ObjectsInRange(500,"bdog_base") do
@@ -704,7 +704,7 @@ statemachine.Create("main_objectives", {
     end },
     { "destorySovietComm", function(self)
         mission_data.scomm = gameobject.GetGameObject("sovietcomm");
-        objective.AddObjective(constants.objectives.rbdnew3502);
+        objective.AddObjective(CONSTANTS.OBJECTIVES.DESTROY_SOVIET_COMMS);
         mission_data.spawnDef = false;
         mission_data.scc = false;
         mission_data.t1 = 30;
@@ -729,7 +729,7 @@ statemachine.Create("main_objectives", {
     end },
     { "destorySovietComm.update.scc", function(self)
         if not mission_data.scomm or not mission_data.scomm:IsAlive() then
-            objective.UpdateObjective(constants.objectives.rbdnew3502,"GREEN");
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.DESTROY_SOVIET_COMMS,"GREEN");
             mission_data.scc = true;
             self:next();
         end
@@ -882,8 +882,8 @@ statemachine.Create("main_objectives", {
 
         --miss26setup();
         --Spawns inital objects
-        AudioMessage(constants.audio.apc_spawn);
-        objective.RemoveObjective(constants.objectives.rbdnew3502);
+        AudioMessage(CONSTANTS.AUDIO.APC_SPAWN);
+        objective.RemoveObjective(CONSTANTS.OBJECTIVES.DESTROY_SOVIET_COMMS);
         spawnAtPath("proxminb",2,"spawn_prox");
         spawnAtPath("svfigh",2,"26spawn_figh");
         spawnAtPath("svrckt",2,"26spawn_rock");
@@ -908,21 +908,21 @@ statemachine.Create("main_objectives", {
         -- init
         mission_data.apcs = {gameobject.GetGameObject("apc1"),gameobject.GetGameObject("apc2")};
         -- start
-        objective.AddObjective(constants.objectives.bdmisn2504,"WHITE");
+        objective.AddObjective(CONSTANTS.OBJECTIVES.MEET_APCS,"WHITE");
         --- @todo why does the mission talk about NSDF after this?
         self:next();
     end },
     { "apcMeetup.update", function(self)
         if(checkAnyDead(mission_data.apcs)) then
             --self:fail();
-            objective.UpdateObjective(constants.objectives.bdmisn2504,"RED");
-            FailMission(GetTime()+5.0,constants.debriefing.ApcLost);
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.MEET_APCS,"RED");
+            FailMission(GetTime()+5.0,CONSTANTS.DEBRIEFING.LOSS_APC_LOST);
             self:switch(nil);
             return;
         end
         if(gameobject.GetPlayer():GetDistance(mission_data.apcs[1]) < 50) then
             --self:success();
-            objective.UpdateObjective(constants.objectives.bdmisn2504,"GREEN");
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.MEET_APCS,"GREEN");
             --mission.Objective:Start("pickupSurvivors");
             self:next();
             return;
@@ -933,7 +933,7 @@ statemachine.Create("main_objectives", {
         mission_data.apcs = {gameobject.GetGameObject("apc1"),gameobject.GetGameObject("apc2")};
         mission_data.nav = gameobject.GetGameObject("nav1");
         -- start
-        objective.AddObjective(constants.objectives.rbdnew3503, "WHITE");
+        objective.AddObjective(CONSTANTS.OBJECTIVES.ESCORD_APC_OUTPOST, "WHITE");
         mission_data.t1 = 30;
         mission_data.arived = false;
         local navs = spawnAtPath("apcamr",1,"26spawn_nav");
@@ -956,7 +956,7 @@ statemachine.Create("main_objectives", {
     { "pickupSurvivors.update", function(self)
         if(checkAnyDead(mission_data.apcs)) then
             --self:fail(1);
-            FailMission(GetTime()+5.0,constants.debriefing.ApcLost);
+            FailMission(GetTime()+5.0,CONSTANTS.DEBRIEFING.LOSS_APC_LOST);
             self:switch(nil);
             return;
         end
@@ -973,13 +973,13 @@ statemachine.Create("main_objectives", {
     { "pickupSurvivors.update.pilots", function(self)
         if(checkAnyDead(mission_data.apcs)) then
             --self:fail(1);
-            FailMission(GetTime()+5.0,constants.debriefing.ApcLost);
+            FailMission(GetTime()+5.0,CONSTANTS.DEBRIEFING.LOSS_APC_LOST);
             self:switch(nil);
             return;
         end
         if(checkAnyDead(mission_data.pilots)) then
             --self:fail(2);
-            FailMission(GetTime()+5.0,constants.debriefing.KilledRescueMen);
+            FailMission(GetTime()+5.0,CONSTANTS.DEBRIEFING.LOSS_KILLED_RESCUED_MEN);
             self:switch(nil);
             return;
         end
@@ -996,13 +996,13 @@ statemachine.Create("main_objectives", {
     { "pickupSurvivors.update.pilots2", function(self)
         if(checkAnyDead(mission_data.apcs)) then
             --self:fail(1);
-            FailMission(GetTime()+5.0,constants.debriefing.ApcLost);
+            FailMission(GetTime()+5.0,CONSTANTS.DEBRIEFING.LOSS_APC_LOST);
             self:switch(nil);
             return;
         end
         if(checkAnyDead(mission_data.pilots)) then
             --self:fail(2);
-            FailMission(GetTime()+5.0,constants.debriefing.KilledRescueMen);
+            FailMission(GetTime()+5.0,CONSTANTS.DEBRIEFING.LOSS_KILLED_RESCUED_MEN);
             self:switch(nil);
             return;
         end
@@ -1029,11 +1029,11 @@ statemachine.Create("main_objectives", {
         end
         if((pleft <= 0)) then---or (mission_data.t1 <= 0)) then
             --self:success();
-            AudioMessage(constants.audio.pickup_done);
+            AudioMessage(CONSTANTS.AUDIO.PICKUP_DONE);
             for i,v in pairs(mission_data.apcs) do
                 v:Stop(0);
             end
-            objective.UpdateObjective(constants.objectives.rbdnew3503,"GREEN");
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.ESCORD_APC_OUTPOST,"GREEN");
             --mission.Objective:Start("escortAPCs");
             self:next();
         end
@@ -1044,24 +1044,24 @@ statemachine.Create("main_objectives", {
         mission_data.apcs = {gameobject.GetGameObject("apc1"),gameobject.GetGameObject("apc2")};
         -- start
         objective.ClearObjectives();
-        objective.AddObjective(constants.objectives.SendAPCsToEvac,"WHITE");
-        objective.AddObjective(constants.objectives.EscortAPCsToEvac,"WHITE");
+        objective.AddObjective(CONSTANTS.OBJECTIVES.SEND_APC_TO_EVAC,"WHITE");
+        objective.AddObjective(CONSTANTS.OBJECTIVES.ESCORT_APC_TO_EVAC,"WHITE");
 
         self:next();
     end },
     function(self)
         if(checkAnyDead(mission_data.apcs)) then
             --self:fail();
-            objective.UpdateObjective(constants.objectives.EscortAPCsToEvac,"RED");
-            FailMission(GetTime()+5.0,constants.debriefing.ApcLost);
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.ESCORT_APC_TO_EVAC,"RED");
+            FailMission(GetTime()+5.0,CONSTANTS.DEBRIEFING.LOSS_APC_LOST);
             self:switch(nil);
         end
         if(mission_data.apcs[1]:IsWithin(mission_data.nav,100) and mission_data.apcs[2]:IsWithin(mission_data.nav,100)) then
             --self:success();
-            objective.UpdateObjective(constants.objectives.SendAPCsToEvac,"GREEN");
-            objective.UpdateObjective(constants.objectives.EscortAPCsToEvac,"GREEN");
-            AudioMessage(constants.audio.win);
-            SucceedMission(GetTime()+5.0, constants.debriefing.Success);
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.SEND_APC_TO_EVAC,"GREEN");
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.ESCORT_APC_TO_EVAC,"GREEN");
+            AudioMessage(CONSTANTS.AUDIO.WIN);
+            SucceedMission(GetTime()+5.0, CONSTANTS.DEBRIEFING.WIN);
             self:switch(nil);
         end
     end
@@ -1092,10 +1092,10 @@ stateset.Create("mission")
     end)
     :Add("relic_leave_too_early_fail", function(state, name)
         if gameobject.GetPlayer():IsAlive() and gameobject.GetPlayer():GetDistance("relic_site") > 200 then
-            objective.RemoveObjective(constants.objectives.UplinkConnecting);
-            objective.RemoveObjective(constants.objectives.UplinkTransmitting);
-            objective.AddObjective(constants.objectives.UplinkRetry,"RED");
-            FailMission(GetTime()+5.0,constants.debriefing.RelicAbandoned);
+            objective.RemoveObjective(CONSTANTS.OBJECTIVES.UPLINE_CONNECTING);
+            objective.RemoveObjective(CONSTANTS.OBJECTIVES.UPLINK_TRANSMITTING);
+            objective.AddObjective(CONSTANTS.OBJECTIVES.UPLINK_RETRY,"RED");
+            FailMission(GetTime()+5.0,CONSTANTS.DEBRIEFING.LOSS_RELIC_ABANDONED);
             state:off("main_objectives", true); -- turn off main machine, we lost
             state:off(name, true); -- turn off this machine too
         end

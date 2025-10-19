@@ -72,11 +72,11 @@ local waves = require("_waves");
 --- @field rbd09wn string
 
 --- @class RBD09_Constants
---- @field audio RBD09_Constants_Audio
---- @field objectives RBD09_Constants_Objectives
---- @field debriefing RBD09_Constants_Debriefing
-local constants = {
-    audio = {
+--- @field AUDIO RBD09_Constants_Audio
+--- @field OBJECTIVES RBD09_Constants_Objectives
+--- @field DEBRIEFING RBD09_Constants_Debriefing
+local CONSTANTS = {
+    AUDIO = {
         intro = "rbd0901.wav", -- intro
         -- side objective here?
         found = "rbd0902.wav", -- Approaching Base -- Good work, Cobra One. The base should be just up ahead.
@@ -119,7 +119,7 @@ local constants = {
         -- (The Vanguard turn neutral and wander off)
         -- GRIG: Wait, what... Ha! They're giving up! Baker must have found a way to turn them off!
     },
-    objectives = {
+    OBJECTIVES = {
         findRelic = "rbd0901.otf", -- Locate the opposition base  somewhere to the south-west. Use the APC to capture any recycler that might be there.
         secureSite = "rbd0902.otf", -- Secure the relic site.
         captureRecycler = "rbd0902b.otf", -- Bring the APC close to the recycler to capture it.
@@ -128,7 +128,7 @@ local constants = {
         rbd0905 = "rbd0905.otf", -- They're going to notice that their patroling units are missing, go take out that comm before they can warn the rest.
         rbd0906 = "rbd0906.otf", -- You were too late, but we have no time to lose. Continue with the main objective.
     },
-    debriefing = {
+    DEBRIEFING = {
         apc = "rbd09l01.des", -- You lost the APC.
         --tug = "rbd09l02.des", -- You lost the Tug.
         rbd09wn = "rbd09wn.des" -- success
@@ -281,9 +281,9 @@ statemachine.Create("main_objectives", {
         --state.patrol_units = patrol_units;
         --state:startTask("findRelic");
         --if constants.objectives.findRelic ~= nil then
-            objective.AddObjective(constants.objectives.findRelic);
+            objective.AddObjective(CONSTANTS.OBJECTIVES.findRelic);
         --end
-        AudioMessage(constants.audio.intro);
+        AudioMessage(CONSTANTS.AUDIO.intro);
 
         mission_data.mission_states:on("apc");
 
@@ -295,12 +295,12 @@ statemachine.Create("main_objectives", {
         if ph == nil then error("Player handle is nil"); end
         if ph:GetDistance("relic_site") < 400 then
             --state:taskSucceed("findRelic");
-            objective.UpdateObjective(constants.objectives.findRelic, "GREEN");
-            AudioMessage(constants.audio.found);
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.findRelic, "GREEN");
+            AudioMessage(CONSTANTS.AUDIO.found);
             mission_data.key_objects.recy:SetTeamNum(0);
             --state:startTask("secureSite");
             --if(constants.objectives.secureSite ~= nil) then
-                objective.AddObjective(constants.objectives.secureSite);
+                objective.AddObjective(CONSTANTS.OBJECTIVES.secureSite);
             --end
             state:next();
         end
@@ -345,7 +345,7 @@ statemachine.Create("main_objectives", {
     { "findRelic.update.secureSite.secure", function(state)
         --- @cast state MainObjectives09_state
         --state:taskSucceed("secureSite");
-        AudioMessage(constants.audio.clear);
+        AudioMessage(CONSTANTS.AUDIO.clear);
         local pp = utility.IteratorToArray(paths.IteratePath("relic_site"));
         for obj in gameobject.ObjectsInRange(Length(pp[2]-pp[1]),pp[1]) do
             if obj:IsBuilding() and obj:GetTeamNum() == 2 then
@@ -358,7 +358,7 @@ statemachine.Create("main_objectives", {
         --state:startTask("captureRecycler");
         objective.ClearObjectives();
         --if(constants.objectives.captureRecycler ~= nil) then
-            objective.AddObjective(constants.objectives.captureRecycler);
+            objective.AddObjective(CONSTANTS.OBJECTIVES.captureRecycler);
         --end
         state:next();
     end },
@@ -367,7 +367,7 @@ statemachine.Create("main_objectives", {
         if mission_data.key_objects.apc:IsWithin(mission_data.key_objects.recy,40) then
             mission_data.key_objects.apc:Stop(0);
             --state:taskSucceed("captureRecycler");
-            objective.UpdateObjective(constants.objectives.captureRecycler,"GREEN");
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.captureRecycler,"GREEN");
             mission_data.key_objects.recy:SetTeamNum(1);
             SetScrap(1,30);
             copyObject(mission_data.key_objects.apc,"bvapc");
@@ -421,7 +421,7 @@ statemachine.Create("main_objectives", {
             local machine = statemachine.Start("nsdf_attack_relic_site", nil, { v = v, alt = "relic_site" });
             table.insert(mission_data.sub_machines, machine);
         end
-        objective.AddObjective(constants.objectives.rbd0903);
+        objective.AddObjective(CONSTANTS.OBJECTIVES.rbd0903);
         state.wave_timer = 0;
         --state:startTask("spawn_waves");
         state:next();
@@ -486,10 +486,10 @@ statemachine.Create("main_objectives", {
         --- @cast state MainObjectives09_state
         if(areAllDead(state.units_to_kill, 2)) then
             --state:taskSucceed("kill_waves");
-            objective.UpdateObjective(constants.objectives.rbd0903, "GREEN");
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.rbd0903, "GREEN");
             --state:success();
-            AudioMessage(constants.audio.win);
-            SucceedMission(GetTime() + 15, constants.debriefing.rbd09wn);
+            AudioMessage(CONSTANTS.AUDIO.win);
+            SucceedMission(GetTime() + 15, CONSTANTS.DEBRIEFING.rbd09wn);
             state:next();
         end
     end }
@@ -526,8 +526,8 @@ statemachine.Create("side_objectives.destroy_comm", {
     end },
     { "task_start", function(state)
         --- @cast state SideObjectivesDestroyComm09_state
-        AudioMessage(constants.audio.warn1);
-        objective.AddObjective(constants.objectives.rbd0905);
+        AudioMessage(CONSTANTS.AUDIO.warn1);
+        objective.AddObjective(CONSTANTS.OBJECTIVES.rbd0905);
         StartCockpitTimer(state.comm_timer, state.comm_timer * 0.5, state.comm_timer * 0.1);
         state.commtower:SetObjectiveOn();
         state:next();
@@ -538,7 +538,7 @@ statemachine.Create("side_objectives.destroy_comm", {
         --if(state.comm_timer <= 0) then
         if GetCockpitTimer() <= 0 then
             --state:taskFail("destroy_comm");
-            objective.ReplaceObjective(constants.objectives.rbd0905, constants.objectives.rbd0906, "YELLOW");
+            objective.ReplaceObjective(CONSTANTS.OBJECTIVES.rbd0905, CONSTANTS.OBJECTIVES.rbd0906, "YELLOW");
             StopCockpitTimer();
             HideCockpitTimer();
             state.commtower:SetObjectiveOff();
@@ -546,7 +546,7 @@ statemachine.Create("side_objectives.destroy_comm", {
             state:next();
         elseif not state.commtower:IsAlive() then
             --state:taskSucceed("destroy_comm");
-            objective.UpdateObjective(constants.objectives.rbd0905, "GREEN");
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.rbd0905, "GREEN");
             StopCockpitTimer();
             HideCockpitTimer();
             state:next();
@@ -618,14 +618,14 @@ stateset.Create("mission")
                         obj:SetTeamNum(1);
                     end
                 end
-                objective.AddObjective(constants.objectives.rbd0904, "GREEN");
+                objective.AddObjective(CONSTANTS.OBJECTIVES.rbd0904, "GREEN");
                 state:off(name, true);
             end
         end
     end)
     :Add("apc", function(state, name)
         if not mission_data.key_objects.apc:IsAlive() then
-            FailMission(GetTime() + 5.0 ,constants.debriefing.apc);
+            FailMission(GetTime() + 5.0 ,CONSTANTS.DEBRIEFING.apc);
         end
     end)
 ;

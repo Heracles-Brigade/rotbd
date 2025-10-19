@@ -50,69 +50,69 @@ local patrol = require("_patrol");
 local waves = require("_waves");
 
 --- @class RBD07_Constants_Audio
---- @field intro string -- Get those relics!
---- @field surrender string -- Harley tells us to surrender
---- @field relic string -- What the hell is that thing?
---- @field relic_secured_1 string -- Good work, one down one to go
---- @field distress string -- our scouting party sent a distress signal
---- @field trap string -- It's a trap! They're trying to divert you away from the relic
---- @field win string -- Good work, Baker investigate the doodads
---- @field tug_loss string -- You just lost the tug
---- @field enemy_tug string -- Enemy forces heading for the other relic, sir!
---- @field attack_wave string -- Attack wave, coming at the base!
---- @field enemy_got_relic string -- The enemy has picked up one of the relics! Stop t
---- @field enemy_captured_relic string -- The enemy has just captured one of the relics
+--- @field INTRO string -- Get those relics!
+--- @field SURRENDER string -- Harley tells us to surrender
+--- @field RELIC string -- What the hell is that thing?
+--- @field RELIC_SECURED string -- Good work, one down one to go
+--- @field DISTRESS string -- our scouting party sent a distress signal
+--- @field TRAP string -- It's a trap! They're trying to divert you away from the relic
+--- @field WIN string -- Good work, Baker investigate the doodads
+--- @field TUG_LOSS string -- You just lost the tug
+--- @field ENEMY_TUG string -- Enemy forces heading for the other relic, sir!
+--- @field ATTACK_WAVE string -- Attack wave, coming at the base!
+--- @field ENEMY_GOT_RELIC string -- The enemy has picked up one of the relics! Stop t
+--- @field ENEMY_CAPTURED_RELIC string -- The enemy has just captured one of the relics
 
 --- @class RBD07_Constants_Objectives
---- @field escort string -- Escort your recycler to a geyser site 
---- @field relics string -- There are two relics on Io, capture them both
---- @field nsdf_distress string -- We have just received a distress signal to the west
---- @field cca_distress string -- We have just received a distress signal to the east
---- @field nsdf_tug string -- The NSDF are making a play for the Relic to the west, stop th
---- @field cca_tug string -- The CCA are making a play for the Relic to the east, stop them!
+--- @field ESCORT string -- Escort your recycler to a geyser site 
+--- @field RELICS string -- There are two relics on Io, capture them both
+--- @field NSDF_DISTRESS string -- We have just received a distress signal to the west
+--- @field CCA_DISTRESS string -- We have just received a distress signal to the east
+--- @field NSDF_TUG string -- The NSDF are making a play for the Relic to the west, stop th
+--- @field CCA_TUG string -- The CCA are making a play for the Relic to the east, stop them!
 
 --- @class RBD07_Constants_Debriefing
---- @field loseRecycler string -- You allowed your Recycler to be destroyed.
---- @field loseTug string -- You allowed your tug to be destroyed.
---- @field relic_nsdf_loss string -- You have allowed the enemy to capture one of the relics.
---- @field relic_cca_loss string -- You have allowed the enemy to capture one of the relics.
---- @field win string -- Win, Baker investigated
---- @field relic_destroyed string -- One of the relics was destroyed!
+--- @field LOSS_RECYCLER string -- You allowed your Recycler to be destroyed.
+--- @field LOSS_TUG string -- You allowed your tug to be destroyed.
+--- @field LOSS_RELIC_NSDF string -- You have allowed the enemy to capture one of the relics.
+--- @field LOSS_RELIC_CCA string -- You have allowed the enemy to capture one of the relics.
+--- @field WIN string -- Win, Baker investigated
+--- @field LOSS_RELIC_DESTROYED string -- One of the relics was destroyed!
 
 --- @class RBD07_Constants
---- @field audio RBD07_Constants_Audio
---- @field objectives RBD07_Constants_Objectives
---- @field debriefing RBD07_Constants_Debriefing
-local constants = {
-    audio = {
-        intro = "rbd0701.wav",
-        surrender = "rbd0702.wav",
-        relic = "rbd0703.wav",
-        relic_secured_1 = "rbd0704.wav",
-        distress = "rbd0705.wav",
-        trap = "rbd0706.wav",
-        win = "rbd07wn.wav",
-        tug_loss = "rbd0701L.wav",
-        enemy_tug = "rbd0701W.wav",
-        attack_wave = "rbd0702W.wav",
-        enemy_got_relic = "rbd0703W.wav",
-        enemy_captured_relic = "rbd0702L.wav"
+--- @field AUDIO RBD07_Constants_Audio
+--- @field OBJECTIVES RBD07_Constants_Objectives
+--- @field DEBRIEFING RBD07_Constants_Debriefing
+local CONSTANTS = {
+    AUDIO = {
+        INTRO = "rbd0701.wav",
+        SURRENDER = "rbd0702.wav",
+        RELIC = "rbd0703.wav",
+        RELIC_SECURED = "rbd0704.wav",
+        DISTRESS = "rbd0705.wav",
+        TRAP = "rbd0706.wav",
+        WIN = "rbd07wn.wav",
+        TUG_LOSS = "rbd0701L.wav",
+        ENEMY_TUG = "rbd0701W.wav",
+        ATTACK_WAVE = "rbd0702W.wav",
+        ENEMY_GOT_RELIC = "rbd0703W.wav",
+        ENEMY_CAPTURED_RELIC = "rbd0702L.wav"
     },
-    objectives = {
-        escort = "rbd0701.otf",
-        relics = "rbd07ob1.otf",
-        nsdf_distress = "rbd0703.otf",
-        cca_distress = "rbd0704.otf",
-        nsdf_tug = "rbd0705.otf",
-        cca_tug = "rbd0706.otf"
+    OBJECTIVES = {
+        ESCORT = "rbd0701.otf",
+        RELICS = "rbd07ob1.otf",
+        NSDF_DISTRESS = "rbd0703.otf",
+        CCA_DISTRESS = "rbd0704.otf",
+        NSDF_TUG = "rbd0705.otf",
+        CCA_TUG = "rbd0706.otf"
     },
-    debriefing = {
-        loseRecycler = "rbd07los.des",
-        loseTug = "rbd07l04.des",
-        relic_nsdf_loss = "rbd07l02.des",
-        relic_cca_loss = "rbd07l02.des",
-        win = "rbd07win.des",
-        relic_destroyed = "rbd07l03.des"
+    DEBRIEFING = {
+        LOSS_RECYCLER = "rbd07los.des",
+        LOSS_TUG = "rbd07l04.des",
+        LOSS_RELIC_NSDF = "rbd07l02.des",
+        LOSS_RELIC_CCA = "rbd07l02.des",
+        WIN = "rbd07win.des",
+        LOSS_RELIC_DESTROYED = "rbd07l03.des"
     }
 };
 
@@ -288,8 +288,8 @@ statemachine.Create("main_objectives", {
             statemachine.Start("delayed_spawn_formation_and_goto", nil, { delay =  1, formation = formation, spawn = "wave3", dest = "wave3_path", odfs = { "svfigh", "svltnk" }, team = 2, seperation = 15 }),
         };
         state.attackers = {};
-        objective.AddObjective(constants.objectives.escort,"WHITE");
-        AudioMessage(constants.audio.intro);
+        objective.AddObjective(CONSTANTS.OBJECTIVES.ESCORT,"WHITE");
+        AudioMessage(CONSTANTS.AUDIO.INTRO);
  
         -- enable loss conditions
         mission_data.mission_states:on("loseTug"):on("loseRecycler");
@@ -323,7 +323,7 @@ statemachine.Create("main_objectives", {
         state.cond_escort_completed = state.cond_escort_completed or gameobject.GetRecycler():GetDistance("bdog_base") < 100;
         state.cond_kill_attackers_completed = state.cond_kill_attackers_completed or areAllDead(state.attackers, 2);
         if state.cond_escort_completed and state.cond_kill_attackers_completed then
-            objective.UpdateObjective(constants.objectives.escort,"GREEN");
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.ESCORT,"GREEN");
             state.cond_escort_completed = nil;
             state.cond_kill_attackers_completed = nil;
             state.attackers = nil;
@@ -374,12 +374,12 @@ statemachine.Create("main_objectives", {
         --    nsdf = false
         --};
         --state.distressCountdown = 5;
-        objective.AddObjective(constants.objectives.relics, "WHITE", 16);
+        objective.AddObjective(CONSTANTS.OBJECTIVES.RELICS, "WHITE", 16);
  
         local nsdf_attack = statemachine.Start("relic_wave_spawner", nil, { key = "nsdf", noExtraWait = ranC == 1,  waveInterval = 140 });
         local cca_attack  = statemachine.Start("relic_wave_spawner", nil, { key = "cca" , noExtraWait = ranC == 0 , waveInterval = 140 });
-        local nsdf_tug = statemachine.Start("relic_tug_spawner", nil, { key = "nsdf", noExtraWait = ranC == 1,  bufferTime = 500, otf = constants.objectives.nsdf_tug });
-        local cca_tug  = statemachine.Start("relic_tug_spawner", nil, { key = "cca" , noExtraWait = ranC == 0 , bufferTime = 500, otf = constants.objectives.cca_tug  });
+        local nsdf_tug = statemachine.Start("relic_tug_spawner", nil, { key = "nsdf", noExtraWait = ranC == 1,  bufferTime = 500, otf = CONSTANTS.OBJECTIVES.NSDF_TUG });
+        local cca_tug  = statemachine.Start("relic_tug_spawner", nil, { key = "cca" , noExtraWait = ranC == 0 , bufferTime = 500, otf = CONSTANTS.OBJECTIVES.CCA_TUG  });
         --- @cast nsdf_tug RelicTugSpawner_state
         --- @cast cca_tug RelicTugSpawner_state
         state.tug_spawners = {
@@ -424,11 +424,11 @@ statemachine.Create("main_objectives", {
                         mission_data.fucking_garbage[relic_task] = "succeeded"
  
                         --- @todo array access via string is a bit hairy but it works
-                        objective.UpdateObjective(constants.objectives[("%s_tug"):format(relic_datum.name)], "GREEN");
+                        objective.UpdateObjective(CONSTANTS.OBJECTIVES[("%s_tug"):format(relic_datum.name)], "GREEN");
  
-                        if not mission_data.audio_played[constants.audio.relic_secured_1] then
-                            AudioMessage(constants.audio.relic_secured_1);
-                            mission_data.audio_played[constants.audio.relic_secured_1] = true;
+                        if not mission_data.audio_played[CONSTANTS.AUDIO.RELIC_SECURED] then
+                            AudioMessage(CONSTANTS.AUDIO.RELIC_SECURED);
+                            mission_data.audio_played[CONSTANTS.AUDIO.RELIC_SECURED] = true;
                         end
                     end
                     --Else if cca or nsdf has it, set state to failed
@@ -436,15 +436,15 @@ statemachine.Create("main_objectives", {
                     mission_data.fucking_garbage[relic_task] = "failed"
 
                     --- @todo array access via string is a bit hairy but it works
-                    objective.UpdateObjective(constants.objectives[("%s_tug"):format(relic_datum.name)], "RED");
-                    FailMission(GetTime() + 5, constants.debriefing[("%s_loss"):format(relic_datum.relic_name)]);
+                    objective.UpdateObjective(CONSTANTS.OBJECTIVES[("%s_tug"):format(relic_datum.name)], "RED");
+                    FailMission(GetTime() + 5, CONSTANTS.DEBRIEFING[("%s_loss"):format(relic_datum.relic_name)]);
                 end
                 --If someone had it, but no longer has reset the state
             elseif mission_data.fucking_garbage[relic_task] and not bdog and not cca and not nsdf then
                 mission_data.fucking_garbage[relic_task] = "running"
 
                 --- @todo array access via string is a bit hairy but it works
-                objective.UpdateObjective(constants.objectives[("%s_tug"):format(relic_datum.name)], "WHITE");
+                objective.UpdateObjective(CONSTANTS.OBJECTIVES[("%s_tug"):format(relic_datum.name)], "WHITE");
             end
             if mission_data.fucking_garbage[pickup_relic_task] == "running" then -- NSDF and CCA pickup tasks are active
                 if tug_carrying and tug_carrying:GetTeamNum() == 1 then
@@ -514,8 +514,8 @@ statemachine.Create("main_objectives", {
         if mission_data.fucking_garbage.distress == "succeeded"
         and mission_data.fucking_garbage["relic_nsdf"] == "succeeded"
         and mission_data.fucking_garbage["relic_cca"] == "succeeded" then
-            objective.UpdateObjective(constants.objectives.relics,"GREEN");
-            SucceedMission(GetTime() + 5, constants.debriefing.win);
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.RELICS,"GREEN");
+            SucceedMission(GetTime() + 5, CONSTANTS.DEBRIEFING.WIN);
             state:next();
         end
     end }
@@ -853,21 +853,21 @@ stateset.Create("mission")
 
     :Add("loseTug", function (state)
         if not mission_data.key_objects.tug:IsAlive() then
-            objective.UpdateObjective(constants.objectives.escort,"RED");
-            FailMission(GetTime() + 5,constants.debriefing.loseTug);
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.ESCORT,"RED");
+            FailMission(GetTime() + 5,CONSTANTS.DEBRIEFING.LOSS_TUG);
         end
     end)
     :Add("loseRecycler", function (state)
         if not mission_data.key_objects.recy:IsAlive() then
-            objective.UpdateObjective(constants.objectives.escort,"RED");
-            FailMission(GetTime() + 5,constants.debriefing.loseRecycler);
+            objective.UpdateObjective(CONSTANTS.OBJECTIVES.ESCORT,"RED");
+            FailMission(GetTime() + 5,CONSTANTS.DEBRIEFING.LOSS_RECYCLER);
         end
     end)
     :Add("relic_destroyed", function (state, name)
         for _, relic_datum in pairs(relic_data) do
             if not mission_data.key_objects.relic[relic_datum.name] or not mission_data.key_objects.relic[relic_datum.name]:IsAlive() then
                 --objective.UpdateObjective(constants.objectives.escort,"RED"); -- not sure what objective to red here
-                FailMission(GetTime() + 5, constants.debriefing.relic_destroyed);
+                FailMission(GetTime() + 5, CONSTANTS.DEBRIEFING.LOSS_RELIC_DESTROYED);
                 state:off(name, true);
                 return;
             end
@@ -889,7 +889,7 @@ statemachine.Create("distress", {
         if nav == nil then error("nav is nil"); end
         nav:SetObjectiveName("Distress Call");
         --- @todo this is a bit hairy, but it works
-        objective.AddObjective(constants.objectives[distress_l]);
+        objective.AddObjective(CONSTANTS.OBJECTIVES[distress_l]);
         state:next();
     end,
     function (state)
@@ -908,7 +908,7 @@ statemachine.Create("distress", {
     end,
     function (state)
         --- @todo a bit hairy using the array this way
-        objective.UpdateObjective(constants.objectives[("%s_distress"):format(mission_data.distress_faction)],"GREEN");
+        objective.UpdateObjective(CONSTANTS.OBJECTIVES[("%s_distress"):format(mission_data.distress_faction)],"GREEN");
         mission_data.fucking_garbage.distress = "succeeded";
         state:next();
     end

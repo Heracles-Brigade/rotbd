@@ -89,130 +89,130 @@ navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToG
 --tracker.setFilterClass("turrettank"); -- track turrettanks
 
 --- @class RBD03_Constants_Audio
---- @field intro string -- Welcome to Mars
---- @field commwarn string -- Careful, Cobra One. Keep an eye on those towers.
---- @field commclear string -- Hurry up, Cobra One!
---- @field inspect string -- Got it! According to this, the Mammoth should be...
---- @field tug string -- Nice! You should be able to get close enough now.
---- @field first_a string -- Bomb the shield control
---- @field dayw string -- Nice job, sir! You're clear to get through to the Mammoth now.
---- @field second_a string -- We're picking up your signal, hang around for a bit.
---- @field transint string -- Out of range
---- @field backinrange string -- Back in range
---- @field flee string -- They detected your transmission, run!
---- @field hurry string -- Hurry up, Cobra One!
---- @field win string -- Good job, Lieutenant. Let's get you out of there.
---- @field lose1 string -- Mammoth Destroyed/sniped (entire base just scrambled)
---- @field lose2 string --Failed to extract on time
+--- @field INTRO string -- Welcome to Mars
+--- @field COMM_WARN string -- Careful, Cobra One. Keep an eye on those towers.
+--- @field COMM_CLEAR string -- Hurry up, Cobra One!
+--- @field INSPECT string -- Got it! According to this, the Mammoth should be...
+--- @field TUG string -- Nice! You should be able to get close enough now.
+--- @field FIRST_A string -- Bomb the shield control
+--- @field DAY_W string -- Nice job, sir! You're clear to get through to the Mammoth now.
+--- @field SECOND_A string -- We're picking up your signal, hang around for a bit.
+--- @field TRANSINT string -- Out of range
+--- @field BACK_IN_RANGE string -- Back in range
+--- @field FLEE string -- They detected your transmission, run!
+--- @field HURRY string -- Hurry up, Cobra One!
+--- @field WIN string -- Good job, Lieutenant. Let's get you out of there.
+--- @field LOSS_MAMMOTH_DESTROYED string -- Mammoth Destroyed/sniped (entire base just scrambled)
+--- @field LOSS_FAILED_EXTRACT string --Failed to extract on time
 ----- @field lose3 string --Detected, loser (no exist)
---- @field lose4 string -- Evidently you can't aim Day Wreckers
---- @field detected_kill_them string -- They're on to you, Lieutenant! Take them out and let's pray they haven't gotten the word out yet!
+--- @field LOSS_AIM_DAY_WRECKER string -- Evidently you can't aim Day Wreckers
+--- @field DETECTED_KILL_THEM string -- They're on to you, Lieutenant! Take them out and let's pray they haven't gotten the word out yet!
 --- @field lose5 string
 
 --- @class RBD03_Constants_Names
---- @field ExtractionPoint string
---- @field Mammoth string
+--- @field EXTRACTION_POINT string
+--- @field MAMMOTH string
 
 --- @class RBD03_Constants_Labels
---- @field mammoth string
---- @field hangar string
---- @field supply string
---- @field tug string
---- @field control string
---- @field radar string[] -- Radar towers, 3 of them
---- @field nav string[]
---- @field patrol string[][]
+--- @field MAMMOTH string
+--- @field HANGER string
+--- @field SUPPLY string
+--- @field TUG string
+--- @field CONTROL string
+--- @field RADAR string[] -- Radar towers, 3 of them
+--- @field NAV string[]
+--- @field PATROL string[][]
 
 --- @class RBD03_Constants_Objectives
---- @field Detection string
---- @field Hanger string
---- @field Tug string
---- @field Mammoth1 string
---- @field Control string
---- @field Mammoth2 string
---- @field TranStart string
---- @field TranFin string
---- @field Extract string
+--- @field DETECTION string
+--- @field HANGER string
+--- @field TUG string
+--- @field MAMMOTH_1 string
+--- @field CONTROL string
+--- @field MAMMOTH_2 string
+--- @field TRAN_START string
+--- @field TRAN_FIN string
+--- @field EXTRACT string
 
 --- @class RBD03_Constants_Debriefing
---- @field rbdnew03l1 string -- Mammoth destroyed before transmission complete
---- @field rbdnew03l2 string -- Failed to make it to the pickup zone
---- @field rbdnew03l3 string -- Hanger destroyed
---- @field rbdnew03l4 string -- Cover blown
---- @field rbdnew03l5 string -- Wrecker missed
---- @field rbdnew03wn string -- Success
+--- @field LOSS_MAMMOTH_DESTROYED string -- Mammoth destroyed before transmission complete
+--- @field LOSS_LEFT_BEHIND string -- Failed to make it to the pickup zone
+--- @field LOSS_HANGER_DESTROYED string -- Hanger destroyed
+--- @field LOSS_COVER_BLOWN string -- Cover blown
+--- @field LOSS_WRECKER_MISSED string -- Wrecker missed
+--- @field WIN string -- Success
 
 --- @class RBD03_Constants
---- @field audio RBD03_Constants_Audio
---- @field labels RBD03_Constants_Labels
---- @field names RBD03_Constants_Names
---- @field objectives RBD03_Constants_Objectives
---- @field debriefing RBD03_Constants_Debriefing
---- @field runaway_timer number[] -- time, yellow, red
---- @field hurry_threshold number -- time to trigger the "hurry" audio message
-local constants = {
-	audio = {
-		intro = "rbdnew0301.wav",
-		commwarn = "rbdnew0301W.wav",
-		commclear = "", -- we don't have a clear vox
-		inspect = "rbdnew0302.wav",
-		tug = "rbdnew0303.wav",
-		first_a = "rbdnew0304.wav",
-		dayw = "rbdnew0305.wav",
-		second_a = "rbdnew0306.wav",
-		transint = "rbdnew0306A.wav",
-		backinrange = "rbdnew0306B.wav",
-		flee = "rbdnew0307.wav",
-		hurry = "rbdnew0302W.wav",
-		win = "rbdnew0308.wav",
-		lose1 = "rbdnew0301L.wav",
-		lose2 = "rbdnew0302L.wav",
+--- @field AUDIO RBD03_Constants_Audio
+--- @field LABELS RBD03_Constants_Labels
+--- @field NAMES RBD03_Constants_Names
+--- @field OBJECTIVES RBD03_Constants_Objectives
+--- @field DEBRIEFING RBD03_Constants_Debriefing
+--- @field RUNAWAY_TIMER number[] -- time, yellow, red
+--- @field HURRY_THRESHHOLD number -- time to trigger the "hurry" audio message
+local CONSTANTS = {
+	AUDIO = {
+		INTRO = "rbdnew0301.wav",
+		COMM_WARN = "rbdnew0301W.wav",
+		COMM_CLEAR = "", -- we don't have a clear vox
+		INSPECT = "rbdnew0302.wav",
+		TUG = "rbdnew0303.wav",
+		FIRST_A = "rbdnew0304.wav",
+		DAY_W = "rbdnew0305.wav",
+		SECOND_A = "rbdnew0306.wav",
+		TRANSINT = "rbdnew0306A.wav",
+		BACK_IN_RANGE = "rbdnew0306B.wav",
+		FLEE = "rbdnew0307.wav",
+		HURRY = "rbdnew0302W.wav",
+		WIN = "rbdnew0308.wav",
+		LOSS_MAMMOTH_DESTROYED = "rbdnew0301L.wav",
+		LOSS_FAILED_EXTRACT = "rbdnew0302L.wav",
 		--lose3 = "rbdnew0303L.wav",
-		lose4 = "rbdnew0304L.wav",
-		detected_kill_them = "rbdnew0303W.wav",
+		LOSS_AIM_DAY_WRECKER = "rbdnew0304L.wav",
+		DETECTED_KILL_THEM = "rbdnew0303W.wav",
 
 		-- unused
 		lose5 = "rbdnew0305L.wav", --Why didn't you make a Day Wrecker?
 	},
-	labels = {
-		mammoth = "mammoth",
-		hangar = "hangar",
-		supply = "supply",
-		tug = "tug",
-		control = "control",
-		radar = { "radar1", "radar2", "radar3" },
-		nav = { "nav1", "nav2", "nav3", "nav4", "nav5" },
-		patrol = {
+	LABELS = {
+		MAMMOTH = "mammoth",
+		HANGER = "hangar",
+		SUPPLY = "supply",
+		TUG = "tug",
+		CONTROL = "control",
+		RADAR = { "radar1", "radar2", "radar3" },
+		NAV = { "nav1", "nav2", "nav3", "nav4", "nav5" },
+		PATROL = {
 			{ "patrol1_1", "patrol1_2", "patrol1_3", "patrol1_4", "patrol1_5", "patrol1_6" },
 			{ "patrol2_1", "patrol2_2", "patrol2_3", "patrol2_4", "patrol2_5", "patrol2_6", "patrol2_7", "patrol2_8", "patrol2_9", "patrol2_10" },
 			{ "patrol3_1", "patrol3_2", "patrol3_3", "patrol3_4", "patrol3_5", "patrol3_6", "patrol3_7", "patrol3_8", "patrol3_9" }
 		},
 	},
-	names = {
-		ExtractionPoint = "Extraction Point",
-		Mammoth = "Mammoth",
+	NAMES = {
+		EXTRACTION_POINT = "Extraction Point",
+		MAMMOTH = "Mammoth",
 	},
-	objectives = {
-		Detection = "rbdnew0300.otf",
-		Hanger = "rbdnew0301.otf",
-		Tug = "rbdnew0303.otf",
-		Mammoth1 = "rbdnew0302.otf",
-		Control = "rbdnew0304.otf",
-		Mammoth2 = "rbdnew0305.otf",
-		TranStart = "rbdnew0306.otf",
-		TranFin = "rbdnew0307.otf",
-		Extract = "rbdnew0308.otf"
+	OBJECTIVES = {
+		DETECTION = "rbdnew0300.otf",
+		HANGER = "rbdnew0301.otf",
+		TUG = "rbdnew0303.otf",
+		MAMMOTH_1 = "rbdnew0302.otf",
+		CONTROL = "rbdnew0304.otf",
+		MAMMOTH_2 = "rbdnew0305.otf",
+		TRAN_START = "rbdnew0306.otf",
+		TRAN_FIN = "rbdnew0307.otf",
+		EXTRACT = "rbdnew0308.otf"
 	},
-	debriefing = {
-		rbdnew03l1 = "rbdnew03l1.des",
-		rbdnew03l2 = "rbdnew03l2.des",
-		rbdnew03l3 = "rbdnew03l3.des",
-		rbdnew03l4 = "rbdnew03l4.des",
-		rbdnew03l5 = "rbdnew03l5.des",
-		rbdnew03wn = "rbdnew03wn.des"
+	DEBRIEFING = {
+		LOSS_MAMMOTH_DESTROYED = "rbdnew03l1.des",
+		LOSS_LEFT_BEHIND = "rbdnew03l2.des",
+		LOSS_HANGER_DESTROYED = "rbdnew03l3.des",
+		LOSS_COVER_BLOWN = "rbdnew03l4.des",
+		LOSS_WRECKER_MISSED = "rbdnew03l5.des",
+		WIN = "rbdnew03wn.des"
 	},
-	runaway_timer = { 120, 30, 10 },
-	hurry_threshold = 30,
+	RUNAWAY_TIMER = { 120, 30, 10 },
+	HURRY_THRESHHOLD = 30,
 	sniper_range = 1000, -- used to look at candidates for being shot by player
 	detection_range_player = 100, -- if anyone is within this distance of the player they detect when they attack
 	detection_range_target = 100, -- if anyone is within this distance of the shot unit they detect when they attack
@@ -259,7 +259,7 @@ local function SpawnNav(num) -- Spawns the Nth Nav point.
 	if not nav then error("Nav "..num.." failed to spawn!"); end -- If the nav fails to spawn, throw an error.
 	nav:SetObjectiveName("Nav "..num); -- Set its name
 	if num == 5 then
-		nav:SetObjectiveName(constants.names.ExtractionPoint); -- If it's the 5th nav, change its name. This is the name it checks for for the Win Condition; if you change this, change the win condition script as well.
+		nav:SetObjectiveName(CONSTANTS.NAMES.EXTRACTION_POINT); -- If it's the 5th nav, change its name. This is the name it checks for for the Win Condition; if you change this, change the win condition script as well.
 	end
 	nav:SetMaxHealth(0); -- Can't go boom-boom. I accidentally destroyed Nav 3 with the DW before this.
 	
@@ -336,8 +336,8 @@ end);
 
 local function FailByDetection()
 	--AudioMessage(constants.audio.lose3);
-	FailMission(GetTime() + 5.0, constants.debriefing.rbdnew03l4); -- cover blown
-	objective.UpdateObjective(constants.objectives.Detection, "RED");
+	FailMission(GetTime() + 5.0, CONSTANTS.DEBRIEFING.LOSS_COVER_BLOWN); -- cover blown
+	objective.UpdateObjective(CONSTANTS.OBJECTIVES.DETECTION, "RED");
 end
 
 statemachine.Create("scrap_field_filler", {
@@ -388,18 +388,18 @@ statemachine.Create("mammoth_shield", function (state)
 statemachine.Create("main_objectives", {
 	{ "start", function (state)
 		ColorFade(1.1, 0.4, 0, 0, 0);
-		mission_data.key_objects.Mammoth = gameobject.GetGameObject(constants.labels.mammoth);
+		mission_data.key_objects.Mammoth = gameobject.GetGameObject(CONSTANTS.LABELS.MAMMOTH);
 		mission_data.key_objects.Mammoth:SetIndependence(0); -- Mammoth shouldn't respond or do anything in this mission.
-		mission_data.key_objects.Hangar = gameobject.GetGameObject(constants.labels.hangar);
-		mission_data.key_objects.Supply = gameobject.GetGameObject(constants.labels.supply);
-		mission_data.key_objects.Tug = gameobject.GetGameObject(constants.labels.tug);
+		mission_data.key_objects.Hangar = gameobject.GetGameObject(CONSTANTS.LABELS.HANGER);
+		mission_data.key_objects.Supply = gameobject.GetGameObject(CONSTANTS.LABELS.SUPPLY);
+		mission_data.key_objects.Tug = gameobject.GetGameObject(CONSTANTS.LABELS.TUG);
 		mission_data.key_objects.Tug:RemovePilot();
-		mission_data.key_objects.ControlTower = gameobject.GetGameObject(constants.labels.control);
+		mission_data.key_objects.ControlTower = gameobject.GetGameObject(CONSTANTS.LABELS.CONTROL);
 		SetMaxScrap(2,10000);
 		mission_data.key_objects.Player:SetPerceivedTeam(2); -- Make sure player isn't detected right away.
 		
 		for i = 1, 5 do
-			local navtmp = gameobject.GetGameObject(constants.labels.nav[i]); -- Harvests the current nav's coordinates then deletes it. The saved coordinates are used later to respawn the nav when it is needed.
+			local navtmp = gameobject.GetGameObject(CONSTANTS.LABELS.NAV[i]); -- Harvests the current nav's coordinates then deletes it. The saved coordinates are used later to respawn the nav when it is needed.
 			if navtmp then
 				mission_data.NavCoord[i] = navtmp:GetPosition();
 				navtmp:RemoveObject();
@@ -407,20 +407,20 @@ statemachine.Create("main_objectives", {
 		end
 		
 		for i = 1, 6 do
-			gameobject.GetGameObject(constants.labels.patrol[1][i]):Patrol("patrol_1", 1);
+			gameobject.GetGameObject(CONSTANTS.LABELS.PATROL[1][i]):Patrol("patrol_1", 1);
 		end
 		for i = 1, 10 do
-			gameobject.GetGameObject(constants.labels.patrol[2][i]):Patrol("patrol_2", 1);
+			gameobject.GetGameObject(CONSTANTS.LABELS.PATROL[2][i]):Patrol("patrol_2", 1);
 		end
 		for i = 1, 9 do
-			gameobject.GetGameObject(constants.labels.patrol[3][i]):Patrol("patrol_3", 1);
+			gameobject.GetGameObject(CONSTANTS.LABELS.PATROL[3][i]):Patrol("patrol_3", 1);
 		end
 		
 		state:next();
 		
 		-- Pre-play setup complete. Time to start the shit.
 		camera.Start();
-		AudioMessage(constants.audio.intro);
+		AudioMessage(CONSTANTS.AUDIO.INTRO);
 
 		mission_data.mission_states
 			:on("detection_check_perceived_team")
@@ -453,8 +453,8 @@ statemachine.Create("main_objectives", {
 			SpawnNav(1);
 			state:next();
 
-			objective.AddObjective(constants.objectives.Detection, "WHITE");
-			objective.AddObjective(constants.objectives.Hanger, "WHITE");
+			objective.AddObjective(CONSTANTS.OBJECTIVES.DETECTION, "WHITE");
+			objective.AddObjective(CONSTANTS.OBJECTIVES.HANGER, "WHITE");
 
 			--UpdateObjectives();
 			mission_data.mission_states
@@ -476,22 +476,22 @@ statemachine.Create("main_objectives", {
 	end },
 	{ "hanger_info", function (state)
 		if mission_data.key_objects.Hangar:IsAlive() and mission_data.key_objects.Player and mission_data.key_objects.Player:GetDistance(mission_data.key_objects.Hangar) < 50.0 then
-			AudioMessage(constants.audio.inspect);
+			AudioMessage(CONSTANTS.AUDIO.INSPECT);
 			SpawnNav(2);
-			objective.RemoveObjective(constants.objectives.Hanger);
+			objective.RemoveObjective(CONSTANTS.OBJECTIVES.HANGER);
 			--UpdateObjectives();
 			state:next();
 
 			mission_data.mission_states:off("hanger_still_alive");
-			objective.AddObjective(constants.objectives.Tug, "WHITE");
+			objective.AddObjective(CONSTANTS.OBJECTIVES.TUG, "WHITE");
 		end
 	end },
 	{ "aquire_tug", function (state)
 		if mission_data.key_objects.Player == mission_data.key_objects.Tug then
-			objective.UpdateObjective(constants.objectives.Tug, "GREEN");
-			objective.AddObjective(constants.objectives.Mammoth1, "WHITE");
+			objective.UpdateObjective(CONSTANTS.OBJECTIVES.TUG, "GREEN");
+			objective.AddObjective(CONSTANTS.OBJECTIVES.MAMMOTH_1, "WHITE");
 			--UpdateObjectives();
-			AudioMessage(constants.audio.tug);
+			AudioMessage(CONSTANTS.AUDIO.TUG);
 			SpawnNav(3)
 			state:next();
 		end
@@ -502,10 +502,10 @@ statemachine.Create("main_objectives", {
 			mission_data.playerSLF = gameobject.BuildObject("bvslf", 1, "NukeSpawn", 1);
 			SetMaxScrap(1, 20);
 			SetScrap(1, 20);
-			AudioMessage(constants.audio.first_a);
+			AudioMessage(CONSTANTS.AUDIO.FIRST_A);
 			SpawnNav(4);
-			objective.UpdateObjective(constants.objectives.Mammoth1, "GREEN");
-			objective.AddObjective(constants.objectives.Control, "WHITE");
+			objective.UpdateObjective(CONSTANTS.OBJECTIVES.MAMMOTH_1, "GREEN");
+			objective.AddObjective(CONSTANTS.OBJECTIVES.CONTROL, "WHITE");
 			--UpdateObjectives();
 			state:next();
 		end
@@ -541,15 +541,15 @@ statemachine.Create("main_objectives", {
 				if mission_data.armoryTarget == mission_data.key_objects.ControlTower then
 					mission_data.impactPending = true;
 					state:next();
-					objective.UpdateObjective(constants.objectives.Control, color.ColorLabel.Yellow);
+					objective.UpdateObjective(CONSTANTS.OBJECTIVES.CONTROL, color.ColorLabel.Yellow);
 					--UpdateObjectives(); --yellow
 					-- there is no yellow objective, old comment?
 				else
 
-					AudioMessage(constants.audio.lose4);
-					FailMission(GetTime() + 5.0, constants.debriefing.rbdnew03l5);
+					AudioMessage(CONSTANTS.AUDIO.LOSS_AIM_DAY_WRECKER);
+					FailMission(GetTime() + 5.0, CONSTANTS.DEBRIEFING.LOSS_WRECKER_MISSED);
 					mission_data.wreckerTargetMissed = true;
-					objective.UpdateObjective(constants.objectives.Control, "RED");
+					objective.UpdateObjective(CONSTANTS.OBJECTIVES.CONTROL, "RED");
 					--UpdateObjectives(); --red
 					-- there is no objective for this, old comment?
 					state:switch(nil);
@@ -569,16 +569,16 @@ statemachine.Create("main_objectives", {
 				mission_data.mission_states:off("mammoth_shield");
 				mission_data.impactPending = false;
 				
-				objective.UpdateObjective(constants.objectives.Control, "GREEN");
+				objective.UpdateObjective(CONSTANTS.OBJECTIVES.CONTROL, "GREEN");
 
 				--UpdateObjectives(); -- green
-				AudioMessage(constants.audio.dayw);
+				AudioMessage(CONSTANTS.AUDIO.DAY_W);
 				mission_data.key_objects.ObjectiveNav:SetObjectiveOff();
 				mission_data.key_objects.Mammoth:SetObjectiveOn();
-				mission_data.key_objects.Mammoth:SetObjectiveName(constants.names.Mammoth);
+				mission_data.key_objects.Mammoth:SetObjectiveName(CONSTANTS.NAMES.MAMMOTH);
 				SpawnArmy();
 				state:next();
-				objective.AddObjective(constants.objectives.Mammoth2, "WHITE");
+				objective.AddObjective(CONSTANTS.OBJECTIVES.MAMMOTH_2, "WHITE");
 			-- else
 				-- if not M.wreckerTargetMissed == true then
 					-- AudioMessage(constants.audio.lose4);
@@ -599,14 +599,14 @@ statemachine.Create("main_objectives", {
 				:off("detection_check_radar_tower_1")
 				:off("detection_check_radar_tower_2")
 				:off("detection_check_radar_tower_3");
-			objective.RemoveObjective(constants.objectives.Detection); -- should this be done sooner?
-			objective.ReplaceObjective(constants.objectives.Mammoth2, constants.objectives.TranStart, "WHITE"); -- should this be done sooner?
+			objective.RemoveObjective(CONSTANTS.OBJECTIVES.DETECTION); -- should this be done sooner?
+			objective.ReplaceObjective(CONSTANTS.OBJECTIVES.MAMMOTH_2, CONSTANTS.OBJECTIVES.TRAN_START, "WHITE"); -- should this be done sooner?
 			--UpdateObjectives();
 			if not mission_data.MammothReachedBefore then
-				AudioMessage(constants.audio.second_a);
+				AudioMessage(CONSTANTS.AUDIO.SECOND_A);
 				mission_data.MammothReachedBefore = true;
 			else
-				AudioMessage(constants.audio.backinrange)
+				AudioMessage(CONSTANTS.AUDIO.BACK_IN_RANGE)
 			end
 			state:next();
 		end
@@ -617,19 +617,19 @@ statemachine.Create("main_objectives", {
 		elseif mission_data.key_objects.Player:GetDistance(mission_data.key_objects.Mammoth) > 35 then
 			state:SecondsHavePassed();
 			--UpdateObjectives();
-			AudioMessage(constants.audio.transint);
-			objective.ReplaceObjective(constants.objectives.TranStart, constants.objectives.Mammoth2, "WHITE");
+			AudioMessage(CONSTANTS.AUDIO.TRANSINT);
+			objective.ReplaceObjective(CONSTANTS.OBJECTIVES.TRAN_START, CONSTANTS.OBJECTIVES.MAMMOTH_2, "WHITE");
 			state:switch("reach_mammoth_2");
 		end
 	end },
 	{ "mammoth_scan_finished", function (state)
-        AudioMessage(constants.audio.flee);
-        StartCockpitTimer(unpack(constants.runaway_timer));
+        AudioMessage(CONSTANTS.AUDIO.FLEE);
+        StartCockpitTimer(unpack(CONSTANTS.RUNAWAY_TIMER));
 		mission_data.key_objects.Mammoth:SetObjectiveOff();
 --		BuildObject("bvapc", 3, GetPositionNear(GetPosition(GetHandle("nav5"))));
         SpawnNav(5);
-		objective.ReplaceObjective(constants.objectives.TranStart, constants.objectives.TranFin, "GREEN");
-		objective.AddObjective(constants.objectives.Extract, "WHITE");
+		objective.ReplaceObjective(CONSTANTS.OBJECTIVES.TRAN_START, CONSTANTS.OBJECTIVES.TRAN_FIN, "GREEN");
+		objective.AddObjective(CONSTANTS.OBJECTIVES.EXTRACT, "WHITE");
         --UpdateObjectives();
         mission_data.key_objects.Player:SetPerceivedTeam(1);
 		for _, v in pairs(mission_data.key_objects.Defenders) do
@@ -642,20 +642,20 @@ statemachine.Create("main_objectives", {
 	{ "run_away", function (state)
 		--- @cast state main_objectives03_state
 		
-		if mission_data.key_objects.ObjectiveNav:GetObjectiveName() == constants.names.ExtractionPoint and mission_data.key_objects.Player and mission_data.key_objects.Player:GetDistance(mission_data.key_objects.ObjectiveNav) < 50.0 then
-			AudioMessage(constants.audio.win);
-			SucceedMission(GetTime()+5.0, constants.debriefing.rbdnew03wn); -- mission complete
-			objective.UpdateObjective(constants.objectives.Extract, "GREEN");
+		if mission_data.key_objects.ObjectiveNav:GetObjectiveName() == CONSTANTS.NAMES.EXTRACTION_POINT and mission_data.key_objects.Player and mission_data.key_objects.Player:GetDistance(mission_data.key_objects.ObjectiveNav) < 50.0 then
+			AudioMessage(CONSTANTS.AUDIO.WIN);
+			SucceedMission(GetTime()+5.0, CONSTANTS.DEBRIEFING.WIN); -- mission complete
+			objective.UpdateObjective(CONSTANTS.OBJECTIVES.EXTRACT, "GREEN");
 			--UpdateObjectives();
 			state:next();
 		elseif GetCockpitTimer() == 0 then
-			AudioMessage(constants.audio.lose2);
-			FailMission(GetTime() + 5.0, constants.debriefing.rbdnew03l2); -- time expired
+			AudioMessage(CONSTANTS.AUDIO.LOSS_FAILED_EXTRACT);
+			FailMission(GetTime() + 5.0, CONSTANTS.DEBRIEFING.LOSS_LEFT_BEHIND); -- time expired
 			--UpdateObjectives();
 			state:next();
-		elseif not state.did_hurry and GetCockpitTimer() < constants.hurry_threshold then
+		elseif not state.did_hurry and GetCockpitTimer() < CONSTANTS.HURRY_THRESHHOLD then
 			-- if we haven't hurried yet, hurry up!
-			AudioMessage(constants.audio.hurry);
+			AudioMessage(CONSTANTS.AUDIO.HURRY);
 			state.did_hurry = true;
 		end
 	end }
@@ -681,7 +681,7 @@ statemachine.Create("detection_check_radar_tower", {
 		end
 		if state.object:IsAlive() then
 			if mission_data.key_objects.Player:GetDistance(state.object) < 100.0 then
-				AudioMessage(constants.audio.commwarn);
+				AudioMessage(CONSTANTS.AUDIO.COMM_WARN);
 				StartCockpitTimer(30, 15, 5);
 				state:next();
 			end
@@ -698,7 +698,7 @@ statemachine.Create("detection_check_radar_tower", {
 			return;
 		end
 		if mission_data.key_objects.Player:GetDistance(state.object) > 100.0 then
-			AudioMessage(constants.audio.commclear);
+			AudioMessage(CONSTANTS.AUDIO.COMM_CLEAR);
 			state:SecondsHavePassed();
 			state:switch("check");
 			StopCockpitTimer();
@@ -733,16 +733,16 @@ statemachine.Create("detection_check_perceived_team", {
 			-- Scan the area around the player for potential targets
 			-- If they are not allies note them
 			-- If they are not allies and they were shot by the player recently note them and search around them for other targets
-			for candidate in gameobject.ObjectsInRange(constants.sniper_range, player) do
+			for candidate in gameobject.ObjectsInRange(CONSTANTS.sniper_range, player) do
 				if candidate then
 					if candidate:GetTeamNum() ~= 0 and not candidate:IsAlly(player) then
-						if not foundTarget and candidate:GetWhoShotMe() == player and candidate:GetLastEnemyShot() + constants.detection_range_time > time then
+						if not foundTarget and candidate:GetWhoShotMe() == player and candidate:GetLastEnemyShot() + CONSTANTS.detection_range_time > time then
 							-- we shot this guy recently, so he is angry
 							if candidate:IsCraft() or candidate:IsPerson() then
 								state.AngryBees[candidate] = true;
 							end
 							foundTarget = true;
-							for sub_candidate in gameobject.ObjectsInRange(constants.detection_range_target, candidate) do
+							for sub_candidate in gameobject.ObjectsInRange(CONSTANTS.detection_range_target, candidate) do
 								-- these guys saw he wa shot, so they are angry too
 								if sub_candidate then
 									if sub_candidate:GetTeamNum() ~= 0 and not sub_candidate:IsAlly(player) then
@@ -752,7 +752,7 @@ statemachine.Create("detection_check_perceived_team", {
 									end
 								end
 							end
-						elseif candidate:GetDistance(player) < constants.detection_range_player then
+						elseif candidate:GetDistance(player) < CONSTANTS.detection_range_player then
 							-- this guy saw us shooting so even he's angry!
 							if candidate:IsCraft() or candidate:IsPerson() then
 								state.AngryBees[candidate] = true;
@@ -774,8 +774,8 @@ statemachine.Create("detection_check_perceived_team", {
 
 			if HaveAngry then
 				-- if we have angry bees, we need to check them
-				AudioMessage(constants.audio.detected_kill_them);
-				objective.UpdateObjective(constants.objectives.Detection, "YELLOW");
+				AudioMessage(CONSTANTS.AUDIO.DETECTED_KILL_THEM);
+				objective.UpdateObjective(CONSTANTS.OBJECTIVES.DETECTION, "YELLOW");
 				state:next(); -- begin the attempt to save yourself
 			else
 				-- if we don't have angry bees, we can just return
@@ -788,7 +788,7 @@ statemachine.Create("detection_check_perceived_team", {
 	{ "check", function (state)
 		--- @cast state detection_check_perceived_team_state
 		local player = mission_data.key_objects.Player;
-		if state:SecondsHavePassed(constants.detection_timeout) then
+		if state:SecondsHavePassed(CONSTANTS.detection_timeout) then
 			state:SecondsHavePassed(); -- reset the timer
 			FailByDetection();
 			state:next();
@@ -814,7 +814,7 @@ statemachine.Create("detection_check_perceived_team", {
 			end
 			if not theyBeAngry then
 				state:SecondsHavePassed(); -- reset the timer
-				objective.UpdateObjective(constants.objectives.Detection, "WHITE");
+				objective.UpdateObjective(CONSTANTS.OBJECTIVES.DETECTION, "WHITE");
 				state:switch("start"); -- no more angry bees, we can return to perceived team 2
 				player:SetPerceivedTeam(2);
 				return;
@@ -827,21 +827,21 @@ stateset.Create("mission")
 	:Add("main_objectives", stateset.WrapStateMachine("main_objectives"))
 	:Add("scrap_field_filler_1", stateset.WrapStateMachine("scrap_field_filler", nil, { path = "scrpfld1" }))
 	:Add("detection_check_perceived_team", stateset.WrapStateMachine("detection_check_perceived_team"))
-	:Add("detection_check_radar_tower_1", stateset.WrapStateMachine("detection_check_radar_tower", nil, { label = constants.labels.radar[1] }))
-	:Add("detection_check_radar_tower_2", stateset.WrapStateMachine("detection_check_radar_tower", nil, { label = constants.labels.radar[2] }))
-	:Add("detection_check_radar_tower_3", stateset.WrapStateMachine("detection_check_radar_tower", nil, { label = constants.labels.radar[3] }))
+	:Add("detection_check_radar_tower_1", stateset.WrapStateMachine("detection_check_radar_tower", nil, { label = CONSTANTS.LABELS.RADAR[1] }))
+	:Add("detection_check_radar_tower_2", stateset.WrapStateMachine("detection_check_radar_tower", nil, { label = CONSTANTS.LABELS.RADAR[2] }))
+	:Add("detection_check_radar_tower_3", stateset.WrapStateMachine("detection_check_radar_tower", nil, { label = CONSTANTS.LABELS.RADAR[3] }))
 	:Add("hanger_still_alive", function (state, name)
 		if not mission_data.key_objects.Hangar:IsAlive() then
-			FailMission(GetTime()+5.0, constants.debriefing.rbdnew03l3); -- hangar destroyed
-			objective.UpdateObjective(constants.objectives.Hanger, "RED");
+			FailMission(GetTime()+5.0, CONSTANTS.DEBRIEFING.LOSS_HANGER_DESTROYED); -- hangar destroyed
+			objective.UpdateObjective(CONSTANTS.OBJECTIVES.HANGER, "RED");
 			--UpdateObjectives();
 		end
 	end)
 	:Add("mammoth_shield", stateset.WrapStateMachine("mammoth_shield"))
 	:Add("mammoth_destroyed", function (state, name)
 		if not mission_data.key_objects.Mammoth:IsAlive() then
-			AudioMessage(constants.audio.lose1);
-			FailMission(GetTime()+5.0, constants.debriefing.rbdnew03l1); -- mammoth destroyed
+			AudioMessage(CONSTANTS.AUDIO.LOSS_MAMMOTH_DESTROYED);
+			FailMission(GetTime()+5.0, CONSTANTS.DEBRIEFING.LOSS_MAMMOTH_DESTROYED); -- mammoth destroyed
 			--UpdateObjectives();
 		end
 	end);

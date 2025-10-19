@@ -61,57 +61,57 @@ navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToG
 --tracker.setFilterClass("turrettank"); -- track turrettanks
 
 --- @class RBD04_Constants_Audio
---- @field intro string -- intro
---- @field itsatrap string -- found trap and it went off (might need to cut this in half)
---- @field freedom string -- escaped the trap (destroyed the ambush)
---- @field planschange string -- steal the mammoth instead
---- @field gtfo string -- in the mammoth
---- @field destroyed string -- mammoth destroyed
---- @field bypass string -- alternate form of "in the mammoth" where we bypassed decoy
---- @field wasatrap string -- that's the fake, you know this, stop it
---- @field wantitback string -- almost to dustoff
---- @field homefree string -- Good job, son. Let's get out of here
+--- @field INTRO string -- intro
+--- @field ITS_A_TRAP string -- found trap and it went off (might need to cut this in half)
+--- @field FREEDOM string -- escaped the trap (destroyed the ambush)
+--- @field PLANS_CHANGE string -- steal the mammoth instead
+--- @field GTFO string -- in the mammoth
+--- @field DESTROYED string -- mammoth destroyed
+--- @field BYPASS string -- alternate form of "in the mammoth" where we bypassed decoy
+--- @field WAS_A_TRAP string -- that's the fake, you know this, stop it
+--- @field WANT_IT_BACK string -- almost to dustoff
+--- @field HOME_FREE string -- Good job, son. Let's get out of here
 
 --- @class RBD04_Constants_Objectives
---- @field recon string -- Investigate Nav 1.
---- @field escape string -- Escape the trap.
---- @field findit string -- Find and capture the real Mammoth Tank.
---- @field extraction string -- Escape to the Pickup Zone.
---- @field destroyed string -- You allowed the Mammoth to be destroyed!
---- @field defeat_pursuers string -- Defeat your pursuers
+--- @field RECON string -- Investigate Nav 1.
+--- @field ESCAPE string -- Escape the trap.
+--- @field FIND_IT string -- Find and capture the real Mammoth Tank.
+--- @field EXTRACTION string -- Escape to the Pickup Zone.
+--- @field DESTROYED string -- You allowed the Mammoth to be destroyed!
+--- @field DEFEAT_PURSUERS string -- Defeat your pursuers
 
 --- @class RBD04_Constants_Debriefing
---- @field rbdnew04l1 string -- Shaw bigmad
---- @field rbdnew04wn string - Success
+--- @field SHAW_BIGMAD string -- Shaw bigmad
+--- @field WIN string - Success
 
 --- @class RBD04_Constants
---- @field audio RBD04_Constants_Audio
---- @field objectives RBD04_Constants_Objectives
---- @field debriefing RBD04_Constants_Debriefing
+--- @field AUDIO RBD04_Constants_Audio
+--- @field OBJECTIVES RBD04_Constants_Objectives
+--- @field DEBRIEFING RBD04_Constants_Debriefing
 local constants = {
-	audio = {
-		intro = "rbdnew0401.wav",
-		itsatrap = "rbdnew0402.wav",
-		freedom = "rbdnew0403.wav",
-		planschange = "rbdnew0404.wav",
-		gtfo = "rbdnew0405.wav",
-		destroyed = "rbdnew0405L.wav",
-		bypass = "rbdnew04a1.wav",
-		wasatrap = "rbdnew04a2.wav",
-		wantitback = "rbdnew0406.wav",
-		homefree = "rbdnew0407.wav"
+	AUDIO = {
+		INTRO = "rbdnew0401.wav",
+		ITS_A_TRAP = "rbdnew0402.wav",
+		FREEDOM = "rbdnew0403.wav",
+		PLANS_CHANGE = "rbdnew0404.wav",
+		GTFO = "rbdnew0405.wav",
+		DESTROYED = "rbdnew0405L.wav",
+		BYPASS = "rbdnew04a1.wav",
+		WAS_A_TRAP = "rbdnew04a2.wav",
+		WANT_IT_BACK = "rbdnew0406.wav",
+		HOME_FREE = "rbdnew0407.wav"
 	},
-	objectives = {
-		recon = "rbdnew0401.otf",
-		escape = "rbdnew0402.otf",
-		findit = "rbdnew0403.otf",
-		extraction = "rbdnew0404.otf",
-		destroyed = "rbdnew0405.otf",
-		defeat_pursuers = "rbdnew0406.otf",
+	OBJECTIVES = {
+		RECON = "rbdnew0401.otf",
+		ESCAPE = "rbdnew0402.otf",
+		FIND_IT = "rbdnew0403.otf",
+		EXTRACTION = "rbdnew0404.otf",
+		DESTROYED = "rbdnew0405.otf",
+		DEFEAT_PURSUERS = "rbdnew0406.otf",
 	},
-	debriefing = {
-		rbdnew04l1 = "rbdnew04l1.des",
-		rbdnew04wn = "rbdnew04wn.des",
+	DEBRIEFING = {
+		SHAW_BIGMAD = "rbdnew04l1.des",
+		WIN = "rbdnew04wn.des",
 	}
 }
 
@@ -286,9 +286,9 @@ statemachine.Create("main_objectives", {
 		
 		mission_data.StartDone = true;
 		
-		mission_data.Aud1 = AudioMessage(constants.audio.intro);
+		mission_data.Aud1 = AudioMessage(constants.AUDIO.INTRO);
 		--UpdateObjectives();
-		objective.AddObjective(constants.objectives.recon, "WHITE");
+		objective.AddObjective(constants.OBJECTIVES.RECON, "WHITE");
 		SpawnNav(1);
 		state:next();
 	end },
@@ -319,10 +319,10 @@ statemachine.Create("main_objectives", {
 			mission_data.DecoyAmbush[i]:Attack(mission_data.Player);
 		end
 		--mission_data.DecoyTime = GetTime() + 4.0;
-		mission_data.Aud1 = AudioMessage(constants.audio.itsatrap);
+		mission_data.Aud1 = AudioMessage(constants.AUDIO.ITS_A_TRAP);
 		--UpdateObjectives();
-		objective.RemoveObjective(constants.objectives.recon);
-		objective.AddObjective(constants.objectives.escape, "WHITE");
+		objective.RemoveObjective(constants.OBJECTIVES.RECON);
+		objective.AddObjective(constants.OBJECTIVES.ESCAPE, "WHITE");
 		state:next();
 	end },
 	statemachine.SleepSeconds(4),
@@ -344,18 +344,18 @@ statemachine.Create("main_objectives", {
 	end,
 	{ "TrapEscaped", function (state)
 		if areAllDead(mission_data.DecoyAmbush, 2) then
-			mission_data.Aud1 = AudioMessage(constants.audio.freedom);
+			mission_data.Aud1 = AudioMessage(constants.AUDIO.FREEDOM);
 			mission_data.TrapEscaped = true;
 			SpawnNav(2);
 			--UpdateObjectives();
-			objective.UpdateObjective(constants.objectives.escape, "GREEN");
-			objective.AddObjective(constants.objectives.findit, "WHITE");
+			objective.UpdateObjective(constants.OBJECTIVES.ESCAPE, "GREEN");
+			objective.AddObjective(constants.OBJECTIVES.FIND_IT, "WHITE");
 			state:next();
 		end
 	end },
 	{ "PlansChange", function (state)
 		if not mission_data.Player:IsWithin(mission_data.Nav[1], 750.0) then
-			mission_data.Aud1 = AudioMessage(constants.audio.planschange);
+			mission_data.Aud1 = AudioMessage(constants.AUDIO.PLANS_CHANGE);
 			mission_data.PlansChange = true;
 			state:next();
 		end
@@ -367,14 +367,14 @@ statemachine.Create("main_objectives", {
 	end,
 	{ "MammothStolen", function (state)
 		if mission_data.TrapEscaped then
-			mission_data.Aud1 = AudioMessage(constants.audio.gtfo);
+			mission_data.Aud1 = AudioMessage(constants.AUDIO.GTFO);
 			--SpawnNav(3);
 			--SpawnBaker();
 			--mission_data.Player:SetPerceivedTeam(1)
 			--mission_data.MammothStolen = true;
 			--UpdateObjectives();
 		else
-			mission_data.Aud1 = AudioMessage(constants.audio.bypass);
+			mission_data.Aud1 = AudioMessage(constants.AUDIO.BYPASS);
 			--SpawnNav(3);
 			--SpawnBaker();
 			--mission_data.Player:SetPerceivedTeam(1)
@@ -386,8 +386,8 @@ statemachine.Create("main_objectives", {
 		mission_data.Player:SetPerceivedTeam(1)
 		mission_data.MammothStolen = true;
 		objective.ClearObjectives();
-		objective.AddObjective(constants.objectives.findit, "GREEN");
-		objective.AddObjective(constants.objectives.extraction, "WHITE", nil, nil, 10);
+		objective.AddObjective(constants.OBJECTIVES.FIND_IT, "GREEN");
+		objective.AddObjective(constants.OBJECTIVES.EXTRACTION, "WHITE", nil, nil, 10);
 		state:next();
 	end },
 	{ "WantItBack", function (state)
@@ -403,10 +403,10 @@ statemachine.Create("main_objectives", {
 			for i = 1,#mission_data.RecoverySquad do
 				mission_data.RecoverySquad[i]:Attack(mission_data.Player); -- what if the player isn't in the mammoth anymore?
 			end
-			mission_data.Aud1 = AudioMessage(constants.audio.wantitback);
+			mission_data.Aud1 = AudioMessage(constants.AUDIO.WANT_IT_BACK);
 			mission_data.WantItBack = true;
 			--UpdateObjectives();
-			objective.AddObjective(constants.objectives.defeat_pursuers, "WHITE");
+			objective.AddObjective(constants.OBJECTIVES.DEFEAT_PURSUERS, "WHITE");
 			state:next();
 		end
 	end },
@@ -414,18 +414,18 @@ statemachine.Create("main_objectives", {
 		if areAllDead(mission_data.RecoverySquad, 2) and mission_data.Player == mission_data.Mammoth then
 			mission_data.RecoveryBeaten = true;
 			--UpdateObjectives();
-			objective.UpdateObjective(constants.objectives.defeat_pursuers, "GREEN");
+			objective.UpdateObjective(constants.OBJECTIVES.DEFEAT_PURSUERS, "GREEN");
 			state:next();
 		end
 	end },
 	{ "End", function (state)
 		if mission_data.Player == mission_data.Mammoth and mission_data.Player:IsWithin(mission_data.Nav[3], 75.0) then
-			mission_data.Aud1 = AudioMessage(constants.audio.homefree);
-			SucceedMission(GetTime()+5.0, constants.debriefing.rbdnew04wn);
+			mission_data.Aud1 = AudioMessage(constants.AUDIO.HOME_FREE);
+			SucceedMission(GetTime()+5.0, constants.DEBRIEFING.WIN);
 			mission_data.MissionOver = true;
 			mission_data.DropZoneReached = true;
 			--UpdateObjectives();
-			objective.UpdateObjective(constants.objectives.extraction, "GREEN");
+			objective.UpdateObjective(constants.OBJECTIVES.EXTRACTION, "GREEN");
 			state:switch(nil);
 		end
 	end }
@@ -443,7 +443,7 @@ stateset.Create("mission")
 		-- Lose Conditions
 		if mission_data.MammothDead then
 			if state.fail_audio and IsAudioMessageDone(state.fail_audio) then
-				FailMission(GetTime()+5.0, constants.debriefing.rbdnew04l1);
+				FailMission(GetTime()+5.0, constants.DEBRIEFING.SHAW_BIGMAD);
 				state.fail_audio = nil;
 				state:off("mammoth_destroyed");
 			end
@@ -453,16 +453,16 @@ stateset.Create("mission")
 
 			-- ITS DEAD! NOOOOO! NEW Fail objective. -GBD
 			objective.ClearObjectives();
-			objective.AddObjective(constants.objectives.destroyed, "RED");
+			objective.AddObjective(constants.OBJECTIVES.DESTROYED, "RED");
 
 			-- Play the audio message for Mammoth destroyed
-			state.fail_audio = AudioMessage(constants.audio.destroyed);
+			state.fail_audio = AudioMessage(constants.AUDIO.DESTROYED);
 		end
 	end)
 	:Add("extra_find_decoy_after_real", function (state)
 		-- DecoyTriggered (Player enters real Mammoth)
 		if mission_data.Player:IsWithin(mission_data.MammothDecoy, 100.0) --[[and mission_data.Player == mission_data.Mammoth--]] then
-			mission_data.Aud1 = AudioMessage(constants.audio.wasatrap);
+			mission_data.Aud1 = AudioMessage(constants.AUDIO.WAS_A_TRAP);
 			mission_data.DecoyTriggered = true;
 			state:off("extra_find_decoy_after_real");
 		end
