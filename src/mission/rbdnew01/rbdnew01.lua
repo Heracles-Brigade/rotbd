@@ -44,7 +44,7 @@ local logger = require("_logger");
 
 logger.print(logger.LogLevel.DEBUG, nil, "\27[34m----START MISSION----\27[0m");
 
-require("_requirefix").addmod("rotbd");
+require("_requirefix");
 --require("_requirefix").addmod("3362534335");
 
 require("_table_show");

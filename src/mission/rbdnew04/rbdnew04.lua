@@ -35,7 +35,7 @@ local logger = require("_logger");
 
 logger.print(logger.LogLevel.DEBUG, nil, "\27[34m----START MISSION----\27[0m");
 
-require("_requirefix").addmod("rotbd");
+require("_requirefix");
 
 require("_table_show");
 local api = require("_api");
@@ -88,7 +88,7 @@ navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToG
 --- @field AUDIO RBD04_Constants_Audio
 --- @field OBJECTIVES RBD04_Constants_Objectives
 --- @field DEBRIEFING RBD04_Constants_Debriefing
-local constants = {
+local CONSTANTS = {
 	AUDIO = {
 		INTRO = "rbdnew0401.wav",
 		ITS_A_TRAP = "rbdnew0402.wav",
@@ -286,9 +286,9 @@ statemachine.Create("main_objectives", {
 		
 		mission_data.StartDone = true;
 		
-		mission_data.Aud1 = AudioMessage(constants.AUDIO.INTRO);
+		mission_data.Aud1 = AudioMessage(CONSTANTS.AUDIO.INTRO);
 		--UpdateObjectives();
-		objective.AddObjective(constants.OBJECTIVES.RECON, "WHITE");
+		objective.AddObjective(CONSTANTS.OBJECTIVES.RECON, "WHITE");
 		SpawnNav(1);
 		state:next();
 	end },
@@ -319,10 +319,10 @@ statemachine.Create("main_objectives", {
 			mission_data.DecoyAmbush[i]:Attack(mission_data.Player);
 		end
 		--mission_data.DecoyTime = GetTime() + 4.0;
-		mission_data.Aud1 = AudioMessage(constants.AUDIO.ITS_A_TRAP);
+		mission_data.Aud1 = AudioMessage(CONSTANTS.AUDIO.ITS_A_TRAP);
 		--UpdateObjectives();
-		objective.RemoveObjective(constants.OBJECTIVES.RECON);
-		objective.AddObjective(constants.OBJECTIVES.ESCAPE, "WHITE");
+		objective.RemoveObjective(CONSTANTS.OBJECTIVES.RECON);
+		objective.AddObjective(CONSTANTS.OBJECTIVES.ESCAPE, "WHITE");
 		state:next();
 	end },
 	statemachine.SleepSeconds(4),
@@ -344,18 +344,18 @@ statemachine.Create("main_objectives", {
 	end,
 	{ "TrapEscaped", function (state)
 		if areAllDead(mission_data.DecoyAmbush, 2) then
-			mission_data.Aud1 = AudioMessage(constants.AUDIO.FREEDOM);
+			mission_data.Aud1 = AudioMessage(CONSTANTS.AUDIO.FREEDOM);
 			mission_data.TrapEscaped = true;
 			SpawnNav(2);
 			--UpdateObjectives();
-			objective.UpdateObjective(constants.OBJECTIVES.ESCAPE, "GREEN");
-			objective.AddObjective(constants.OBJECTIVES.FIND_IT, "WHITE");
+			objective.UpdateObjective(CONSTANTS.OBJECTIVES.ESCAPE, "GREEN");
+			objective.AddObjective(CONSTANTS.OBJECTIVES.FIND_IT, "WHITE");
 			state:next();
 		end
 	end },
 	{ "PlansChange", function (state)
 		if not mission_data.Player:IsWithin(mission_data.Nav[1], 750.0) then
-			mission_data.Aud1 = AudioMessage(constants.AUDIO.PLANS_CHANGE);
+			mission_data.Aud1 = AudioMessage(CONSTANTS.AUDIO.PLANS_CHANGE);
 			mission_data.PlansChange = true;
 			state:next();
 		end
@@ -367,14 +367,14 @@ statemachine.Create("main_objectives", {
 	end,
 	{ "MammothStolen", function (state)
 		if mission_data.TrapEscaped then
-			mission_data.Aud1 = AudioMessage(constants.AUDIO.GTFO);
+			mission_data.Aud1 = AudioMessage(CONSTANTS.AUDIO.GTFO);
 			--SpawnNav(3);
 			--SpawnBaker();
 			--mission_data.Player:SetPerceivedTeam(1)
 			--mission_data.MammothStolen = true;
 			--UpdateObjectives();
 		else
-			mission_data.Aud1 = AudioMessage(constants.AUDIO.BYPASS);
+			mission_data.Aud1 = AudioMessage(CONSTANTS.AUDIO.BYPASS);
 			--SpawnNav(3);
 			--SpawnBaker();
 			--mission_data.Player:SetPerceivedTeam(1)
@@ -386,8 +386,8 @@ statemachine.Create("main_objectives", {
 		mission_data.Player:SetPerceivedTeam(1)
 		mission_data.MammothStolen = true;
 		objective.ClearObjectives();
-		objective.AddObjective(constants.OBJECTIVES.FIND_IT, "GREEN");
-		objective.AddObjective(constants.OBJECTIVES.EXTRACTION, "WHITE", nil, nil, 10);
+		objective.AddObjective(CONSTANTS.OBJECTIVES.FIND_IT, "GREEN");
+		objective.AddObjective(CONSTANTS.OBJECTIVES.EXTRACTION, "WHITE", nil, nil, 10);
 		state:next();
 	end },
 	{ "WantItBack", function (state)
@@ -403,10 +403,10 @@ statemachine.Create("main_objectives", {
 			for i = 1,#mission_data.RecoverySquad do
 				mission_data.RecoverySquad[i]:Attack(mission_data.Player); -- what if the player isn't in the mammoth anymore?
 			end
-			mission_data.Aud1 = AudioMessage(constants.AUDIO.WANT_IT_BACK);
+			mission_data.Aud1 = AudioMessage(CONSTANTS.AUDIO.WANT_IT_BACK);
 			mission_data.WantItBack = true;
 			--UpdateObjectives();
-			objective.AddObjective(constants.OBJECTIVES.DEFEAT_PURSUERS, "WHITE");
+			objective.AddObjective(CONSTANTS.OBJECTIVES.DEFEAT_PURSUERS, "WHITE");
 			state:next();
 		end
 	end },
@@ -414,18 +414,18 @@ statemachine.Create("main_objectives", {
 		if areAllDead(mission_data.RecoverySquad, 2) and mission_data.Player == mission_data.Mammoth then
 			mission_data.RecoveryBeaten = true;
 			--UpdateObjectives();
-			objective.UpdateObjective(constants.OBJECTIVES.DEFEAT_PURSUERS, "GREEN");
+			objective.UpdateObjective(CONSTANTS.OBJECTIVES.DEFEAT_PURSUERS, "GREEN");
 			state:next();
 		end
 	end },
 	{ "End", function (state)
 		if mission_data.Player == mission_data.Mammoth and mission_data.Player:IsWithin(mission_data.Nav[3], 75.0) then
-			mission_data.Aud1 = AudioMessage(constants.AUDIO.HOME_FREE);
-			SucceedMission(GetTime()+5.0, constants.DEBRIEFING.WIN);
+			mission_data.Aud1 = AudioMessage(CONSTANTS.AUDIO.HOME_FREE);
+			SucceedMission(GetTime()+5.0, CONSTANTS.DEBRIEFING.WIN);
 			mission_data.MissionOver = true;
 			mission_data.DropZoneReached = true;
 			--UpdateObjectives();
-			objective.UpdateObjective(constants.OBJECTIVES.EXTRACTION, "GREEN");
+			objective.UpdateObjective(CONSTANTS.OBJECTIVES.EXTRACTION, "GREEN");
 			state:switch(nil);
 		end
 	end }
@@ -443,7 +443,7 @@ stateset.Create("mission")
 		-- Lose Conditions
 		if mission_data.MammothDead then
 			if state.fail_audio and IsAudioMessageDone(state.fail_audio) then
-				FailMission(GetTime()+5.0, constants.DEBRIEFING.SHAW_BIGMAD);
+				FailMission(GetTime()+5.0, CONSTANTS.DEBRIEFING.SHAW_BIGMAD);
 				state.fail_audio = nil;
 				state:off("mammoth_destroyed");
 			end
@@ -453,16 +453,16 @@ stateset.Create("mission")
 
 			-- ITS DEAD! NOOOOO! NEW Fail objective. -GBD
 			objective.ClearObjectives();
-			objective.AddObjective(constants.OBJECTIVES.DESTROYED, "RED");
+			objective.AddObjective(CONSTANTS.OBJECTIVES.DESTROYED, "RED");
 
 			-- Play the audio message for Mammoth destroyed
-			state.fail_audio = AudioMessage(constants.AUDIO.DESTROYED);
+			state.fail_audio = AudioMessage(CONSTANTS.AUDIO.DESTROYED);
 		end
 	end)
 	:Add("extra_find_decoy_after_real", function (state)
 		-- DecoyTriggered (Player enters real Mammoth)
 		if mission_data.Player:IsWithin(mission_data.MammothDecoy, 100.0) --[[and mission_data.Player == mission_data.Mammoth--]] then
-			mission_data.Aud1 = AudioMessage(constants.AUDIO.WAS_A_TRAP);
+			mission_data.Aud1 = AudioMessage(CONSTANTS.AUDIO.WAS_A_TRAP);
 			mission_data.DecoyTriggered = true;
 			state:off("extra_find_decoy_after_real");
 		end

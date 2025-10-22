@@ -34,7 +34,7 @@ local logger = require("_logger");
 
 logger.print(logger.LogLevel.DEBUG, nil, "\27[34m----START MISSION----\27[0m");
 
-require("_requirefix").addmod("rotbd");
+require("_requirefix");
 
 local api = require("_api");
 local gameobject = require("_gameobject");
