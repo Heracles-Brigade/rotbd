@@ -67,7 +67,7 @@ end
 
 --- Repeat the last audio message.
 function RepeatAudioMessage()
-    if utility.istable(lastAudio) then
+    if utility.IsTable(lastAudio) then
         --- @cast lastAudio DummyAudioMessage
         PlayFakeAudioMessage(lastAudio);
         return;
@@ -163,7 +163,7 @@ end
 --- @param msg AudioMessage|DummyAudioMessage
 --- @return boolean
 function IsAudioMessageDone(msg)
-    if utility.istable(msg) then
+    if utility.IsTable(msg) then
         --- @cast msg DummyAudioMessage
         return IsFakeAudioMessageDone(msg);
     end
@@ -174,7 +174,7 @@ end
 --- @param msg AudioMessage|DummyAudioMessage
 --- @function StopAudioMessage
 function StopAudioMessage(msg)
-    if utility.istable(msg) then
+    if utility.IsTable(msg) then
         --- @cast msg DummyAudioMessage
         StopFakeAudioMessage(msg);
         return;
