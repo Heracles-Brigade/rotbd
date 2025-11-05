@@ -636,44 +636,28 @@ local function setUpPatrols()
     local patrol_r = patrol.new();
 
     --what are our `checkpoint` locations?
-    patrol_r:RegisterLocations({"l_comm","l_c1","l_c2","l_c3","l_solar","l_north","l_west","l_sw"});
+    --patrol_r:RegisterLocation({"l_comm","l_c1","l_c2","l_c3","l_solar","l_north","l_west","l_sw"});
 
-    patrol_r:DefineRoutes("l_comm",{
-        p_comm_c3 = "l_c3"
-    });
- 
-    patrol_r:DefineRoutes("l_c1",{
-        p_c1_c2 = "l_c2",
-        p_c1_sw = "l_sw"
-    });
+    patrol_r:AddRoute("l_comm","l_c3", "p_comm_c3");
 
-    patrol_r:DefineRoutes("l_c2",{
-        p_c2_c3 = "l_c3",
-        p_c2_north = "l_north"
-    });
- 
-    patrol_r:DefineRoutes("l_c3",{
-        p_c3_comm = "l_comm",
-        p_c3_c1 = "l_c1"
-    });
+    patrol_r:AddRoute("l_c1", "l_c2", "p_c1_c2");
+    patrol_r:AddRoute("l_c1", "l_sw", "p_c1_sw");
 
-    patrol_r:DefineRoutes("l_solar",{
-        p_solar_c3 = "l_c3"
-    });
+    patrol_r:AddRoute("l_c2", "l_c3", "p_c2_c3");
+    patrol_r:AddRoute("l_c2", "l_north", "p_c2_north");
 
-    patrol_r:DefineRoutes("l_north",{
-        p_north_west = "l_west",
-        p_north_solar = "l_solar",
-        p_north_comm = "l_comm"
-    });
+    patrol_r:AddRoute("l_c3", "l_comm", "p_c3_comm");
+    patrol_r:AddRoute("l_c3", "l_c1", "p_c3_c1");
 
-    patrol_r:DefineRoutes("l_west",{
-        p_west_c2 = "l_c2"
-    });
+    patrol_r:AddRoute("l_solar", "l_c3", "p_solar_c3");
 
-    patrol_r:DefineRoutes("l_sw",{
-        p_sw_c1 = "l_c1"
-    });
+    patrol_r:AddRoute("l_north", "l_west", "p_north_west");
+    patrol_r:AddRoute("l_north", "l_solar", "p_north_solar");
+    patrol_r:AddRoute("l_north", "l_comm", "p_north_comm");
+
+    patrol_r:AddRoute("l_west", "l_c2", "p_west_c2");
+
+    patrol_r:AddRoute("l_sw", "l_c1", "p_sw_c1");
     --return patrol_rid, patrol_r;
     return patrol_r;
 end
@@ -736,7 +720,7 @@ hook.Add("Update", "Mission:Update", function (dtime, ttime)
             if(v) then
                 local success = v:run(dtime);
                 --- @cast success StateMachineIterWrappedResult
-                if not success or (statemachine.isstatemachineiterwrappedresult(success) and success.Abort) then
+                if not success or (statemachine.IsStateMachineIterWrappedResult(success) and success.Abort) then
                     table.remove(mission_data.sub_machines,i); -- clean up dead machines from the list
                 end
             end

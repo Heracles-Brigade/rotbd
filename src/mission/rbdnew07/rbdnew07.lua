@@ -961,7 +961,7 @@ hook.Add("Update", "Mission:Update", function (dtime, ttime)
             if(v) then
                 local success = v:run(dtime);
                 --- @cast success StateMachineIterWrappedResult
-                if not success or (statemachine.isstatemachineiterwrappedresult(success) and success.Abort) then
+                if not success or (statemachine.IsStateMachineIterWrappedResult(success) and success.Abort) then
                     table.remove(mission_data.sub_machines,i); -- clean up dead machines from the list
                 end
             end

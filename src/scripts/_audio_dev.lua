@@ -188,7 +188,7 @@ function IsAudioMessagePlaying()
     return IsFakeAudioMessagePlaying() or Original.IsAudioMessagePlaying();
 end
 
-hook.Add("Update", "FakeAudioMessage.Update", function(dtime, ttime)
+hook.Add("Update", "FakeAudioMessage:Update", function(dtime, ttime)
     world_ttime = ttime;
     for _, msg in pairs(messages) do
         if msg.dummy_audio then

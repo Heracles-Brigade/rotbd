@@ -59,6 +59,7 @@ local objective = require("_objective");
 local utility = require("_utility");
 local color = require("_color");
 local camera = require("_camera");
+local paths = require("_paths");
 
 -- Fill navlist gaps with important navs
 navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToGap);
@@ -259,7 +260,7 @@ SetAIControl(2,false);
 
 local function enemiesInRange(dist,place)
     local enemies_nearby = false;
-    for v in gameobject.ObjectsInRange(dist,gameobject.isgameobject(place) and place:GetHandle() or place) do
+    for v in gameobject.ObjectsInRange(dist,gameobject.IsGameObject(place) and place:GetHandle() or place) do
         if(v:IsCraft() and v:GetTeamNum() == 2) then
             enemies_nearby = true;
         end
@@ -270,13 +271,13 @@ end
 local function createWave(odf, path_list, follow)
     local ret = {};
     print("Spawning:" .. odf);
-    local followStart = GetPosition(follow);
+    local followStart = paths.GetPosition(follow);
     followStart.y = 0;
     for _,v in pairs(path_list) do
         --local h = gameobject.BuildObject(odf, 2, v);
 
         -- spawn looking toward the follow point
-        local spawnPoint = GetPosition(v);
+        local spawnPoint = paths.GetPosition(v);
         spawnPoint.y = 0;
         local direction = followStart - spawnPoint;
         local h = gameobject.BuildObject(odf, 2, BuildDirectionalMatrix(spawnPoint, direction));
@@ -541,9 +542,9 @@ statemachine.Create("main_objectives", {
         AudioMessage(CONSTANTS.AUDIO.RECYCLER);
         local recy = gameobject.BuildObject("bvrecy22",1,"recy_spawn");
         if not recy then error("Failed to create recycler."); end
-        local e1 = gameobject.BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn") or SetVector(),20,100));
+        local e1 = gameobject.BuildObject("bvtank",1,GetPositionNear(paths.GetPosition("recy_spawn") or SetVector(),20,100));
         if not e1 then error("Failed to create escort tank 1."); end
-        local e2 = gameobject.BuildObject("bvtank",1,GetPositionNear(GetPosition("recy_spawn") or SetVector(),20,100));
+        local e2 = gameobject.BuildObject("bvtank",1,GetPositionNear(paths.GetPosition("recy_spawn") or SetVector(),20,100));
         if not e2 then error("Failed to create escort tank 2."); end
         e1:Defend2(recy, 0);
         e2:Defend2(recy, 0);

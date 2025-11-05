@@ -46,6 +46,7 @@ local color = require("_color");
 local producer = require("_producer");
 local patrol = require("_patrol");
 local camera = require("_camera");
+local paths = require("_paths");
 
 --- @class RBD08_Constants_Audio
 --- @field INTRO string
@@ -188,10 +189,10 @@ statemachine.Create("main_objectives", {
     end },
     { "intoCinematic.build_howiz", function(state)
         --- @cast state MainObjectives08_state
-        producer.QueueJob("avartlf", 2, nil, nil, { name = "_forEachHowie", location = GetPosition("base_artillery", 0) });
-        producer.QueueJob("svartlf", 2, nil, nil, { name = "_forEachHowie", location = GetPosition("base_artillery", 1) });
-        producer.QueueJob("avartlf", 2, nil, nil, { name = "_forEachHowie", location = GetPosition("base_artillery", 2) });
-        producer.QueueJob("svartlf", 2, nil, nil, { name = "_forEachHowie", location = GetPosition("base_artillery", 3) });
+        producer.QueueJob("avartlf", 2, nil, nil, { name = "_forEachHowie", location = paths.GetPosition("base_artillery", 0) });
+        producer.QueueJob("svartlf", 2, nil, nil, { name = "_forEachHowie", location = paths.GetPosition("base_artillery", 1) });
+        producer.QueueJob("avartlf", 2, nil, nil, { name = "_forEachHowie", location = paths.GetPosition("base_artillery", 2) });
+        producer.QueueJob("svartlf", 2, nil, nil, { name = "_forEachHowie", location = paths.GetPosition("base_artillery", 3) });
         state:next();
         return statemachine.FastResult();
     end },
@@ -353,8 +354,8 @@ statemachine.Create("main_objectives", {
     end },
     { "evac.evacuate", function(state)
         --- @cast state MainObjectives08_state
-        local d1 = Length(gameobject.GetPlayer():GetPosition() - GetPosition("spawn_griggs"));
-        local d2 = Length(mission_data.key_objects.grigg:GetPosition() - GetPosition("spawn_griggs"));
+        local d1 = Length(gameobject.GetPlayer():GetPosition() - paths.GetPosition("spawn_griggs"));
+        local d2 = Length(mission_data.key_objects.grigg:GetPosition() - paths.GetPosition("spawn_griggs"));
         if d1 < 100 and d2 < 100 and (not state.lastComm or not state.lastComm:IsAlive()) then
             --self:taskSucceed("evacuate");
             state:next();
@@ -444,7 +445,7 @@ statemachine.Create("grigg", {
             return;
         end
         --local pp = GetPathPoints("grigg_in");
-        local last_path_point = GetPosition("grigg_in", GetPathPointCount("grigg_in") - 1);
+        local last_path_point = paths.GetPosition("grigg_in", paths.GetPathPointCount("grigg_in") - 1);
         if last_path_point == nil then error("Grigg path point not found"); end
         mission_data.key_objects.grigg:Dropoff(last_path_point); -- stuck order since it's impossible
         state:next();
@@ -480,7 +481,7 @@ statemachine.Create("grigg", {
         --- @cast state Grigg07_state
         mission_data.key_objects.grigg:Goto("grigg_out");
         -- Make all base units hunt grigg
-        local l = Length(GetPosition("base_warning", 1) - GetPosition("base_warning", 0));
+        local l = Length(paths.GetPosition("base_warning", 1) - paths.GetPosition("base_warning", 0));
         for obj in gameobject.ObjectsInRange(l, "base_warning") do
             if obj:GetTeamNum() == 2 and obj:IsCraft() and not obj:CanBuild() then
                 obj:Attack(mission_data.key_objects.grigg);
@@ -502,7 +503,7 @@ statemachine.Create("avoidBase", {
     { "update", function (state)
         --- @cast state AvoidBase08_state
         local d = gameobject.GetPlayer():GetDistance("base_warning");
-        local l = Length(GetPosition("base_warning", 1) - GetPosition("base_warning", 0));
+        local l = Length(paths.GetPosition("base_warning", 1) - paths.GetPosition("base_warning", 0));
         if not state.warning and d < l then
             --self:taskFail("warning");
             state.warning = true;
@@ -514,7 +515,7 @@ statemachine.Create("avoidBase", {
         end
 
         local d2 = gameobject.GetPlayer():GetDistance("base");
-        local l2 = Length(GetPosition("base",1) - GetPosition("base", 0));
+        local l2 = Length(paths.GetPosition("base",1) - paths.GetPosition("base", 0));
         if d2 < l2 then
             objective.UpdateObjective(CONSTANTS.OBJECTIVES.DO_NOT_BASE,"RED");
             FailMission(GetTime() + 5.0, CONSTANTS.DEBRIEFING.LOSS_TOO_CLOSE);
@@ -596,8 +597,8 @@ hook.Add("Start", "Mission:Start", function ()
     for i = 1, 6 do
         gameobject.BuildObject("avartl", 2, ("spawn_artl%d"):format(i));
     end
-    SetPathLoop("walker1_path");
-    SetPathLoop("walker2_path");
+    paths.SetPathLoop("walker1_path");
+    paths.SetPathLoop("walker2_path");
     gameobject.GetGameObject("avwalk1"):Goto("walker1_path");
     gameobject.GetGameObject("avwalk2"):Goto("walker2_path");
     for i = 1, 4 do
@@ -629,7 +630,7 @@ hook.Add("Update", "Mission:Update", function (dtime, ttime)
             if(v) then
                 local success = v:run(dtime);
                 --- @cast success StateMachineIterWrappedResult
-                if not success or (statemachine.isstatemachineiterwrappedresult(success) and success.Abort) then
+                if not success or (statemachine.IsStateMachineIterWrappedResult(success) and success.Abort) then
                     table.remove(mission_data.sub_machines,i); -- clean up dead machines from the list
                 end
             end

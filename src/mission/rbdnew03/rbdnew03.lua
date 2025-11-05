@@ -75,6 +75,7 @@ local objective = require("_objective");
 local utility = require("_utility");
 local color = require("_color");
 local camera = require("_camera");
+local paths = require("_paths");
 
 -- Fill navlist gaps with important navs
 navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToGap);
@@ -363,7 +364,7 @@ statemachine.Create("scrap_field_filler", {
 	end },
 	{ "respawner", function (state)
 		--- @cast state scrap_field_filler_state_03
-		local pos = GetPosition(state.path); -- could consider saving the position, but using the path would let us handle modified mission loads
+		local pos = paths.GetPosition(state.path); -- could consider saving the position, but using the path would let us handle modified mission loads
 		if pos then
 			for i, scrap in ipairs(state.scrap_objects) do -- consider making this a slow-loop that checks 1 per turn
 				if not scrap or not scrap:IsValid() then

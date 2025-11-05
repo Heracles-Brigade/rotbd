@@ -66,6 +66,7 @@ local camera = require("_camera");
 local paramdb = require("_paramdb");
 local paths = require("_paths");
 local waves = require("_waves");
+local paths = require("_paths");
 
 -- Fill navlist gaps with important navs
 navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToGap);
@@ -78,6 +79,18 @@ navmanager.SetCompactionStrategy(navmanager.CompactionStrategy.ImportantFirstToG
 --tracker.setFilterOdf("bvtank"); -- track bvtanks
 --tracker.setFilterOdf("bvhraz"); -- track bvhraz
 --tracker.setFilterClass("turrettank"); -- track turrettanks
+
+paths.SetSpecialPathType({"make_bbtowe",
+                          "make_bblpow",
+                          "make_turrets"}, paths.SpecialPathType.Cloud);
+paths.SetSpecialPathType({"26spawn_tank",
+                          "26spawn_figh",
+                          "26spawn_turr",
+                          "26spawn_apc",
+                          "26spawn_rock",
+                          "26spawn_bomber",
+                          "26spawn_nav"}, paths.SpecialPathType.Cloud);
+paths.SetSpecialPathType({"spawn_pilots"}, paths.SpecialPathType.Cloud);
 
 --- @class RBD05_Constants_Audio
 --- @field INTRO string -- Intro
@@ -241,14 +254,14 @@ end
 --- @return GameObject[]
 local function spawnAtPath(odf,team,path)
     local handles = {};
-    local current = GetPosition(path);
+    local current = paths.GetPosition(path);
     local prev = nil;
     local c = 0;
     while current and current ~= prev do
         c = c + 1;
         table.insert(handles,gameobject.BuildObject(odf,team,current));
         prev = current;
-        current = GetPosition(path,c);
+        current = paths.GetPosition(path,c);
     end
     return handles;
 end
@@ -385,25 +398,20 @@ statemachine.Create("main_objectives", {
         --local patrol_rid, patrol_r = bzRoutine.routineManager:startRoutine("PatrolRoutine", nil, true);
         mission_data.patrol_r = patrol.new();
         --what are our `checkpoint` locations?
-        mission_data.patrol_r:RegisterLocations({"l_command","l_center","l_north","l_front"});
+        --mission_data.patrol_r:RegisterLocation({"l_command","l_center","l_north","l_front"});
         --l_command connects to l_center via p_command_center path
-        mission_data.patrol_r:DefineRoutes("l_command",{
-            p_command_center = "l_center"
-        });
+        mission_data.patrol_r:AddRoute("l_command", "l_center", "p_command_center")
+
         --l_center connects to both l_front and l_north via p_center_front and p_center_north
-        mission_data.patrol_r:DefineRoutes("l_center",{
-            p_center_front = "l_front",
-            p_center_north = "l_north"
-        });
+        mission_data.patrol_r:AddRoute("l_center", "l_front", "p_center_front");
+        mission_data.patrol_r:AddRoute("l_center", "l_north", "p_center_north");
+
         --l_front connects to l_command via either p_front_command or p_front_patrol_command
-        mission_data.patrol_r:DefineRoutes("l_front",{
-            p_front_command = "l_command",
-            p_front_patrol_command = "l_command"
-        });
+        mission_data.patrol_r:AddRoute("l_front", "l_command", "p_front_command");
+        mission_data.patrol_r:AddRoute("l_front", "l_command", "p_front_patrol_command");
+
         --l_north only connects to l_center via p_north_center, slightly redundant, but there in case more paths are added
-        mission_data.patrol_r:DefineRoutes("l_north",{
-            p_north_center = "l_center"
-        });
+        mission_data.patrol_r:AddRoute("l_north", "l_center", "p_north_center");
         --set patrol_id
         --mission_data.patrol_id = patrol_rid;
         --Start first task, go to base
@@ -446,8 +454,8 @@ statemachine.Create("main_objectives", {
         -- 7. Power C
         -- 8. comm
 
-        local countPow = GetPathPointCount("make_bblpow");
-        local countTow = GetPathPointCount("make_bbtowe");
+        local countPow = paths.GetPathPointCount("make_bblpow");
+        local countTow = paths.GetPathPointCount("make_bbtowe");
         local loopCount = math.max(countPow, math.ceil(countTow / 2));
         for i = 1, loopCount do
             if i <= countPow then
@@ -872,7 +880,7 @@ statemachine.Create("main_objectives", {
         for i,v in pairs(mission_data.attackers) do
             v:RemoveObject();
         end
-        local vec = GetPosition("nsdf_base");
+        local vec = paths.GetPosition("nsdf_base");
         if not vec then error("Failed to get nsdf_base") end
         for v in gameobject.ObjectsInRange(500, vec) do
             if(gameobject.GetPlayer() ~= v) then
@@ -1175,7 +1183,7 @@ hook.Add("Update", "Mission:Update", function (dtime, ttime)
             if v then
                 local success = v:run(dtime);
                 --- @cast success StateMachineIterWrappedResult
-                if not success or (statemachine.isstatemachineiterwrappedresult(success) and success.Abort) then
+                if not success or (statemachine.IsStateMachineIterWrappedResult(success) and success.Abort) then
                     table.remove(mission_data.sub_machines,i); -- clean up dead machines from the list
                 end
             end
