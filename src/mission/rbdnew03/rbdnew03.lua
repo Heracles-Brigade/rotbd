@@ -64,7 +64,6 @@ logger.print(logger.LogLevel.DEBUG, nil, "\27[34m----START MISSION----\27[0m");
 require("_requirefix");
 
 require("_table_show");
-local api = require("_api");
 local gameobject = require("_gameobject");
 local hook = require("_hook");
 local statemachine = require("_statemachine");

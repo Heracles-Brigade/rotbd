@@ -36,17 +36,12 @@ logger.print(logger.LogLevel.DEBUG, nil, "\27[34m----START MISSION----\27[0m");
 
 require("_requirefix");
 
-local api = require("_api");
 local gameobject = require("_gameobject");
 local hook = require("_hook");
 local statemachine = require("_statemachine");
 local stateset = require("_stateset");
---local tracker = require("_tracker");
-local navmanager = require("_navmanager");
 local objective = require("_objective");
 local utility = require("_utility");
-local color = require("_color");
-local producer = require("_producer");
 local patrol = require("_patrol");
 local paths = require("_paths");
 local waves = require("_waves");

@@ -48,7 +48,6 @@ require("_requirefix");
 --require("_requirefix").addmod("3362534335");
 
 require("_table_show");
-local api = require("_api");
 local gameobject = require("_gameobject");
 local hook = require("_hook");
 local statemachine = require("_statemachine");
@@ -56,8 +55,6 @@ local stateset = require("_stateset");
 local tracker = require("_tracker");
 local navmanager = require("_navmanager");
 local objective = require("_objective");
-local utility = require("_utility");
-local color = require("_color");
 local camera = require("_camera");
 local paths = require("_paths");
 

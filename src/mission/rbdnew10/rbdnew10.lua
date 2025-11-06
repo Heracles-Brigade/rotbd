@@ -39,18 +39,13 @@ logger.print(logger.LogLevel.DEBUG, nil, "\27[34m----START MISSION----\27[0m");
 
 require("_requirefix");
 
-local api = require("_api");
 local gameobject = require("_gameobject");
 local hook = require("_hook");
 local statemachine = require("_statemachine");
 local stateset = require("_stateset");
---local tracker = require("_tracker");
-local navmanager = require("_navmanager");
 local objective = require("_objective");
 local utility = require("_utility");
-local color = require("_color");
 local producer = require("_producer");
-local patrol = require("_patrol");
 local paramdb = require("_paramdb");
 local paths = require("_paths");
 local waves = require("_waves");
@@ -158,15 +153,24 @@ TODO:
 
 
 
-
-local function joinTables(...)
-    local n = {};
-    for i, v in ipairs({...}) do
-      for i2, v2 in ipairs(v) do
-        n[#n+1] = v2;
-      end
+--- Concatenate multiple arrays into a single array.
+--- Will preserve nils in the input arrays.
+--- @vararg any[] Arrays to concatenate
+--- @return any[] merged The concatenated array
+--- @return integer count The number of elements in the concatenated array
+local function concatArrays(...)
+    local merged = {};
+    local idx = 1;
+    for p = 1, select("#", ...) do
+        local tbl = select(p, ...);
+        if tbl then
+            for i = 1, select("#", tbl) do
+                merged[idx] = tbl[i];
+                idx = idx + 1;
+            end
+        end
     end
-    return n;
+    return merged, idx - 1;
   end
 
 --- @class MissionData10_KeyObjects
@@ -680,7 +684,7 @@ hook.Add("WaveSpawner:Spawned", "Mission:WaveSpawnerSpawned", function (name, un
                 table.insert(n, v);
             end
         end
-        mission_data.key_objects.enemy_units = joinTables(n, units);
+        mission_data.key_objects.enemy_units = concatArrays(n, units);
     elseif mission_data.wave_state == "defend_and_escort" then
         for i, v in pairs(units) do
             --local s = mission.TaskManager:sequencer(v);
@@ -702,7 +706,7 @@ hook.Add("WaveSpawner:Spawned", "Mission:WaveSpawnerSpawned", function (name, un
         end
     end
     if name == "fury_spawn" then
-        mission_data.key_objects.furies = joinTables(mission_data.key_objects.furies,units);
+        mission_data.key_objects.furies = concatArrays(mission_data.key_objects.furies, units);
     end
 end);
 
