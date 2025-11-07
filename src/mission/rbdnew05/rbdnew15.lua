@@ -86,6 +86,11 @@ paths.SetSpecialPathType({"26spawn_tank",
                           "26spawn_nav"}, paths.SpecialPathType.Cloud);
 paths.SetSpecialPathType({"spawn_pilots"}, paths.SpecialPathType.Cloud);
 
+paths.LoggerIgnorePath({"walker_path",
+                        "player_spawn",
+                        "25cin_attack",
+                        "25cin_pan2"});
+
 --- @class RBD05_Constants_Audio
 --- @field INTRO string -- Intro
 --- @field INSPECT string -- Inspecting Relic
